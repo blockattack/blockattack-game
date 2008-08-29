@@ -1,5 +1,5 @@
-Game/bloackattack: 	main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o uploadReplay.o
-	g++ -O -o Game/blockattack main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lenet
+../../Game/blockattack: 	main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o uploadReplay.o
+	g++ -O -o ../../Game/blockattack main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lenet
 
 main.o:	main.cpp BlockGame.hpp mainVars.hpp common.h
 	g++ -g -c main.cpp `sdl-config --cflags`
@@ -31,7 +31,7 @@ common.o: common.h common.cc
 uploadReplay.o: uploadReplay.cc uploadReplay.h
 	g++ -g -c uploadReplay.cc `sdl-config --cflags`
 
-run: Game/bloackattack
+run: ../../Game/blockattack
 
 clean:
 	rm *o

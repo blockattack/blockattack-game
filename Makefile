@@ -11,7 +11,7 @@ standard:
 	@rm -f ./Game/runme.sh
 	@echo "Done deleting files"
 	@echo "Now compiling..."
-	@make -f block.make
+	@make -C source/code -f block.make
 	@rm -f *.o
 	@echo "Everything has been compiled!"
 	
