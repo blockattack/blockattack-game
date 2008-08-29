@@ -1,0 +1,2 @@
+to regenerate the manpage:
+docbook-to-man blockattack.sgml|gzip -9 > blockattack.6.gz

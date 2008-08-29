@@ -1,0 +1,4580 @@
+/*
+Block Attack - Rise of the Blocks, SDL game, besed on Nintendo's Tetris Attack
+Copyright (C) 2008 Poul Sander
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Poul Sander
+    R�vehjvej 36, V. 1111
+    2800 Kgs. Lyngby
+    DENMARK
+    blockattack@poulsander.com
+    http://blockattack.sf.net
+*/
+
+#define VERSION_NUMBER "version 1.4.0 BETA"
+
+//If DEBUG is defined: AI info and FPS will be written to screen
+//#define DEBUG
+
+//If NETWORK id defined: enet will be used
+#define NETWORK
+
+//Macros to convert surfaces (for faster drawing)
+#define CONVERT(n) tmp = SDL_DisplayFormat(n); SDL_FreeSurface(n); n = tmp
+#define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
+
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>           //Used for srand()
+#include <sstream>
+#include <string>
+#include "SDL.h"            //The SDL libary, used for most things
+#include <SDL_mixer.h>      //Used for sound & music
+#include <SDL_image.h>      //To load PNG images!
+#include "ttfont.h"        //To use True Type Fonts in SDL
+//#include "config.h"
+#include <vector>
+
+//if SHAREDIR is not used we look in current directory
+#ifndef SHAREDIR
+#define SHAREDIR "."
+#endif
+
+
+
+//enet things
+#ifdef NETWORK
+#include "enet/enet.h"
+//#include "enet/list.h"
+//#include "enet/protocol.h"
+#endif
+//enet things end
+
+#include "SFont.h"          //Used to write on screen
+#include "highscore.h"      //Stores highscores
+#include "ReadKeyboard.h"   //Reads text from keyboard
+#include "joypad.h"         //Used for joypads
+#include "listFiles.h"	    //Used to show files on screen
+#include "replay.h"			//Used for replays
+#include "stats.h"          //Saves general stats 
+//#include "editor/editorMain.hpp" //The level editor
+#include "uploadReplay.h"   //Takes care of everything libcurl related
+
+#include "common.h"
+
+/*******************************************************************************
+* All variables and constant has been moved to mainVars.hpp for the overview.  *
+*******************************************************************************/
+#include "mainVars.hpp"
+
+void MakeBackground(int,int);
+
+void closeAllMenus()
+{
+    bNewGameOpen=false;          //show sub menues
+    bOptionsOpen=false;          //Show OptionsMenu (Configure and Select Puzzle)
+    b1playerOpen=false;			//show submenu
+    b2playersOpen=false;
+    bReplayOpen = false;
+#ifdef NETWORK
+    bNetworkOpen = false;
+#endif
+    showOptions = false;
+    showHighscores = false;
+
+}
+
+
+
+//Because we use the SHAREDIR we need:
+SDL_Surface * IMG_Load2(char* path) {
+
+    char * tmp;
+    SDL_Surface * ret=NULL;
+    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
+    strcpy(tmp, sharedir);
+    strcat(tmp, "/");
+    strcat(tmp, path);
+#ifdef DEBUG
+    printf("loading %s\n",tmp);
+#endif
+    if (!(ret = IMG_Load(tmp)))
+        ret = IMG_Load(path);
+
+    free(tmp);
+    return ret;
+}
+
+//Function to replace an image (ie. for a theme). Return true if replacing
+bool reloadIMG(SDL_Surface **surface2replace, string replaceWith)
+{
+    string fullPath = SHAREDIR+(string)"/themes/"+replaceWith;
+    #ifdef DEBUG
+    cout << "Trying to load " << fullPath << endl;
+    #endif
+    SDL_Surface * temp = NULL;
+    temp = IMG_Load(fullPath.c_str());
+    if(temp) //If we loaded a new image
+    {
+        #ifdef DEBUG
+        cout << "Found in game folder: " << fullPath << endl;
+        #endif
+        SDL_FreeSurface(*surface2replace);
+        *surface2replace = temp;
+        return true;
+    }
+    //Stop if under windows:
+    #ifdef __unix__
+    fullPath = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes/"+replaceWith;
+    #ifdef DEBUG
+    cout << "Trying to load " << fullPath << endl;
+    #endif
+    temp = IMG_Load(fullPath.c_str());
+    if(temp) //If we loaded a new image
+    {
+        #ifdef DEBUG
+        cout << "Found in home folder: " << fullPath << endl;
+        #endif
+        SDL_FreeSurface(*surface2replace);
+        *surface2replace = temp;
+        return true;
+    }
+    #endif
+    *surface2replace = * surface2replace;
+    return false;
+}
+
+void loadTheme(string themeName)
+{
+    reloadIMG(&backgroundImage,themeName+"/background.png");
+    reloadIMG(&backgroundImage,themeName+"/background.jpg");
+    CONVERT(backgroundImage); //We should always convert even if we don't have to or else: SEGFAULT!
+    reloadIMG(&bNewGame,themeName+"/bNewGame.png");
+    CONVERT(bNewGame);
+    reloadIMG(&b1player,themeName+"/bOnePlayer.png");
+    CONVERT(b1player);
+    reloadIMG(&b2players,themeName+"/bTwoPlayers.png");
+    CONVERT(b2players);
+    reloadIMG(&bVsMode,themeName+"/bVsGame.png");
+    CONVERT(bVsMode);
+    reloadIMG(&bPuzzle,themeName+"/bPuzzle.png");
+    CONVERT(bPuzzle);
+    reloadIMG(&bStageClear,themeName+"/bStageClear.png");
+    CONVERT(bStageClear);
+    reloadIMG(&bTimeTrial,themeName+"/bTimeTrial.png");
+    CONVERT(bTimeTrial);
+    reloadIMG(&bEndless,themeName+"/bEndless.png");
+    CONVERT(bEndless);
+    reloadIMG(&bOptions,themeName+"/bOptions.png");
+    CONVERT(bOptions);
+    reloadIMG(&bConfigure,themeName+"/bConfigure.png");
+    CONVERTA(bConfigure);
+    reloadIMG(&bSelectPuzzle,themeName+"/bSelectPuzzle.png");
+    CONVERTA(bSelectPuzzle);
+    reloadIMG(&bReplay,themeName+"/bReplay.png");
+    CONVERTA(bReplay);
+    reloadIMG(&bReplay,themeName+"/bSave.png");
+    CONVERTA(bSave);
+    reloadIMG(&bLoad,themeName+"/bLoad.png");
+    CONVERTA(bLoad);
+#ifdef NETWORK
+    reloadIMG(&bNetwork,themeName+"/bNetwork.png");
+    CONVERTA(bNetwork);
+    reloadIMG(&bHost,themeName+"/bHost.png");
+    CONVERTA(bHost);
+    reloadIMG(&bConnect,themeName+"/bConnect.png");
+    CONVERTA(bConnect);
+#endif
+    reloadIMG(&bHighScore,themeName+"/bHighScore.png");
+    CONVERT(bHighScore);
+    reloadIMG(&boardBackBack,themeName+"/boardBackBack.png");
+    CONVERTA(boardBackBack);
+    reloadIMG(&backBoard,themeName+"/BackBoard.png");
+    CONVERT(backBoard);
+    reloadIMG(&blackLine,themeName+"/blackLine.png");
+    CONVERT(blackLine);
+    reloadIMG(&changeButtonsBack,themeName+"/changeButtonsBack.png");
+    CONVERTA(changeButtonsBack);
+    reloadIMG(&cursor[0],themeName+"/animations/cursor/1.png");
+    CONVERTA(cursor[0]);
+    reloadIMG(&cursor[1],themeName+"/animations/cursor/2.png");
+    CONVERTA(cursor[1]);
+    reloadIMG(&cursor[0],themeName+"/animations/counter/1.png");
+    CONVERTA(counter[0]);
+    reloadIMG(&cursor[1],themeName+"/animations/counter/2.png");
+    CONVERTA(counter[1]);
+    reloadIMG(&cursor[2],themeName+"/animations/counter/3.png");
+    CONVERTA(counter[2]);
+    reloadIMG(&topscoresBack,themeName+"/topscores.png");
+    CONVERTA(topscoresBack);
+    reloadIMG(&optionsBack,themeName+"/options.png");
+    CONVERTA(optionsBack);
+    reloadIMG(&bExit,themeName+"/bExit.png");
+    CONVERT(bExit);
+    reloadIMG(&bOn,themeName+"/bOn.png");
+    CONVERT(bOn);
+    reloadIMG(&bOff,themeName+"/bOff.png");
+    CONVERT(bOff);
+    reloadIMG(&bChange,themeName+"/bChange.png");
+    CONVERT(bChange);
+    reloadIMG(&b1024,themeName+"/b1024.png");
+    CONVERT(b1024);
+    reloadIMG(&dialogBox,themeName+"/dialogbox.png");
+    CONVERTA(dialogBox);
+//	CONVERTA(fileDialogBox);
+    reloadIMG(&iLevelCheck,themeName+"/iLevelCheck.png");
+    CONVERTA(iLevelCheck);
+    reloadIMG(&iLevelCheckBox,themeName+"/iLevelCheckBox.png");
+    CONVERT(iLevelCheckBox);
+    reloadIMG(&iCheckBoxArea,themeName+"/iCheckBoxArea.png");
+    CONVERTA(iCheckBoxArea);
+    for (int i = 0;i<4;i++)
+    {
+        reloadIMG(&explosion[i],themeName+"/animations/explosion/"+(char)('0'+i)+".png");
+        CONVERTA(explosion[i]);
+    }
+    reloadIMG(&bricks[0],themeName+"/blue.png");
+    reloadIMG(&bricks[1],themeName+"/green.png");
+    reloadIMG(&bricks[2],themeName+"/purple.png");
+    reloadIMG(&bricks[3],themeName+"/red.png");
+    reloadIMG(&bricks[4],themeName+"/turkish.png");
+    reloadIMG(&bricks[5],themeName+"/yellow.png");
+    reloadIMG(&bricks[6],themeName+"/gray.png");
+    reloadIMG(&balls[0],themeName+"/balls/ballBlue.png");
+    reloadIMG(&balls[1],themeName+"/balls/ballGreen.png");
+    reloadIMG(&balls[2],themeName+"/balls/ballPurple.png");
+    reloadIMG(&balls[3],themeName+"/balls/ballRed.png");
+    reloadIMG(&balls[4],themeName+"/balls/ballTurkish.png");
+    reloadIMG(&balls[5],themeName+"/balls/ballYellow.png");
+    reloadIMG(&balls[6],themeName+"/balls/ballGray.png");
+    for (int i = 0; i<7; i++)
+    {
+        CONVERTA(bricks[i]);
+        CONVERTA(balls[i]);
+    }
+    reloadIMG(&crossover,themeName+"/crossover.png");
+    CONVERTA(crossover);
+    reloadIMG(&garbageTL,themeName+"/garbage/garbageTL.png");
+    CONVERTA(garbageTL);
+    reloadIMG(&garbageT,themeName+"/garbage/garbageT.png");
+    CONVERTA(garbageT);
+    reloadIMG(&garbageTR,themeName+"/garbage/garbageTR.png");
+    CONVERTA(garbageTR);
+    reloadIMG(&garbageR,themeName+"/garbage/garbageR.png");
+    CONVERTA(garbageR);
+    reloadIMG(&garbageBR,themeName+"/garbage/garbageBR.png");
+    CONVERTA(garbageBR);
+    reloadIMG(&garbageB,themeName+"/garbage/garbageB.png");
+    CONVERTA(garbageB);
+    reloadIMG(&garbageBL,themeName+"/garbage/garbageBL.png");
+    CONVERTA(garbageBL);
+    reloadIMG(&garbageL,themeName+"/garbage/garbageL.png");
+    CONVERTA(garbageL);
+    reloadIMG(&garbageFill,themeName+"/garbage/garbageFill.png");
+    CONVERTA(garbageFill);
+    reloadIMG(&garbageML,themeName+"/garbage/garbageML.png");
+    CONVERTA(garbageML);
+    reloadIMG(&garbageMR,themeName+"/garbage/garbageMR.png");
+    CONVERTA(garbageMR);
+    reloadIMG(&garbageM,themeName+"/garbage/garbageM.png");
+    CONVERTA(garbageM);
+    reloadIMG(&garbageGML,themeName+"/garbage/garbageGML.png");
+    CONVERTA(garbageGML);
+    reloadIMG(&garbageGMR,themeName+"/garbage/garbageGMR.png");
+    CONVERTA(garbageGMR);
+    reloadIMG(&garbageGM,themeName+"/garbage/garbageGM.png");
+    CONVERTA(garbageGM);
+    reloadIMG(&smiley[0],themeName+"/smileys/0.png");
+    CONVERTA(smiley[0]);
+    reloadIMG(&smiley[1],themeName+"/smileys/1.png");
+    CONVERTA(smiley[1]);
+    reloadIMG(&smiley[2],themeName+"/smileys/2.png");
+    CONVERTA(smiley[2]);
+    reloadIMG(&smiley[3],themeName+"/smileys/3.png");
+    CONVERTA(smiley[3]);
+    reloadIMG(&iWinner,themeName+"/iWinner.png");
+    CONVERTA(iWinner);
+    reloadIMG(&iDraw,themeName+"/iDraw.png");
+    CONVERTA(iDraw);
+    reloadIMG(&iLoser,themeName+"/iLoser.png");
+    CONVERTA(iLoser);
+    reloadIMG(&iChainBack,themeName+"/chainFrame.png");
+    CONVERTA(iChainBack);
+    reloadIMG(&iGameOver,themeName+"/iGameOver.png");
+    CONVERTA(iGameOver);
+    reloadIMG(&mouse,themeName+"/mouse.png");
+    CONVERTA(mouse);
+    reloadIMG(&stageBobble,themeName+"/iStageClearLimit.png");
+    CONVERTA(stageBobble);
+    reloadIMG(&bTheme,themeName+"/bTheme.png");
+    CONVERTA(bTheme);
+    reloadIMG(&bSkip,themeName+"/bSkip.png");
+    CONVERTA(bSkip);
+    reloadIMG(&bRetry,themeName+"/bRetry.png");
+    CONVERTA(bRetry);
+    reloadIMG(&bNext,themeName+"/bNext.png");
+    CONVERTA(bNext);
+    /**
+     *Fonts is a special case
+     */
+    //First we free them:
+    /*SFont_FreeFont(fBlueFont);
+    SFont_FreeFont(fSmallFont);
+    //Then we reload the images:
+    reloadIMG(&iBlueFont,themeName+"/24P_Arial_Blue.png");
+    reloadIMG(&iSmallFont,themeName+"/14P_Arial_Angle_Red.png");
+    //Then we convert them:
+    CONVERTA(iBlueFont);
+    CONVERTA(iSmallFont);
+    //Then create the fonts again:
+    fBlueFont = SFont_InitFont(iBlueFont);
+    fSmallFont = SFont_InitFont(iSmallFont);*/
+    //Editor:
+    /*CONVERTA(bCreateFile);
+    CONVERTA(bDeletePuzzle);
+    CONVERTA(bLoadFile);
+    CONVERTA(bMoveBack);
+    CONVERTA(bMoveDown);
+    CONVERTA(bMoveForward);
+    CONVERTA(bMoveLeft);
+    CONVERTA(bMoveRight);
+    CONVERTA(bMoveUp);
+    CONVERTA(bNewPuzzle);
+    CONVERTA(bSaveFileAs);
+    CONVERTA(bSavePuzzle);
+    CONVERTA(bSaveToFile);
+    CONVERTA(bTestPuzzle);*/
+    #ifdef DEBUG
+    cout << "Loading succeded" << endl;
+    #endif
+}
+
+/*TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
+
+    char * tmp;
+    TTF_Font * ret=NULL;
+    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
+    strcpy(tmp, sharedir);
+    strcat(tmp, "/");
+    strcat(tmp, path);
+#ifdef DEBUG
+    printf("loading %s\n",tmp);
+#endif
+    if(!(TTF_WasInit()))
+       TTF_Init();
+    if (!(ret = TTF_OpenFont(tmp, ptsize)))
+        ret = TTF_OpenFont(path, ptsize);
+    if(!ret)
+        cout << "failed to load font: " << TTF_GetError() << endl;
+    free(tmp);
+    return ret;
+}*/
+
+Mix_Music * Mix_LoadMUS2(char* path)
+{
+    char * tmp;
+    Mix_Music * ret=NULL;
+    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
+    strcpy(tmp, sharedir);
+    strcat(tmp, "/");
+    strcat(tmp, path);
+#ifdef DEBUG
+    printf("loading %s\n",tmp);
+#endif
+    if (!(ret = Mix_LoadMUS(tmp)))
+        ret = Mix_LoadMUS(path);
+
+    free(tmp);
+    return ret;
+}
+
+Mix_Chunk * Mix_LoadWAV2(char* path)
+{
+    char * tmp;
+    Mix_Chunk * ret=NULL;
+    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
+    strcpy(tmp, sharedir);
+    strcat(tmp, "/");
+    strcat(tmp, path);
+#ifdef DEBUG
+    printf("loading %s\n",tmp);
+#endif
+    if (!(ret = Mix_LoadWAV(tmp)))
+        ret = Mix_LoadWAV(path);
+
+    free(tmp);
+    return ret;
+}
+
+//Load all image files to memory
+int InitImages()
+{
+    if (!((backgroundImage = IMG_Load2((char*)"gfx/background.png"))
+            && (background = IMG_Load2((char*)"gfx/blackBackGround.png"))
+            && (bNewGame = IMG_Load2((char*)"gfx/bNewGame.png"))
+            && (b1player = IMG_Load2((char*)"gfx/bOnePlayer.png"))
+            && (b2players = IMG_Load2((char*)"gfx/bTwoPlayers.png"))
+            && (bVsMode = IMG_Load2((char*)"gfx/bVsGame.png"))
+            && (bPuzzle = IMG_Load2((char*)"gfx/bPuzzle.png"))
+            && (bStageClear = IMG_Load2((char*)"gfx/bStageClear.png"))
+            && (bTimeTrial = IMG_Load2((char*)"gfx/bTimeTrial.png"))
+            && (bEndless = IMG_Load2((char*)"gfx/bEndless.png"))
+            && (bOptions = IMG_Load2((char*)"gfx/bOptions.png"))
+            && (bConfigure = IMG_Load2((char*)"gfx/bConfigure.png"))
+            && (bSelectPuzzle = IMG_Load2((char*)"gfx/bSelectPuzzle.png"))
+            && (bHighScore = IMG_Load2((char*)"gfx/bHighScore.png"))
+            && (bExit = IMG_Load2((char*)"gfx/bExit.png"))
+            && (bBack = IMG_Load2((char*)"gfx/bBack.png"))
+            && (bForward = IMG_Load2((char*)"gfx/bForward.png"))
+            && (bReplay = IMG_Load2((char*)"gfx/bReplays.png"))
+            && (bSave = IMG_Load2((char*)"gfx/bSave.png"))
+            && (bLoad = IMG_Load2((char*)"gfx/bLoad.png"))
+#ifdef NETWORK
+            && (bNetwork = IMG_Load2((char*)"gfx/bNetwork.png"))
+            && (bHost = IMG_Load2((char*)"gfx/bHost.png"))
+            && (bConnect = IMG_Load2((char*)"gfx/bConnect.png"))
+#endif
+            && (blackLine = IMG_Load2((char*)"gfx/blackLine.png"))
+            && (stageBobble = IMG_Load2((char*)"gfx/iStageClearLimit.png"))
+            && (bricks[0] = IMG_Load2((char*)"gfx/blue.png"))
+            && (bricks[1] = IMG_Load2((char*)"gfx/green.png"))
+            && (bricks[2] = IMG_Load2((char*)"gfx/purple.png"))
+            && (bricks[3] = IMG_Load2((char*)"gfx/red.png"))
+            && (bricks[4] = IMG_Load2((char*)"gfx/turkish.png"))
+            && (bricks[5] = IMG_Load2((char*)"gfx/yellow.png"))
+            && (bricks[6] = IMG_Load2((char*)"gfx/grey.png"))
+            && (crossover = IMG_Load2((char*)"gfx/crossover.png"))
+            && (balls[0] = IMG_Load2((char*)"gfx/balls/ballBlue.png"))
+            && (balls[1] = IMG_Load2((char*)"gfx/balls/ballGreen.png"))
+            && (balls[2] = IMG_Load2((char*)"gfx/balls/ballPurple.png"))
+            && (balls[3] = IMG_Load2((char*)"gfx/balls/ballRed.png"))
+            && (balls[4] = IMG_Load2((char*)"gfx/balls/ballTurkish.png"))
+            && (balls[5] = IMG_Load2((char*)"gfx/balls/ballYellow.png"))
+            && (balls[6] = IMG_Load2((char*)"gfx/balls/ballGray.png"))
+            && (cursor[0] = IMG_Load2((char*)"gfx/animations/cursor/1.png"))
+            && (cursor[1] = IMG_Load2((char*)"gfx/animations/cursor/2.png"))
+            && (bomb[0] = IMG_Load2((char*)"gfx/animations/bomb/bomb_1.png"))
+            && (bomb[1] = IMG_Load2((char*)"gfx/animations/bomb/bomb_2.png"))
+            && (ready[0] = IMG_Load2((char*)"gfx/animations/ready/ready_1.png"))
+            && (ready[1] = IMG_Load2((char*)"gfx/animations/ready/ready_2.png"))
+            && (explosion[0] = IMG_Load2((char*)"gfx/animations/explosion/0.png"))
+            && (explosion[1] = IMG_Load2((char*)"gfx/animations/explosion/1.png"))
+            && (explosion[2] = IMG_Load2((char*)"gfx/animations/explosion/2.png"))
+            && (explosion[3] = IMG_Load2((char*)"gfx/animations/explosion/3.png"))
+            && (counter[0] = IMG_Load2((char*)"gfx/counter/1.png"))
+            && (counter[1] = IMG_Load2((char*)"gfx/counter/2.png"))
+            && (counter[2] = IMG_Load2((char*)"gfx/counter/3.png"))
+            && (backBoard = IMG_Load2((char*)"gfx/BackBoard.png")) //not used, we just test if it exists :)
+            && (iGameOver = IMG_Load2((char*)"gfx/iGameOver.png"))
+            && (iWinner = IMG_Load2((char*)"gfx/iWinner.png"))
+            && (iDraw = IMG_Load2((char*)"gfx/iDraw.png"))
+            && (iLoser = IMG_Load2((char*)"gfx/iLoser.png"))
+            && (iChainBack = IMG_Load2((char*)"gfx/chainFrame.png"))
+            //&& (iBlueFont = IMG_Load2("gfx/24P_Copperplate_Blue.png"))
+            && (iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png"))
+            && (iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png"))
+            && (topscoresBack = IMG_Load2((char*)"gfx/topscores.png"))
+            && (optionsBack = IMG_Load2((char*)"gfx/options.png"))
+            && (bOn = IMG_Load2((char*)"gfx/bOn.png"))
+            && (bOff = IMG_Load2((char*)"gfx/bOff.png"))
+            && (bChange = IMG_Load2((char*)"gfx/bChange.png"))
+            && (b1024 = IMG_Load2((char*)"gfx/b1024.png"))
+            && (dialogBox = IMG_Load2((char*)"gfx/dialogbox.png"))
+//	&& (fileDialogBox = IMG_Load2("gfx/fileDialogbox.png"))
+            && (iLevelCheck = IMG_Load2((char*)"gfx/iLevelCheck.png"))
+            && (iLevelCheckBox = IMG_Load2((char*)"gfx/iLevelCheckBox.png"))
+            && (iCheckBoxArea = IMG_Load2((char*)"gfx/iCheckBoxArea.png"))
+            && (boardBackBack = IMG_Load2((char*)"gfx/boardBackBack.png"))
+            && (changeButtonsBack = IMG_Load2((char*)"gfx/changeButtonsBack.png"))
+            && (garbageTL = IMG_Load2((char*)"gfx/garbage/garbageTL.png"))
+            && (garbageT = IMG_Load2((char*)"gfx/garbage/garbageT.png"))
+            && (garbageTR = IMG_Load2((char*)"gfx/garbage/garbageTR.png"))
+            && (garbageR = IMG_Load2((char*)"gfx/garbage/garbageR.png"))
+            && (garbageBR = IMG_Load2((char*)"gfx/garbage/garbageBR.png"))
+            && (garbageB = IMG_Load2((char*)"gfx/garbage/garbageB.png"))
+            && (garbageBL = IMG_Load2((char*)"gfx/garbage/garbageBL.png"))
+            && (garbageL = IMG_Load2((char*)"gfx/garbage/garbageL.png"))
+            && (garbageFill = IMG_Load2((char*)"gfx/garbage/garbageFill.png"))
+            && (garbageML = IMG_Load2((char*)"gfx/garbage/garbageML.png"))
+            && (garbageM = IMG_Load2((char*)"gfx/garbage/garbageM.png"))
+            && (garbageMR = IMG_Load2((char*)"gfx/garbage/garbageMR.png"))
+            && (garbageGM = IMG_Load2((char*)"gfx/garbage/garbageGM.png"))
+            && (garbageGML = IMG_Load2((char*)"gfx/garbage/garbageGML.png"))
+            && (garbageGMR = IMG_Load2((char*)"gfx/garbage/garbageGMR.png"))
+            && (smiley[0] = IMG_Load2((char*)"gfx/smileys/0.png"))
+            && (smiley[1] = IMG_Load2((char*)"gfx/smileys/1.png"))
+            && (smiley[2] = IMG_Load2((char*)"gfx/smileys/2.png"))
+            && (smiley[3] = IMG_Load2((char*)"gfx/smileys/3.png"))
+            //new in 1.3.2
+            && (transCover = IMG_Load2((char*)"gfx/transCover.png"))
+            /*&& (bCreateFile = IMG_Load2((char*)"gfx/editor/bCreateFile.png"))
+            && (bDeletePuzzle = IMG_Load2((char*)"gfx/editor/bDeletePuzzle.png"))
+            && (bLoadFile = IMG_Load2((char*)"gfx/editor/bLoadFile.png"))
+            && (bMoveBack = IMG_Load2((char*)"gfx/editor/bMoveBack.png"))
+            && (bMoveDown = IMG_Load2((char*)"gfx/editor/bMoveDown.png"))
+            && (bMoveForward = IMG_Load2((char*)"gfx/editor/bMoveForward.png"))
+            && (bMoveLeft = IMG_Load2((char*)"gfx/editor/bMoveLeft.png"))
+            && (bMoveRight = IMG_Load2((char*)"gfx/editor/bMoveRight.png"))
+            && (bMoveUp = IMG_Load2((char*)"gfx/editor/bMoveUp.png"))
+            && (bNewPuzzle = IMG_Load2((char*)"gfx/editor/bNewPuzzle.png"))
+            && (bSaveFileAs = IMG_Load2((char*)"gfx/editor/bSaveFileAs.png"))
+            && (bSavePuzzle = IMG_Load2((char*)"gfx/editor/bSavePuzzle.png"))
+            && (bSaveToFile = IMG_Load2((char*)"gfx/editor/bSaveToFile.png"))
+            && (bTestPuzzle = IMG_Load2((char*)"gfx/editor/bTestPuzzle.png"))*/
+            //end new in 1.3.2
+            //new in 1.4.0
+            && (bTheme = IMG_Load2((char*)"gfx/bTheme.png"))
+            && (bSkip = IMG_Load2((char*)"gfx/bSkip.png"))
+            && (bNext = IMG_Load2((char*)"gfx/bNext.png"))
+            && (bRetry = IMG_Load2((char*)"gfx/bRetry.png"))
+            //end new in 1.4.0
+            && (mouse = IMG_Load2((char*)"gfx/mouse.png"))
+         ))
+        //if there was a problem ie. "File not found"
+    {
+        cout << "Error loading image file: " << SDL_GetError() << endl;
+        exit(1);
+    }
+
+
+    //Prepare for fast blittering!
+    CONVERT(background);
+    CONVERT(bNewGame);
+    CONVERT(backgroundImage);
+    CONVERT(b1player);
+    CONVERT(b2players);
+    CONVERT(bVsMode);
+    CONVERT(bPuzzle);
+    CONVERT(bStageClear);
+    CONVERT(bTimeTrial);
+    CONVERT(bEndless);
+    CONVERT(bOptions);
+    CONVERTA(bConfigure);
+    CONVERTA(bSelectPuzzle);
+    CONVERTA(bReplay);
+    CONVERTA(bSave);
+    CONVERTA(bLoad);
+    CONVERTA(bTheme);
+    CONVERTA(bSkip);
+    CONVERTA(bRetry);
+    CONVERTA(bNext);
+#ifdef NETWORK
+    CONVERTA(bNetwork);
+    CONVERTA(bHost);
+    CONVERTA(bConnect);
+#endif
+    CONVERT(bHighScore);
+    CONVERTA(boardBackBack);
+    CONVERT(backBoard);
+    CONVERT(blackLine);
+    CONVERTA(changeButtonsBack);
+    CONVERTA(cursor[0]);
+    CONVERTA(cursor[1]);
+    CONVERTA(counter[0]);
+    CONVERTA(counter[1]);
+    CONVERTA(counter[2]);
+    CONVERTA(topscoresBack);
+    CONVERTA(optionsBack);
+    CONVERT(bExit);
+    CONVERT(bOn);
+    CONVERT(bOff);
+    CONVERT(bChange);
+    CONVERT(b1024);
+    CONVERTA(dialogBox);
+//	CONVERTA(fileDialogBox);
+    CONVERTA(iLevelCheck);
+    CONVERT(iLevelCheckBox);
+    CONVERTA(iCheckBoxArea);
+    for (int i = 0;i<4;i++)
+    {
+        CONVERTA(explosion[i]);
+    }
+    for (int i = 0; i<7; i++)
+    {
+        CONVERTA(bricks[i]);
+        CONVERTA(balls[i]);
+    }
+    CONVERTA(crossover);
+    CONVERTA(garbageTL);
+    CONVERTA(garbageT);
+    CONVERTA(garbageTR);
+    CONVERTA(garbageR);
+    CONVERTA(garbageBR);
+    CONVERTA(garbageB);
+    CONVERTA(garbageBL);
+    CONVERTA(garbageL);
+    CONVERTA(garbageFill);
+    CONVERTA(garbageML);
+    CONVERTA(garbageMR);
+    CONVERTA(garbageM);
+    CONVERTA(garbageGML);
+    CONVERTA(garbageGMR);
+    CONVERTA(garbageGM);
+    CONVERTA(smiley[0]);
+    CONVERTA(smiley[1]);
+    CONVERTA(smiley[2]);
+    CONVERTA(smiley[3]);
+    CONVERTA(iWinner);
+    CONVERTA(iDraw);
+    CONVERTA(iLoser);
+    CONVERTA(iChainBack);
+    CONVERTA(iBlueFont);
+    CONVERTA(iSmallFont);
+    CONVERTA(iGameOver);
+    CONVERTA(mouse);
+    CONVERTA(stageBobble);
+    CONVERTA(transCover);
+    //Editor:
+    /*CONVERTA(bCreateFile);
+    CONVERTA(bDeletePuzzle);
+    CONVERTA(bLoadFile);
+    CONVERTA(bMoveBack);
+    CONVERTA(bMoveDown);
+    CONVERTA(bMoveForward);
+    CONVERTA(bMoveLeft);
+    CONVERTA(bMoveRight);
+    CONVERTA(bMoveUp);
+    CONVERTA(bNewPuzzle);
+    CONVERTA(bSaveFileAs);
+    CONVERTA(bSavePuzzle);
+    CONVERTA(bSaveToFile);
+    CONVERTA(bTestPuzzle);*/
+
+    //Here comes the fonts:
+    fBlueFont = SFont_InitFont(iBlueFont);
+    fSmallFont = SFont_InitFont(iSmallFont);
+    
+    //And the ttf font:
+//    TTF_Font *ttFont1 = TTF_OpenFont2("fonts/FreeSerif.ttf", 24);
+//    TTF_SetFontStyle(ttFont1,TTF_STYLE_BOLD);
+//    ttfont = TTFont(ttFont1);
+
+//Loads the sound if sound present
+    if (!NoSound)
+    {
+        //And here the music:
+        bgMusic = Mix_LoadMUS2((char*)"music/bgMusic.ogg");
+        //the music... we just hope it exists, else the user won't hear anything
+        //Same goes for the sounds
+        boing = Mix_LoadWAV2((char*)"sound/pop.ogg");
+        timesUp = Mix_LoadWAV2((char*)"sound/whistleblow.ogg");
+        applause = Mix_LoadWAV2((char*)"sound/applause.ogg");
+        photoClick = Mix_LoadWAV2((char*)"sound/cameraclick.ogg");
+        heartBeat = Mix_LoadWAV2((char*)"sound/heartbeat3.ogg");
+        typingChunk = Mix_LoadWAV2((char*)"sound/typing.ogg");
+        counterChunk = Mix_LoadWAV2((char*)"sound/counter.ogg");
+    } //All sound has been loaded or not
+    return 0;
+} //InitImages()
+
+
+//Unload images and fonts and sounds
+void UnloadImages()
+{
+    //Fonts and Sounds needs to be freed
+    SFont_FreeFont(fBlueFont);
+    SFont_FreeFont(fSmallFont);
+    if (!NoSound) //Only unload then it has been loaded!
+    {
+        Mix_FreeMusic(bgMusic);
+        Mix_FreeChunk(boing);
+        Mix_FreeChunk(timesUp);
+        Mix_FreeChunk(applause);
+        Mix_FreeChunk(photoClick);
+        Mix_FreeChunk(heartBeat);
+        Mix_FreeChunk(counterChunk);
+        Mix_FreeChunk(typingChunk);
+    }
+    //Free surfaces:
+    //I think this will crash, at least it happend to me...
+    SDL_FreeSurface(backgroundImage);
+    SDL_FreeSurface(background);
+    SDL_FreeSurface(bNewGame);
+    SDL_FreeSurface(b1player);
+    SDL_FreeSurface(b2players);
+    SDL_FreeSurface(bVsMode);
+    SDL_FreeSurface(bPuzzle);
+    SDL_FreeSurface(bStageClear);
+    SDL_FreeSurface(bTimeTrial);
+    SDL_FreeSurface(bEndless);
+    SDL_FreeSurface(bOptions);
+    SDL_FreeSurface(bConfigure);
+    SDL_FreeSurface(bSelectPuzzle);
+    SDL_FreeSurface(bHighScore);
+    SDL_FreeSurface(bReplay);
+    SDL_FreeSurface(bSave);
+    SDL_FreeSurface(bLoad);
+    #ifdef NETWORK
+    SDL_FreeSurface(bNetwork);
+    SDL_FreeSurface(bHost);
+    SDL_FreeSurface(bConnect);
+    #endif
+    SDL_FreeSurface(bExit);
+    SDL_FreeSurface(blackLine);
+    SDL_FreeSurface(stageBobble);
+    SDL_FreeSurface(bricks[0]);
+    SDL_FreeSurface(bricks[1]);
+    SDL_FreeSurface(bricks[2]);
+    SDL_FreeSurface(bricks[3]);
+    SDL_FreeSurface(bricks[4]);
+    SDL_FreeSurface(bricks[5]);
+    SDL_FreeSurface(bricks[6]);
+    SDL_FreeSurface(crossover);
+    SDL_FreeSurface(balls[0]);
+    SDL_FreeSurface(balls[1]);
+    SDL_FreeSurface(balls[2]);
+    SDL_FreeSurface(balls[3]);
+    SDL_FreeSurface(balls[4]);
+    SDL_FreeSurface(balls[5]);
+    SDL_FreeSurface(balls[6]);
+    SDL_FreeSurface(cursor[0]);
+    SDL_FreeSurface(cursor[1]);
+    SDL_FreeSurface(backBoard); //not used, we just test if it exists :)
+    SDL_FreeSurface(iGameOver);
+    SDL_FreeSurface(iWinner);
+    SDL_FreeSurface(iDraw);
+    SDL_FreeSurface(iLoser);
+    SDL_FreeSurface(iChainBack);
+    //SDL_FreeSurface(iBlueFont); //Segfault
+    //SDL_FreeSurface(iSmallFont); //Segfault
+    SDL_FreeSurface(topscoresBack);
+    SDL_FreeSurface(optionsBack);
+    SDL_FreeSurface(bOn);
+    SDL_FreeSurface(bOff);
+    SDL_FreeSurface(bChange);
+    SDL_FreeSurface(b1024);
+    SDL_FreeSurface(dialogBox);
+    //SDL_FreeSurface(fileDialogBox);
+    SDL_FreeSurface(iLevelCheck);
+    SDL_FreeSurface(iLevelCheckBox);
+    SDL_FreeSurface(iCheckBoxArea);
+    SDL_FreeSurface(boardBackBack);
+    SDL_FreeSurface(changeButtonsBack);
+    SDL_FreeSurface(garbageTL);
+    SDL_FreeSurface(garbageT);
+    SDL_FreeSurface(garbageTR);
+    SDL_FreeSurface(garbageR);
+    SDL_FreeSurface(garbageBR);
+    SDL_FreeSurface(garbageB);
+    SDL_FreeSurface(garbageBL);
+    SDL_FreeSurface(garbageL);
+    SDL_FreeSurface(garbageFill);
+    SDL_FreeSurface(garbageML);
+    SDL_FreeSurface(garbageM);
+    SDL_FreeSurface(garbageMR);
+    SDL_FreeSurface(garbageGML);
+    SDL_FreeSurface(garbageGM);
+    SDL_FreeSurface(garbageGMR);
+    SDL_FreeSurface(smiley[0]);
+    SDL_FreeSurface(smiley[1]);
+    SDL_FreeSurface(smiley[2]);
+    SDL_FreeSurface(smiley[3]);
+    SDL_FreeSurface(transCover);
+    SDL_FreeSurface(mouse);
+    
+}
+
+//Function to convert numbers to string
+string itoa(int num)
+{
+    stringstream converter;
+    converter << num;
+    return converter.str();
+}
+
+//Function to convert numbers to string (2 diget)
+string itoa2(int num)
+{
+    stringstream converter;
+    if(num<10)
+        converter << "0";
+    converter << num;
+    return converter.str();
+}
+
+/*Loads all the puzzle levels*/
+int LoadPuzzleStages()
+{
+    //if(puzzleLoaded)
+    //    return 1;
+#ifdef __unix__
+    string filename0 = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles/";
+    filename0 = filename0+puzzleName;
+    if (singlePuzzle)
+        filename0 = singlePuzzleFile;
+#endif //__unix__
+#ifdef SHAREDIR
+    string filename = (string)SHAREDIR+(string)"/res/";
+    filename = filename+puzzleName;
+#else
+    string filename = "res/"+puzzleName;
+#endif
+#ifdef __unix__
+    ifstream inFile(filename0.c_str());
+    if (!inFile)
+        inFile.open(filename.c_str());
+#else
+    ifstream inFile(filename.c_str());
+#endif
+    inFile >> nrOfPuzzles;
+    if (nrOfPuzzles>maxNrOfPuzzleStages)
+        nrOfPuzzles=maxNrOfPuzzleStages;
+    for (int k=0; (k<nrOfPuzzles)&&(!inFile.eof()); k++)
+    {
+        inFile >> nrOfMovesAllowed[k];
+        for (int i=11;i>=0;i--)
+            for (int j=0;j<6;j++)
+            {
+                inFile >> puzzleLevels[k][j][i];
+            }
+    }
+    puzzleLoaded = true;
+    return 0;
+}
+
+/*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
+inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
+{
+    SDL_Rect dest;
+    dest.x = x;
+    dest.y = y;
+    SDL_BlitSurface(img, NULL, target, &dest);
+}
+
+/*Draws a part of an image on a surface of choice*/
+void DrawIMG(SDL_Surface *img, SDL_Surface * target, int x, int y, int w, int h, int x2, int y2)
+{
+    SDL_Rect dest;
+    dest.x = x;
+    dest.y = y;
+    SDL_Rect dest2;
+    dest2.x = x2;
+    dest2.y = y2;
+    dest2.w = w;
+    dest2.h = h;
+    SDL_BlitSurface(img, &dest2, target, &dest);
+}
+
+//The small things that are faaling when you clear something
+class aBall
+{
+private:
+    double x;
+    double y;
+    double velocityY;
+    double velocityX;
+    int color;
+    unsigned long int lastTime;
+public:
+
+    aBall()
+    {}
+
+    //constructor:
+    aBall(int X, int Y, bool right, int coulor)
+    {
+        double tal = 1.0;
+        velocityY = -tal*startVelocityY;
+        lastTime = currentTime;
+        x = (double)X;
+        y = (double)Y;
+        color = coulor;
+        if (right)
+            velocityX = tal*VelocityX;
+        else
+            velocityX = -tal*VelocityX;
+    }  //constructor
+
+    //Deconstructor
+    ~aBall()
+    {
+    }   //Deconstructor
+
+    void update()
+    {
+        double timePassed = (((double)(currentTime-lastTime))/1000.0);  //time passed in seconds
+        x = x+timePassed*velocityX;
+        y = y+timePassed*velocityY;
+        velocityY = velocityY + gravity*timePassed;
+        if (y<1.0)
+            velocityY=10.0;
+        if ((velocityY>minVelocity) && (y>(double)(768-ballSize)) && (y<768.0))
+        {
+            velocityY = -0.70*velocityY;
+            y = 768.0-ballSize;
+        }
+        lastTime = currentTime;
+    }
+
+    int getX()
+    {
+        return (int)x;
+    }
+
+    int getY()
+    {
+        return (int)y;
+    }
+
+    int getColor()
+    {
+        return color;
+    }
+};  //aBall
+
+const int maxNumberOfBalls = 100;
+
+class ballManeger
+{
+public:
+    aBall ballArray[maxNumberOfBalls];
+    bool ballUsed[maxNumberOfBalls];
+    //The old ball information is also saved so balls can be deleted!
+    aBall oldBallArray[maxNumberOfBalls];
+    bool oldBallUsed[maxNumberOfBalls];
+
+    ballManeger()
+    {
+        for (int i=0; i<maxNumberOfBalls; i++)
+        {
+            ballUsed[i] = false;
+            oldBallUsed[i] = false;
+        }
+    }
+
+    int addBall(int x, int y,bool right,int color)
+    {
+        //cout << "Tries to add a ball" << endl;
+        int ballNumber = 0;
+        while ((ballUsed[ballNumber])&&(ballNumber<maxNumberOfBalls))
+            ballNumber++;
+        if (ballNumber==maxNumberOfBalls)
+            return -1;
+        currentTime = SDL_GetTicks();
+        ballArray[ballNumber] = aBall(x,y,right,color);
+        ballUsed[ballNumber] = true;
+        //cout << "Ball added" << endl;
+        return 1;
+    }  //addBall
+
+    void update()
+    {
+        currentTime = SDL_GetTicks();
+        for (int i = 0; i<maxNumberOfBalls; i++)
+        {
+
+            if (ballUsed[i])
+            {
+                oldBallUsed[i] = true;
+                oldBallArray[i] = ballArray[i];
+                ballArray[i].update();
+                if (ballArray[i].getY()>800)
+                {
+                    ballArray[i].~aBall();
+                    ballUsed[i] = false;
+                    //cout << "Ball removed" << endl;
+                }
+            }
+            else
+            {
+                oldBallUsed[i] = false;
+            }
+        }
+    } //update
+
+
+}; //theBallManeger
+
+ballManeger theBallManeger;
+
+//a explosions, non moving
+class anExplosion
+{
+private:
+    int x;
+    int y;
+    Uint8 frameNumber;
+#define frameLength 80
+    //How long an image in an animation should be showed
+#define maxFrame 4
+    //How many images there are in the animation
+    unsigned long int placeTime; //Then the explosion occored
+public:
+
+    anExplosion()
+    {}
+
+    //constructor:
+    anExplosion(int X, int Y)
+    {
+        placeTime = currentTime;
+        x = X;
+        y = Y;
+        frameNumber=0;
+    }  //constructor
+
+    //Deconstructor
+    ~anExplosion()
+    {
+    }   //Deconstructor
+
+    //true if animation has played and object should be removed from the screen
+    bool removeMe()
+    {
+        frameNumber = (currentTime-placeTime)/frameLength;
+        return (!(frameNumber<maxFrame));
+    }
+
+    int getX()
+    {
+        return (int)x;
+    }
+
+    int getY()
+    {
+        return (int)y;
+    }
+
+    int getFrame()
+    {
+        return frameNumber;
+    }
+};  //nExplosion
+
+class explosionManeger
+{
+public:
+    anExplosion explosionArray[maxNumberOfBalls];
+    bool explosionUsed[maxNumberOfBalls];
+    //The old explosion information is also saved so explosions can be deleted!
+    anExplosion oldExplosionArray[maxNumberOfBalls];
+    bool oldExplosionUsed[maxNumberOfBalls];
+
+    explosionManeger()
+    {
+        for (int i=0; i<maxNumberOfBalls; i++)
+        {
+            explosionUsed[i] = false;
+            oldExplosionUsed[i] = false;
+        }
+    }
+
+    int addExplosion(int x, int y)
+    {
+        //cout << "Tries to add an explosion" << endl;
+        int explosionNumber = 0;
+        while ((explosionUsed[explosionNumber])&&(explosionNumber<maxNumberOfBalls))
+            explosionNumber++;
+        if (explosionNumber==maxNumberOfBalls)
+            return -1;
+        currentTime = SDL_GetTicks();
+        explosionArray[explosionNumber] = anExplosion(x,y);
+        explosionUsed[explosionNumber] = true;
+        //cout << "Explosion added" << endl;
+        return 1;
+    }  //addBall
+
+    void update()
+    {
+        currentTime = SDL_GetTicks();
+        for (int i = 0; i<maxNumberOfBalls; i++)
+        {
+
+            if (explosionUsed[i])
+            {
+                oldExplosionUsed[i] = true;
+                oldExplosionArray[i] = explosionArray[i];
+                if (explosionArray[i].removeMe())
+                {
+                    explosionArray[i].~anExplosion();
+                    explosionUsed[i] = false;
+                    //cout << "Explosion removed" << endl;
+                }
+            }
+            else
+            {
+                oldExplosionUsed[i] = false;
+            }
+        }
+    } //update
+
+
+}; //explosionManeger
+
+explosionManeger theExplosionManeger;
+
+//text pop-up
+class textMessage
+{
+private:
+    int x;
+    int y;
+    char textt[10];
+    unsigned long int time;
+    unsigned long int placeTime; //Then the text was placed
+public:
+
+    textMessage()
+    {}
+
+    //constructor:
+    textMessage(int X, int Y,const char* Text,unsigned int Time)
+    {
+        //cout << "Running constructor" << endl;
+        placeTime = currentTime;
+        x = X;
+        y = Y;
+        strncpy(textt,Text,10);
+        textt[9]=0;
+        time = Time;
+        //cout << "Constructor runned" << endl;
+    }  //constructor
+
+    //true if the text has expired
+    bool removeMe()
+    {
+        return currentTime-placeTime>time;
+    }
+
+    int getX()
+    {
+        //cout << "Gets X" << endl;
+        return x;
+    }
+
+    int getY()
+    {
+        //cout << "Gets Y" << endl;
+        return y;
+    }
+
+    char* getText()
+    {
+        //cout << "Gets text" << endl;
+        return textt;
+    }
+};  //text popup
+
+class textManeger
+{
+public:
+    textMessage textArray[maxNumberOfBalls];
+    bool textUsed[maxNumberOfBalls];
+    //The old text information is also saved so text can be deleted!
+    textMessage oldTextArray[maxNumberOfBalls];
+    bool oldTextUsed[maxNumberOfBalls];
+
+    textManeger()
+    {
+        for (int i=0; i<maxNumberOfBalls; i++)
+        {
+            textUsed[i] = false;
+            oldTextUsed[i] = false;
+        }
+    }
+
+    int addText(int x, int y,string Text,unsigned int Time)
+    {
+        //cout << "Tries to add text" << endl;
+        int textNumber = 0;
+        while ((textNumber<maxNumberOfBalls)&&((textUsed[textNumber])||(oldTextUsed[textNumber])))
+            textNumber++;
+        if (textNumber==maxNumberOfBalls)
+            return -1;
+        //cout << "adding to: " << textNumber << ":" << textUsed[textNumber] << ":" << &textArray[textNumber] << endl;
+        currentTime = SDL_GetTicks();
+        //if(&textArray[textNumber]!=NULL)
+        //*textArray[textNumber]=0;
+        textArray[textNumber] = textMessage(x,y,Text.c_str(),Time);
+        textUsed[textNumber] = true;
+        //cout << "Text added" << endl;
+        return 1;
+    }  //addText
+
+    void update()
+    {
+        //cout << "Running update" << endl;
+        currentTime = SDL_GetTicks();
+        for (int i = 0; i<maxNumberOfBalls; i++)
+        {
+
+            if (textUsed[i])
+            {
+                if (!oldTextUsed[i])
+                {
+                    oldTextUsed[i] = true;
+                    oldTextArray[i] = textMessage(textArray[i]);
+                }
+                if (textArray[i].removeMe())
+                {
+                    textArray[i].~textMessage();
+                    textUsed[i] = false;
+                }
+            }
+            else
+                if (oldTextUsed[i])
+                {
+                    oldTextUsed[i] = false;
+                    oldTextArray[i].~textMessage();
+                }
+        }
+    } //update
+
+
+}; //textManeger
+
+textManeger theTextManeger;
+
+//Here comes the Block Game object
+#include "BlockGame.hpp"
+
+//writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
+void writeScreenShot()
+{
+    cout << "Saving screenshot" << endl;
+    int rightNow = (int)time(NULL);
+#if defined(__unix__)
+    char buf[514];
+    sprintf( buf, "%s/.gamesaves/blockattack/screenshots/screenshot%i.bmp", getenv("HOME"), rightNow );
+#else
+    char buf[MAX_PATH];
+    sprintf( buf, "%s\\My Games\\blockattack\\screenshots\\screenshot%i.bmp", (getMyDocumentsPath()).c_str(), rightNow );
+#endif
+    SDL_SaveBMP( screen, buf );
+    if (!NoSound)
+        if (SoundEnabled)Mix_PlayChannel(1,photoClick,0);
+}
+
+//Draws the highscores
+inline void DrawHighscores(int x, int y)
+{
+    DrawIMG(topscoresBack,screen,x,y);
+    if (showEndless) SFont_Write(screen,fBlueFont,x+100,y+100,"Endless:");
+    else SFont_Write(screen,fBlueFont,x+100,y+100,"Time Trial:");
+    for (int i =0;i<10;i++)
+    {
+        char playerScore[32];
+        char playerName[32];
+        if (showEndless) sprintf(playerScore, "%i", theTopScoresEndless.getScoreNumber(i));
+        else sprintf(playerScore, "%i", theTopScoresTimeTrial.getScoreNumber(i));
+        if (showEndless) strcpy(playerName,theTopScoresEndless.getScoreName(i));
+        else strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
+        SFont_Write(screen,fBlueFont,x+420,y+150+i*35,playerScore);
+        SFont_Write(screen,fBlueFont,x+60,y+150+i*35,playerName);
+    }
+}
+
+char keyname[11];
+
+//Function to return the name of a key, to be displayed...
+char* getKeyName(SDLKey key)
+{
+
+    char charToPut = '\0';
+    switch (key)
+    {
+    case SDLK_a:
+        charToPut = 'A';
+        break;
+    case SDLK_b:
+        charToPut = 'B';
+        break;
+    case SDLK_c:
+        charToPut = 'C';
+        break;
+    case SDLK_d:
+        charToPut = 'D';
+        break;
+    case SDLK_e:
+        charToPut = 'E';
+        break;
+    case SDLK_f:
+        charToPut = 'F';
+        break;
+    case SDLK_g:
+        charToPut = 'G';
+        break;
+    case SDLK_h:
+        charToPut = 'H';
+        break;
+    case SDLK_i:
+        charToPut = 'I';
+        break;
+    case SDLK_j:
+        charToPut = 'J';
+        break;
+    case SDLK_k:
+        charToPut = 'K';
+        break;
+    case SDLK_l:
+        charToPut = 'L';
+        break;
+    case SDLK_m:
+        charToPut = 'M';
+        break;
+    case SDLK_n:
+        charToPut = 'N';
+        break;
+    case SDLK_o:
+        charToPut = 'O';
+        break;
+    case SDLK_p:
+        charToPut = 'P';
+        break;
+    case SDLK_q:
+        charToPut = 'Q';
+        break;
+    case SDLK_r:
+        charToPut = 'R';
+        break;
+    case SDLK_s:
+        charToPut = 'S';
+        break;
+    case SDLK_t:
+        charToPut = 'T';
+        break;
+    case SDLK_u:
+        charToPut = 'U';
+        break;
+    case SDLK_v:
+        charToPut = 'V';
+        break;
+    case SDLK_w:
+        charToPut = 'W';
+        break;
+    case SDLK_x:
+        charToPut = 'X';
+        break;
+    case SDLK_y:
+        charToPut = 'Y';
+        break;
+    case SDLK_z:
+        charToPut = 'Z';
+        break;
+    case SDLK_0:
+        charToPut = '0';
+        break;
+    case SDLK_1:
+        charToPut = '1';
+        break;
+    case SDLK_2:
+        charToPut = '2';
+        break;
+    case SDLK_3:
+        charToPut = '3';
+        break;
+    case SDLK_4:
+        charToPut = '4';
+        break;
+    case SDLK_5:
+        charToPut = '5';
+        break;
+    case SDLK_6:
+        charToPut = '6';
+        break;
+    case SDLK_7:
+        charToPut = '7';
+        break;
+    case SDLK_8:
+        charToPut = '8';
+        break;
+    case SDLK_9:
+        charToPut = '9';
+        break;
+    case SDLK_KP0:
+        sprintf(keyname,"NP_0");
+        break;
+    case SDLK_KP1:
+        sprintf(keyname,"NP_1");
+        break;
+    case SDLK_KP2:
+        sprintf(keyname,"NP_2");
+        break;
+    case SDLK_KP3:
+        sprintf(keyname,"NP_3");
+        break;
+    case SDLK_KP4:
+        sprintf(keyname,"NP_4");
+        break;
+    case SDLK_KP5:
+        sprintf(keyname,"NP_5");
+        break;
+    case SDLK_KP6:
+        sprintf(keyname,"NP_6");
+        break;
+    case SDLK_KP7:
+        sprintf(keyname,"NP_7");
+        break;
+    case SDLK_KP8:
+        sprintf(keyname,"NP_8");
+        break;
+    case SDLK_KP9:
+        sprintf(keyname,"NP_9");
+        break;
+    case SDLK_BACKSPACE:
+        sprintf(keyname,"Backspace");
+        break;
+    case SDLK_TAB:
+        sprintf(keyname,"Tab");
+        break;
+    case SDLK_CLEAR:
+        sprintf(keyname,"Clear");
+        break;
+    case SDLK_RETURN:
+        sprintf(keyname,"Return");
+        break;
+    case SDLK_PAUSE:
+        sprintf(keyname,"Pause");
+        break;
+    case SDLK_SPACE:
+        sprintf(keyname,"Space");
+        break;
+    case SDLK_EXCLAIM:
+        charToPut = '!';
+        break;
+    case SDLK_QUOTEDBL:
+        sprintf(keyname,"QuoteDBL");
+        break;
+    case SDLK_HASH:
+        charToPut = '#';
+        break;
+    case SDLK_DOLLAR:
+        sprintf(keyname,"$");
+        break;
+    case SDLK_ASTERISK:
+        sprintf(keyname,"Asterisk");
+        break;
+    case SDLK_PLUS:
+        sprintf(keyname,"Plus");
+        break;
+    case SDLK_COMMA:
+        sprintf(keyname,"Comma");
+        break;
+    case SDLK_MINUS:
+        sprintf(keyname,"Minus");
+        break;
+    case SDLK_PERIOD:
+        sprintf(keyname,"Period");
+        break;
+    case SDLK_SLASH:
+        charToPut ='/';
+        break;
+    case SDLK_COLON:
+        sprintf(keyname,"Colon");
+        break;
+    case SDLK_SEMICOLON:
+        sprintf(keyname,"SemiColon");
+        break;
+    case SDLK_LESS:
+        charToPut = '<';
+        break;
+    case SDLK_EQUALS:
+        sprintf(keyname,"Equals");
+        break;
+    case SDLK_DELETE:
+        sprintf(keyname,"Delete");
+        break;
+    case SDLK_KP_PERIOD:
+        sprintf(keyname,"NPperiod");
+        break;
+    case SDLK_KP_DIVIDE:
+        sprintf(keyname,"NPdivide");
+        break;
+    case SDLK_KP_MULTIPLY:
+        sprintf(keyname,"NPmultiply");
+        break;
+    case SDLK_KP_MINUS:
+        sprintf(keyname,"NPminus");
+        break;
+    case SDLK_KP_PLUS:
+        sprintf(keyname,"NPplus");
+        break;
+    case SDLK_KP_ENTER:
+        sprintf(keyname,"NP_Enter");
+        break;
+    case SDLK_KP_EQUALS:
+        sprintf(keyname,"NP=");
+        break;
+    case SDLK_UP:
+        sprintf(keyname,"UP");
+        break;
+    case SDLK_DOWN:
+        sprintf(keyname,"DOWN");
+        break;
+    case SDLK_RIGHT:
+        sprintf(keyname,"RIGHT");
+        break;
+    case SDLK_LEFT:
+        sprintf(keyname,"LEFT");
+        break;
+    case SDLK_INSERT:
+        sprintf(keyname,"Insert");
+        break;
+    case SDLK_HOME:
+        sprintf(keyname,"Home");
+        break;
+    case SDLK_END:
+        sprintf(keyname,"End");
+        break;
+    case SDLK_PAGEUP:
+        sprintf(keyname,"PageUp");
+        break;
+    case SDLK_PAGEDOWN:
+        sprintf(keyname,"PageDown");
+        break;
+    case SDLK_NUMLOCK:
+        sprintf(keyname,"NumLock");
+        break;
+    case SDLK_CAPSLOCK:
+        sprintf(keyname,"CapsLock");
+        break;
+    case SDLK_SCROLLOCK:
+        sprintf(keyname,"ScrolLock");
+        break;
+    case SDLK_RSHIFT:
+        sprintf(keyname,"Rshift");
+        break;
+    case SDLK_LSHIFT:
+        sprintf(keyname,"Lshift");
+        break;
+    case SDLK_RCTRL:
+        sprintf(keyname,"Rctrl");
+        break;
+    case SDLK_LCTRL:
+        sprintf(keyname,"Lctrl");
+        break;
+    case SDLK_RALT:
+        sprintf(keyname,"Ralt");
+        break;
+    case SDLK_LALT:
+        sprintf(keyname,"Lalt");
+        break;
+    case SDLK_RMETA:
+        sprintf(keyname,"Rmeta");
+        break;
+    case SDLK_LMETA:
+        sprintf(keyname,"Lmeta");
+        break;
+    case SDLK_LSUPER:
+        sprintf(keyname,"Lwin");
+        break;
+    case SDLK_RSUPER:
+        sprintf(keyname,"Rwin");
+        break;
+    case SDLK_MODE:
+        sprintf(keyname,"Mode");
+        break;
+    case SDLK_HELP:
+        sprintf(keyname,"Help");
+        break;
+    default:
+        sprintf(keyname,"Unknown");
+        break;
+    }
+    if (charToPut != '\0')
+        sprintf(keyname,"%c",charToPut);
+    return &keyname[0];
+}
+
+void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2);
+
+int OpenControlsBox(int x, int y, int player)
+{
+    int mousex, mousey;
+    Uint8 *keys;
+    bool done =false;
+    char *keyname;
+    MakeBackground(1024,768);
+    while (!done)
+    {
+        SDL_Delay(10);
+        DrawIMG(background, screen, 0, 0);
+        DrawIMG(changeButtonsBack,screen,x,y);
+        if (player == 0)
+            SFont_Write(screen,fBlueFont,x+40,y+2,"Player 1 keys");
+        else
+            SFont_Write(screen,fBlueFont,x+40,y+2,"Player 2 keys");
+        SFont_Write(screen,fBlueFont,x+6,y+50,"Up");
+        keyname = getKeyName(keySettings[player].up);
+        SFont_Write(screen,fBlueFont,x+200,y+50,keyname);
+        SFont_Write(screen,fBlueFont,x+6,y+100,"Down");
+        keyname = getKeyName(keySettings[player].down);
+        SFont_Write(screen,fBlueFont,x+200,y+100,keyname);
+        SFont_Write(screen,fBlueFont,x+6,y+150,"Left");
+        keyname = getKeyName(keySettings[player].left);
+        SFont_Write(screen,fBlueFont,x+200,y+150,keyname);
+        SFont_Write(screen,fBlueFont,x+6,y+200,"Right");
+        keyname = getKeyName(keySettings[player].right);
+        SFont_Write(screen,fBlueFont,x+200,y+200,keyname);
+        SFont_Write(screen,fBlueFont,x+6,y+250,"Push");
+        keyname = getKeyName(keySettings[player].push);
+        SFont_Write(screen,fBlueFont,x+200,y+250,keyname);
+        SFont_Write(screen,fBlueFont,x+6,y+300,"Change");
+        keyname = getKeyName(keySettings[player].change);
+        SFont_Write(screen,fBlueFont,x+200,y+300,keyname);
+        //Ask for mouse play
+        SFont_Write(screen,fBlueFont,x+6,y+350,"Mouse play?");
+        DrawIMG(iLevelCheckBox,screen,x+220,y+350);
+        if (((player==0)&&(mouseplay1))||((player==2)&&(mouseplay2)))
+            DrawIMG(iLevelCheck,screen,x+220,y+350); //iLevelCheck witdh is 42
+        //Ask for joypad play
+        SFont_Write(screen,fBlueFont,x+300,y+350,"Joypad?");
+        DrawIMG(iLevelCheckBox,screen,x+460,y+350);
+        if (((player==0)&&(joyplay1))||((player==2)&&(joyplay2)))
+            DrawIMG(iLevelCheck,screen,x+460,y+350); //iLevelCheck witdh is 42
+        for (int i=1; i<7; i++)
+            DrawIMG(bChange,screen,x+420,y+50*i);
+        SDL_Event event;
+
+        while (SDL_PollEvent(&event))
+        {
+            if ( event.type == SDL_QUIT )  {
+                done = true;
+            }
+
+            if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.sym == SDLK_ESCAPE)
+                    done = true;
+            }
+        }	//PollEvent
+
+        keys = SDL_GetKeyState(NULL);
+
+        SDL_GetMouseState(&mousex,&mousey);
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            if ((mousex>(420+x)) && (mousex<(540+x)) && (mousey>(50+y)) && (mousey<(90+y)))
+            {
+                //up
+                bool finnish = false;
+                while (!finnish)
+                    while ( SDL_PollEvent(&event) )
+                    {
+                        if (event.type == SDL_KEYDOWN)
+                        {
+                            if (event.key.keysym.sym != SDLK_ESCAPE)
+                                keySettings[player].up = event.key.keysym.sym;
+                            finnish = true;
+                        }
+                    }
+            } //up
+            if ((mousex>(420+x)) && (mousex<(540+x)) && (mousey>(100+y)) && (mousey<(140+y)))
+            {
+                //down
+                bool finnish = false;
+                while (!finnish)
+                    while ( SDL_PollEvent(&event) )
+                    {
+                        if (event.type == SDL_KEYDOWN)
+                        {
+                            if (event.key.keysym.sym != SDLK_ESCAPE)
+                                keySettings[player].down = event.key.keysym.sym;
+                            finnish = true;
+                        }
+                    }
+            } //down
+            if ((mousex>(420+x)) && (mousex<(540+x)) && (mousey>(150+y)) && (mousey<(190+y)))
+            {
+                //left
+                bool finnish = false;
+                while (!finnish)
+                    while ( SDL_PollEvent(&event) )
+                    {
+                        if (event.type == SDL_KEYDOWN)
+                        {
+                            if (event.key.keysym.sym != SDLK_ESCAPE)
+                                keySettings[player].left = event.key.keysym.sym;
+                            finnish = true;
+                        }
+                    }
+            } //left
+            if ((mousex>(420+x)) && (mousex<(540+x)) && (mousey>(200+y)) && (mousey<(240+y)))
+            {
+                //right
+                bool finnish = false;
+                while (!finnish)
+                    while ( SDL_PollEvent(&event) )
+                    {
+                        if (event.type == SDL_KEYDOWN)
+                        {
+                            if (event.key.keysym.sym != SDLK_ESCAPE)
+                                keySettings[player].right = event.key.keysym.sym;
+                            finnish = true;
+                        }
+                    }
+            } //right
+            if ((mousex>(420+x)) && (mousex<(540+x)) && (mousey>(250+y)) && (mousey<(290+y)))
+            {
+                //push
+                bool finnish = false;
+                while (!finnish)
+                    while ( SDL_PollEvent(&event) )
+                    {
+                        if (event.type == SDL_KEYDOWN)
+                        {
+                            if (event.key.keysym.sym != SDLK_ESCAPE)
+                                keySettings[player].push = event.key.keysym.sym;
+                            finnish = true;
+                        }
+                    }
+            } //push
+            if ((mousex>(420+x)) && (mousex<(540+x)) && (mousey>(300+y)) && (mousey<(340+y)))
+            {
+                //change
+                bool finnish = false;
+                while (!finnish)
+                    while ( SDL_PollEvent(&event) )
+                    {
+                        if (event.type == SDL_KEYDOWN)
+                        {
+                            if (event.key.keysym.sym != SDLK_ESCAPE)
+                                keySettings[player].change = event.key.keysym.sym;
+                            finnish = true;
+                        }
+                    }
+            } //change
+            //mouseplay:
+            if ((mousex>(220+x)) && (mousex<(262+x)) && (mousey>(350+y)) && (mousey<(392+y)))
+            {
+                if (player==0)
+                {
+                    mouseplay1 = !mouseplay1;
+                }
+                else
+                {
+                    mouseplay2 = !mouseplay2;
+                }
+            }
+            //Joyplay:
+            if ((mousex>(460+x)) && (mousex<(502+x)) && (mousey>(350+y)) && (mousey<(392+y)))
+            {
+                if (player==0)
+                {
+                    joyplay1 = !joyplay1;
+                }
+                else
+                {
+                    joyplay2 = !joyplay2;
+                }
+            }
+        }	//get mouse state
+
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen);
+    }	//while !done
+    DrawIMG(background, screen, 0, 0);
+    return 0;
+}
+
+
+//Dialogbox
+bool OpenDialogbox(int x, int y, char *name)
+{
+    bool done = false;     //We are done!
+    bool accept = false;   //New name is accepted! (not Cancelled)
+    bool repeating = false; //The key is being held (BACKSPACE)
+    const int repeatDelay = 200;    //Repeating
+    unsigned long time = 0;
+    ReadKeyboard rk = ReadKeyboard(name);
+    Uint8* keys;
+    string strHolder;
+    MakeBackground(1024,768);
+    DrawIMG(background,screen,0,0);
+    while (!done)
+    {
+        DrawIMG(dialogBox,screen,x,y);
+        SFont_Write(screen,fBlueFont,x+40,y+72,rk.GetString());
+        strHolder = rk.GetString();
+        //cout << "hej\n" << (int)rk.CharsBeforeCursor() << endl;
+        strHolder.erase((int)rk.CharsBeforeCursor());
+
+        if (((SDL_GetTicks()/600)%2)==1)
+            SFont_Write(screen,fBlueFont,x+40+SFont_TextWidth(fBlueFont,strHolder.c_str()),y+69,"|");
+
+        SDL_Event event;
+
+        while ( SDL_PollEvent(&event) )
+        {
+            if ( event.type == SDL_QUIT )  {
+                done = true;
+                accept = false;
+            }
+
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
+                    done = true;
+                    accept = true;
+                }
+                else
+                    if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
+                        done = true;
+                        accept = false;
+                    }
+                    else if (!(event.key.keysym.sym == SDLK_BACKSPACE)){
+                        if ((rk.ReadKey(event.key.keysym.sym))&&(SoundEnabled)&&(!NoSound))Mix_PlayChannel(1,typingChunk,0);
+                    }
+                    else if ((event.key.keysym.sym == SDLK_BACKSPACE)&&(!repeating)){
+                        if ((rk.ReadKey(event.key.keysym.sym))&&(SoundEnabled)&&(!NoSound))Mix_PlayChannel(1,typingChunk,0);
+                        repeating = true;
+                        time=SDL_GetTicks();
+                    }
+            }
+
+        }	//while(event)
+
+        if (SDL_GetTicks()>(time+repeatDelay))
+        {
+            time = SDL_GetTicks();
+            keys = SDL_GetKeyState(NULL);
+            if ( (keys[SDLK_BACKSPACE])&&(repeating) )
+            {
+                if ((rk.ReadKey(SDLK_BACKSPACE))&&(SoundEnabled)&&(!NoSound))Mix_PlayChannel(1,typingChunk,0);
+            }
+            else
+                repeating = false;
+        }
+
+        SDL_Flip(screen); //Update screen
+    }	//while(!done)
+    strcpy(name,rk.GetString());
+    bScreenLocked = false;
+    showDialog = false;
+    return accept;
+}
+
+
+//Open a puzzle file
+bool OpenFileDialogbox(int x, int y, char *name)
+{
+    bool done = false;	//We are done!
+    int mousex, mousey;
+    ListFiles lf = ListFiles();
+#ifdef SHAREDIR
+    string folder = (string)SHAREDIR+(string)"/res";
+    cout << "Looking in " << folder << endl;
+    lf.setDirectory(folder.c_str());
+#else
+    lf.setDirectory("./res");
+#endif
+#ifdef __unix__
+    string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles";
+    lf.setDirectory2(homeFolder.c_str());
+#endif
+    Uint8* keys;
+    string strHolder;
+    MakeBackground(1024,768);
+    DrawIMG(background,screen,0,0);
+    DrawIMG(bForward,background,x+460,y+420);
+    DrawIMG(bBack,background,x+20,y+420);
+    while (!done)
+    {
+        DrawIMG(background,screen,0,0);
+        const int nrOfFiles = 10;
+        DrawIMG(changeButtonsBack,screen,x,y);
+        for (int i=0;i<nrOfFiles;i++)
+        {
+            SFont_Write(screen,fBlueFont,x+10,y+10+36*i,lf.getFileName(i).c_str());
+        }
+
+        SDL_Event event;
+
+        while ( SDL_PollEvent(&event) )
+        {
+            if ( event.type == SDL_QUIT )  {
+                done = true;
+            }
+
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
+                    done = true;
+                }
+
+                if ( (event.key.keysym.sym == SDLK_RIGHT) ) {
+                    lf.forward();
+                }
+
+                if ( (event.key.keysym.sym == SDLK_LEFT) ) {
+                    lf.back();
+                }
+            }
+
+        } //while(event)
+
+        SDL_GetMouseState(&mousex,&mousey);
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            //The Forward Button:
+            if ( (mousex>x+460) && (mousex<x+460+120) && (mousey>y+420) && (mousey<y+420+40) )
+            {
+                lf.forward();
+            }
+
+            //The back button:
+            if ( (mousex>x+20) && (mousex<x+20+120) && (mousey>y+420) && (mousey<y+420+40) )
+            {
+                lf.back();
+            }
+
+            for (int i=0;i<10;i++)
+            {
+                if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) )
+                {
+                    if (lf.fileExists(i))
+                    {
+                        strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
+                        done=true; //The user have, clicked the purpose of this function is now complete
+                    }
+                }
+            }
+        }
+
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //Update screen
+    }
+}
+
+//Slelect a theme
+bool SelectThemeDialogbox(int x, int y, char *name)
+{
+    bool done = false;	//We are done!
+    int mousex, mousey;
+    ListFiles lf = ListFiles();
+#ifdef SHAREDIR
+    string folder = (string)SHAREDIR+(string)"/themes";
+    cout << "Looking in " << folder << endl;
+    lf.setDirectory(folder.c_str());
+#else
+    lf.setDirectory("./themes");
+#endif
+#ifdef __unix__
+    string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes";
+    lf.setDirectory2(homeFolder.c_str());
+#endif
+    Uint8* keys;
+    string strHolder;
+    MakeBackground(1024,768);
+    DrawIMG(background,screen,0,0);
+    DrawIMG(bForward,background,x+460,y+420);
+    DrawIMG(bBack,background,x+20,y+420);
+    while (!done)
+    {
+        DrawIMG(background,screen,0,0);
+        const int nrOfFiles = 10;
+        DrawIMG(changeButtonsBack,screen,x,y);
+        for (int i=0;i<nrOfFiles;i++)
+        {
+            SFont_Write(screen,fBlueFont,x+10,y+10+36*i,lf.getFileName(i).c_str());
+        }
+
+        SDL_Event event;
+
+        while ( SDL_PollEvent(&event) )
+        {
+            if ( event.type == SDL_QUIT )  {
+                done = true;
+            }
+
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
+                    done = true;
+                }
+
+                if ( (event.key.keysym.sym == SDLK_RIGHT) ) {
+                    lf.forward();
+                }
+
+                if ( (event.key.keysym.sym == SDLK_LEFT) ) {
+                    lf.back();
+                }
+            }
+
+        } //while(event)
+
+        SDL_GetMouseState(&mousex,&mousey);
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            //The Forward Button:
+            if ( (mousex>x+460) && (mousex<x+460+120) && (mousey>y+420) && (mousey<y+420+40) )
+            {
+                lf.forward();
+            }
+
+            //The back button:
+            if ( (mousex>x+20) && (mousex<x+20+120) && (mousey>y+420) && (mousey<y+420+40) )
+            {
+                lf.back();
+            }
+
+            for (int i=0;i<10;i++)
+            {
+                if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) )
+                {
+                    if (lf.fileExists(i))
+                    {
+                        strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
+                        loadTheme(lf.getFileName(i));
+                        done=true; //The user have, clicked the purpose of this function is now complete
+                    }
+                }
+            }
+        }
+
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //Update screen
+    }
+}
+
+//Open a saved replay
+bool OpenReplayDialogbox(int x, int y, char *name)
+{
+    bool done = false;	//We are done!
+    int mousex, mousey;
+    ListFiles lf = ListFiles();
+    cout << "Ready to set directory!" << endl;
+#ifdef __unix__
+    string directory = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/replays";
+#elif WIN32
+    string directory = getMyDocumentsPath()+(string)"/My Games/blockattack/replays";
+#else
+    string directory = "./replays";
+#endif
+    lf.setDirectory(directory);
+    cout << "Directory sat" << endl;
+    Uint8* keys;
+    string strHolder;
+    MakeBackground(1024,768);
+    DrawIMG(background,screen,0,0);
+    DrawIMG(bForward,background,x+460,y+420);
+    DrawIMG(bBack,background,x+20,y+420);
+    while (!done)
+    {
+        DrawIMG(background,screen,0,0);
+        const int nrOfFiles = 10;
+        DrawIMG(changeButtonsBack,screen,x,y);
+        for (int i=0;i<nrOfFiles;i++)
+        {
+            SFont_Write(screen,fBlueFont,x+10,y+10+36*i,lf.getFileName(i).c_str());
+        }
+
+        SDL_Event event;
+
+        while ( SDL_PollEvent(&event) )
+        {
+            if ( event.type == SDL_QUIT )  {
+                done = true;
+                return false;
+            }
+
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
+                    done = true;
+                    return false;
+                }
+
+                if ( (event.key.keysym.sym == SDLK_RIGHT) ) {
+                    lf.forward();
+                }
+
+                if ( (event.key.keysym.sym == SDLK_LEFT) ) {
+                    lf.back();
+                }
+            }
+
+        } //while(event)
+
+        SDL_GetMouseState(&mousex,&mousey);
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            //The Forward Button:
+            if ( (mousex>x+460) && (mousex<x+460+120) && (mousey>y+420) && (mousey<y+420+40) )
+            {
+                lf.forward();
+            }
+
+            //The back button:
+            if ( (mousex>x+20) && (mousex<x+20+120) && (mousey>y+420) && (mousey<y+420+40) )
+            {
+                lf.back();
+            }
+
+            for (int i=0;i<10;i++)
+            {
+                if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) )
+                {
+                    if (lf.fileExists(i))
+                    {
+                        strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
+                        done=true; //The user have, clicked the purpose of this function is now complete
+                        return true;
+                    }
+                }
+            }
+        }
+
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //Update screen
+    }
+}
+
+
+//draws options:
+inline void DrawOptions(int x, int y)
+{
+    if (MusicEnabled) DrawIMG(bOn,optionsBack,400,120);
+    else DrawIMG(bOff,optionsBack,400,120);
+    if (SoundEnabled) DrawIMG(bOn,optionsBack,400,170);
+    else DrawIMG(bOff,optionsBack,400,170);
+    if (bFullscreen) DrawIMG(bOn,optionsBack,400,220);
+    else DrawIMG(bOff,optionsBack,400,220);
+    DrawIMG(bChange,optionsBack,230,435);
+    DrawIMG(bChange,optionsBack,410,435);
+    DrawIMG(bChange,optionsBack,230,500);
+    DrawIMG(bChange,optionsBack,410,500);
+    DrawIMG(optionsBack,screen,x,y);
+}  //drawOptions
+
+//Draws the balls and explosions
+void DrawBalls()
+{
+    for (int i = 0; i< maxNumberOfBalls; i++)
+    {
+        if (theBallManeger.ballUsed[i])
+        {
+            DrawIMG(balls[theBallManeger.ballArray[i].getColor()],screen,theBallManeger.ballArray[i].getX(),theBallManeger.ballArray[i].getY());
+        } //if used
+        if (theExplosionManeger.explosionUsed[i])
+        {
+            DrawIMG(explosion[theExplosionManeger.explosionArray[i].getFrame()],screen,theExplosionManeger.explosionArray[i].getX(),theExplosionManeger.explosionArray[i].getY());
+        }
+        if (theTextManeger.textUsed[i])
+        {
+            //cout << "Printing text: " << theTextManeger.textArray[i].getText() << endl;
+            int x = theTextManeger.textArray[i].getX()-SFont_TextWidth(fSmallFont,theTextManeger.textArray[i].getText())/2;
+            int y = theTextManeger.textArray[i].getY()-SFont_TextHeight(fSmallFont)/2;
+            DrawIMG(iChainBack,screen,x,y);
+            SFont_Write(screen,fSmallFont,x+(25-SFont_TextWidth(fSmallFont,theTextManeger.textArray[i].getText()))/2,y+(25-SFont_TextHeight(fSmallFont))/2,theTextManeger.textArray[i].getText());
+        }
+    } //for
+}    //DrawBalls
+
+//Removes the old balls
+void UndrawBalls()
+{
+    for (int i = 0; i< maxNumberOfBalls; i++)
+    {
+        if (theBallManeger.oldBallUsed[i])
+        {
+            DrawIMG(background,screen,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY(),ballSize,ballSize,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY());
+        } //if used
+        if (theExplosionManeger.oldExplosionUsed[i])
+        {
+            DrawIMG(background,screen,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY(),70,120,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY());
+        }
+        if (theTextManeger.oldTextUsed[i])
+        {
+            int x = theTextManeger.oldTextArray[i].getX()-SFont_TextWidth(fSmallFont,theTextManeger.oldTextArray[i].getText())/2;
+            int y = theTextManeger.oldTextArray[i].getY()-SFont_TextHeight(fSmallFont)/2;
+            DrawIMG(background,screen,x,y,25,25,x,y);
+        }
+    } //for
+}   //UndrawBalls
+
+//draws everything
+void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2)
+{
+    SDL_ShowCursor(SDL_DISABLE);
+    //draw background:
+    if (forceredraw != 1)
+    {
+
+        UndrawBalls();
+        DrawIMG(background,screen,oldMousex,oldMousey,32,32,oldMousex,oldMousey);
+        DrawIMG(background,screen,oldBubleX,oldBubleY,140,50,oldBubleX,oldBubleY);
+
+
+        DrawIMG(background,screen,350,200,120,200,350,200);
+        DrawIMG(background,screen,830,200,120,200,830,200);
+        DrawIMG(background,screen,800,0,140,50,800,0);
+
+        DrawIMG(background,screen,50,60,300,50,50,60);
+        DrawIMG(background,screen,510,60,300,50,510,60);
+    }
+    else
+        DrawIMG(background,screen,0,0);
+    //draw bottons (should be moves and drawn directly to background once)
+    if (!editorMode)
+        if (!networkActive) //We don't show the menu while running server or connected to a server
+        {
+            //Here we draw the menu
+            DrawIMG(bNewGame, screen, 0, 0);
+            DrawIMG(bOptions, screen, 120,0);
+            DrawIMG(bHighScore, screen, 2*120,0);
+            DrawIMG(bReplay,screen,3*120,0);
+        }
+        else
+        { //If network is active
+            DrawIMG(bBack, screen, 0, 0); //Display a disconnect button
+        }
+    if (!editorMode)
+        DrawIMG(bExit, screen, xsize-120,ysize-120);
+    //DrawIMG(boardBackBack,screen,theGame.topx-60,theGame.topy-68);
+    DrawIMG(theGame.sBoard,screen,theGame.topx,theGame.topy);
+    string strHolder;
+    strHolder = itoa(theGame.score+theGame.handicap);
+    SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+100,strHolder.c_str());
+    if (theGame.AI_Enabled)
+        SFont_Write(screen,fBlueFont,theGame.topx+10,theGame.topy-40,"CPU");
+    else
+        if (editorMode)
+            SFont_Write(screen,fBlueFont,theGame.topx+10,theGame.topy-40,"Playing field");
+        else
+            if (!singlePuzzle)
+                SFont_Write(screen,fBlueFont,theGame.topx+10,theGame.topy-40,player1name);
+    if (theGame.timetrial)
+    {
+        int tid = (int)SDL_GetTicks()-theGame.gameStartedAt;
+        int minutes;
+        int seconds;
+        if (tid>=0)
+        {
+            minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))/60/1000;
+            seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))%(60*1000))/1000;
+        }
+        else
+        {
+            minutes = ((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))/60/1000;
+            seconds = (((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))%(60*1000))/1000;
+        }
+        if (theGame.bGameOver) minutes=0;
+        if (theGame.bGameOver) seconds=0;
+        if (seconds>9)
+            strHolder = itoa(minutes)+":"+itoa(seconds);
+        else strHolder = itoa(minutes)+":0"+itoa(seconds);
+        if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
+        SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+150,strHolder.c_str());
+    }
+    else
+    {
+        int minutes = ((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))/60/1000;
+        int seconds = (((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))%(60*1000))/1000;
+        if (theGame.bGameOver) minutes=(theGame.gameEndedAfter/1000/60)%100;
+        if (theGame.bGameOver) seconds=(theGame.gameEndedAfter/1000)%60;
+        if (seconds>9)
+            strHolder = itoa(minutes)+":"+itoa(seconds);
+        else
+            strHolder = itoa(minutes)+":0"+itoa(seconds);
+        SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+150,strHolder.c_str());
+    }
+    strHolder = itoa(theGame.chain);
+    SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+200,strHolder.c_str());
+    //drawspeedLevel:
+    strHolder = itoa(theGame.speedLevel);
+    SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+250,strHolder.c_str());
+    if ((theGame.stageClear) &&(theGame.topy+700+50*(theGame.stageClearLimit-theGame.linesCleared)-theGame.pixels-1<600+theGame.topy))
+    {
+        oldBubleX = theGame.topx+280;
+        oldBubleY = theGame.topy+650+50*(theGame.stageClearLimit-theGame.linesCleared)-theGame.pixels-1;
+        DrawIMG(stageBobble,screen,theGame.topx+280,theGame.topy+650+50*(theGame.stageClearLimit-theGame.linesCleared)-theGame.pixels-1);
+    }
+    //player1 finnish, player2 start
+    //DrawIMG(boardBackBack,screen,theGame2.topx-60,theGame2.topy-68);
+    if (!editorMode)
+    {
+        DrawIMG(theGame2.sBoard,screen,theGame2.topx,theGame2.topy);
+        strHolder = itoa(theGame2.score+theGame2.handicap);
+        SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+100,strHolder.c_str());
+        if (theGame2.AI_Enabled)
+            SFont_Write(screen,fBlueFont,theGame2.topx+10,theGame2.topy-40,"CPU");
+        else
+            SFont_Write(screen,fBlueFont,theGame2.topx+10,theGame2.topy-40,theGame2.name);
+        if (theGame2.timetrial)
+        {
+            int tid = (int)SDL_GetTicks()-theGame2.gameStartedAt;
+            int minutes;
+            int seconds;
+            if (tid>=0)
+            {
+                minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))/60/1000;
+                seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))%(60*1000))/1000;
+            }
+            else
+            {
+                minutes = ((abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))/60/1000;
+                seconds = (((abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))%(60*1000))/1000;
+            }
+            if (theGame2.bGameOver) minutes=0;
+            if (theGame2.bGameOver) seconds=0;
+            if (seconds>9)
+                strHolder = itoa(minutes)+":"+itoa(seconds);
+            else
+                strHolder = itoa(minutes)+":0"+itoa(seconds);
+            if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
+            SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+150,strHolder.c_str());
+        }
+        else
+        {
+            int minutes = (abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt))/60/1000;
+            int seconds = (abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)%(60*1000))/1000;
+            if (theGame2.bGameOver) minutes=(theGame2.gameEndedAfter/1000/60)%100;
+            if (theGame2.bGameOver) seconds=(theGame2.gameEndedAfter/1000)%60;
+            if (seconds>9)
+                strHolder = itoa(minutes)+":"+itoa(seconds);
+            else
+                strHolder = itoa(minutes)+":0"+itoa(seconds);
+            SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+150,strHolder.c_str());
+        }
+        strHolder = itoa(theGame2.chain);
+        SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+200,strHolder.c_str());
+        strHolder = itoa(theGame2.speedLevel);
+        SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+250,strHolder.c_str());
+    }
+    //player2 finnish
+
+    if (bNewGameOpen)
+    {
+        DrawIMG(b1player,screen,0,40);
+        DrawIMG(b2players,screen,0,80);
+#ifdef NETWORK
+        DrawIMG(bNetwork,screen,0,120);
+#endif
+        if (b1playerOpen)
+        {
+            DrawIMG(bEndless,screen,120,40);
+            DrawIMG(bTimeTrial,screen,120,80);
+            DrawIMG(bStageClear,screen,120,120);
+            DrawIMG(bPuzzle,screen,120,160);
+            DrawIMG(bVsMode,screen,120,200);
+        }
+        else
+            if (b2playersOpen)
+            {
+                DrawIMG(bTimeTrial,screen,120,80);
+                DrawIMG(bVsMode,screen,120,120);
+            }
+#ifdef NETWORK
+            else
+                if (bNetworkOpen)
+                {
+                    DrawIMG(bHost,screen,120,120);
+                    DrawIMG(bConnect,screen,120,160);
+                }
+#endif
+    }
+    if (bOptionsOpen)
+    {
+        DrawIMG(bConfigure,screen,120,40);
+        DrawIMG(bSelectPuzzle,screen,120,80);
+        DrawIMG(bVsMode,screen,120,120);
+        DrawIMG(bTheme,screen,120,160);
+    }
+    if (bReplayOpen)
+    {
+        DrawIMG(bSave,screen,360,40);
+        DrawIMG(bLoad,screen,360,80);
+    }
+    if (showHighscores) DrawHighscores(100,100);
+    if (showOptions) DrawOptions(100,100);
+
+    DrawBalls();
+
+#if defined(DEBUG)
+    Frames++;
+    if (SDL_GetTicks() >= Ticks + 1000)
+    {
+        if (Frames > 999) Frames=999;
+        sprintf(FPS, "%i fps", Frames);
+        Frames = 0;
+        Ticks = SDL_GetTicks();
+    }
+
+    SFont_Write(screen,fBlueFont,800,4,FPS);
+#endif
+
+    //SDL_Flip(screen); Update screen is now called outside DrawEvrything, bacause the mouse needs to be painted
+
+}
+
+//Generates the standard background
+void MakeBackground(int xsize,int ysize)
+{
+    DrawIMG(backgroundImage,background,0,0);
+    standardBackground = true;
+}
+
+//Generates the background with red board backs
+void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2)
+{
+    DrawIMG(backgroundImage,background,0,0);
+    DrawIMG(boardBackBack,background,theGame.topx-60,theGame.topy-68);
+    DrawIMG(boardBackBack,background,theGame2.topx-60,theGame2.topy-68);
+    standardBackground = false;
+}
+
+void MakeBackground(int xsize, int ysize, BlockGame &theGame)
+{
+    DrawIMG(backgroundImage,background,0,0);
+    DrawIMG(boardBackBack,background,theGame.topx-60,theGame.topy-68);
+    standardBackground = false;
+}
+
+
+//The function that allows the player to choose PuzzleLevel
+int PuzzleLevelSelect()
+{
+    const int xplace = 200;
+    const int yplace = 300;
+    Uint8 *keys;
+    int levelNr, mousex, mousey;
+    bool levelSelected = false;
+    bool tempBool;
+
+    //Loads the levels, if they havn't been loaded:
+    LoadPuzzleStages();
+
+    //Keeps track of background;
+    int nowTime=SDL_GetTicks();
+
+    ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
+    MakeBackground(1024,768);
+    if (puzzleFile)
+    {
+        for (int i=0;(i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
+        {
+            puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
+            puzzleCleared[i] = tempBool;
+        }
+        puzzleFile.close();
+    }
+    else
+    {
+        tempBool = false;
+        for (int i=0; i<nrOfPuzzles; i++)
+            puzzleCleared[i] = tempBool;
+    }
+
+    do
+    {
+        nowTime=SDL_GetTicks();
+
+
+        DrawIMG(background, screen, 0, 0);
+        DrawIMG(iCheckBoxArea,screen,xplace,yplace);
+        SFont_Write(screen,fBlueFont,xplace+12,yplace+2,"Select Puzzle");
+        //Now drow the fields you click in (and a V if clicked):
+        for (int i = 0; i < nrOfPuzzles;i++)
+        {
+            DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+            if (puzzleCleared[i]==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+        }
+
+        SDL_Event event;
+        while ( SDL_PollEvent(&event) )
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+                    levelNr = -1;
+                    levelSelected = true;
+                }
+            }
+
+        keys = SDL_GetKeyState(NULL);
+
+        SDL_GetMouseState(&mousex,&mousey);
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            int levelClicked = -1;
+            int i;
+            for (i = 0; (i<nrOfPuzzles/10)||((i<nrOfPuzzles/10+1)&&(nrOfPuzzles%10 != 0)); i++)
+                if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
+                    levelClicked = i*10;
+            i++;
+            if (levelClicked != -1)
+                for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
+                    if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
+                    {
+                        levelClicked +=j;
+                        levelSelected = true;
+                        levelNr = levelClicked;
+                    }
+        }
+
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //draws it all to the screen
+
+    } while (!levelSelected);
+    DrawIMG(background, screen, 0, 0);
+    return levelNr;
+}
+
+//The function that allows the player to choose Level number
+int StageLevelSelect()
+{
+    const int xplace = 200;
+    const int yplace = 300;
+    Uint8 *keys;
+    int levelNr, mousex, mousey;
+    bool levelSelected = false;
+    bool tempBool;
+    Uint32 tempUInt32;
+    Uint32 totalScore = 0;
+    Uint32 totalTime = 0;
+
+    //Keeps track of background;
+    //int nowTime=SDL_GetTicks();
+
+    MakeBackground(1024,768);
+    ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
+    if (stageFile)
+    {
+        for (int i = 0; i<nrOfStageLevels; i++)
+        {
+            stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
+            stageCleared[i]=tempBool;
+        }
+        if(!stageFile.eof())
+        {
+            for(int i=0; i<nrOfStageLevels; i++)
+            {
+                tempUInt32 = 0;
+                if(!stageFile.eof())
+                    stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
+                stageScores[i]=tempUInt32;
+                totalScore+=tempUInt32;
+            }
+            for(int i=0; i<nrOfStageLevels; i++)
+            {
+                tempUInt32 = 0;
+                if(!stageFile.eof())
+                    stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
+                stageTimes[i]=tempUInt32;
+                totalTime += tempUInt32;
+            }
+        }
+        else
+        {
+            for(int i=0; i<nrOfStageLevels; i++)
+            {
+                 stageScores[i]=0;
+                 stageTimes[i]=0;
+            }
+        }
+        stageFile.close();
+    }
+    else
+    {
+        for (int i=0; i<nrOfStageLevels; i++)
+        {
+            stageCleared[i]= false;
+            stageScores[i]=0;
+            stageTimes[i]=0;
+        }
+    }
+
+
+    do
+    {
+        //nowTime=SDL_GetTicks();
+        DrawIMG(background, screen, 0, 0);
+        DrawIMG(iCheckBoxArea,screen,xplace,yplace);
+        SFont_Write(screen,fBlueFont,xplace+12,yplace+2,"Stage Clear Level Select");
+        for (int i = 0; i < nrOfStageLevels;i++)
+        {
+            DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+            if (stageCleared[i]==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+        }
+
+        SDL_Event event;
+        while ( SDL_PollEvent(&event) )
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+                    levelNr = -1;
+                    levelSelected = true;
+                }
+            }
+
+        keys = SDL_GetKeyState(NULL);
+
+        SDL_GetMouseState(&mousex,&mousey);
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            int levelClicked = -1;
+            int i;
+            for (i = 0; (i<nrOfStageLevels/10)||((i<nrOfStageLevels/10+1)&&(nrOfStageLevels%10 != 0)); i++)
+                if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
+                    levelClicked = i*10;
+            i++;
+            if (levelClicked != -1)
+                for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
+                    if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
+                    {
+                        levelClicked +=j;
+                        levelSelected = true;
+                        levelNr = levelClicked;
+                    }
+        }
+        //Find what we are over:
+            int overLevel = -1;
+            int i;
+            for (i = 0; (i<nrOfStageLevels/10)||((i<nrOfStageLevels/10+1)&&(nrOfStageLevels%10 != 0)); i++)
+                if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
+                    overLevel = i*10;
+            i++;
+            if (overLevel != -1)
+                for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
+                    if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
+                    {
+                        overLevel +=j;
+                        string scoreString = "Best score: 0";
+                        string timeString = "Time used: -- : --";
+                        
+                        if(stageScores.at(overLevel)>0)
+                            scoreString = "Best score: "+itoa(stageScores[overLevel]);
+                        if(stageTimes[overLevel]>0)
+                            timeString = "Time used: "+itoa(stageTimes[overLevel]/1000/60)+" : "+itoa2((stageTimes[overLevel]/1000)%60);
+                        
+                        SFont_Write(screen,fBlueFont,200,200,scoreString.c_str());
+                        SFont_Write(screen,fBlueFont,200,250,timeString.c_str());
+                        
+                        overLevel;
+                    }
+            string totalString = "Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
+            SFont_Write(screen,fBlueFont,200,600,totalString.c_str());   
+
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //draws it all to the screen
+
+    } while (!levelSelected);
+    DrawIMG(background, screen, 0, 0);
+    return levelNr;
+}
+
+//Ask user for what AI level he will compete agains, return the number. Number must be 0..AIlevels
+int startSingleVs()
+{
+    //Where to place the windows
+    const int xplace = 200;
+    const int yplace = 100;
+    Uint8 *keys;	//To take keyboard input
+    int mousex, mousey;	//To allow mouse
+    bool done = false;	//When are we done?
+
+    MakeBackground(1024,768);
+    DrawIMG(changeButtonsBack,background,xplace,yplace);
+    SFont_Write(background,fBlueFont,xplace+10,yplace+10,"1 : Very Easy");
+    SFont_Write(background,fBlueFont,xplace+10,yplace+40,"2 : Easy");
+    SFont_Write(background,fBlueFont,xplace+10,yplace+70,"3 : Below Normal");
+    SFont_Write(background,fBlueFont,xplace+10,yplace+100,"4 : Normal");
+    SFont_Write(background,fBlueFont,xplace+10,yplace+130,"5 : Above Normal");
+    SFont_Write(background,fBlueFont,xplace+10,yplace+160,"6 : Hard");
+    SFont_Write(background,fBlueFont,xplace+10,yplace+190,"7 : Hardest");
+    DrawIMG(background, screen, 0, 0);
+    SDL_Flip(screen);
+    do
+    {
+
+        SDL_Delay(10);
+        SDL_Event event;
+        while ( SDL_PollEvent(&event) )
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+                    done = true;
+                }
+                if ( event.key.keysym.sym == SDLK_RETURN ) {
+                    done = true;
+                }
+                if ( event.key.keysym.sym == SDLK_KP_ENTER ) {
+                    done = true;
+                }
+                if ( event.key.keysym.sym == SDLK_1 ) {
+                    return 0;
+                }
+                if ( event.key.keysym.sym == SDLK_2 ) {
+                    return 1;
+                }
+                if ( event.key.keysym.sym == SDLK_3 ) {
+                    return 2;
+                }
+                if ( event.key.keysym.sym == SDLK_4 ) {
+                    return 3;
+                }
+                if ( event.key.keysym.sym == SDLK_5 ) {
+                    return 4;
+                }
+                if ( event.key.keysym.sym == SDLK_6 ) {
+                    return 5;
+                }
+                if ( event.key.keysym.sym == SDLK_7 ) {
+                    return 6;
+                }
+                if ( event.key.keysym.sym == SDLK_KP1 ) {
+                    return 0;
+                }
+                if ( event.key.keysym.sym == SDLK_KP2 ) {
+                    return 1;
+                }
+                if ( event.key.keysym.sym == SDLK_KP3 ) {
+                    return 2;
+                }
+                if ( event.key.keysym.sym == SDLK_KP4 ) {
+                    return 3;
+                }
+                if ( event.key.keysym.sym == SDLK_KP5 ) {
+                    return 4;
+                }
+                if ( event.key.keysym.sym == SDLK_KP6 ) {
+                    return 5;
+                }
+                if ( event.key.keysym.sym == SDLK_KP7 ) {
+                    return 6;
+                }
+
+            }
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            for (int i=0; i<7;i++)
+            {
+                if ((mousex>xplace+10)&&(mousex<xplace+410)&&(mousey>yplace+10+i*30)&&(mousey<yplace+38+i*30))
+                    return i;
+            }
+        }
+
+        SDL_GetMouseState(&mousex,&mousey);
+        DrawIMG(background, screen, 0, 0);
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //draws it all to the screen
+    }while (!done);
+
+
+    return 3; //Returns normal
+}
+
+//The function that allows the player to choose Level number
+void startVsMenu()
+{
+    const int xplace = 200;
+    const int yplace = 100;
+    Uint8 *keys;
+    int mousex, mousey;
+    bool done = false;
+
+    //Keeps track of background;
+    //int nowTime=SDL_GetTicks();
+
+    MakeBackground(1024,768);
+    SFont_Write(background,fBlueFont,360,650,"Press ESC to accept");
+    DrawIMG(bBack,background,1024/2-120/2,600);
+    do
+    {
+        //nowTime=SDL_GetTicks();
+        DrawIMG(background, screen, 0, 0);
+        DrawIMG(changeButtonsBack,screen,xplace,yplace);
+        SFont_Write(screen,fBlueFont,xplace+50,yplace+20,"Player 1");
+        SFont_Write(screen,fBlueFont,xplace+300+50,yplace+20,"Player 2");
+        SFont_Write(screen,fBlueFont,xplace+50,yplace+70,"Speed:");
+        SFont_Write(screen,fBlueFont,xplace+50+300,yplace+70,"Speed:");
+        for (int i=0; i<5;i++)
+        {
+            char levelS[2]; //level string;
+            levelS[0]='1'+i;
+            levelS[1]=0;
+            SFont_Write(screen,fBlueFont,xplace+50+i*40,yplace+110,levelS);
+            DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+150);
+            if (player1Speed==i)
+                DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+150);
+        }
+        for (int i=0; i<5;i++)
+        {
+            char levelS[2]; //level string;
+            levelS[0]='1'+i;
+            levelS[1]=0;
+            SFont_Write(screen,fBlueFont,xplace+300+50+i*40,yplace+110,levelS);
+            DrawIMG(iLevelCheckBox,screen,xplace+300+50+i*40,yplace+150);
+            if (player2Speed==i)
+                DrawIMG(iLevelCheck,screen,xplace+300+50+i*40,yplace+150);
+        }
+        SFont_Write(screen,fBlueFont,xplace+50,yplace+200,"AI: ");
+        DrawIMG(iLevelCheckBox,screen,xplace+50+70,yplace+200);
+        if (player1AI)
+            DrawIMG(iLevelCheck,screen,xplace+50+70,yplace+200);
+        SFont_Write(screen,fBlueFont,xplace+50,yplace+250,"TT Handicap: ");
+        SFont_Write(screen,fBlueFont,xplace+50+300,yplace+200,"AI: ");
+        DrawIMG(iLevelCheckBox,screen,xplace+50+70+300,yplace+200);
+        if (player2AI)
+            DrawIMG(iLevelCheck,screen,xplace+50+70+300,yplace+200);
+        SFont_Write(screen,fBlueFont,xplace+50+300,yplace+250,"TT Handicap: ");
+        for (int i=0; i<5;i++)
+        {
+            char levelS[2]; //level string;
+            levelS[0]='1'+i;
+            levelS[1]=0;
+            SFont_Write(screen,fBlueFont,xplace+50+i*40,yplace+290,levelS);
+            DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+330);
+            if (player1handicap==i)
+                DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+330);
+        }
+        for (int i=0; i<5;i++)
+        {
+            char levelS[2]; //level string;
+            levelS[0]='1'+i;
+            levelS[1]=0;
+            SFont_Write(screen,fBlueFont,xplace+50+i*40+300,yplace+290,levelS);
+            DrawIMG(iLevelCheckBox,screen,xplace+50+i*40+300,yplace+330);
+            if (player2handicap==i)
+                DrawIMG(iLevelCheck,screen,xplace+50+i*40+300,yplace+330);
+        }
+
+        SDL_Event event;
+        while ( SDL_PollEvent(&event) )
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+                    done = true;
+                }
+                if ( event.key.keysym.sym == SDLK_RETURN ) {
+                    done = true;
+                }
+                if ( event.key.keysym.sym == SDLK_KP_ENTER ) {
+                    done = true;
+                }
+            }
+
+        keys = SDL_GetKeyState(NULL);
+
+        SDL_GetMouseState(&mousex,&mousey);
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            if ((mousex>xplace+50+70)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30)&&(mousey<yplace+200+30))
+                player1AI=!player1AI;
+            if ((mousex>xplace+50+70+300)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30+300)&&(mousey<yplace+200+30))
+                player2AI=!player2AI;
+            for (int i=0; i<5;i++)
+            {
+                if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+150)&&(mousey<yplace+150+30))
+                    player1Speed=i;
+            }
+            for (int i=0; i<5;i++)
+            {
+                if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+150)&&(mousey<yplace+150+30))
+                    player2Speed=i;
+            }
+            for (int i=0; i<5;i++)
+            {
+                if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+330)&&(mousey<yplace+330+30))
+                    player1handicap=i;
+            }
+            for (int i=0; i<5;i++)
+            {
+                if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+330)&&(mousey<yplace+330+30))
+                    player2handicap=i;
+            }
+            if ((mousex>1024/2-120/2)&&(mousex<1024/2+120/2)&&(mousey>600)&&(mousey<640))
+                done = true;
+        }
+
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //draws it all to the screen
+        SDL_Delay(10);
+
+    } while (!done);
+    DrawIMG(background, screen, 0, 0);
+}
+
+//This function will promt for the user to select another file for puzzle mode
+void changePuzzleLevels()
+{
+    char theFileName[30];
+    strcpy(theFileName,puzzleName.c_str());
+    for (int i=puzzleName.length();i<30;i++)
+        theFileName[i]=' ';
+    theFileName[29]=0;
+    if (OpenFileDialogbox(200,100,theFileName))
+    {
+        for (int i=28;((theFileName[i]==' ')&&(i>0));i--)
+            theFileName[i]=0;
+        puzzleName = theFileName;
+#if defined(__unix__)
+        string home = getenv("HOME");
+        puzzleSavePath = home+"/.gamesaves/blockattack/"+puzzleName+".save";
+#elif defined(_WIN32)
+        string home = getMyDocumentsPath();
+        if (&home!=NULL)
+        {
+            puzzleSavePath = home+"/My Games/blockattack/"+puzzleName+".save";
+        }
+        else
+        {
+            puzzleSavePath = puzzleName+".save";
+        }
+#else
+        puzzleSavePath = puzzleName+".save";
+#endif
+    }
+
+}
+
+#ifdef NETWORK
+#include "NetworkThing.hpp"
+#endif
+
+//#include "editor/editorMain.hpp"
+
+//The main function, quite big... too big
+int main(int argc, char *argv[])
+{
+    //We first create the folder there we will save (only on UNIX systems)
+    //we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
+#if defined(__unix__)
+    system("mkdir -p ~/.gamesaves/blockattack/screenshots");
+    system("mkdir -p ~/.gamesaves/blockattack/replays");
+    system("mkdir -p ~/.gamesaves/blockattack/puzzles");
+#elif defined(_WIN32)
+    //Now for Windows NT/2k/xp/2k3 etc.
+    string tempA = getMyDocumentsPath()+"\\My Games";
+    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+    tempA = getMyDocumentsPath()+"\\My Games\\blockattack";
+    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+    tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\replays";
+    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+    tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\screenshots";
+    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+#endif
+    bool highPriority = false;	//if true the game will take most resources, but increase framerate.
+    bFullscreen = false;
+    if (argc > 1)
+    {
+        int argumentNr = 1;
+        forceredraw = 2;
+        while (argc>argumentNr)
+        {
+            char helpString[] = "--help";
+            char priorityString[] = "-priority";
+            char forceRedrawString[] = "-forceredraw";
+            char forcepartdrawString[] = "-forcepartdraw";
+            char singlePuzzleString[] = "-SP";
+            char noSoundAtAll[] = "-nosound";
+            char IntegratedEditor[] = "-editor";
+            if (!(strncmp(argv[argumentNr],helpString,6)))
+            {
+                cout << "Block Attack Help" << endl << "--help Display this message" <<
+                endl << "-priority  Starts game in high priority" << endl <<
+                "-forceredraw  Redraw the whole screen every frame, prevents garbage" << endl <<
+                "-forcepartdraw  Only draw what is changed, sometimes cause garbage" << endl <<
+                "-nosound  No sound will be played at all, and sound hardware want be loaded (use this if game crashes because of sound)" << endl <<
+                "-editor  Starts the build-in editor (not yet integrated)" << endl;
+#ifdef WIN32
+                system("Pause");
+#endif
+                return 0;
+            }
+            if (!(strncmp(argv[argumentNr],priorityString,9)))
+            {
+                cout << "Priority mode" << endl;
+                highPriority = true;
+            }
+            if (!(strncmp(argv[argumentNr],forceRedrawString,12)))
+            {
+                forceredraw = 1;
+            }
+            if (!(strncmp(argv[argumentNr],forcepartdrawString,14)))
+            {
+                forceredraw = 2;
+            }
+            if (!(strncmp(argv[argumentNr],singlePuzzleString,3)))
+            {
+                singlePuzzle = true; //We will just have one puzzle
+                if (argv[argumentNr+1][1]!=0)
+                    singlePuzzleNr = (argv[argumentNr+1][1]-'0')+(argv[argumentNr+1][0]-'0')*10;
+                else
+                    singlePuzzleNr = (argv[argumentNr+1][0]-'0');
+                singlePuzzleFile = argv[argumentNr+2];
+                argumentNr+=2;
+                cout << "SinglePuzzleMode, File: " << singlePuzzleFile << " and Level: " << singlePuzzleNr << endl;
+            }
+            if (!(strncmp(argv[argumentNr],noSoundAtAll,8)))
+            {
+                NoSound = true;
+            }
+            if (!(strncmp(argv[argumentNr],IntegratedEditor,7)))
+            {
+                editorMode = true;
+                cout << "Integrated Puzzle Editor Activated" << endl;
+            }
+            argumentNr++;
+        }   //while
+    }   //if
+
+    SoundEnabled = true;
+    MusicEnabled = true;
+    xsize = 1024;     //screen size x
+    int ysize = 768;      //screen size y
+    int mousex, mousey;   //Mouse coordinates
+    showHighscores = false;
+    showEndless = true;
+    showOptions = false;
+    b1playerOpen = false;
+    b2playersOpen = false;
+    bReplayOpen = false;
+    bScreenLocked = false;
+    bool twoPlayers = false;	//true if two players splitscreen
+    bool vsMode = false;
+    theTopScoresEndless = Highscore(1);
+    theTopScoresTimeTrial = Highscore(2);
+    drawBalls = true;
+    puzzleLoaded = false;
+    bool weWhereConnected = false;
+
+    //Things used for repeating keystrokes:
+    bool repeatingP1N = false; //The key is being held
+    bool repeatingP1S = false; //The key is being held
+    bool repeatingP1W = false; //The key is being held
+    bool repeatingP1E = false; //The key is being held
+    bool repeatingP2N = false; //The key is being held
+    bool repeatingP2S = false; //The key is being held
+    bool repeatingP2W = false; //The key is being held
+    bool repeatingP2E = false; //The key is being held
+    const int startRepeat = 200;
+    const int repeatDelay = 100;    //Repeating
+    unsigned long timeHeldP1N = 0;
+    unsigned long timeHeldP1S = 0;
+    unsigned long timeHeldP1E = 0;
+    unsigned long timeHeldP1W = 0;
+    unsigned long timeHeldP2N = 0;
+    unsigned long timeHeldP2S = 0;
+    unsigned long timeHeldP2E = 0;
+    unsigned long timeHeldP2W = 0;
+    unsigned long timesRepeatedP1N = 0;
+    unsigned long timesRepeatedP1S = 0;
+    unsigned long timesRepeatedP1E = 0;
+    unsigned long timesRepeatedP1W = 0;
+    unsigned long timesRepeatedP2N = 0;
+    unsigned long timesRepeatedP2S = 0;
+    unsigned long timesRepeatedP2E = 0;
+    unsigned long timesRepeatedP2W = 0;
+
+    theBallManeger = ballManeger();
+    theExplosionManeger = explosionManeger();
+
+//We now set the paths were we are saving, we are using the keyword __unix__ . I hope that all UNIX systems has a home folder
+#if defined(__unix__)
+    string home = getenv("HOME");
+    string optionsPath = home+"/.gamesaves/blockattack/options.dat";
+#elif defined(_WIN32)
+    string home = getMyDocumentsPath();
+    string optionsPath;
+    if (&home!=NULL) //Null if no APPDATA dir exists (win 9x)
+        optionsPath = home+"/My Games/blockattack/options.dat";
+    else
+        optionsPath = "options.dat";
+#else
+    string optionsPath = "options.dat";
+#endif
+
+#if defined(__unix__)
+    stageClearSavePath = home+"/.gamesaves/blockattack/stageClear.SCsave";
+    puzzleSavePath = home+"/.gamesaves/blockattack/puzzle.levels.save";
+#elif defined(_WIN32)
+    if (&home!=NULL)
+    {
+        stageClearSavePath = home+"/My Games/blockattack/stageClear.SCsave";
+        puzzleSavePath = home+"/My Games/blockattack/puzzle.levels.save";
+    }
+    else
+    {
+        stageClearSavePath = "stageClear.SCsave";
+        puzzleSavePath = "puzzle.levels.save";
+    }
+#else
+    stageClearSavePath = "stageClear.SCsave";
+    puzzleSavePath = "puzzle.levels.save";
+#endif
+    puzzleName="puzzle.levels";
+
+    Uint8 *keys;
+
+    //Init SDL
+    if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
+    {
+        cout << "Unable to init SDL: " << SDL_GetError() << endl;
+        exit(1);
+    }
+    atexit(SDL_Quit);		//quits SDL when the game stops for some reason (like you hit exit or Esc)
+    
+    SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
+
+    Joypad_init();    //Prepare the joysticks
+
+    Joypad joypad1 = Joypad();    //Creates a joypad
+    Joypad joypad2 = Joypad();    //Creates a joypad
+
+    theTextManeger = textManeger();
+
+    //Open Audio
+    if (!NoSound) //If sound has not been disabled, then load the sound system
+        if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0)
+        {
+            cout << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
+            << "Sound will be disabled!" << endl;
+            NoSound = true; //Tries to stop all sound from playing/loading
+        }
+
+    SDL_WM_SetCaption("Block Attack - Rise of the Blocks", NULL); //Sets title line
+    //Now sets the icon:
+    SDL_Surface *icon = IMG_Load2((char*)"gfx/icon.png");
+    SDL_WM_SetIcon(icon,NULL);
+    //SDL_FreeSurface(icon);
+
+    //Copyright notice:
+    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2007 Poul Sander" << endl <<
+    "A SDL based game (see www.libsdl.org)" << endl <<
+    "The game is availeble under the GPL, see COPYING for details." << endl;
+#if defined(_WIN32)
+    cout << "Windows build" << endl;
+#elif defined(__linux__)
+    cout << "Linux build" <<  endl;
+#elif defined(__unix__)
+    cout << "Unix build" <<  endl;
+#else
+    cout << "Alternative build" << endl;
+#endif
+    cout << "-------------------------------------------" << endl;
+
+    keySettings[0].up= SDLK_UP;
+    keySettings[0].down = SDLK_DOWN;
+    keySettings[0].left = SDLK_LEFT;
+    keySettings[0].right = SDLK_RIGHT;
+    keySettings[0].change = SDLK_KP_ENTER;
+    keySettings[0].push = SDLK_KP0;
+
+    keySettings[2].up= SDLK_w;
+    keySettings[2].down = SDLK_s;
+    keySettings[2].left = SDLK_a;
+    keySettings[2].right = SDLK_d;
+    keySettings[2].change = SDLK_LCTRL;
+    keySettings[2].push = SDLK_LSHIFT;
+
+    player1keys=0;
+    player2keys=2;
+
+    strcpy(player1name, "Player 1                    \0");
+    strcpy(player2name, "Player 2                    \0");
+
+#ifdef NETWORK
+    strcpy(serverAddress, "192.168.0.2                 \0");
+#endif
+
+    //Reads options from file:
+    ifstream optionsFile(optionsPath.c_str(), ios::binary);
+    if (optionsFile)
+    {
+        //reads data: xsize,ysize,fullescreen, player1keys, player2keys, MusicEnabled, SoundEnabled,player1name,player2name
+        optionsFile.read(reinterpret_cast<char*>(&xsize), sizeof(int));
+        optionsFile.read(reinterpret_cast<char*>(&ysize), sizeof(int));
+        optionsFile.read(reinterpret_cast<char*>(&bFullscreen), sizeof(bool));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].up), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].down), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].left), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].right), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].change), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].push), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].up), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].down), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].left), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].right), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].change), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].push), sizeof(SDLKey));
+        optionsFile.read(reinterpret_cast<char*>(&MusicEnabled), sizeof(bool));
+        optionsFile.read(reinterpret_cast<char*>(&SoundEnabled), sizeof(bool));
+        optionsFile.read(player1name, 30*sizeof(char));
+        optionsFile.read(player2name, 30*sizeof(char));
+        //mouseplay?
+        if (!optionsFile.eof())
+        {
+            optionsFile.read(reinterpret_cast<char*>(&mouseplay1), sizeof(bool));
+            optionsFile.read(reinterpret_cast<char*>(&mouseplay2), sizeof(bool));
+            optionsFile.read(reinterpret_cast<char*>(&joyplay1),sizeof(bool));
+            optionsFile.read(reinterpret_cast<char*>(&joyplay2),sizeof(bool));
+        }
+        optionsFile.close();
+        cout << "Data loaded from options file" << endl;
+    }
+    else
+    {
+        cout << "Unable to load options file, using default values" << endl;
+    }
+
+    xsize = 1024;
+    ysize = 768;
+    if (singlePuzzle)
+    {
+        xsize=300;
+        ysize=600;
+    }
+    
+    
+    //Open video
+    if ((bFullscreen)&&(!singlePuzzle)) screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
+    else screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
+
+    if ( screen == NULL )
+    {
+        cout << "Unable to set " << xsize << "x" << ysize << " video: " << SDL_GetError() << endl;
+        exit(1);
+    }
+
+    //Loading all images into memory
+    InitImages();
+
+    cout << "Images loaded" << endl;
+
+
+    BlockGame theGame = BlockGame(50,100);			//creates game objects
+    BlockGame theGame2 = BlockGame(xsize-500,100);
+    if (singlePuzzle)
+    {
+        theGame.topy=0;
+        theGame.topx=0;
+        theGame2.topy=10000;
+        theGame2.topx=10000;
+    }
+    theGame.DoPaintJob();			//Makes sure what there is something to paint
+    theGame2.DoPaintJob();
+    theGame.SetGameOver();		//sets the game over in the beginning
+    theGame2.SetGameOver();
+
+
+    //Takes names from file instead
+    strcpy(theGame.name, player1name);
+    strcpy(theGame2.name, player2name);
+
+    //Keeps track of background;
+    int nowTime=SDL_GetTicks();
+
+
+#ifdef NETWORK
+    NetworkThing nt = NetworkThing();
+    nt.setBGpointers(&theGame,&theGame2);
+#endif
+
+    if (singlePuzzle)
+    {
+        LoadPuzzleStages();
+        theGame.NewPuzzleGame(singlePuzzleNr,0,0);
+        showGame = true;
+        vsMode = true;
+    }
+    //Draws everything to screen
+    if (!editorMode)
+        MakeBackground(xsize,ysize,theGame,theGame2);
+    else
+        MakeBackground(xsize,ysize,theGame);
+    DrawIMG(background, screen, 0, 0);
+    DrawEverything(xsize,ysize,theGame,theGame2);
+    SDL_Flip(screen);
+    //game loop
+    int done = 0;
+    cout << "Starting game loop" << endl;
+    while (done == 0)
+    {
+        if (!(highPriority)) SDL_Delay(10);
+
+        if ((standardBackground)&&(!editorMode))
+        {
+            MakeBackground(xsize,ysize,theGame,theGame2);
+            DrawIMG(background, screen, 0, 0);
+        }
+
+        if ((standardBackground)&&(editorMode))
+        {
+            DrawIMG(backgroundImage, screen, 0, 0);
+            MakeBackground(xsize,ysize,theGame);
+            DrawIMG(background, screen, 0, 0);
+        }
+
+        //updates the balls and explosions:
+        theBallManeger.update();
+        theExplosionManeger.update();
+        theTextManeger.update();
+
+#ifdef NETWORK
+        if (nt.isConnected())
+        {
+            nt.updateNetwork();
+            networkActive = true;
+            if (!nt.isConnectedToPeer())
+                DrawIMG(background, screen, 0, 0);
+        }
+        else
+            networkActive = false;
+        if (nt.isConnectedToPeer())
+        {
+            networkPlay=true;
+            if (!weWhereConnected) //We have just connected
+            {
+                theGame.NewVsGame(50,100,&theGame2);
+                theGame.putStartBlocks(nt.theSeed);
+                theGame2.playNetwork(xsize-500,100);
+                nt.theGameHasStarted();
+                DrawIMG(background, screen, 0, 0);
+            }
+            weWhereConnected = true;
+        }
+        else
+        {
+            networkPlay=false;
+            weWhereConnected = false;
+        }
+#endif
+
+        if (!bScreenLocked)
+        {
+            SDL_Event event;
+
+            while ( SDL_PollEvent(&event) )
+            {
+                if ( event.type == SDL_QUIT )  {
+                    done = 1;
+                }
+
+                if ( event.type == SDL_KEYDOWN )
+                {
+                    if ( event.key.keysym.sym == SDLK_ESCAPE )
+                    {
+                        if (showHighscores)
+                        {
+                            showHighscores = false;
+                        }
+                        else
+                            if (showOptions)
+                            {
+                                showOptions = false;
+                            }
+                            else
+                                done=1;
+                        DrawIMG(background, screen, 0, 0);
+
+                    }
+                    if ((!editorMode)&&(!editorModeTest)&&(!theGame.AI_Enabled))
+                    {
+                        //player1:
+                        if ( event.key.keysym.sym == keySettings[player1keys].up ) {
+                            theGame.MoveCursor('N');
+                            repeatingP1N=true;
+                            timeHeldP1N=SDL_GetTicks();
+                            timesRepeatedP1N=0;
+                        }
+                        if ( event.key.keysym.sym == keySettings[player1keys].down ) {
+                            theGame.MoveCursor('S');
+                            repeatingP1S=true;
+                            timeHeldP1S=SDL_GetTicks();
+                            timesRepeatedP1S=0;
+                        }
+                        if ( (event.key.keysym.sym == keySettings[player1keys].left) && (showGame) ) {
+                            theGame.MoveCursor('W');
+                            repeatingP1W=true;
+                            timeHeldP1W=SDL_GetTicks();
+                            timesRepeatedP1W=0;
+                        }
+                        if ( (event.key.keysym.sym == keySettings[player1keys].right) && (showGame) ) {
+                            theGame.MoveCursor('E');
+                            repeatingP1E=true;
+                            timeHeldP1E=SDL_GetTicks();
+                            timesRepeatedP1E=0;
+                        }
+                        if ( event.key.keysym.sym == keySettings[player1keys].push ) {
+                            theGame.PushLine();
+                        }
+                        if ( event.key.keysym.sym == keySettings[player1keys].change ) {
+                            theGame.SwitchAtCursor();
+                        }
+                    }
+                    if (!editorMode && !theGame2.AI_Enabled)
+                    {
+                        //player2:
+                        if ( event.key.keysym.sym == keySettings[player2keys].up ) {
+                            theGame2.MoveCursor('N');
+                            repeatingP2N=true;
+                            timeHeldP2N=SDL_GetTicks();
+                            timesRepeatedP2N=0;
+                        }
+                        if ( event.key.keysym.sym == keySettings[player2keys].down ) {
+                            theGame2.MoveCursor('S');
+                            repeatingP2S=true;
+                            timeHeldP2S=SDL_GetTicks();
+                            timesRepeatedP2S=0;
+                        }
+                        if ( (event.key.keysym.sym == keySettings[player2keys].left) && (showGame) ) {
+                            theGame2.MoveCursor('W');
+                            repeatingP2W=true;
+                            timeHeldP2W=SDL_GetTicks();
+                            timesRepeatedP2W=0;
+                        }
+                        if ( (event.key.keysym.sym == keySettings[player2keys].right) && (showGame) ) {
+                            theGame2.MoveCursor('E');
+                            repeatingP2E=true;
+                            timeHeldP2E=SDL_GetTicks();
+                            timesRepeatedP2E=0;
+                        }
+                        if ( event.key.keysym.sym == keySettings[player2keys].push ) {
+                            theGame2.PushLine();
+                        }
+                        if ( event.key.keysym.sym == keySettings[player2keys].change ) {
+                            theGame2.SwitchAtCursor();
+                        }
+                    }
+                    //common:
+                    if ((!singlePuzzle)&&(!editorMode))
+                    {
+                        if ( ((event.key.keysym.sym == SDLK_LEFT)||(event.key.keysym.sym == SDLK_RIGHT)) && (showHighscores) ) {
+                            showEndless = !showEndless;
+                        }
+
+                        if ( event.key.keysym.sym == SDLK_F2 ) {
+                            if ((!showHighscores)&&(!showOptions)&&(!networkActive)){
+                                theGame.NewGame(50,100);
+                                theGame.timetrial = false;
+                                theGame.putStartBlocks();
+                                closeAllMenus();
+                                twoPlayers =false;
+                                theGame2.SetGameOver();
+                                showGame = true;
+                                vsMode = false;
+                            }}
+                        if ( event.key.keysym.sym == SDLK_F3 ) {
+                            if ((!showHighscores)&&(!showOptions)&&(!networkActive)){
+                                theGame.NewGame(50,100);
+                                theGame.timetrial = true;
+                                theGame.putStartBlocks();
+                                closeAllMenus();
+                                twoPlayers =false;
+                                theGame2.SetGameOver();
+                                showGame = true;
+                                vsMode = false;
+                            }}
+                        if ( event.key.keysym.sym == SDLK_F5 )
+                        {
+                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            {
+                                int myLevel = StageLevelSelect();
+                                theGame.NewStageGame(myLevel,50,100);
+                                MakeBackground(xsize,ysize,theGame,theGame2);
+                                DrawIMG(background, screen, 0, 0);
+                                closeAllMenus();
+                                twoPlayers =false;
+                                theGame2.SetGameOver();
+                                showGame = true;
+                                vsMode = false;
+                            }
+                        }
+                        if ( event.key.keysym.sym == SDLK_F6 )
+                        {
+                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            {
+                                theGame.NewVsGame(50,100,&theGame2);
+                                theGame2.NewVsGame(xsize-500,100,&theGame);
+                                closeAllMenus();
+                                vsMode = true;
+                                theGame.setGameSpeed(player1Speed);
+                                theGame2.setGameSpeed(player2Speed);
+                                theGame.setHandicap(player1handicap);
+                                theGame2.setHandicap(player2handicap);
+                                theGame.AI_Enabled = player1AI;
+                                theGame2.AI_Enabled = player2AI;
+                                theGame.setAIlevel(player1AIlevel);
+                                theGame2.setAIlevel(player2AIlevel);
+                                int theTime = time(0);
+                                theGame.putStartBlocks(theTime);
+                                theGame2.putStartBlocks(theTime);
+                                twoPlayers = true;
+                            }
+                        }
+                        if ( event.key.keysym.sym == SDLK_F4 )
+                        {
+                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            {
+                                theGame.NewGame(50,100);
+                                theGame2.NewGame(xsize-500,100);
+                                theGame.timetrial = true;
+                                theGame2.timetrial = true;
+                                int theTime = time(0);
+                                theGame.putStartBlocks(theTime);
+                                theGame2.putStartBlocks(theTime);
+                                closeAllMenus();
+                                twoPlayers = true;
+                                theGame.setGameSpeed(player1Speed);
+                                theGame2.setGameSpeed(player2Speed);
+                                theGame.setHandicap(player1handicap);
+                                theGame2.setHandicap(player2handicap);
+                                theGame.AI_Enabled = player1AI;
+                                theGame2.AI_Enabled = player2AI;
+                                theGame.setAIlevel(player1AIlevel);
+                                theGame2.setAIlevel(player2AIlevel);
+                            }
+                        }
+                        if ( event.key.keysym.sym == SDLK_F7 )
+                        {
+                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            {
+                                int myLevel = PuzzleLevelSelect();
+                                theGame.NewPuzzleGame(myLevel,50,100);
+                                MakeBackground(xsize,ysize,theGame,theGame2);
+                                DrawIMG(background, screen, 0, 0);
+                                closeAllMenus();
+                                twoPlayers = false;
+                                theGame2.SetGameOver();
+                                showGame = true;
+                                vsMode = true;
+                            }
+                        }
+                        if ( event.key.keysym.sym == SDLK_F8 )
+                        {
+                            if ((!showGame)&&(!showOptions)&&(!networkActive))
+                                if (!showHighscores)
+                                {
+                                    closeAllMenus();
+                                    showHighscores = true;
+                                    MakeBackground(xsize,ysize,theGame,theGame2);
+                                    DrawIMG(background, screen, 0, 0);
+                                    closeAllMenus();
+                                    theGame2.SetGameOver();
+                                }
+                                else
+                                {
+                                    showEndless = !showEndless;
+                                }
+                        }
+                        if ( event.key.keysym.sym == SDLK_F9 ) {
+                            writeScreenShot();
+                        }
+                        if ( event.key.keysym.sym == SDLK_F11 ) {
+                            /*This is the test place, place function to test here*/
+
+                            //theGame.CreateGreyGarbage();
+                            char mitNavn[30];
+                            SelectThemeDialogbox(300,400,mitNavn);
+                        } //F11
+                    }
+                    if ( event.key.keysym.sym == SDLK_F12 ) {
+                        done=1;
+                    }
+                }
+            } //while event PollEvent - read keys
+
+            /**********************************************************************
+            **************************** Repeating start **************************
+            **********************************************************************/
+
+            keys = SDL_GetKeyState(NULL);
+//Also the joysticks:
+//Repeating not implemented
+
+//Player 1 start
+            if (!(keys[keySettings[player1keys].up]))
+                repeatingP1N=false;
+            while ((repeatingP1N)&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat))
+            {
+                theGame.MoveCursor('N');
+                timesRepeatedP1N++;
+            }
+
+            if (!(keys[keySettings[player1keys].down]))
+                repeatingP1S=false;
+            while ((repeatingP1S)&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat))
+            {
+                theGame.MoveCursor('S');
+                timesRepeatedP1S++;
+            }
+
+            if (!(keys[keySettings[player1keys].left]))
+                repeatingP1W=false;
+            while ((repeatingP1W)&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat))
+            {
+                timesRepeatedP1W++;
+                theGame.MoveCursor('W');
+            }
+
+            if (!(keys[keySettings[player1keys].right]))
+                repeatingP1E=false;
+            while ((repeatingP1E)&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat))
+            {
+                timesRepeatedP1E++;
+                theGame.MoveCursor('E');
+            }
+
+//Player 1 end
+
+//Player 2 start
+            if (!(keys[keySettings[player2keys].up]))
+                repeatingP2N=false;
+            while ((repeatingP2N)&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat))
+            {
+                theGame2.MoveCursor('N');
+                timesRepeatedP2N++;
+            }
+
+            if (!(keys[keySettings[player2keys].down]))
+                repeatingP2S=false;
+            while ((repeatingP2S)&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat))
+            {
+                theGame2.MoveCursor('S');
+                timesRepeatedP2S++;
+            }
+
+            if (!(keys[keySettings[player2keys].left]))
+                repeatingP2W=false;
+            while ((repeatingP2W)&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat))
+            {
+                theGame2.MoveCursor('W');
+                timesRepeatedP2W++;
+            }
+
+            if (!(keys[keySettings[player2keys].right]))
+                repeatingP2E=false;
+            while ((repeatingP2E)&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat))
+            {
+                theGame2.MoveCursor('E');
+                timesRepeatedP2E++;
+            }
+
+//Player 2 end
+
+            /**********************************************************************
+            **************************** Repeating end ****************************
+            **********************************************************************/
+
+            /**********************************************************************
+            ***************************** Joypad start ****************************
+            **********************************************************************/
+
+            if (joyplay1||joyplay2)
+            {
+                if (joypad1.working && !theGame.AI_Enabled)
+                    if (joyplay1)
+                    {
+                        joypad1.update();
+                        if (joypad1.up)
+                        {
+                            theGame.MoveCursor('N');
+                            repeatingP1N=true;
+                            timeHeldP1N=SDL_GetTicks();
+                            timesRepeatedP1N=0;
+                        }
+                        if (joypad1.down)
+                        {
+                            theGame.MoveCursor('S');
+                            repeatingP1S=true;
+                            timeHeldP1S=SDL_GetTicks();
+                            timesRepeatedP1S=0;
+                        }
+                        if (joypad1.left)
+                        {
+                            theGame.MoveCursor('W');
+                            repeatingP1W=true;
+                            timeHeldP1W=SDL_GetTicks();
+                            timesRepeatedP1W=0;
+                        }
+                        if (joypad1.right)
+                        {
+                            theGame.MoveCursor('E');
+                            repeatingP1E=true;
+                            timeHeldP1E=SDL_GetTicks();
+                            timesRepeatedP1E=0;
+                        }
+                        if (joypad1.but1)
+                            theGame.SwitchAtCursor();
+                        if (joypad1.but2)
+                            theGame.PushLine();
+                    }
+                    else
+                    {
+                        joypad1.update();
+                        if (joypad1.up)
+                        {
+                            theGame2.MoveCursor('N');
+                            repeatingP2N=true;
+                            timeHeldP2N=SDL_GetTicks();
+                            timesRepeatedP2N=0;
+                        }
+                        if (joypad1.down)
+                        {
+                            theGame2.MoveCursor('S');
+                            repeatingP2S=true;
+                            timeHeldP2S=SDL_GetTicks();
+                            timesRepeatedP2S=0;
+                        }
+                        if (joypad1.left)
+                        {
+                            theGame2.MoveCursor('W');
+                            repeatingP2W=true;
+                            timeHeldP2W=SDL_GetTicks();
+                            timesRepeatedP2W=0;
+                        }
+                        if (joypad1.right)
+                        {
+                            theGame2.MoveCursor('E');
+                            repeatingP2E=true;
+                            timeHeldP2E=SDL_GetTicks();
+                            timesRepeatedP2E=0;
+                        }
+                        if (joypad1.but1)
+                            theGame2.SwitchAtCursor();
+                        if (joypad1.but2)
+                            theGame2.PushLine();
+                    }
+                if (joypad2.working && !theGame2.AI_Enabled)
+                    if (!joyplay2)
+                    {
+                        joypad2.update();
+                        if (joypad2.up)
+                        {
+                            theGame.MoveCursor('N');
+                            repeatingP1N=true;
+                            timeHeldP1N=SDL_GetTicks();
+                            timesRepeatedP1N=0;
+                        }
+                        if (joypad2.down)
+                        {
+                            theGame.MoveCursor('S');
+                            repeatingP1S=true;
+                            timeHeldP1S=SDL_GetTicks();
+                            timesRepeatedP1S=0;
+                        }
+                        if (joypad2.left)
+                        {
+                            theGame.MoveCursor('W');
+                            repeatingP1W=true;
+                            timeHeldP1W=SDL_GetTicks();
+                            timesRepeatedP1W=0;
+                        }
+                        if (joypad2.right)
+                        {
+                            theGame.MoveCursor('E');
+                            repeatingP1E=true;
+                            timeHeldP1E=SDL_GetTicks();
+                            timesRepeatedP1E=0;
+                        }
+                        if (joypad2.but1)
+                            theGame.SwitchAtCursor();
+                        if (joypad2.but2)
+                            theGame.PushLine();
+                    }
+                    else
+                    {
+                        joypad2.update();
+                        if (joypad2.up)
+                        {
+                            theGame2.MoveCursor('N');
+                            repeatingP2N=true;
+                            timeHeldP2N=SDL_GetTicks();
+                            timesRepeatedP2N=0;
+                        }
+                        if (joypad2.down)
+                        {
+                            theGame2.MoveCursor('S');
+                            repeatingP2S=true;
+                            timeHeldP2S=SDL_GetTicks();
+                            timesRepeatedP2S=0;
+                        }
+                        if (joypad2.left)
+                        {
+                            theGame2.MoveCursor('W');
+                            repeatingP2W=true;
+                            timeHeldP2W=SDL_GetTicks();
+                            timesRepeatedP2W=0;
+                        }
+                        if (joypad2.right)
+                        {
+                            theGame2.MoveCursor('E');
+                            repeatingP2E=true;
+                            timeHeldP2E=SDL_GetTicks();
+                            timesRepeatedP2E=0;
+                        }
+                        if (joypad2.but1)
+                            theGame2.SwitchAtCursor();
+                        if (joypad2.but2)
+                            theGame2.PushLine();
+                    }
+            }
+
+            /**********************************************************************
+            ***************************** Joypad end ******************************
+            **********************************************************************/
+
+
+            keys = SDL_GetKeyState(NULL);
+
+            SDL_GetMouseState(&mousex,&mousey);
+
+            /********************************************************************
+            **************** Here comes mouse play ******************************
+            ********************************************************************/
+
+            if ((mouseplay1)&&((!editorMode)&&(!theGame.AI_Enabled)||(editorModeTest))) //player 1
+                if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
+                {
+                    int yLine, xLine;
+                    yLine = ((100+600)-(mousey-100+theGame.pixels))/50;
+                    xLine = (mousex-50+25)/50;
+                    yLine-=2;
+                    xLine-=1;
+                    if ((yLine>10)&&(theGame.TowerHeight<12))
+                        yLine=10;
+                    if (((theGame.pixels==50)||(theGame.pixels==0)) && (yLine>11))
+                        yLine=11;
+                    if (yLine<0)
+                        yLine=0;
+                    if (xLine<0)
+                        xLine=0;
+                    if (xLine>4)
+                        xLine=4;
+                    theGame.cursorx=xLine;
+                    theGame.cursory=yLine;
+                }
+
+            if ((mouseplay2)&&(!editorMode)&&(!theGame2.AI_Enabled)) //player 2
+                if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
+                {
+                    int yLine, xLine;
+                    yLine = ((100+600)-(mousey-100+theGame2.pixels))/50;
+                    xLine = (mousex-(xsize-500)+25)/50;
+                    yLine-=2;
+                    xLine-=1;
+                    if ((yLine>10)&&(theGame2.TowerHeight<12))
+                        yLine=10;
+                    if (((theGame2.pixels==50)||(theGame2.pixels==0)) && (yLine>11))
+                        yLine=11;
+                    if (yLine<0)
+                        yLine=0;
+                    if (xLine<0)
+                        xLine=0;
+                    if (xLine>4)
+                        xLine=4;
+                    theGame2.cursorx=xLine;
+                    theGame2.cursory=yLine;
+                }
+
+            /********************************************************************
+            **************** Here ends mouse play *******************************
+            ********************************************************************/
+
+            // If the mouse button is released, make bMouseUp equal true
+            if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+            {
+                bMouseUp=true;
+            }
+
+            // If the mouse button 2 is released, make bMouseUp2 equal true
+            if ((SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))!=SDL_BUTTON(3))
+            {
+                bMouseUp2=true;
+            }
+
+            if ((!singlePuzzle)&&(!editorMode))
+            {
+                //read mouse events
+                if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+                {
+                    bMouseUp = false;
+                    DrawIMG(background, screen, 0, 0);
+                    if ((0<mousex) && (mousex<120) && (0<mousey) && (mousey<40) &&(!networkActive) )
+                    {
+                        //New game clicked
+                        bool state = (!bNewGameOpen);
+                        closeAllMenus();
+                        bNewGameOpen = state; //theGame.NewGame(50,100);
+                        showOptions = false;
+                        showHighscores = false;
+                    }
+                    else
+#ifdef NETWORK
+                        if ((0<mousex) && (mousex<120) && (0<mousey) && (mousey<40) &&(networkActive))
+                        {
+                            //Disconnect clicked!
+                            cout << "Disconnect clicked!" << endl;
+                            nt.ntDisconnect();
+                        }
+                        else
+#endif
+                            if ((0<mousex) && (mousex<120) && (40<mousey) && (mousey<80) && (bNewGameOpen) &&(!networkActive))
+                            {
+                                //1player
+                                b1playerOpen = (!b1playerOpen);
+                                b2playersOpen = false;
+#ifdef NETWORK
+                                bNetworkOpen = false;
+#endif
+                            }
+                            else
+                                if ((0<mousex) && (mousex<120) && (80<mousey) && (mousey<120) && (bNewGameOpen) &&(!networkActive))
+                                {
+                                    //2player
+                                    b2playersOpen = (!b2playersOpen);
+                                    b1playerOpen = false;
+#ifdef NETWORK
+                                    bNetworkOpen = false;
+#endif
+                                }
+#ifdef NETWORK
+                                else
+                                    if ((0<mousex) && (mousex<120) && (120<mousey) && (mousey<160) && (bNewGameOpen) &&(!networkActive))
+                                    {
+                                        //Network
+                                        b1playerOpen = false;
+                                        b2playersOpen = false;
+                                        bNetworkOpen = (!bNetworkOpen);
+                                    }
+#endif
+                                    else
+                                        if ((120<mousex) && (mousex<240) && (40<mousey) && (mousey<80) && (b1playerOpen) &&(!networkActive))
+                                        {
+                                            //1 player - endless
+                                            theGame.NewGame(50,100);
+                                            theGame.putStartBlocks();
+                                            bNewGameOpen = false;
+                                            b1playerOpen = false;
+                                            twoPlayers =false;
+                                            theGame2.SetGameOver();
+                                            showGame = true;
+                                        }
+                                        else
+                                            if ((120<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )
+                                            {
+                                                //1 player - time trial
+                                                theGame.NewGame(50,100);
+                                                theGame.timetrial=true;
+                                                theGame.putStartBlocks();
+                                                bNewGameOpen = false;
+                                                b1playerOpen = false;
+                                                twoPlayers =false;
+                                                theGame2.SetGameOver();
+                                                showGame = true;
+                                            }
+                                            else
+                                                if ((120<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b1playerOpen)&&(!networkActive) )
+                                                {
+                                                    //1 player - stage clear
+                                                    bNewGameOpen = false;
+                                                    b1playerOpen = false;
+                                                    int myLevel = StageLevelSelect();
+                                                    theGame.NewStageGame(myLevel,50,100);
+                                                    MakeBackground(xsize,ysize,theGame,theGame2);
+                                                    DrawIMG(background, screen, 0, 0);
+                                                    twoPlayers =false;
+                                                    theGame2.SetGameOver();
+                                                    showGame = true;
+                                                    vsMode = false;
+                                                }
+                                                else
+                                                    if ((120<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (b1playerOpen))
+                                                    {
+                                                        //1 player - puzzle
+                                                        bNewGameOpen = false;
+                                                        b1playerOpen = false;
+                                                        int myLevel = PuzzleLevelSelect();
+                                                        theGame.NewPuzzleGame(myLevel,50,100);
+                                                        MakeBackground(xsize,ysize,theGame,theGame2);
+                                                        DrawIMG(background, screen, 0, 0);
+                                                        twoPlayers =false;
+                                                        theGame2.SetGameOver();
+                                                        showGame = true;
+                                                        vsMode = false;
+                                                    }
+                                                    else
+                                                        if ((120<mousex) && (mousex<240) && (200<mousey) && (mousey<240) && (b1playerOpen))
+                                                        {
+                                                            //1 player - Vs mode
+                                                            bNewGameOpen = false;
+                                                            b1playerOpen = false;
+                                                            int theAIlevel = startSingleVs();
+                                                            theGame.NewVsGame(50,100,&theGame2);
+                                                            theGame2.NewVsGame(xsize-500,100,&theGame);
+                                                            MakeBackground(xsize,ysize,theGame,theGame2);
+                                                            DrawIMG(background, screen, 0, 0);
+                                                            twoPlayers = true; //Single player, but AI plays
+                                                            showGame = true;
+                                                            vsMode = true;
+                                                            theGame2.AI_Enabled=true; //Of course we need an AI
+                                                            theGame2.setAIlevel((Uint8)theAIlevel);
+                                                            int theTime = time(0);
+                                                            theGame.putStartBlocks(theTime);
+                                                            theGame2.putStartBlocks(theTime);
+                                                        }
+                                                        else
+                                                            if ((120<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b2playersOpen))
+                                                            {
+                                                                //2 player - time trial
+                                                                theGame.NewGame(50,100);
+                                                                theGame.timetrial=true;
+                                                                bNewGameOpen = false;
+                                                                b2playersOpen = false;
+                                                                theGame.NewGame(50,100);
+                                                                theGame2.NewGame(xsize-500,100);
+                                                                theGame.timetrial = true;
+                                                                theGame2.timetrial = true;
+                                                                int theTime = time(0);
+                                                                theGame.putStartBlocks(theTime);
+                                                                theGame2.putStartBlocks(theTime);
+                                                                theGame.setGameSpeed(player1Speed);
+                                                                theGame2.setGameSpeed(player2Speed);
+                                                                theGame.setHandicap(player1handicap);
+                                                                theGame2.setHandicap(player2handicap);
+                                                                theGame.AI_Enabled = player1AI;
+                                                                theGame2.AI_Enabled = player2AI;
+                                                                theGame.setAIlevel(player1AIlevel);
+                                                                theGame2.setAIlevel(player2AIlevel);
+                                                                twoPlayers = true;
+                                                            }
+                                                            else
+                                                                if ((120<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b2playersOpen))
+                                                                {
+                                                                    //2 player - VsMode
+                                                                    theGame.NewVsGame(50,100,&theGame2);
+                                                                    theGame2.NewVsGame(xsize-500,100,&theGame);
+                                                                    bNewGameOpen = false;
+                                                                    vsMode = true;
+                                                                    twoPlayers = true;
+                                                                    b2playersOpen = false;
+                                                                    theGame.setGameSpeed(player1Speed);
+                                                                    theGame2.setGameSpeed(player2Speed);
+                                                                    theGame.setHandicap(player1handicap);
+                                                                    theGame2.setHandicap(player2handicap);
+                                                                    theGame.AI_Enabled = player1AI;
+                                                                    theGame2.AI_Enabled = player2AI;
+                                                                    theGame.setAIlevel(player1AIlevel);
+                                                                    theGame2.setAIlevel(player2AIlevel);
+                                                                    int theTime = time(0);
+                                                                    theGame.putStartBlocks(theTime);
+                                                                    theGame2.putStartBlocks(theTime);
+                                                                }
+#ifdef NETWORK
+                                                                else
+                                                                    if ((120<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (bNetworkOpen))
+                                                                    {
+                                                                        //Host
+                                                                        cout << "Host" << endl;
+                                                                        closeAllMenus();
+                                                                        theGame.SetGameOver();
+                                                                        theGame2.SetGameOver();
+                                                                        nt.startServer();
+                                                                    }
+                                                                    else
+                                                                        if ((120<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (bNetworkOpen))
+                                                                        {
+                                                                            //Connect
+                                                                            cout << "Connect" << endl;
+                                                                            closeAllMenus();
+                                                                            theGame.SetGameOver();
+                                                                            theGame2.SetGameOver();
+                                                                            if (OpenDialogbox(200,100,serverAddress))
+                                                                            {
+                                                                                char buf[30];
+                                                                                memcpy(buf,serverAddress,30);
+                                                                                nt.connectToServer(strtok(buf," "));
+                                                                            }
+                                                                            while ( SDL_PollEvent(&event) ); //If the user have pressed ESC or the like
+                                                                        }
+#endif
+                                                                        else
+                                                                            if ((120<mousex) && (mousex<2*120) && (0<mousey) && (mousey<40) &&(!networkActive))
+                                                                            {
+                                                                                //options button clicked
+                                                                                if (bOptionsOpen)
+                                                                                {
+                                                                                    closeAllMenus();
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    closeAllMenus();
+                                                                                    bOptionsOpen = true;
+                                                                                    DrawIMG(background, screen, 0, 0);
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                                if ((120<mousex) && (mousex<2*120) && (40<mousey) && (mousey<80) && (bOptionsOpen) )
+                                                                                {
+                                                                                    //Configure button clicked
+                                                                                    closeAllMenus();
+                                                                                    if (!showOptions) {
+                                                                                        showOptions = true;
+                                                                                        showHighscores = false;
+                                                                                    }
+                                                                                    else showOptions = false;
+                                                                                    DrawIMG(background, screen, 0, 0);
+                                                                                }
+                                                                                else
+                                                                                    if ((120<mousex) && (mousex<2*120) && (80<mousey) && (mousey<120) && (bOptionsOpen) )
+                                                                                    {
+                                                                                        //Configure button clicked
+                                                                                        closeAllMenus();
+                                                                                        changePuzzleLevels();
+                                                                                    }
+                                                                                    else
+                                                                                        if ((120<mousex) && (mousex<2*120) && (120<mousey) && (mousey<160) && (bOptionsOpen) )
+                                                                                        {
+                                                                                            //vsMode button clicked
+                                                                                            closeAllMenus();
+                                                                                            startVsMenu();
+                                                                                        }
+                                                                                        else
+                                                                                        if ((120<mousex) && (mousex<2*120) && (160<mousey) && (mousey<200) && (bOptionsOpen) )
+                                                                                        {
+                                                                                            //selectThemClicked
+                                                                                            closeAllMenus();
+                                                                                            char temp[30];
+                                                                                            SelectThemeDialogbox(200,100,temp);
+                                                                                        }
+                                                                                        else
+                                                                                            if ((120*2<mousex) && (mousex<3*120) && (0<mousey) && (mousey<40) &&(!networkActive))
+                                                                                            {
+                                                                                                //highscore button clicked
+                                                                                                bool state = showHighscores;
+                                                                                                closeAllMenus();
+                                                                                                if (!state) {
+                                                                                                    showHighscores = true;
+                                                                                                    showOptions = false;
+                                                                                                }
+                                                                                                DrawIMG(background, screen, 0, 0);
+                                                                                            }
+                                                                                            else
+                                                                                                if ((360<mousex) && (mousex<4*120) && (0<mousey) && (mousey<40) &&(!networkActive))
+                                                                                                {
+                                                                                                    //Replay clicked!
+                                                                                                    bool state = (!bReplayOpen);
+                                                                                                    closeAllMenus();
+                                                                                                    bReplayOpen = state; //theGame.NewGame(50,100);
+                                                                                                    showOptions = false;
+                                                                                                    showHighscores = false;
+                                                                                                }
+                                                                                                else
+                                                                                                    if ((360<mousex) && (mousex<4*120) && (40<mousey) && (mousey<80) &&(bReplayOpen))
+                                                                                                    {
+                                                                                                        //Replay->Save clicked!
+                                                                                                        //cout << "Replay->Save clicked" << endl;
+                                                                                                        char buf[30];
+                                                                                                        for (int i=0;i<29;i++)buf[i]=' ';
+                                                                                                        buf[30]=0;
+                                                                                                        OpenDialogbox(200,100,buf);
+                                                                                                        for (int i=28;buf[i]==' ';i--)
+                                                                                                            buf[i]=0;
+#ifdef __unix__
+                                                                                                        string saveHere = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/replays/"+(string)buf;
+#elif WIN32
+                                                                                                        string saveHere = home+(string)"/My Games/blockattack/replays/"+(string)buf;
+#else
+                                                                                                        string saveHere = (string)"./replays"+(string)buf;
+#endif
+                                                                                                        if (lastNrOfPlayers<2)
+                                                                                                            theGame.theReplay.saveReplay(saveHere);
+                                                                                                        else
+                                                                                                            theGame.theReplay.saveReplay(saveHere,theGame2.theReplay);
+
+                                                                                                        closeAllMenus();
+                                                                                                    }
+                                                                                                    else
+                                                                                                        if ((360<mousex) && (mousex<4*120) && (80<mousey) && (mousey<120)&&(bReplayOpen))
+                                                                                                        {
+                                                                                                            //Replay->Load clicked!
+                                                                                                            //cout << "Replay->Load clicked" << endl;
+
+                                                                                                            char buf[30];
+                                                                                                            for (int i=0;i<29;i++)buf[i]=' ';
+                                                                                                            buf[30]=0;
+                                                                                                            if (OpenReplayDialogbox(50,100,buf))
+                                                                                                            {
+                                                                                                                //cout << "Good way" << endl;
+                                                                                                                for (int i=28;buf[i]==' ';i--)
+                                                                                                                    buf[i]=0;
+#ifdef __unix__
+                                                                                                                string loadThis = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/replays/"+(string)buf;
+#elif WIN32
+                                                                                                                string loadThis = home+(string)"/My Games/blockattack/replays/"+(string)buf;
+#else
+                                                                                                                string loadThis = (string)"./replays/"+(string)buf;
+#endif
+                                                                                                                ifstream replayFileIn;
+                                                                                                                replayFileIn.open(loadThis.c_str(),ios::binary);
+                                                                                                                bool play2 = false;
+                                                                                                                if (replayFileIn)
+                                                                                                                {
+                                                                                                                    Uint8 version = 0;
+                                                                                                                    replayFileIn.read(reinterpret_cast<char*>(&version),sizeof(Uint8));                                                                                                                  replayFileIn.close();
+                                                                                                                    Replay r1;
+                                                                                                                    r1.loadReplay(loadThis);
+                                                                                                                    Replay r2;
+                                                                                                                    play2 = r2.loadReplay2(loadThis);
+                                                                                                                    theGame.playReplay(50,100); //Fejlen sker her
+                                                                                                                    theGame.theReplay = r1;
+                                                                                                                    if (play2)
+                                                                                                                    {
+                                                                                                                        theGame2.playReplay(xsize-500,100);
+                                                                                                                        theGame2.theReplay = r2;
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                        theGame2.SetGameOver();
+                                                                                                                    cout << "Replay should have been read" << endl;
+                                                                                                                }
+                                                                                                            }
+                                                                                                            closeAllMenus();
+                                                                                                        }
+                                                                                                        else
+                                                                                                            if ((xsize-120<mousex) && (xsize-20>mousex) && (ysize-120<mousey) && (ysize-20>mousey))
+                                                                                                            {
+                                                                                                                //Exit clicked
+                                                                                                                done=1;
+                                                                                                            }
+                                                                                                            else
+                                                                                                                if ((showOptions) && (mousex>500) && (mousex<560) && (mousey>220) && (mousey<260))
+                                                                                                                {
+                                                                                                                    MusicEnabled = !MusicEnabled;
+                                                                                                                    if (!MusicEnabled) Mix_FadeOutMusic(500);
+                                                                                                                }
+                    if ((showOptions) && (mousex>500) && (mousex<560) && (mousey>270) && (mousey<310))
+                    {
+                        SoundEnabled = !SoundEnabled;
+                    }
+                    if ((showOptions) && (mousex>500) && (mousex<560) && (mousey>320) && (mousey<360))
+                    {
+                        //Fullscreen
+                        bFullscreen = !bFullscreen;
+#if defined(WIN32)
+                        if (bFullscreen) screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
+                        else screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
+                        DrawIMG(background, screen, 0, 0);
+#else
+                        SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
+#endif
+                        SDL_ShowCursor(SDL_DISABLE);
+                    }
+
+                    if ((showOptions) && (mousex>330) && (mousex<470) && (mousey>535) && (mousey<585))
+                    {
+                        //change name
+                        bScreenLocked = true;
+                        showDialog = true;
+                        if (OpenDialogbox(200,100,player1name))
+                            strcpy(theGame.name, player1name);
+                        else
+                            strcpy(player1name,theGame.name);
+                        bScreenLocked = false;
+                        showDialog = false;
+                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        DrawIMG(background, screen, 0, 0);
+                    }
+                    if ((showOptions) && (mousex>330) && (mousex<470) && (mousey>600) && (mousey<640))
+                    {
+                        //change name
+                        bScreenLocked = true;
+                        showDialog = true;
+                        if (OpenDialogbox(200,100,player2name))
+                            strcpy(theGame2.name, player2name);
+                        else
+                            strcpy(player2name,theGame2.name);
+                        bScreenLocked = false;
+                        showDialog = false;
+                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        DrawIMG(background, screen, 0, 0);
+                    }
+                    if ((showOptions) && (mousex>510) && (mousex<630) && (mousey>535) && (mousey<585))
+                    {
+                        //changeControls
+                        OpenControlsBox(200,100,0);
+                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        DrawIMG(background, screen, 0, 0);
+                    }
+                    if ((showOptions) && (mousex>510) && (mousex<630) && (mousey>600) && (mousey<640))
+                    {
+                        //changeControls
+                        OpenControlsBox(200,100,2);
+                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        DrawIMG(background, screen, 0, 0);
+                    }
+                    if ((showHighscores)&&(((mousex>150)&&(mousex<173))||((mousex>628)&&(mousex<650)))&&(mousey<652)&&(mousey>630))
+                    {
+                        //small arrors on Highscore board clicked!
+                        showEndless = !showEndless;
+                        DrawIMG(background, screen, 0, 0);
+                    }
+
+                    /********************************************************************
+                    **************** Here comes mouse play ******************************
+                    ********************************************************************/
+                    if ((!showOptions)&&(!showHighscores))
+                    {
+                        if (mouseplay1 && !theGame.AI_Enabled) //player 1
+                            if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
+                            {
+                                theGame.SwitchAtCursor();
+                            }
+                        if (mouseplay2 && !theGame2.AI_Enabled) //player 2
+                            if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
+                            {
+                                theGame2.SwitchAtCursor();
+                            }
+                    }
+                    /********************************************************************
+                    **************** Here ends mouse play *******************************
+                    ********************************************************************/
+
+                    if(stageButtonStatus != SBdontShow && (mousex > theGame.topx+cordNextButton.x)
+                            &&(mousex < theGame.topx+cordNextButton.x+cordNextButton.xsize)
+                            &&(mousey > theGame.topy+cordNextButton.y)&&(mousey < theGame.topy+cordNextButton.y+cordNextButton.ysize))
+                    {
+                        //Clicked the next button after a stage clear or puzzle
+                        theGame.nextLevel();
+                    }
+                    if(stageButtonStatus != SBdontShow && (mousex > theGame.topx+cordRetryButton .x)
+                            &&(mousex < theGame.topx+cordRetryButton.x+cordRetryButton.xsize)
+                            &&(mousey > theGame.topy+cordRetryButton.y)&&(mousey < theGame.topy+cordRetryButton.y+cordRetryButton.ysize))
+                    {
+                        //Clicked the retry button
+                        theGame.retryLevel();
+                    }
+                        
+                    
+                    //cout << "Mouse x: " << mousex << ", mouse y: " << mousey << endl;
+                }
+
+                //Mouse button 2:
+                if ((SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(3))==SDL_BUTTON(3) && bMouseUp2)
+                {
+                    bMouseUp2=false; //The button is pressed
+                    /********************************************************************
+                    **************** Here comes mouse play ******************************
+                    ********************************************************************/
+                    if ((!showOptions)&&(!showHighscores))
+                    {
+                        if (mouseplay1 && !theGame.AI_Enabled) //player 1
+                            if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
+                            {
+                                theGame.PushLine();
+                            }
+                        if (mouseplay2 && !theGame2.AI_Enabled) //player 2
+                            if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
+                            {
+                                theGame2.PushLine();
+                            }
+                    }
+                    /********************************************************************
+                    **************** Here ends mouse play *******************************
+                    ********************************************************************/
+                }
+            } //if !singlePuzzle
+            else
+            {
+
+            }
+        } //if !bScreenBocked;
+
+
+        //Sees if music is stopped and if music is enabled
+        if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled))
+        {
+            // then starts playing it.
+            Mix_PlayMusic(bgMusic, 0); //music loop
+        }
+
+        //Updates the objects
+        theGame.Update();
+        theGame2.Update();
+
+//see if anyone has won (two players only)
+        if (!networkPlay)
+            if (twoPlayers)
+            {
+                lastNrOfPlayers = 2;
+                if ((theGame.bGameOver) && (theGame2.bGameOver))
+                {
+                    if (theGame.score+theGame.handicap>theGame2.score+theGame2.handicap)
+                        theGame.setPlayerWon();
+                    else
+                        if (theGame.score+theGame.handicap<theGame2.score+theGame2.handicap)
+                            theGame2.setPlayerWon();
+                        else {
+                            theGame.setDraw();
+                            theGame2.setDraw();
+                        }
+                    twoPlayers = false;
+                }
+                if ((theGame.bGameOver) && (!theGame2.bGameOver))
+                {
+                    theGame2.setPlayerWon();
+                    twoPlayers = false;
+                }
+                if ((!theGame.bGameOver) && (theGame2.bGameOver))
+                {
+                    theGame.setPlayerWon();
+                    twoPlayers = false;
+                }
+            }
+
+        //Once evrything has been checked, update graphics
+        DrawEverything(xsize,ysize,theGame, theGame2);
+        SDL_GetMouseState(&mousex,&mousey);
+        //Remember mouse placement
+        oldMousex = mousex;
+        oldMousey = mousey;
+        //Draw the mouse:
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen);
+    } //game loop
+
+
+
+    //Saves options
+    if (!editorMode)
+    {
+        ofstream optionsFileOut;
+        optionsFileOut.open(optionsPath.c_str(),ios::binary|ios::trunc);
+        if (optionsFileOut)
+        {
+            //writes data: xsize,ysize,fullescreen, player1keys, player2keys, MusicEnabled, SoundEnabled,player1name,player2name
+            optionsFileOut.write(reinterpret_cast<char*>(&xsize),sizeof(int));
+            optionsFileOut.write(reinterpret_cast<char*>(&ysize),sizeof(int));
+            optionsFileOut.write(reinterpret_cast<char*>(&bFullscreen),sizeof(bool));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].up), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].down), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].left), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].right), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].change), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].push), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].up), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].down), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].left), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].right), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].change), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].push), sizeof(SDLKey));
+            optionsFileOut.write(reinterpret_cast<char*>(&MusicEnabled),sizeof(bool));
+            optionsFileOut.write(reinterpret_cast<char*>(&SoundEnabled),sizeof(bool));
+            optionsFileOut.write(player1name,30*sizeof(char));
+            optionsFileOut.write(player2name,30*sizeof(char));
+            optionsFileOut.write(reinterpret_cast<char*>(&mouseplay1),sizeof(bool));
+            optionsFileOut.write(reinterpret_cast<char*>(&mouseplay2),sizeof(bool));
+            optionsFileOut.write(reinterpret_cast<char*>(&joyplay1),sizeof(bool));
+            optionsFileOut.write(reinterpret_cast<char*>(&joyplay2),sizeof(bool));
+            optionsFileOut.close();
+            cout << "options written to file" << endl;
+        }
+        else
+        {
+            cout << "Failed to write options" << endl;
+        }
+    }
+
+    Stats::getInstance()->save();
+    
+    //Frees memory from music and fonts
+    //This is done after writing of options since it often crashes the program :(
+    UnloadImages();
+    
+    
+    //calculate uptime:
+    //int hours, mins, secs, 
+    int time;
+    commonTime ct;
+    ct.days = 0;
+    time = SDL_GetTicks();
+    ct.hours = time/(1000*60*60);
+    time = time % (1000*60*60);
+    ct.minutes = time/(1000*60);
+    time = time % (1000*60);
+    ct.seconds = time/1000;
+
+    cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
+        
+    ct = addTotalTime(ct);
+    
+    cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
+    
+    return 0;
+}

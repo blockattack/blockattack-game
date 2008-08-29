@@ -1,0 +1,12 @@
+Block Attack - Rise of the Blocks by
+Poul Sander <blockattack@poulsander.com>
+http://blockattack.sf.net
+
+Gonéri Le Bouder
+Done some work for making it work with SHAREDIR and all Scons scripts 
+
+Contains SFont - SDL Font Library by
+Karl Bartel <karlb@gmx.net>
+
+Jordà Polo
+Two patches
