@@ -5,15 +5,20 @@ INST=/games/blockattack
 
 standard:
 	@echo "Removing old files (if they exists)"
-	@rm -f *.o
+	@rm -f source/code/*.o
 	@rm -f ./Game/blockattack
 	@rm -f ./Game/starter
 	@rm -f ./Game/runme.sh
 	@echo "Done deleting files"
 	@echo "Now compiling..."
 	@make -C source/code -f block.make
-	@rm -f *.o
+	@rm -f source/code/*.o
 	@echo "Everything has been compiled!"
+	
+clean:
+	rm -f ./source/code/*.o
+	rm -f ./source/code/blockattack #Build by scons
+	rm -f ./Game/blockattack #build by this
 	
 #makeinstall and install doesn't work, gfx dictory doesn't get copied!
 #makeinstall:	

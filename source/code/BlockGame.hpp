@@ -915,7 +915,7 @@ public:
 
                         theBallManeger.addBall(topx+40+i*50, topy+600-j*50, true, board[i][j]%10);
                         theBallManeger.addBall(topx+i*50, topy+600-j*50, false, board[i][j]%10);
-                        theExplosionManeger.addExplosion(topx-10+i*50, topy+570-j*50);
+                        theExplosionManeger.addExplosion(topx-10+i*50, topy+590-j*50);
                         board[i][j]=-2;
                     }
             }
