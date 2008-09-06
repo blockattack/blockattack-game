@@ -99,7 +99,7 @@ commonTime addTotalTime(commonTime toAdd)
     
     ct.hours += toAdd.hours;
     ct.days += ct.hours/24;
-    ct.minutes += ct.hours%24;
+    ct.hours = ct.hours%24;
     
     ct.days += toAdd.days;
     
