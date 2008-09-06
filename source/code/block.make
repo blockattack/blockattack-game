@@ -8,7 +8,7 @@ highscore.o: highscore.h highscore.cpp
 	g++ -g -c highscore.cpp
 
 SFont.o: SFont.h SFont.c
-	g++ -g -c SFont.c `sdl-config --cflags`
+	gcc -g -c SFont.c `sdl-config --cflags`
 
 ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
 	g++ -g -c ReadKeyboard.cpp `sdl-config --cflags`
