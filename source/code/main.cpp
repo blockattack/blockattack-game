@@ -24,13 +24,27 @@ Copyright (C) 2008 Poul Sander
     http://blockattack.sf.net
 */
 
-#define VERSION_NUMBER "version 1.4.0 BETA"
+#include <string>
+
+
+#ifndef VERSION_NUMBER
+    #define VERSION_NUMBER "version 1.4.0 BETA"
+#endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
-//#define DEBUG
+#ifndef DEBUG
+    #define DEBUG 1
+#endif
 
 //If NETWORK id defined: enet will be used
-#define NETWORK
+#ifndef NETWORK
+    #define NETWORK 1
+#endif
+
+//Build-in level editor is still experimental!
+#ifndef LEVELEDITOR
+    #define LEVELEDITOR 0
+#endif
 
 //Macros to convert surfaces (for faster drawing)
 #define CONVERT(n) tmp = SDL_DisplayFormat(n); SDL_FreeSurface(n); n = tmp
@@ -56,7 +70,7 @@ Copyright (C) 2008 Poul Sander
 
 
 //enet things
-#ifdef NETWORK
+#if NETWORK
 #include "enet/enet.h"
 //#include "enet/list.h"
 //#include "enet/protocol.h"
@@ -70,7 +84,9 @@ Copyright (C) 2008 Poul Sander
 #include "listFiles.h"	    //Used to show files on screen
 #include "replay.h"			//Used for replays
 #include "stats.h"          //Saves general stats 
-//#include "editor/editorMain.hpp" //The level editor
+#if LEVELEDITOR
+#include "editor/editorMain.hpp" //The level editor
+#endif
 #include "uploadReplay.h"   //Takes care of everything libcurl related
 
 #include "common.h"
@@ -89,7 +105,7 @@ void closeAllMenus()
     b1playerOpen=false;			//show submenu
     b2playersOpen=false;
     bReplayOpen = false;
-#ifdef NETWORK
+#if NETWORK
     bNetworkOpen = false;
 #endif
     showOptions = false;
@@ -102,19 +118,14 @@ void closeAllMenus()
 //Because we use the SHAREDIR we need:
 SDL_Surface * IMG_Load2(char* path) {
 
-    char * tmp;
+    string tmp = "";
     SDL_Surface * ret=NULL;
-    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
-    strcpy(tmp, sharedir);
-    strcat(tmp, "/");
-    strcat(tmp, path);
-#ifdef DEBUG
-    printf("loading %s\n",tmp);
+    tmp = (string)""+sharedir+(string)"/"+path;
+#if DEBUG
+    cout << "loading " << tmp << endl;
 #endif
-    if (!(ret = IMG_Load(tmp)))
+    if (!(ret = IMG_Load(tmp.c_str())))
         ret = IMG_Load(path);
-
-    free(tmp);
     return ret;
 }
 
@@ -122,14 +133,14 @@ SDL_Surface * IMG_Load2(char* path) {
 bool reloadIMG(SDL_Surface **surface2replace, string replaceWith)
 {
     string fullPath = SHAREDIR+(string)"/themes/"+replaceWith;
-    #ifdef DEBUG
+    #if DEBUG
     cout << "Trying to load " << fullPath << endl;
     #endif
     SDL_Surface * temp = NULL;
     temp = IMG_Load(fullPath.c_str());
     if(temp) //If we loaded a new image
     {
-        #ifdef DEBUG
+        #if DEBUG
         cout << "Found in game folder: " << fullPath << endl;
         #endif
         SDL_FreeSurface(*surface2replace);
@@ -139,13 +150,13 @@ bool reloadIMG(SDL_Surface **surface2replace, string replaceWith)
     //Stop if under windows:
     #ifdef __unix__
     fullPath = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes/"+replaceWith;
-    #ifdef DEBUG
+    #if DEBUG
     cout << "Trying to load " << fullPath << endl;
     #endif
     temp = IMG_Load(fullPath.c_str());
     if(temp) //If we loaded a new image
     {
-        #ifdef DEBUG
+        #if DEBUG
         cout << "Found in home folder: " << fullPath << endl;
         #endif
         SDL_FreeSurface(*surface2replace);
@@ -190,7 +201,7 @@ void loadTheme(string themeName)
     CONVERTA(bSave);
     reloadIMG(&bLoad,themeName+"/bLoad.png");
     CONVERTA(bLoad);
-#ifdef NETWORK
+#if NETWORK
     reloadIMG(&bNetwork,themeName+"/bNetwork.png");
     CONVERTA(bNetwork);
     reloadIMG(&bHost,themeName+"/bHost.png");
@@ -331,9 +342,12 @@ void loadTheme(string themeName)
      *Fonts is a special case
      */
     //First we free them:
-    /*SFont_FreeFont(fBlueFont);
+    SFont_FreeFont(fBlueFont);
     SFont_FreeFont(fSmallFont);
-    //Then we reload the images:
+//SFont frees the surfaces then it frees the Font! So we start by loading the fonts we know are there:
+    iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png");
+    iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png");
+//Then we reload the images:
     reloadIMG(&iBlueFont,themeName+"/24P_Arial_Blue.png");
     reloadIMG(&iSmallFont,themeName+"/14P_Arial_Angle_Red.png");
     //Then we convert them:
@@ -341,9 +355,10 @@ void loadTheme(string themeName)
     CONVERTA(iSmallFont);
     //Then create the fonts again:
     fBlueFont = SFont_InitFont(iBlueFont);
-    fSmallFont = SFont_InitFont(iSmallFont);*/
+    fSmallFont = SFont_InitFont(iSmallFont);
     //Editor:
-    /*CONVERTA(bCreateFile);
+    #if LEVELEDITOR
+    CONVERTA(bCreateFile);
     CONVERTA(bDeletePuzzle);
     CONVERTA(bLoadFile);
     CONVERTA(bMoveBack);
@@ -356,8 +371,9 @@ void loadTheme(string themeName)
     CONVERTA(bSaveFileAs);
     CONVERTA(bSavePuzzle);
     CONVERTA(bSaveToFile);
-    CONVERTA(bTestPuzzle);*/
-    #ifdef DEBUG
+    CONVERTA(bTestPuzzle);
+    #endif
+    #if DEBUG
     cout << "Loading succeded" << endl;
     #endif
 }
@@ -370,7 +386,7 @@ void loadTheme(string themeName)
     strcpy(tmp, sharedir);
     strcat(tmp, "/");
     strcat(tmp, path);
-#ifdef DEBUG
+#if DEBUG
     printf("loading %s\n",tmp);
 #endif
     if(!(TTF_WasInit()))
@@ -385,37 +401,27 @@ void loadTheme(string themeName)
 
 Mix_Music * Mix_LoadMUS2(char* path)
 {
-    char * tmp;
     Mix_Music * ret=NULL;
-    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
-    strcpy(tmp, sharedir);
-    strcat(tmp, "/");
-    strcat(tmp, path);
-#ifdef DEBUG
-    printf("loading %s\n",tmp);
+    string tmp = (string)""+sharedir+(string)"/"+path;
+#if DEBUG
+    cout << "loading " << tmp << endl;
 #endif
-    if (!(ret = Mix_LoadMUS(tmp)))
+    if (!(ret = Mix_LoadMUS(tmp.c_str())))
         ret = Mix_LoadMUS(path);
 
-    free(tmp);
     return ret;
 }
 
 Mix_Chunk * Mix_LoadWAV2(char* path)
 {
-    char * tmp;
     Mix_Chunk * ret=NULL;
-    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
-    strcpy(tmp, sharedir);
-    strcat(tmp, "/");
-    strcat(tmp, path);
-#ifdef DEBUG
-    printf("loading %s\n",tmp);
+    string tmp = (string)""+sharedir+(string)"/"+path;
+#if DEBUG
+    cout << "loading " << tmp << endl;
 #endif
-    if (!(ret = Mix_LoadWAV(tmp)))
+    if (!(ret = Mix_LoadWAV(tmp.c_str())))
         ret = Mix_LoadWAV(path);
 
-    free(tmp);
     return ret;
 }
 
@@ -442,7 +448,7 @@ int InitImages()
             && (bReplay = IMG_Load2((char*)"gfx/bReplays.png"))
             && (bSave = IMG_Load2((char*)"gfx/bSave.png"))
             && (bLoad = IMG_Load2((char*)"gfx/bLoad.png"))
-#ifdef NETWORK
+#if NETWORK
             && (bNetwork = IMG_Load2((char*)"gfx/bNetwork.png"))
             && (bHost = IMG_Load2((char*)"gfx/bHost.png"))
             && (bConnect = IMG_Load2((char*)"gfx/bConnect.png"))
@@ -520,7 +526,8 @@ int InitImages()
             && (smiley[3] = IMG_Load2((char*)"gfx/smileys/3.png"))
             //new in 1.3.2
             && (transCover = IMG_Load2((char*)"gfx/transCover.png"))
-            /*&& (bCreateFile = IMG_Load2((char*)"gfx/editor/bCreateFile.png"))
+            #if LEVELEDITOR
+            && (bCreateFile = IMG_Load2((char*)"gfx/editor/bCreateFile.png"))
             && (bDeletePuzzle = IMG_Load2((char*)"gfx/editor/bDeletePuzzle.png"))
             && (bLoadFile = IMG_Load2((char*)"gfx/editor/bLoadFile.png"))
             && (bMoveBack = IMG_Load2((char*)"gfx/editor/bMoveBack.png"))
@@ -533,7 +540,8 @@ int InitImages()
             && (bSaveFileAs = IMG_Load2((char*)"gfx/editor/bSaveFileAs.png"))
             && (bSavePuzzle = IMG_Load2((char*)"gfx/editor/bSavePuzzle.png"))
             && (bSaveToFile = IMG_Load2((char*)"gfx/editor/bSaveToFile.png"))
-            && (bTestPuzzle = IMG_Load2((char*)"gfx/editor/bTestPuzzle.png"))*/
+            && (bTestPuzzle = IMG_Load2((char*)"gfx/editor/bTestPuzzle.png"))
+            #endif
             //end new in 1.3.2
             //new in 1.4.0
             && (bTheme = IMG_Load2((char*)"gfx/bTheme.png"))
@@ -571,7 +579,7 @@ int InitImages()
     CONVERTA(bSkip);
     CONVERTA(bRetry);
     CONVERTA(bNext);
-#ifdef NETWORK
+#if NETWORK
     CONVERTA(bNetwork);
     CONVERTA(bHost);
     CONVERTA(bConnect);
@@ -638,7 +646,8 @@ int InitImages()
     CONVERTA(stageBobble);
     CONVERTA(transCover);
     //Editor:
-    /*CONVERTA(bCreateFile);
+    #if LEVELEDITOR
+    CONVERTA(bCreateFile);
     CONVERTA(bDeletePuzzle);
     CONVERTA(bLoadFile);
     CONVERTA(bMoveBack);
@@ -651,8 +660,9 @@ int InitImages()
     CONVERTA(bSaveFileAs);
     CONVERTA(bSavePuzzle);
     CONVERTA(bSaveToFile);
-    CONVERTA(bTestPuzzle);*/
-
+    CONVERTA(bTestPuzzle);
+    #endif
+    
     //Here comes the fonts:
     fBlueFont = SFont_InitFont(iBlueFont);
     fSmallFont = SFont_InitFont(iSmallFont);
@@ -717,7 +727,7 @@ void UnloadImages()
     SDL_FreeSurface(bReplay);
     SDL_FreeSurface(bSave);
     SDL_FreeSurface(bLoad);
-    #ifdef NETWORK
+    #if NETWORK
     SDL_FreeSurface(bNetwork);
     SDL_FreeSurface(bHost);
     SDL_FreeSurface(bConnect);
@@ -2388,7 +2398,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
     {
         DrawIMG(b1player,screen,0,40);
         DrawIMG(b2players,screen,0,80);
-#ifdef NETWORK
+#if NETWORK
         DrawIMG(bNetwork,screen,0,120);
 #endif
         if (b1playerOpen)
@@ -2405,7 +2415,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
                 DrawIMG(bTimeTrial,screen,120,80);
                 DrawIMG(bVsMode,screen,120,120);
             }
-#ifdef NETWORK
+#if NETWORK
             else
                 if (bNetworkOpen)
                 {
@@ -2431,7 +2441,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
 
     DrawBalls();
 
-#if defined(DEBUG)
+#if DEBUG
     Frames++;
     if (SDL_GetTicks() >= Ticks + 1000)
     {
@@ -3004,11 +3014,9 @@ void changePuzzleLevels()
 
 }
 
-#ifdef NETWORK
+#if NETWORK
 #include "NetworkThing.hpp"
 #endif
-
-//#include "editor/editorMain.hpp"
 
 //The main function, quite big... too big
 int main(int argc, char *argv[])
@@ -3088,8 +3096,12 @@ int main(int argc, char *argv[])
             }
             if (!(strncmp(argv[argumentNr],IntegratedEditor,7)))
             {
+                #if LEVELEDITOR
                 editorMode = true;
                 cout << "Integrated Puzzle Editor Activated" << endl;
+                #else
+                cout << "Integrated Puzzle Editor was disabled at compile time" << endl;
+                #endif
             }
             argumentNr++;
         }   //while
@@ -3250,7 +3262,7 @@ int main(int argc, char *argv[])
     strcpy(player1name, "Player 1                    \0");
     strcpy(player2name, "Player 2                    \0");
 
-#ifdef NETWORK
+#if NETWORK
     strcpy(serverAddress, "192.168.0.2                 \0");
 #endif
 
@@ -3342,7 +3354,7 @@ int main(int argc, char *argv[])
     int nowTime=SDL_GetTicks();
 
 
-#ifdef NETWORK
+#if NETWORK
     NetworkThing nt = NetworkThing();
     nt.setBGpointers(&theGame,&theGame2);
 #endif
@@ -3387,7 +3399,7 @@ int main(int argc, char *argv[])
         theExplosionManeger.update();
         theTextManeger.update();
 
-#ifdef NETWORK
+#if NETWORK
         if (nt.isConnected())
         {
             nt.updateNetwork();
@@ -3977,7 +3989,7 @@ int main(int argc, char *argv[])
                         showHighscores = false;
                     }
                     else
-#ifdef NETWORK
+#if NETWORK
                         if ((0<mousex) && (mousex<120) && (0<mousey) && (mousey<40) &&(networkActive))
                         {
                             //Disconnect clicked!
@@ -3991,7 +4003,7 @@ int main(int argc, char *argv[])
                                 //1player
                                 b1playerOpen = (!b1playerOpen);
                                 b2playersOpen = false;
-#ifdef NETWORK
+#if NETWORK
                                 bNetworkOpen = false;
 #endif
                             }
@@ -4001,11 +4013,11 @@ int main(int argc, char *argv[])
                                     //2player
                                     b2playersOpen = (!b2playersOpen);
                                     b1playerOpen = false;
-#ifdef NETWORK
+#if NETWORK
                                     bNetworkOpen = false;
 #endif
                                 }
-#ifdef NETWORK
+#if NETWORK
                                 else
                                     if ((0<mousex) && (mousex<120) && (120<mousey) && (mousey<160) && (bNewGameOpen) &&(!networkActive))
                                     {
@@ -4137,7 +4149,7 @@ int main(int argc, char *argv[])
                                                                     theGame.putStartBlocks(theTime);
                                                                     theGame2.putStartBlocks(theTime);
                                                                 }
-#ifdef NETWORK
+#if NETWORK
                                                                 else
                                                                     if ((120<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (bNetworkOpen))
                                                                     {

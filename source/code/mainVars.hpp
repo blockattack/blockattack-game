@@ -140,7 +140,8 @@ SDL_Surface *garbageGMR;
 //new in 1.3.2 start
 SDL_Surface *transCover;        //The transperant block, covers the upcomming
 //also new in 1.3.2 for the editor
-/*SDL_Surface *bCreateFile;
+#if LEVELEDITOR
+SDL_Surface *bCreateFile;
 SDL_Surface *bDeletePuzzle;
 SDL_Surface *bLoadFile;
 SDL_Surface *bMoveBack;
@@ -153,7 +154,8 @@ SDL_Surface *bNewPuzzle;
 SDL_Surface *bSaveFileAs;
 SDL_Surface *bSavePuzzle;
 SDL_Surface *bSaveToFile;
-SDL_Surface *bTestPuzzle;*/
+SDL_Surface *bTestPuzzle;
+#endif
 //new in 1.3.2 end
 //new in 1.4.0
 SDL_Surface *bTheme;
@@ -229,8 +231,8 @@ char serverAddress[30];
 #endif
 
 //should be automatically disabled if framerate to low (isn't implemented and wont be soon/ever):
-const int ballsFpsEnable = 30;     //If framerate higher -> enable balls
-const int ballsFpsDisable = 10;    //If framerate lower -> disable balls
+//const int ballsFpsEnable = 30;     //If framerate higher -> enable balls
+//const int ballsFpsDisable = 10;    //If framerate lower -> disable balls
 
 //other ball constants:
 const double gravity = 200.8; //acceleration
@@ -285,7 +287,7 @@ bool singlePuzzle = false; //if true we are just in a little 300x600 window
 int singlePuzzleNr = 0;
 string singlePuzzleFile;
 
-#if defined(DEBUG)
+#if DEBUG
 //frame counter (fps)
 unsigned long int Frames, Ticks;
 char FPS[10];

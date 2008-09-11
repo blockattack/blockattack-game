@@ -2009,7 +2009,7 @@ public:
             }
         }
         
-#if defined(DEBUG)
+#if DEBUG
         if (AI_Enabled&&(!bGameOver)) {
             strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
             SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
