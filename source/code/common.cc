@@ -33,7 +33,7 @@ string getMyDocumentsPath()
     TCHAR pszPath[MAX_PATH];
     if (SUCCEEDED(SHGetSpecialFolderPath(NULL, pszPath, CSIDL_PERSONAL, FALSE))) {
         // pszPath is now the path that you want
-#ifdef DEBUG
+#if DEBUG
         cout << "MyDocuments Located: " << pszPath << endl;
 #endif
         string theResult= pszPath;
