@@ -189,7 +189,7 @@ public:
         AI_MoveSpeed=120-(20*(aiLevel-3));
     };
 
-#ifdef NETWORK
+#if NETWORK
 #define garbageStackSize 10
     Uint8 garbageStack[garbageStackSize][3]; //A garbage stack with space for 10 garbage blocks. 0=x,1=y,2=type
     int garbageStackUsed;
@@ -381,7 +381,7 @@ public:
         bNetworkPlayer = false; //Take input from replay file
     }
 
-#ifdef NETWORK
+#if NETWORK
     //network play
     void playNetwork(int tx, int ty) {
         NewGame(tx, ty);
@@ -732,7 +732,7 @@ public:
 
     //Creates garbage using a given wide and height
     bool CreateGarbage(int wide, int height) {
-#ifdef NETWORK
+#if NETWORK
         if (bNetworkPlayer) {
             pushGarbage(wide, height, 0);
         }
@@ -770,7 +770,7 @@ public:
 
     //Creates garbage using a given wide and height
     bool CreateGreyGarbage() {
-#ifdef NETWORK
+#if NETWORK
         if (bNetworkPlayer) {
             pushGarbage(6, 1, 1);
         }

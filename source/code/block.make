@@ -1,5 +1,6 @@
 ../../Game/blockattack: 	main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o uploadReplay.o
 	g++ -O -o ../../Game/blockattack main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lenet
+#-lphysfs
 
 main.o:	main.cpp BlockGame.hpp mainVars.hpp common.h
 	g++ -g -c main.cpp `sdl-config --cflags`

@@ -24,7 +24,7 @@ Copyright (C) 2008 Poul Sander
     http://blockattack.sf.net
 */
 
-#include <string>
+
 
 
 #ifndef VERSION_NUMBER
@@ -39,6 +39,10 @@ Copyright (C) 2008 Poul Sander
 //If NETWORK id defined: enet will be used
 #ifndef NETWORK
     #define NETWORK 1
+#endif
+
+#ifndef USE_ABSTRACT_FS
+    #define USE_ABSTRACT_FS 0
 #endif
 
 //Build-in level editor is still experimental!
@@ -58,6 +62,9 @@ Copyright (C) 2008 Poul Sander
 #include "SDL.h"            //The SDL libary, used for most things
 #include <SDL_mixer.h>      //Used for sound & music
 #include <SDL_image.h>      //To load PNG images!
+#if USE_ABSTRACT_FS
+    #include <physfs.h>         //Abstract file system. To use containers
+#endif
 #include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
 #include <vector>
@@ -489,7 +496,6 @@ int InitImages()
             && (iDraw = IMG_Load2((char*)"gfx/iDraw.png"))
             && (iLoser = IMG_Load2((char*)"gfx/iLoser.png"))
             && (iChainBack = IMG_Load2((char*)"gfx/chainFrame.png"))
-            //&& (iBlueFont = IMG_Load2("gfx/24P_Copperplate_Blue.png"))
             && (iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png"))
             && (iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png"))
             && (topscoresBack = IMG_Load2((char*)"gfx/topscores.png"))
@@ -826,12 +832,8 @@ int LoadPuzzleStages()
     if (singlePuzzle)
         filename0 = singlePuzzleFile;
 #endif //__unix__
-#ifdef SHAREDIR
     string filename = (string)SHAREDIR+(string)"/res/";
     filename = filename+puzzleName;
-#else
-    string filename = "res/"+puzzleName;
-#endif
 #ifdef __unix__
     ifstream inFile(filename0.c_str());
     if (!inFile)
@@ -1143,14 +1145,12 @@ public:
     //constructor:
     textMessage(int X, int Y,const char* Text,unsigned int Time)
     {
-        //cout << "Running constructor" << endl;
         placeTime = currentTime;
         x = X;
         y = Y;
         strncpy(textt,Text,10);
         textt[9]=0;
         time = Time;
-        //cout << "Constructor runned" << endl;
     }  //constructor
 
     //true if the text has expired
@@ -1161,19 +1161,16 @@ public:
 
     int getX()
     {
-        //cout << "Gets X" << endl;
         return x;
     }
 
     int getY()
     {
-        //cout << "Gets Y" << endl;
         return y;
     }
 
     char* getText()
     {
-        //cout << "Gets text" << endl;
         return textt;
     }
 };  //text popup
@@ -1206,11 +1203,8 @@ public:
             return -1;
         //cout << "adding to: " << textNumber << ":" << textUsed[textNumber] << ":" << &textArray[textNumber] << endl;
         currentTime = SDL_GetTicks();
-        //if(&textArray[textNumber]!=NULL)
-        //*textArray[textNumber]=0;
         textArray[textNumber] = textMessage(x,y,Text.c_str(),Time);
         textUsed[textNumber] = true;
-        //cout << "Text added" << endl;
         return 1;
     }  //addText
 
@@ -1259,9 +1253,12 @@ void writeScreenShot()
 #if defined(__unix__)
     char buf[514];
     sprintf( buf, "%s/.gamesaves/blockattack/screenshots/screenshot%i.bmp", getenv("HOME"), rightNow );
-#else
+#elif defined(__win32__)
     char buf[MAX_PATH];
     sprintf( buf, "%s\\My Games\\blockattack\\screenshots\\screenshot%i.bmp", (getMyDocumentsPath()).c_str(), rightNow );
+#else
+    char buf[MAX_PATH];
+    sprintf( buf, "screenshot%i.bmp", rightNow );
 #endif
     SDL_SaveBMP( screen, buf );
     if (!NoSound)
@@ -1278,10 +1275,22 @@ inline void DrawHighscores(int x, int y)
     {
         char playerScore[32];
         char playerName[32];
-        if (showEndless) sprintf(playerScore, "%i", theTopScoresEndless.getScoreNumber(i));
-        else sprintf(playerScore, "%i", theTopScoresTimeTrial.getScoreNumber(i));
-        if (showEndless) strcpy(playerName,theTopScoresEndless.getScoreName(i));
-        else strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
+        if (showEndless) 
+        {
+            sprintf(playerScore, "%i", theTopScoresEndless.getScoreNumber(i));
+        }
+        else 
+        {
+            sprintf(playerScore, "%i", theTopScoresTimeTrial.getScoreNumber(i));
+        }
+        if (showEndless) 
+        {
+            strcpy(playerName,theTopScoresEndless.getScoreName(i));
+        }
+        else 
+        {
+            strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
+        }
         SFont_Write(screen,fBlueFont,x+420,y+150+i*35,playerScore);
         SFont_Write(screen,fBlueFont,x+60,y+150+i*35,playerName);
     }
@@ -1818,7 +1827,6 @@ bool OpenDialogbox(int x, int y, char *name)
         DrawIMG(dialogBox,screen,x,y);
         SFont_Write(screen,fBlueFont,x+40,y+72,rk.GetString());
         strHolder = rk.GetString();
-        //cout << "hej\n" << (int)rk.CharsBeforeCursor() << endl;
         strHolder.erase((int)rk.CharsBeforeCursor());
 
         if (((SDL_GetTicks()/600)%2)==1)
@@ -1883,13 +1891,9 @@ bool OpenFileDialogbox(int x, int y, char *name)
     bool done = false;	//We are done!
     int mousex, mousey;
     ListFiles lf = ListFiles();
-#ifdef SHAREDIR
     string folder = (string)SHAREDIR+(string)"/res";
     cout << "Looking in " << folder << endl;
     lf.setDirectory(folder.c_str());
-#else
-    lf.setDirectory("./res");
-#endif
 #ifdef __unix__
     string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles";
     lf.setDirectory2(homeFolder.c_str());
@@ -1983,13 +1987,9 @@ bool SelectThemeDialogbox(int x, int y, char *name)
     bool done = false;	//We are done!
     int mousex, mousey;
     ListFiles lf = ListFiles();
-#ifdef SHAREDIR
     string folder = (string)SHAREDIR+(string)"/themes";
     cout << "Looking in " << folder << endl;
     lf.setDirectory(folder.c_str());
-#else
-    lf.setDirectory("./themes");
-#endif
 #ifdef __unix__
     string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes";
     lf.setDirectory2(homeFolder.c_str());
@@ -3195,6 +3195,13 @@ int main(int argc, char *argv[])
 
     Uint8 *keys;
 
+#if USE_ABSTRACT_FS
+    //Init the file system abstraction layer
+    PHYSFS_init(argv[0]);
+    PHYSFS_AddToSearchPath("blockattack.data", 1);
+
+#endif
+    
     //Init SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
     {
@@ -3228,7 +3235,7 @@ int main(int argc, char *argv[])
     //SDL_FreeSurface(icon);
 
     //Copyright notice:
-    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2007 Poul Sander" << endl <<
+    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2008 Poul Sander" << endl <<
     "A SDL based game (see www.libsdl.org)" << endl <<
     "The game is availeble under the GPL, see COPYING for details." << endl;
 #if defined(_WIN32)
@@ -4587,6 +4594,9 @@ int main(int argc, char *argv[])
     ct = addTotalTime(ct);
     
     cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
-    
+#if USE_ABSTRACT_FS    
+    //Close file system Apstraction layer!
+    PHYSFS_deinit();
+#endif
     return 0;
 }

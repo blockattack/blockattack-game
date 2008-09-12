@@ -45,9 +45,7 @@ Copyright (C) 2007 Poul Sander
 
 
 using namespace std;	//remove it if you dare...
-#ifdef SHAREDIR
 char sharedir[] = SHAREDIR;
-#endif
 
 //All graphic in the game (as pointers):
 SDL_Surface *background;    //Stores background
