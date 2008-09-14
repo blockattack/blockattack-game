@@ -74,7 +74,7 @@ SDL_Surface *iChainBack;
 SDL_Surface *bReplay;
 SDL_Surface *bSave;
 SDL_Surface *bLoad;
-#ifdef NETWORK
+#if NETWORK
 SDL_Surface *bNetwork;
 SDL_Surface *bConnect;
 SDL_Surface *bHost;
@@ -190,7 +190,7 @@ bool bOptionsOpen;          //Show OptionsMenu (Configure and Select Puzzle)
 bool b1playerOpen;			//show submenu
 bool b2playersOpen;			//show submenu
 bool bReplayOpen;			//Show replay menu
-#ifdef NETWORK
+#if NETWORK
 bool bNetworkOpen;			//Show the network menu
 #endif
 bool showHighscores;        //true if highscores is displayed
@@ -216,6 +216,7 @@ bool editorModeTest = false;
 //end new 1.3.2
 
 //Things for network play:
+#if NETWORK
 bool networkPlay;
 bool networkActive;
 Uint8 nrOfNetworkPlayers;  //Up to 4 players (inkl. self)
@@ -224,7 +225,7 @@ bool playerAlive[4];
 #define SERVERPORT 41780
 #define CLIENTPORT 41781
 
-#ifdef NETWORK
+
 char serverAddress[30];
 #endif
 

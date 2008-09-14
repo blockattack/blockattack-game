@@ -33,7 +33,7 @@ Copyright (C) 2008 Poul Sander
 
 //If DEBUG is defined: AI info and FPS will be written to screen
 #ifndef DEBUG
-    #define DEBUG 1
+    #define DEBUG 0
 #endif
 
 //If NETWORK id defined: enet will be used
@@ -2267,7 +2267,11 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         DrawIMG(background,screen,0,0);
     //draw bottons (should be moves and drawn directly to background once)
     if (!editorMode)
+        #if NETWORK
         if (!networkActive) //We don't show the menu while running server or connected to a server
+        #else
+            if(true)
+        #endif
         {
             //Here we draw the menu
             DrawIMG(bNewGame, screen, 0, 0);
@@ -3540,7 +3544,11 @@ int main(int argc, char *argv[])
                         }
 
                         if ( event.key.keysym.sym == SDLK_F2 ) {
+                            #if NETWORK
                             if ((!showHighscores)&&(!showOptions)&&(!networkActive)){
+                            #else
+                            if ((!showHighscores)&&(!showOptions)){
+                            #endif
                                 theGame.NewGame(50,100);
                                 theGame.timetrial = false;
                                 theGame.putStartBlocks();
@@ -3551,7 +3559,11 @@ int main(int argc, char *argv[])
                                 vsMode = false;
                             }}
                         if ( event.key.keysym.sym == SDLK_F3 ) {
+                            #if NETWORK
                             if ((!showHighscores)&&(!showOptions)&&(!networkActive)){
+                            #else
+                            if ((!showHighscores)&&(!showOptions)){    
+                            #endif
                                 theGame.NewGame(50,100);
                                 theGame.timetrial = true;
                                 theGame.putStartBlocks();
@@ -3563,7 +3575,11 @@ int main(int argc, char *argv[])
                             }}
                         if ( event.key.keysym.sym == SDLK_F5 )
                         {
+                            #if NETWORK
                             if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            #else
+                            if ((!showHighscores)&&(!showOptions))    
+                            #endif
                             {
                                 int myLevel = StageLevelSelect();
                                 theGame.NewStageGame(myLevel,50,100);
@@ -3578,7 +3594,11 @@ int main(int argc, char *argv[])
                         }
                         if ( event.key.keysym.sym == SDLK_F6 )
                         {
+                            #if NETWORK
                             if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            #else
+                            if ((!showHighscores)&&(!showOptions))    
+                            #endif
                             {
                                 theGame.NewVsGame(50,100,&theGame2);
                                 theGame2.NewVsGame(xsize-500,100,&theGame);
@@ -3600,7 +3620,11 @@ int main(int argc, char *argv[])
                         }
                         if ( event.key.keysym.sym == SDLK_F4 )
                         {
+                            #if NETWORK
                             if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            #else
+                            if ((!showHighscores)&&(!showOptions))    
+                            #endif
                             {
                                 theGame.NewGame(50,100);
                                 theGame2.NewGame(xsize-500,100);
@@ -3623,7 +3647,11 @@ int main(int argc, char *argv[])
                         }
                         if ( event.key.keysym.sym == SDLK_F7 )
                         {
+                            #if NETWORK
                             if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            #else
+                            if ((!showHighscores)&&(!showOptions))    
+                            #endif
                             {
                                 int myLevel = PuzzleLevelSelect();
                                 theGame.NewPuzzleGame(myLevel,50,100);
@@ -3638,7 +3666,11 @@ int main(int argc, char *argv[])
                         }
                         if ( event.key.keysym.sym == SDLK_F8 )
                         {
+                            #if NETWORK
                             if ((!showGame)&&(!showOptions)&&(!networkActive))
+                            #else
+                            if ((!showGame)&&(!showOptions))    
+                            #endif
                                 if (!showHighscores)
                                 {
                                     closeAllMenus();
@@ -3986,6 +4018,11 @@ int main(int argc, char *argv[])
                 {
                     bMouseUp = false;
                     DrawIMG(background, screen, 0, 0);
+                    #if NETWORK
+                    //Nothing
+                    #else
+                    bool networkActive=false;
+                    #endif
                     if ((0<mousex) && (mousex<120) && (0<mousey) && (mousey<40) &&(!networkActive) )
                     {
                         //New game clicked
@@ -4488,7 +4525,9 @@ int main(int argc, char *argv[])
         theGame2.Update();
 
 //see if anyone has won (two players only)
+        #if NETWORK
         if (!networkPlay)
+        #endif
             if (twoPlayers)
             {
                 lastNrOfPlayers = 2;

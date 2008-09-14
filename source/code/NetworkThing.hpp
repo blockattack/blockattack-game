@@ -23,6 +23,8 @@ Copyright (C) 2007 Poul Sander
     blockattack@poulsander.com
 */
 
+#if NETWORK
+
 //The network interface
 class NetworkThing
 {
@@ -388,3 +390,5 @@ public:
 
     }
 }; //NetworkThing
+
+#endif

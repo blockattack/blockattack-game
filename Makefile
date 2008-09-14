@@ -1,7 +1,7 @@
 #the things that tells about the system
-PREF=/usr/local
-EXECUTEPATH=/usr/local/bin
-INST=/games/blockattack
+#PREF=/usr/local
+#EXECUTEPATH=/usr/local/bin
+#INST=/games/blockattack
 
 standard:
 	@echo "Removing old files (if they exists)"

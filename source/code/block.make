@@ -1,38 +1,64 @@
-../../Game/blockattack: 	main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o uploadReplay.o
-	g++ -O -o ../../Game/blockattack main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lenet
+GAMEDIR=../../Game/
+BINARY=$(GAMEDIR)blockattack
+CC=gcc
+CPP=g++
+BASE_CFLAGS=-c $(shell sdl-config --cflags)
+BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer
+
+ifndef DEBUG
+DEBUG=1
+endif
+
+ifndef NETWORK
+NETWORK=1
+endif
+
+ifeq ($(DEBUG),1)
+BASE_CFLAGS += -g -DDEBUG=1
+endif
+
+ifeq ($(NETWORK),1)
+BASE_CFLAGS += -DNETWORK=1
+BASE_LIBS += -lenet
+else
+BASE_CFLAGS += -DNETWORK=0
+endif
+
+$(BINARY): 	main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o uploadReplay.o
+	$(CPP) -O -o $(BINARY) main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o $(BASE_LIBS)
 #-lphysfs
 
 main.o:	main.cpp BlockGame.hpp mainVars.hpp common.h
-	g++ -g -c main.cpp `sdl-config --cflags`
+	$(CPP) $(BASE_CFLAGS) main.cpp
 
 highscore.o: highscore.h highscore.cpp
-	g++ -g -c highscore.cpp
+	$(CPP) $(BASE_CFLAGS) highscore.cpp
 
 SFont.o: SFont.h SFont.c
-	gcc -g -c SFont.c `sdl-config --cflags`
+	$(CC) $(BASE_CFLAGS) SFont.c
 
 ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
-	g++ -g -c ReadKeyboard.cpp `sdl-config --cflags`
+	$(CPP) $(BASE_CFLAGS) ReadKeyboard.cpp
 
 joypad.o: joypad.h joypad.cpp
-	g++ -g -c joypad.cpp `sdl-config --cflags`
+	$(CPP) $(BASE_CFLAGS) joypad.cpp
 
 listFiles.o: listFiles.h listFiles.cpp
-	g++ -g -c listFiles.cpp
+	$(CPP) $(BASE_CFLAGS) listFiles.cpp
 
 replay.o: replay.h replay.cpp
-	g++ -g -c replay.cpp `sdl-config --cflags`
+	$(CPP) $(BASE_CFLAGS) replay.cpp
 
 stats.o: stats.h stats.cc
-	g++ -g -c stats.cc
+	$(CPP) $(BASE_CFLAGS) stats.cc
 
 common.o: common.h common.cc
-	g++ -g -c common.cc
+	$(CPP) $(BASE_CFLAGS) common.cc
 
 uploadReplay.o: uploadReplay.cc uploadReplay.h
-	g++ -g -c uploadReplay.cc `sdl-config --cflags`
+	$(CPP) $(BASE_CFLAGS) uploadReplay.cc
 
-run: ../../Game/blockattack
+run: $(BINARY)
 
 clean:
 	rm *o

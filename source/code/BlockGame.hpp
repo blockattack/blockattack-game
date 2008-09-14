@@ -33,8 +33,10 @@ private:
 
     bool bDraw;
     bool bReplaying; //true if we are watching a replay
+    #if NETWORK
     bool bNetworkPlayer; //must recieve packages from the net
     bool bDisconnected; //The player has disconnected
+    #endif
     Uint32 nextGarbageNumber;
     Uint32 pushedPixelAt;
     Uint32 nrPushedPixel, nrFellDown, nrStops;
@@ -118,8 +120,10 @@ public:
         bGameOver = false;
         bDraw = false;
         bReplaying=false; //No replay by default
+        #if NETWORK
         bDisconnected=false;
         bNetworkPlayer = false;
+        #endif
         timetrial = false;
         stageClear = false;
         vsMode = false;
@@ -235,8 +239,10 @@ public:
     void NewGame(int tx, int ty) {
         stageButtonStatus = SBdontShow;
         bReplaying  =  false;
+        #if NETWORK
         bNetworkPlayer=false;
         bDisconnected =false;
+        #endif
         nrFellDown = 0;
         lastNrOfPlayers = 1; //At least one player :-)
         nrPushedPixel = 0;
@@ -378,7 +384,9 @@ public:
         NewGame(tx, ty);
         gameStartedAt = SDL_GetTicks();
         bReplaying = true; //We are playing, no calculations
+        #if NETWORK
         bNetworkPlayer = false; //Take input from replay file
+        #endif
     }
 
 #if NETWORK
@@ -405,12 +413,14 @@ public:
 
     //void SetGameOver();
 
+    #if NETWORK
     //Sets disconnected:
     void setDisconnect() {
         bDisconnected = true;
         SetGameOver();
     }
-
+    #endif
+    
     //Prints "draw" and ends the game
     void setDraw() {
         bGameOver = true;
@@ -1966,7 +1976,11 @@ public:
     //Draws everything
     void DoPaintJob() {
         DrawIMG(backBoard, sBoard, 0, 0);
+        #if NETWORK
         if ((!bReplaying)&&(!bNetworkPlayer))
+        #else
+        if (!bReplaying)
+        #endif
             PaintBricks();
         else
             SimplePaintBricks();
@@ -2063,7 +2077,11 @@ public:
                     break;
                 };
         }
+        #if NETWORK
         if ((!bReplaying)&&(!bNetworkPlayer)) {
+        #else
+            if (!bReplaying) {
+        #endif
             FindTowerHeight();
             if ((linesCleared-TowerHeight>stageClearLimit) && (stageClear) && (!bGameOver)) {
                 stageCleared[Level] = true;
