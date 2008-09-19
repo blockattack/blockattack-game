@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   width="100"
+   height="100"
+   version="1.0"
+   sodipodi:docname="smileys.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs5">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective9" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       id="perspective3484"
+       inkscape:vp_x="-50 : 600 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="700 : 600 : 1"
+       inkscape:persp3d-origin="300 : 400 : 1" />
+    <inkscape:perspective
+       inkscape:persp3d-origin="300 : 400 : 1"
+       inkscape:vp_z="700 : 600 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="-50 : 600 : 1"
+       id="perspective2947"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       inkscape:persp3d-origin="300 : 400 : 1"
+       inkscape:vp_z="700 : 600 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="-50 : 600 : 1"
+       id="perspective2996"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       inkscape:persp3d-origin="300 : 400 : 1"
+       inkscape:vp_z="700 : 600 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="-50 : 600 : 1"
+       id="perspective3052"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       height="2.6800001"
+       y="-0.84000003"
+       width="2.6800001"
+       x="-0.84000003"
+       id="filter3368"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur3370"
+         stdDeviation="0.70000004"
+         inkscape:collect="always" />
+    </filter>
+    <inkscape:perspective
+       id="perspective2475"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       id="linearGradient3569">
+      <stop
+         id="stop3571"
+         offset="0"
+         style="stop-color:#ffc200;stop-opacity:1;" />
+      <stop
+         style="stop-color:#d34028;stop-opacity:1;"
+         offset="0.2632609"
+         id="stop3577" />
+      <stop
+         id="stop3573"
+         offset="1"
+         style="stop-color:#960a00;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="653"
+     inkscape:window-width="1272"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="false"
+     inkscape:zoom="1"
+     inkscape:cx="-205.85966"
+     inkscape:cy="118.15323"
+     inkscape:window-x="0"
+     inkscape:window-y="247"
+     inkscape:current-layer="svg2">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2626" />
+  </sodipodi:namedview>
+  <g
+     id="g3572"
+     inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/smileys/0.png"
+     inkscape:export-xdpi="89.996552"
+     inkscape:export-ydpi="89.996552">
+    <path
+       sodipodi:type="arc"
+       style="fill:#fffa72;fill-opacity:1;stroke:#000000;stroke-width:0.72500002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path2384"
+       sodipodi:cx="7.5"
+       sodipodi:cy="8.5"
+       sodipodi:rx="7"
+       sodipodi:ry="7"
+       d="M 14.5,8.5 A 7,7 0 1 1 0.5,8.5 A 7,7 0 1 1 14.5,8.5 z"
+       transform="matrix(6.7911715,0,0,6.7911715,-48.088328,34.818672)" />
+    <g
+       transform="translate(1.3454733,2.2936227)"
+       id="g3466">
+      <path
+         sodipodi:nodetypes="csc"
+         id="path3156"
+         d="M -26.086205,90.000001 C -26.086205,110.68966 -12.293105,117.58622 1.499965,117.58622 C 15.293065,117.58622 29.086175,110.68966 29.086175,90.000001"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path3172"
+         sodipodi:cx="20.5"
+         sodipodi:cy="4.5"
+         sodipodi:rx="1"
+         sodipodi:ry="1"
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z"
+         transform="matrix(6.8965517,0,0,6.8965517,-153.67241,38.275863)" />
+      <path
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z"
+         sodipodi:ry="1"
+         sodipodi:rx="1"
+         sodipodi:cy="4.5"
+         sodipodi:cx="20.5"
+         id="path3174"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         sodipodi:type="arc"
+         transform="matrix(6.8965517,0,0,6.8965517,-126.08621,38.275863)" />
+    </g>
+  </g>
+  <g
+     id="g3565"
+     inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/smileys/1.png"
+     inkscape:export-xdpi="89.996552"
+     inkscape:export-ydpi="89.996552">
+    <path
+       transform="matrix(6.7911715,0,0,6.7911715,56.152003,38.421471)"
+       d="M 14.5,8.5 A 7,7 0 1 1 0.5,8.5 A 7,7 0 1 1 14.5,8.5 z"
+       sodipodi:ry="7"
+       sodipodi:rx="7"
+       sodipodi:cy="8.5"
+       sodipodi:cx="7.5"
+       id="path3279"
+       style="fill:#fffa72;fill-opacity:1;stroke:#000000;stroke-width:0.72500002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       sodipodi:type="arc" />
+    <g
+       transform="translate(-3.6042907,6.8025622)"
+       id="g3461">
+      <path
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 83.10387,113.2318 C 83.10387,99.438692 96.89698,92.54214 110.69008,92.54214 C 124.48318,92.54214 138.27629,99.438692 138.27629,113.2318"
+         id="path3281"
+         sodipodi:nodetypes="csc" />
+      <path
+         transform="matrix(6.8965517,0,0,6.8965517,-44.482334,40.818002)"
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z"
+         sodipodi:ry="1"
+         sodipodi:rx="1"
+         sodipodi:cy="4.5"
+         sodipodi:cx="20.5"
+         id="path3283"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <path
+         transform="matrix(6.8965517,0,0,6.8965517,-16.896127,40.818002)"
+         sodipodi:type="arc"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path3285"
+         sodipodi:cx="20.5"
+         sodipodi:cy="4.5"
+         sodipodi:rx="1"
+         sodipodi:ry="1"
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z" />
+    </g>
+  </g>
+  <g
+     id="g3547"
+     inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/smileys/3.png"
+     inkscape:export-xdpi="89.996552"
+     inkscape:export-ydpi="89.996552">
+    <path
+       transform="matrix(6.7893272,0,0,6.7893272,-45.424723,-70.163319)"
+       d="M 14.5,8.5 A 7,7 0 1 1 0.5,8.5 A 7,7 0 1 1 14.5,8.5 z"
+       sodipodi:ry="7"
+       sodipodi:rx="7"
+       sodipodi:cy="8.5"
+       sodipodi:cx="7.5"
+       id="path3340"
+       style="fill:#fffa72;fill-opacity:1;stroke:#000000;stroke-width:0.72900003;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       sodipodi:type="arc" />
+    <g
+       id="g3426"
+       transform="matrix(6.8965517,0,0,6.8965517,-108.74667,-581.71018)">
+      <path
+         transform="translate(-5.934925,75.04214)"
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z"
+         sodipodi:ry="1"
+         sodipodi:rx="1"
+         sodipodi:cy="4.5"
+         sodipodi:cx="20.5"
+         id="path3344"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <path
+         transform="translate(-1.934925,75.04214)"
+         sodipodi:type="arc"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path3346"
+         sodipodi:cx="20.5"
+         sodipodi:cy="4.5"
+         sodipodi:rx="1"
+         sodipodi:ry="1"
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.85333335;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path3348"
+         sodipodi:cx="38.5"
+         sodipodi:cy="25.5"
+         sodipodi:rx="1.471264"
+         sodipodi:ry="1.4712645"
+         d="M 39.971264,25.5 A 1.471264,1.4712645 0 1 1 37.028736,25.5 A 1.471264,1.4712645 0 1 1 39.971264,25.5 z"
+         transform="matrix(0.6796875,0,0,0.6796875,-9.602894,68.21011)" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#cc0000;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter3368)"
+         id="path3350"
+         sodipodi:cx="35.5"
+         sodipodi:cy="23.5"
+         sodipodi:rx="1"
+         sodipodi:ry="1"
+         d="M 36.5,23.5 A 1,1 0 1 1 34.5,23.5 A 1,1 0 1 1 36.5,23.5 z"
+         transform="translate(-22.934925,60.04214)" />
+      <path
+         transform="translate(-14.934925,60.04214)"
+         d="M 36.5,23.5 A 1,1 0 1 1 34.5,23.5 A 1,1 0 1 1 36.5,23.5 z"
+         sodipodi:ry="1"
+         sodipodi:rx="1"
+         sodipodi:cy="23.5"
+         sodipodi:cx="35.5"
+         id="path3372"
+         style="fill:#cc0000;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter3368)"
+         sodipodi:type="arc" />
+    </g>
+  </g>
+  <g
+     id="g3556"
+     inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/smileys/2.png"
+     inkscape:export-xdpi="89.996552"
+     inkscape:export-ydpi="89.996552">
+    <path
+       sodipodi:type="arc"
+       style="fill:#fffa72;fill-opacity:1;stroke:#000000;stroke-width:0.72500002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path3393"
+       sodipodi:cx="7.5"
+       sodipodi:cy="8.5"
+       sodipodi:rx="7"
+       sodipodi:ry="7"
+       d="M 14.5,8.5 A 7,7 0 1 1 0.5,8.5 A 7,7 0 1 1 14.5,8.5 z"
+       transform="matrix(6.7911715,0,0,6.7911715,58.252505,-67.757249)" />
+    <g
+       transform="translate(-4.7246718,4.3616683)"
+       id="g3454">
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 141.49717,-8.75479 L 86.324756,-8.75479 C 86.324756,11.93487 100.11786,18.83142 113.91096,18.83142 C 127.70406,18.83142 141.49717,11.93487 141.49717,-8.75479 z"
+         id="path3186"
+         sodipodi:nodetypes="czsz" />
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 92.808032,-48.119339 L 113.49769,-41.222787"
+         id="path3421"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 113.49769,-41.222787 L 134.18734,-48.119339"
+         id="path3423"
+         sodipodi:nodetypes="cc" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path3431"
+         sodipodi:cx="20.5"
+         sodipodi:cy="4.5"
+         sodipodi:rx="1"
+         sodipodi:ry="1"
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z"
+         transform="matrix(6.8965517,0,0,6.8965517,-41.674727,-58.464166)" />
+      <path
+         d="M 21.5,4.5 A 1,1 0 1 1 19.5,4.5 A 1,1 0 1 1 21.5,4.5 z"
+         sodipodi:ry="1"
+         sodipodi:rx="1"
+         sodipodi:cy="4.5"
+         sodipodi:cx="20.5"
+         id="path3433"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.57999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         sodipodi:type="arc"
+         transform="matrix(6.8965517,0,0,6.8965517,-14.08852,-58.464166)" />
+    </g>
+  </g>
+</svg>
