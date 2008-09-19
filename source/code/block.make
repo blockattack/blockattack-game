@@ -13,8 +13,14 @@ ifndef NETWORK
 NETWORK=1
 endif
 
+ifndef USE_ABSTRACT_FS
+USE_ABSTRACT_FS=1
+endif
+
 ifeq ($(DEBUG),1)
 BASE_CFLAGS += -g -DDEBUG=1
+else
+BASE_CFLAGS += -O4
 endif
 
 ifeq ($(NETWORK),1)
@@ -22,6 +28,13 @@ BASE_CFLAGS += -DNETWORK=1
 BASE_LIBS += -lenet
 else
 BASE_CFLAGS += -DNETWORK=0
+endif
+
+ifeq ($(USE_ABSTRACT_FS),1)
+BASE_CFLAGS += -DUSE_ABSTRACT_FS=1
+BASE_LIBS += -lphysfs
+else
+BASE_CFLAGS += -DUSE_ABSTRACT_FS=0
 endif
 
 $(BINARY): 	main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o uploadReplay.o

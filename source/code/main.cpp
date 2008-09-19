@@ -42,7 +42,7 @@ Copyright (C) 2008 Poul Sander
 #endif
 
 #ifndef USE_ABSTRACT_FS
-    #define USE_ABSTRACT_FS 0
+    #define USE_ABSTRACT_FS 1
 #endif
 
 //Build-in level editor is still experimental!
@@ -264,13 +264,13 @@ void loadTheme(string themeName)
         reloadIMG(&explosion[i],themeName+"/animations/explosion/"+(char)('0'+i)+".png");
         CONVERTA(explosion[i]);
     }
-    reloadIMG(&bricks[0],themeName+"/blue.png");
-    reloadIMG(&bricks[1],themeName+"/green.png");
-    reloadIMG(&bricks[2],themeName+"/purple.png");
-    reloadIMG(&bricks[3],themeName+"/red.png");
-    reloadIMG(&bricks[4],themeName+"/turkish.png");
-    reloadIMG(&bricks[5],themeName+"/yellow.png");
-    reloadIMG(&bricks[6],themeName+"/gray.png");
+    reloadIMG(&bricks[0],themeName+"/bricks/blue.png");
+    reloadIMG(&bricks[1],themeName+"/bricks/green.png");
+    reloadIMG(&bricks[2],themeName+"/bricks/purple.png");
+    reloadIMG(&bricks[3],themeName+"/bricks/red.png");
+    reloadIMG(&bricks[4],themeName+"/bricks/turkish.png");
+    reloadIMG(&bricks[5],themeName+"/bricks/yellow.png");
+    reloadIMG(&bricks[6],themeName+"/bricks/grey.png");
     reloadIMG(&balls[0],themeName+"/balls/ballBlue.png");
     reloadIMG(&balls[1],themeName+"/balls/ballGreen.png");
     reloadIMG(&balls[2],themeName+"/balls/ballPurple.png");
@@ -462,13 +462,13 @@ int InitImages()
 #endif
             && (blackLine = IMG_Load2((char*)"gfx/blackLine.png"))
             && (stageBobble = IMG_Load2((char*)"gfx/iStageClearLimit.png"))
-            && (bricks[0] = IMG_Load2((char*)"gfx/blue.png"))
-            && (bricks[1] = IMG_Load2((char*)"gfx/green.png"))
-            && (bricks[2] = IMG_Load2((char*)"gfx/purple.png"))
-            && (bricks[3] = IMG_Load2((char*)"gfx/red.png"))
-            && (bricks[4] = IMG_Load2((char*)"gfx/turkish.png"))
-            && (bricks[5] = IMG_Load2((char*)"gfx/yellow.png"))
-            && (bricks[6] = IMG_Load2((char*)"gfx/grey.png"))
+            && (bricks[0] = IMG_Load2((char*)"gfx/bricks/blue.png"))
+            && (bricks[1] = IMG_Load2((char*)"gfx/bricks/green.png"))
+            && (bricks[2] = IMG_Load2((char*)"gfx/bricks/purple.png"))
+            && (bricks[3] = IMG_Load2((char*)"gfx/bricks/red.png"))
+            && (bricks[4] = IMG_Load2((char*)"gfx/bricks/turkish.png"))
+            && (bricks[5] = IMG_Load2((char*)"gfx/bricks/yellow.png"))
+            && (bricks[6] = IMG_Load2((char*)"gfx/bricks/grey.png"))
             && (crossover = IMG_Load2((char*)"gfx/crossover.png"))
             && (balls[0] = IMG_Load2((char*)"gfx/balls/ballBlue.png"))
             && (balls[1] = IMG_Load2((char*)"gfx/balls/ballGreen.png"))
@@ -3202,7 +3202,7 @@ int main(int argc, char *argv[])
 #if USE_ABSTRACT_FS
     //Init the file system abstraction layer
     PHYSFS_init(argv[0]);
-    PHYSFS_AddToSearchPath("blockattack.data", 1);
+    PHYSFS_addToSearchPath("blockattack.data", 1);
 
 #endif
     
