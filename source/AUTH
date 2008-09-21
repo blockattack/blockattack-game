@@ -20,19 +20,19 @@ bNewGame.png			qubodup
 bNext.png			Poul Sander
 bOff.png			Poul Sander
 bOn.png				Poul Sander
-bOnePlayer.png			Poul Sander
-bOptions.png			Poul Sander
-bPuzzle.png			Poul Sander
-bReplays.png			Poul Sander
+bOnePlayer.png			qubodup
+bOptions.png			qubodup
+bPuzzle.png			qubodup
+bReplays.png			qubodup
 bRetry.png			Poul Sander
-bSave.png			Poul Sander
-bSelectPuzzle.png		Poul Sander
+bSave.png			qubodup
+bSelectPuzzle.png		qubodup
 bSkip.png			Poul Sander
 bTheme.png			Poul Sander
-bTimeTrial.png			Poul Sander
-bVsGame.png			Poul Sander
-bStageClear.png			Poul Sander
-bTwoPlayers.png			Poul Sander
+bTimeTrial.png			qubodup
+bVsGame.png			qubodup
+bStageClear.png			qubodup
+bTwoPlayers.png			qubodup
 
 blockAttack.ico			Poul Sander
 changeButtonsBack1.png		Poul Sander
