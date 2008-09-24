@@ -32,6 +32,7 @@ Copyright (C) 2008 Poul Sander
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <map>
 #include <stdlib.h>
 
 using namespace std;
@@ -43,11 +44,49 @@ struct commonTime{
     unsigned int seconds;
 };
 
+string itoa(int num);
+
 string getPathToSaveFiles();
 
 commonTime getTotalTime();
 
 commonTime addTotalTime(commonTime toAdd);
+
+#define MAX_VAR_LENGTH 1024
+
+class Config
+{
+private: 
+    map<string,string> configMap;
+
+    static Config *instance;
+    
+    void load();
+protected:
+    
+    Config();
+    
+    
+public:
+    
+    static Config* getInstance();
+    
+    void save();
+    
+    string getString(string varName);
+    
+    int getInt(string varName);
+    
+    double getValue(string varName);
+    
+    void setString(string varName,string content);
+    
+    void setInt(string varName,int content);
+    
+    void setValue(string varName,double content);
+    
+    bool exists(string varName);
+};
 
 #endif	/* _COMMON_H */
 

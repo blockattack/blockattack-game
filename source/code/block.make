@@ -14,7 +14,7 @@ NETWORK=1
 endif
 
 ifndef USE_ABSTRACT_FS
-USE_ABSTRACT_FS=1
+USE_ABSTRACT_FS=0
 endif
 
 ifeq ($(DEBUG),1)

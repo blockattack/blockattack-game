@@ -41,8 +41,9 @@ Copyright (C) 2008 Poul Sander
     #define NETWORK 1
 #endif
 
+//Abstract layer is experimental and appears to cause trouble in some cercumstances. And it is not implemented
 #ifndef USE_ABSTRACT_FS
-    #define USE_ABSTRACT_FS 1
+    #define USE_ABSTRACT_FS 0
 #endif
 
 //Build-in level editor is still experimental!
@@ -57,7 +58,7 @@ Copyright (C) 2008 Poul Sander
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>           //Used for srand()
-#include <sstream>
+#include <sstream>          //Still used by itoa2
 #include <string>
 #include "SDL.h"            //The SDL libary, used for most things
 #include <SDL_mixer.h>      //Used for sound & music
@@ -804,12 +805,12 @@ void UnloadImages()
 }
 
 //Function to convert numbers to string
-string itoa(int num)
+/*string itoa(int num)
 {
     stringstream converter;
     converter << num;
     return converter.str();
-}
+}*/
 
 //Function to convert numbers to string (2 diget)
 string itoa2(int num)
@@ -3277,44 +3278,79 @@ int main(int argc, char *argv[])
     strcpy(serverAddress, "192.168.0.2                 \0");
 #endif
 
-    //Reads options from file:
-    ifstream optionsFile(optionsPath.c_str(), ios::binary);
-    if (optionsFile)
+    Config *configSettings = Config::getInstance();
+    //configSettings->setString("aNumber"," A string");
+    //configSettings->save();
+    if(configSettings->exists("fullscreen")) //Test if an configFile exists
     {
-        //reads data: xsize,ysize,fullescreen, player1keys, player2keys, MusicEnabled, SoundEnabled,player1name,player2name
-        optionsFile.read(reinterpret_cast<char*>(&xsize), sizeof(int));
-        optionsFile.read(reinterpret_cast<char*>(&ysize), sizeof(int));
-        optionsFile.read(reinterpret_cast<char*>(&bFullscreen), sizeof(bool));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].up), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].down), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].left), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].right), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].change), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[0].push), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].up), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].down), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].left), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].right), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].change), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&keySettings[2].push), sizeof(SDLKey));
-        optionsFile.read(reinterpret_cast<char*>(&MusicEnabled), sizeof(bool));
-        optionsFile.read(reinterpret_cast<char*>(&SoundEnabled), sizeof(bool));
-        optionsFile.read(player1name, 30*sizeof(char));
-        optionsFile.read(player2name, 30*sizeof(char));
-        //mouseplay?
-        if (!optionsFile.eof())
-        {
-            optionsFile.read(reinterpret_cast<char*>(&mouseplay1), sizeof(bool));
-            optionsFile.read(reinterpret_cast<char*>(&mouseplay2), sizeof(bool));
-            optionsFile.read(reinterpret_cast<char*>(&joyplay1),sizeof(bool));
-            optionsFile.read(reinterpret_cast<char*>(&joyplay2),sizeof(bool));
-        }
-        optionsFile.close();
-        cout << "Data loaded from options file" << endl;
+        bFullscreen = (bool)configSettings->getInt("fullscreen");
+        MusicEnabled = (bool)configSettings->getInt("musicenabled");
+        SoundEnabled = (bool)configSettings->getInt("soundenabled");
+        mouseplay1 = (bool)configSettings->getInt("mouseplay1");
+        mouseplay2 = (bool)configSettings->getInt("mouseplay2");
+        joyplay1 = (bool)configSettings->getInt("joypad1");
+        joyplay2 = (bool)configSettings->getInt("joypad2");
+        
+        if(configSettings->exists("player1keyup")) keySettings[0].up = (SDLKey)configSettings->getInt("player1keyup");
+        if(configSettings->exists("player1keydown")) keySettings[0].down = (SDLKey)configSettings->getInt("player1keydown");
+        if(configSettings->exists("player1keyleft")) keySettings[0].left = (SDLKey)configSettings->getInt("player1keyleft");
+        if(configSettings->exists("player1keyright")) keySettings[0].right = (SDLKey)configSettings->getInt("player1keyright");
+        if(configSettings->exists("player1keychange")) keySettings[0].change = (SDLKey)configSettings->getInt("player1keychange");
+        if(configSettings->exists("player1keypush")) keySettings[0].push = (SDLKey)configSettings->getInt("player1keypush");
+        
+        if(configSettings->exists("player2keyup")) keySettings[2].up = (SDLKey)configSettings->getInt("player2keyup");
+        if(configSettings->exists("player2keydown")) keySettings[2].down = (SDLKey)configSettings->getInt("player2keydown");
+        if(configSettings->exists("player2keyleft")) keySettings[2].left = (SDLKey)configSettings->getInt("player2keyleft");
+        if(configSettings->exists("player2keyright")) keySettings[2].right = (SDLKey)configSettings->getInt("player2keyright");
+        if(configSettings->exists("player2keychange")) keySettings[2].change = (SDLKey)configSettings->getInt("player2keychange");
+        if(configSettings->exists("player2keypush")) keySettings[2].push = (SDLKey)configSettings->getInt("player2keypush");
+        if(configSettings->exists("player1name"))
+            strncpy(player1name,(configSettings->getString("player1name")).c_str(),28);
+        if(configSettings->exists("player2name"))
+            strncpy(player2name,(configSettings->getString("player2name")).c_str(),28);
+        cout << "Data loaded from config file" << endl;
     }
     else
     {
-        cout << "Unable to load options file, using default values" << endl;
+        //Reads options from file:
+        ifstream optionsFile(optionsPath.c_str(), ios::binary);
+        if (optionsFile)
+        {
+            //reads data: xsize,ysize,fullescreen, player1keys, player2keys, MusicEnabled, SoundEnabled,player1name,player2name
+            optionsFile.read(reinterpret_cast<char*>(&xsize), sizeof(int));
+            optionsFile.read(reinterpret_cast<char*>(&ysize), sizeof(int));
+            optionsFile.read(reinterpret_cast<char*>(&bFullscreen), sizeof(bool));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[0].up), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[0].down), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[0].left), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[0].right), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[0].change), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[0].push), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[2].up), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[2].down), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[2].left), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[2].right), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[2].change), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&keySettings[2].push), sizeof(SDLKey));
+            optionsFile.read(reinterpret_cast<char*>(&MusicEnabled), sizeof(bool));
+            optionsFile.read(reinterpret_cast<char*>(&SoundEnabled), sizeof(bool));
+            optionsFile.read(player1name, 30*sizeof(char));
+            optionsFile.read(player2name, 30*sizeof(char));
+            //mouseplay?
+            if (!optionsFile.eof())
+            {
+                optionsFile.read(reinterpret_cast<char*>(&mouseplay1), sizeof(bool));
+                optionsFile.read(reinterpret_cast<char*>(&mouseplay2), sizeof(bool));
+                optionsFile.read(reinterpret_cast<char*>(&joyplay1),sizeof(bool));
+                optionsFile.read(reinterpret_cast<char*>(&joyplay2),sizeof(bool));
+            }
+            optionsFile.close();
+            cout << "Data loaded from oldstyle options file" << endl;
+        }
+        else
+        {
+            cout << "Unable to load options file, using default values" << endl;
+        }
     }
 
     xsize = 1024;
@@ -4572,41 +4608,31 @@ int main(int argc, char *argv[])
     //Saves options
     if (!editorMode)
     {
-        ofstream optionsFileOut;
-        optionsFileOut.open(optionsPath.c_str(),ios::binary|ios::trunc);
-        if (optionsFileOut)
-        {
-            //writes data: xsize,ysize,fullescreen, player1keys, player2keys, MusicEnabled, SoundEnabled,player1name,player2name
-            optionsFileOut.write(reinterpret_cast<char*>(&xsize),sizeof(int));
-            optionsFileOut.write(reinterpret_cast<char*>(&ysize),sizeof(int));
-            optionsFileOut.write(reinterpret_cast<char*>(&bFullscreen),sizeof(bool));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].up), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].down), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].left), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].right), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].change), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[0].push), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].up), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].down), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].left), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].right), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].change), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&keySettings[2].push), sizeof(SDLKey));
-            optionsFileOut.write(reinterpret_cast<char*>(&MusicEnabled),sizeof(bool));
-            optionsFileOut.write(reinterpret_cast<char*>(&SoundEnabled),sizeof(bool));
-            optionsFileOut.write(player1name,30*sizeof(char));
-            optionsFileOut.write(player2name,30*sizeof(char));
-            optionsFileOut.write(reinterpret_cast<char*>(&mouseplay1),sizeof(bool));
-            optionsFileOut.write(reinterpret_cast<char*>(&mouseplay2),sizeof(bool));
-            optionsFileOut.write(reinterpret_cast<char*>(&joyplay1),sizeof(bool));
-            optionsFileOut.write(reinterpret_cast<char*>(&joyplay2),sizeof(bool));
-            optionsFileOut.close();
-            cout << "options written to file" << endl;
-        }
-        else
-        {
-            cout << "Failed to write options" << endl;
-        }
+        configSettings->setInt("fullscreen",(int)bFullscreen);
+        configSettings->setInt("musicenabled",(int)MusicEnabled);
+        configSettings->setInt("soundenabled",(int)SoundEnabled);
+        configSettings->setInt("mouseplay1",(int)mouseplay1);
+        configSettings->setInt("mouseplay2",(int)mouseplay2);
+        configSettings->setInt("joypad1",(int)joyplay1);
+        configSettings->setInt("joypad2",(int)joyplay2);
+        
+        configSettings->setInt("player1keyup",(int)keySettings[0].up);
+        configSettings->setInt("player1keydown",(int)keySettings[0].down);
+        configSettings->setInt("player1keyleft",(int)keySettings[0].left);
+        configSettings->setInt("player1keyright",(int)keySettings[0].right);
+        configSettings->setInt("player1keychange",(int)keySettings[0].change);
+        configSettings->setInt("player1keypush",(int)keySettings[0].push);
+        
+        configSettings->setInt("player2keyup",(int)keySettings[2].up);
+        configSettings->setInt("player2keydown",(int)keySettings[2].down);
+        configSettings->setInt("player2keyleft",(int)keySettings[2].left);
+        configSettings->setInt("player2keyright",(int)keySettings[2].right);
+        configSettings->setInt("player2keychange",(int)keySettings[2].change);
+        configSettings->setInt("player2keypush",(int)keySettings[2].push);
+        
+        configSettings->setString("player1name",player1name);
+        configSettings->setString("player2name",player2name);
+        configSettings->save();
     }
 
     Stats::getInstance()->save();
