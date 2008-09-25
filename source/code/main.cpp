@@ -189,6 +189,8 @@ void loadTheme(string themeName)
     CONVERT(b2players);
     reloadIMG(&bVsMode,themeName+"/bVsGame.png");
     CONVERT(bVsMode);
+    reloadIMG(&bVsModeConfig,themeName+"/bVsGameConfig.png");
+    CONVERT(bVsModeConfig);
     reloadIMG(&bPuzzle,themeName+"/bPuzzle.png");
     CONVERT(bPuzzle);
     reloadIMG(&bStageClear,themeName+"/bStageClear.png");
@@ -442,6 +444,7 @@ int InitImages()
             && (b1player = IMG_Load2((char*)"gfx/bOnePlayer.png"))
             && (b2players = IMG_Load2((char*)"gfx/bTwoPlayers.png"))
             && (bVsMode = IMG_Load2((char*)"gfx/bVsGame.png"))
+            && (bVsModeConfig = IMG_Load2((char*)"gfx/bVsGameConfig.png"))
             && (bPuzzle = IMG_Load2((char*)"gfx/bPuzzle.png"))
             && (bStageClear = IMG_Load2((char*)"gfx/bStageClear.png"))
             && (bTimeTrial = IMG_Load2((char*)"gfx/bTimeTrial.png"))
@@ -572,6 +575,7 @@ int InitImages()
     CONVERT(b1player);
     CONVERT(b2players);
     CONVERT(bVsMode);
+    CONVERT(bVsModeConfig);
     CONVERT(bPuzzle);
     CONVERT(bStageClear);
     CONVERT(bTimeTrial);
@@ -723,6 +727,7 @@ void UnloadImages()
     SDL_FreeSurface(b1player);
     SDL_FreeSurface(b2players);
     SDL_FreeSurface(bVsMode);
+    SDL_FreeSurface(bVsModeConfig);
     SDL_FreeSurface(bPuzzle);
     SDL_FreeSurface(bStageClear);
     SDL_FreeSurface(bTimeTrial);
@@ -2433,7 +2438,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
     {
         DrawIMG(bConfigure,screen,120,40);
         DrawIMG(bSelectPuzzle,screen,120,80);
-        DrawIMG(bVsMode,screen,120,120);
+        DrawIMG(bVsModeConfig,screen,120,120);
         DrawIMG(bTheme,screen,120,160);
     }
     if (bReplayOpen)
@@ -4638,7 +4643,7 @@ int main(int argc, char *argv[])
     Stats::getInstance()->save();
     
     //Frees memory from music and fonts
-    //This is done after writing of options since it often crashes the program :(
+    //This is done after writing of configurations and stats since it often crashes the program :(
     UnloadImages();
     
     

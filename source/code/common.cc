@@ -180,8 +180,8 @@ void Config::load()
         while(!inFile.eof())
         {
             inFile >> key;
-            if(key==previuskey)
-                    continue;
+            if(key==previuskey) //the last entry will be read 2 times if a linebreak is missing in the end
+                    continue; 
             previuskey = key;
             inFile.get(); //Read the space between the key and the content
             inFile.getline(value,MAX_VAR_LENGTH);
@@ -211,13 +211,13 @@ void Config::save()
     
     if(outFile)
     {
-        //outFile << statMap.size() << endl;
         map<string,string>::iterator iter;
         for(iter = configMap.begin(); iter != configMap.end(); iter++)
         {
             outFile << iter->first << " " << iter->second << endl;
         }
-        outFile << "\n";
+        outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
+        //This is checked on load too in case a user changes it himself.
     }
 }
 

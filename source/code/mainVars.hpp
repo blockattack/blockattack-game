@@ -55,6 +55,7 @@ SDL_Surface *backBoard;     //Stores the background to the board
 SDL_Surface *b1player;
 SDL_Surface *b2players;
 SDL_Surface *bVsMode;
+SDL_Surface *bVsModeConfig; //Added in 1.4.0
 SDL_Surface *bStageClear;
 SDL_Surface *bPuzzle;
 SDL_Surface *bNewGame;      //The New Game botton

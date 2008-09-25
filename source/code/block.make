@@ -5,6 +5,7 @@ CPP=g++
 BASE_CFLAGS=-c $(shell sdl-config --cflags)
 BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer
 
+#For developement only 
 ifndef DEBUG
 DEBUG=1
 endif
@@ -13,10 +14,12 @@ ifndef NETWORK
 NETWORK=1
 endif
 
+#Never use the apstract fs, it is not implemented and just linking it breaks on some systems
 ifndef USE_ABSTRACT_FS
 USE_ABSTRACT_FS=0
 endif
 
+#Compile with debug information or optimized.
 ifeq ($(DEBUG),1)
 BASE_CFLAGS += -g -DDEBUG=1
 else
