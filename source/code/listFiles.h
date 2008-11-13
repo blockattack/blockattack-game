@@ -26,6 +26,7 @@ Copyright (C) 2005 Poul Sander
 //listFiles.h - List files in a given directory, 10 files at a time, at most 250 files
 #include <string.h>
 #include <iostream>
+#include <stdlib.h>
 #if defined(_WIN32)
 #include <windows.h>
 #elif defined(__unix__)

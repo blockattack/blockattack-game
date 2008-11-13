@@ -69,6 +69,7 @@ Copyright (C) 2008 Poul Sander
 #include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
 #include <vector>
+//#include "MenuSystem.h"
 
 //if SHAREDIR is not used we look in current directory
 #ifndef SHAREDIR
@@ -80,8 +81,6 @@ Copyright (C) 2008 Poul Sander
 //enet things
 #if NETWORK
 #include "enet/enet.h"
-//#include "enet/list.h"
-//#include "enet/protocol.h"
 #endif
 //enet things end
 
@@ -388,7 +387,7 @@ void loadTheme(string themeName)
     #endif
 }
 
-/*TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
+TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
 
     char * tmp;
     TTF_Font * ret=NULL;
@@ -407,7 +406,7 @@ void loadTheme(string themeName)
         cout << "failed to load font: " << TTF_GetError() << endl;
     free(tmp);
     return ret;
-}*/
+}
 
 Mix_Music * Mix_LoadMUS2(char* path)
 {
@@ -558,6 +557,8 @@ int InitImages()
             && (bSkip = IMG_Load2((char*)"gfx/bSkip.png"))
             && (bNext = IMG_Load2((char*)"gfx/bNext.png"))
             && (bRetry = IMG_Load2((char*)"gfx/bRetry.png"))
+            //&& (menuMarked = IMG_Load2((char*)"gfx/menu/marked.png"))
+            //&& (menuUnmarked = IMG_Load2((char*)"gfx/menu/unmarked.png"))
             //end new in 1.4.0
             && (mouse = IMG_Load2((char*)"gfx/mouse.png"))
          ))
@@ -590,6 +591,8 @@ int InitImages()
     CONVERTA(bSkip);
     CONVERTA(bRetry);
     CONVERTA(bNext);
+    //CONVERTA(menuMarked);
+    //CONVERTA(menuUnmarked);
 #if NETWORK
     CONVERTA(bNetwork);
     CONVERTA(bHost);
@@ -679,9 +682,9 @@ int InitImages()
     fSmallFont = SFont_InitFont(iSmallFont);
     
     //And the ttf font:
-//    TTF_Font *ttFont1 = TTF_OpenFont2("fonts/FreeSerif.ttf", 24);
-//    TTF_SetFontStyle(ttFont1,TTF_STYLE_BOLD);
-//    ttfont = TTFont(ttFont1);
+    /*TTF_Font *ttFont1 = TTF_OpenFont2((char*)"fonts/FreeSerif.ttf", 24);
+    TTF_SetFontStyle(ttFont1,TTF_STYLE_BOLD);
+    ttfont = TTFont(ttFont1);*/
 
 //Loads the sound if sound present
     if (!NoSound)
@@ -885,6 +888,28 @@ void DrawIMG(SDL_Surface *img, SDL_Surface * target, int x, int y, int w, int h,
     dest2.h = h;
     SDL_BlitSurface(img, &dest2, target, &dest);
 }
+
+//Menu
+/*void PrintHi()
+{
+    cout << "Hi" <<endl;
+}
+
+void InitMenues()
+{
+    ButtonGfx::setSurfaces(&menuMarked,&menuUnmarked);
+    ButtonGfx::ttf = &ttfont;
+}
+
+void MainMenu()
+{
+    Menu m(&screen,true);
+    Button bHi;
+    bHi.setLabel("Write hi");
+    bHi.setAction(PrintHi);
+    m.addButton(bHi);
+    m.run();
+}*/
 
 //The small things that are faaling when you clear something
 class aBall
@@ -2456,7 +2481,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
     if (SDL_GetTicks() >= Ticks + 1000)
     {
         if (Frames > 999) Frames=999;
-        sprintf(FPS, "%i fps", Frames);
+        sprintf(FPS, "%lu fps", Frames);
         Frames = 0;
         Ticks = SDL_GetTicks();
     }
@@ -3048,7 +3073,7 @@ int main(int argc, char *argv[])
     tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\screenshots";
     CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
 #endif
-    bool highPriority = false;	//if true the game will take most resources, but increase framerate.
+    highPriority = false;	//if true the game will take most resources, but increase framerate.
     bFullscreen = false;
     if (argc > 1)
     {
@@ -3382,6 +3407,7 @@ int main(int argc, char *argv[])
 
     cout << "Images loaded" << endl;
 
+    //InitMenues();
 
     BlockGame theGame = BlockGame(50,100);			//creates game objects
     BlockGame theGame2 = BlockGame(xsize-500,100);
@@ -3733,8 +3759,9 @@ int main(int argc, char *argv[])
                             /*This is the test place, place function to test here*/
 
                             //theGame.CreateGreyGarbage();
-                            char mitNavn[30];
-                            SelectThemeDialogbox(300,400,mitNavn);
+                            //char mitNavn[30];
+                            //SelectThemeDialogbox(300,400,mitNavn);
+                           // MainMenu();
                         } //F11
                     }
                     if ( event.key.keysym.sym == SDLK_F12 ) {

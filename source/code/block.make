@@ -1,9 +1,26 @@
-GAMEDIR=../../Game/
+#ifndef GAMEDIR
+	GAMEDIR=../../Game/
+#endif
+
+#ifndef BINARY
 BINARY=$(GAMEDIR)blockattack
-CC=gcc
-CPP=g++
-BASE_CFLAGS=-c $(shell sdl-config --cflags)
-BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer
+#endif
+
+#ifndef CC
+	CC=gcc
+#endif
+
+#ifndef CPP
+	CPP=g++
+#endif
+
+#ifndef BASE_CFLAGS
+	BASE_CFLAGS=-c $(shell sdl-config --cflags)
+#endif
+
+#ifndef BASE_LIBS
+	BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
+#endif
 
 #For developement only 
 ifndef DEBUG
@@ -73,6 +90,13 @@ common.o: common.h common.cc
 
 uploadReplay.o: uploadReplay.cc uploadReplay.h
 	$(CPP) $(BASE_CFLAGS) uploadReplay.cc
+
+#MenuSystem.o: MenuSystem.cc MenuSystem.h
+#	$(CPP) $(BASE_CFLAGS) MenuSystem.cc
+
+#ttfont.o: ttfont.h ttfont.cc
+#	$(CPP) $(BASE_CFLAGS) ttfont.cc
+
 
 run: $(BINARY)
 

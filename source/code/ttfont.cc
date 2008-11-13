@@ -26,6 +26,10 @@ Copyright (C) 2008 Poul Sander
 
 #include "ttfont.h"
 
+//extern SDL_Surface *tmp;
+
+//#define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
+
 TTFont::TTFont()
 {
     font = NULL;

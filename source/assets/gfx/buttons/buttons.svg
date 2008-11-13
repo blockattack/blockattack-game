@@ -6391,4 +6391,81 @@
        x="159.19141"
        id="tspan4434"
        sodipodi:role="line">Configure</tspan></text>
+  <g
+     id="g3535">
+    <g
+       id="g3523"
+       transform="translate(125,45)"
+       inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/bSelectPuzzle.png"
+       inkscape:export-xdpi="89.996552"
+       inkscape:export-ydpi="89.996552">
+      <rect
+         y="0"
+         x="0"
+         height="40"
+         width="120"
+         id="rect3525"
+         style="opacity:1;fill:#40cafc;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1" />
+      <path
+         id="path3527"
+         d="M 0,0 L 120,0 C 120,0 120,40 120,40 L 115,35 L 115,5 L 5,5 L 0,0 z"
+         style="opacity:1;fill:#000000;fill-opacity:0.09803922;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1" />
+      <path
+         style="opacity:1;fill:#ffffff;fill-opacity:0.09803922;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1"
+         d="M 120,40 L 0,40 C 0,40 0,0 0,0 L 5,5 L 5,35 L 115,35 L 120,40 z"
+         id="path3529" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:103.99999619%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1;font-family:Penguin Attack;-inkscape-font-specification:Penguin Attack"
+       x="157.36084"
+       y="73.948242"
+       id="text3531"
+       sodipodi:linespacing="104%"
+       inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/bVsGame.png"
+       inkscape:export-xdpi="89.996552"
+       inkscape:export-ydpi="89.996552"><tspan
+         sodipodi:role="line"
+         id="tspan3533"
+         x="157.36084"
+         y="73.948242">Versus</tspan></text>
+  </g>
+  <g
+     id="g3543"
+     transform="translate(0,44.5)">
+    <g
+       inkscape:export-ydpi="89.996552"
+       inkscape:export-xdpi="89.996552"
+       inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/bSelectPuzzle.png"
+       transform="translate(125,45)"
+       id="g3545">
+      <rect
+         style="opacity:1;fill:#40cafc;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1"
+         id="rect3547"
+         width="120"
+         height="40"
+         x="0"
+         y="0" />
+      <path
+         style="opacity:1;fill:#000000;fill-opacity:0.09803922;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1"
+         d="M 0,0 L 120,0 C 120,0 120,40 120,40 L 115,35 L 115,5 L 5,5 L 0,0 z"
+         id="path3549" />
+      <path
+         id="path3551"
+         d="M 120,40 L 0,40 C 0,40 0,0 0,0 L 5,5 L 5,35 L 115,35 L 120,40 z"
+         style="opacity:1;fill:#ffffff;fill-opacity:0.09803922;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1" />
+    </g>
+    <text
+       inkscape:export-ydpi="89.996552"
+       inkscape:export-xdpi="89.996552"
+       inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/bVsGame.png"
+       sodipodi:linespacing="104%"
+       id="text3553"
+       y="73.948242"
+       x="157.36084"
+       style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:104%;writing-mode:lr;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1;font-family:Penguin Attack;-inkscape-font-specification:Penguin Attack"
+       xml:space="preserve"><tspan
+         sodipodi:role="line"
+         id="tspan3557">Theme</tspan></text>
+  </g>
 </svg>

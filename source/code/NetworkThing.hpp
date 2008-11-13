@@ -370,7 +370,8 @@ public:
                 break;
 
             case ENET_EVENT_TYPE_DISCONNECT:
-                printf ("%s disconected.\n", event.peer -> data);
+                //printf ("%s disconected.\n", event.peer -> data);
+                cout << event.peer -> data << " disconnected." << endl;
 
                 /* Reset the peer's client information. */
 

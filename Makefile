@@ -4,15 +4,15 @@
 #INST=/games/blockattack
 
 standard:
-	@echo "Removing old files (if they exists)"
-	@rm -f source/code/*.o
-	@rm -f ./Game/blockattack
-	@rm -f ./Game/starter
-	@rm -f ./Game/runme.sh
-	@echo "Done deleting files"
+#	@echo "Removing old files (if they exists)"
+#	@rm -f source/code/*.o
+#	@rm -f ./Game/blockattack
+#	@rm -f ./Game/starter
+#	@rm -f ./Game/runme.sh
+#	@echo "Done deleting files"
 	@echo "Now compiling..."
 	@make -C source/code -f block.make
-	@rm -f source/code/*.o
+	#@rm -f source/code/*.o
 	@echo "Everything has been compiled!"
 	
 clean:

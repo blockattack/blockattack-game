@@ -161,6 +161,9 @@ SDL_Surface *bTheme;
 SDL_Surface *bSkip;
 SDL_Surface *bRetry;
 SDL_Surface *bNext;
+
+//SDL_Surface *menuMarked;
+//SDL_Surface *menuUnmarked;
 //end new in 1.4.0
 SDL_Surface *mouse;				//The mouse cursor
 
@@ -210,6 +213,7 @@ bool bFullscreen;			//true if game is running fullscreen
 bool puzzleLoaded;          //true if the puzzle levels have been loaded
 bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
 bool standardBackground;
+bool highPriority;
 
 //new in 1.3.2
 bool editorMode = false;
