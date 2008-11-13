@@ -1,4 +1,6 @@
-To ensure that all authers for each medie file. Only files that cannot include authers in the source are mentioned. 
+To ensure that all authers is known for each medie file. Only files that cannot include authers in the source are mentioned. 
+
+Most graphics are by Iwan Gabovitch aka qubodup.
 
 /gfx/
 14P_Arial_Angle_Red.png		Karl Bartel - http://user.cs.tu-berlin.de/~karlb/sfont/fonts.html
@@ -130,7 +132,8 @@ ballYellow.png			qubodup
 pop.ogg				openarena-svn887:/sound/weapons/rocket/rockf1a.wav
 cameraclick.ogg			openarean-svn887:/sound/misc/w_pkup.wav			
 typing.ogg			openarena-svn887:/sound/world/clack.wav
-
+counter.ogg			openarena-svn900:/sound/feedback/hitlo.wav
+counterFinal.ogg		openarena-svn900:/sound/feedback/hit.wav
 
 
 

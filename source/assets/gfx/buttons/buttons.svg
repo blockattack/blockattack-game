@@ -6392,7 +6392,10 @@
        id="tspan4434"
        sodipodi:role="line">Configure</tspan></text>
   <g
-     id="g3535">
+     id="g3535"
+     inkscape:export-filename="/home/poul/programmering/svn/blockattack/blockattack/trunk/Game/gfx/bVsGameConfig.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
     <g
        id="g3523"
        transform="translate(125,45)"
@@ -6405,7 +6408,7 @@
          height="40"
          width="120"
          id="rect3525"
-         style="opacity:1;fill:#40cafc;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1" />
+         style="opacity:1;fill:#50cefc;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1" />
       <path
          id="path3527"
          d="M 0,0 L 120,0 C 120,0 120,40 120,40 L 115,35 L 115,5 L 5,5 L 0,0 z"
@@ -6432,7 +6435,10 @@
   </g>
   <g
      id="g3543"
-     transform="translate(0,44.5)">
+     transform="translate(0,44.5)"
+     inkscape:export-filename="/home/poul/programmering/svn/blockattack/blockattack/trunk/Game/gfx/bTheme.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
     <g
        inkscape:export-ydpi="89.996552"
        inkscape:export-xdpi="89.996552"
@@ -6440,7 +6446,7 @@
        transform="translate(125,45)"
        id="g3545">
       <rect
-         style="opacity:1;fill:#40cafc;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1"
+         style="opacity:1;fill:#60dafc;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:162;stroke-opacity:1"
          id="rect3547"
          width="120"
          height="40"

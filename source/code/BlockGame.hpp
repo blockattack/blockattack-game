@@ -1972,6 +1972,8 @@ public:
 
         }
     }
+    
+    int lastCounter;
 
     //Draws everything
     void DoPaintJob() {
@@ -2031,7 +2033,12 @@ public:
 #endif
         if (!bGameOver)DrawIMG(cursor[(SDL_GetTicks()/600)%2],sBoard,cursorx*50-4,550-cursory*50-pixels-4);
         if (SDL_GetTicks()<gameStartedAt)
-            switch (abs((int)SDL_GetTicks()-(int)gameStartedAt)/1000) {
+        {
+            int currentCounter = abs((int)SDL_GetTicks()-(int)gameStartedAt)/1000;
+            if( (currentCounter!=lastCounter) && (SoundEnabled)&&(!NoSound))
+                Mix_PlayChannel(1,counterChunk,0);
+            lastCounter = currentCounter;
+            switch (currentCounter) {
             case 2:
                 DrawIMG(counter[2], sBoard, 100, 250);
                 break;
@@ -2044,6 +2051,13 @@ public:
             default:
                 break;
             }
+        }
+        else
+        {
+            if( (0==lastCounter) && (SoundEnabled)&&(!NoSound))
+                Mix_PlayChannel(1,counterFinalChunk,0);
+            lastCounter = -1;
+        }
         if ((bGameOver)&&(!editorMode))
             if (hasWonTheGame)DrawIMG(iWinner, sBoard, 0, 250);
             else if (bDraw) DrawIMG(iDraw, sBoard, 0, 250);

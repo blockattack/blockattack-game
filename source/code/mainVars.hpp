@@ -183,6 +183,7 @@ Mix_Chunk *photoClick;      //clickSound
 Mix_Chunk *heartBeat;		//heart beat
 Mix_Chunk *typingChunk;          //When writing
 Mix_Chunk *counterChunk;         //When counting down
+Mix_Chunk *counterFinalChunk;
 
 Highscore theTopScoresEndless;      //Stores highscores for endless
 Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial

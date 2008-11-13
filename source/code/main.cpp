@@ -700,6 +700,7 @@ int InitImages()
         heartBeat = Mix_LoadWAV2((char*)"sound/heartbeat3.ogg");
         typingChunk = Mix_LoadWAV2((char*)"sound/typing.ogg");
         counterChunk = Mix_LoadWAV2((char*)"sound/counter.ogg");
+        counterFinalChunk = Mix_LoadWAV2((char*)"sound/counterFinal.ogg");
     } //All sound has been loaded or not
     return 0;
 } //InitImages()
@@ -720,6 +721,7 @@ void UnloadImages()
         Mix_FreeChunk(photoClick);
         Mix_FreeChunk(heartBeat);
         Mix_FreeChunk(counterChunk);
+        Mix_FreeChunk(counterFinalChunk);
         Mix_FreeChunk(typingChunk);
     }
     //Free surfaces:
