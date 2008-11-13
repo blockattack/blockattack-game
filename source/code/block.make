@@ -1,26 +1,15 @@
-#ifndef GAMEDIR
-	GAMEDIR=../../Game/
-#endif
+GAMEDIR=../../Game/
 
-#ifndef BINARY
 BINARY=$(GAMEDIR)blockattack
-#endif
 
-#ifndef CC
-	CC=gcc
-#endif
+CC=gcc
 
-#ifndef CPP
-	CPP=g++
-#endif
+CPP=g++
 
-#ifndef BASE_CFLAGS
-	BASE_CFLAGS=-c $(shell sdl-config --cflags)
-#endif
+BASE_CFLAGS=-c $(shell sdl-config --cflags)
 
-#ifndef BASE_LIBS
-	BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
-#endif
+
+BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
 
 #For developement only 
 ifndef DEBUG
