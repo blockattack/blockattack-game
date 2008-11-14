@@ -81,8 +81,12 @@ void ListFiles::setDirectory(string directory)
         return;
     while ((dp=readdir(DirectoryPointer))&&(nrOfFiles<MAX_NR_OF_FILES-1))
     {
-        nrOfFiles++;
-        filenames[nrOfFiles] = (string)(char*)dp->d_name;
+        string name = (string)(char*)dp->d_name;
+        if (!isInList(name) && name != "." && name != "..")
+        {
+            nrOfFiles++;
+            filenames[nrOfFiles] = name;
+        }
     }
     closedir(DirectoryPointer);
 
@@ -116,7 +120,7 @@ void ListFiles::setDirectory2(string dic)
     while ((dp=readdir(DirectoryPointer))&&(nrOfFiles<MAX_NR_OF_FILES-1))
     {
         string name = (string)(char*)dp->d_name;
-        if (!isInList(name))
+        if (!isInList(name) && name != "." && name != "..")
         {
             nrOfFiles++;
             filenames[nrOfFiles] = name;

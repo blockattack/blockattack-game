@@ -39,7 +39,7 @@ Copyright (C) 2005 Poul Sander
 #if defined (_WIN32)
 #define FIRST_FILE 2
 #else
-#define FIRST_FILE 3
+#define FIRST_FILE 1
 #endif
 
 using namespace std;
