@@ -27,7 +27,7 @@ Copyright (C) 2008 Poul Sander
 #include "stats.h"
 #include "common.h"
 
-Stats* Stats::instance = 0;
+Stats* Stats::instance = NULL;
 
 Stats::Stats()
 {
@@ -58,7 +58,7 @@ void Stats::load()
 
 Stats* Stats::getInstance()
 {
-    if(Stats::instance==0)
+    if(Stats::instance==NULL)
     {
         Stats::instance = new Stats();
         

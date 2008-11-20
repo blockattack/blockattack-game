@@ -23,6 +23,10 @@
  * blockattack@poulsander.com
  */
 
+#include "stats.h"
+#include "common.h"
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +196,10 @@ public:
     void setAIlevel(Uint8 aiLevel) {
         AI_MoveSpeed=120-(20*(aiLevel-3));
     };
+    
+    Uint8 getAIlevel() {
+        return (120-AI_MoveSpeed)/20+3;
+    }
 
 #if NETWORK
 #define garbageStackSize 10
@@ -291,6 +299,7 @@ public:
             NewGame(tx, ty);
             stageClear = true;
             Level = level;
+            Stats::getInstance()->addOne("PlayedStageLevel"+itoa2(level));
             stageClearLimit = 30+(Level%6)*10;
             baseSpeed = 0.5/((double)(Level*0.5)+1.0);
             speed = baseSpeed;
@@ -362,6 +371,7 @@ public:
         vsMode = true;
         putStartBlocks();
         garbageTarget = target;
+        Stats::getInstance()->addOne("VSgamesStarted");
     }
 
     //Starts new Vs Game (two Player)
@@ -369,6 +379,8 @@ public:
         NewGame(tx, ty);
         vsMode = true;
         AI_Enabled = AI;
+        if(!AI)
+            Stats::getInstance()->addOne("VSgamesStarted");
         putStartBlocks();
         garbageTarget = target;
     }
@@ -409,6 +421,20 @@ public:
         hasWonTheGame = true;
         showGame = false;
         if (SoundEnabled)Mix_PlayChannel(1, applause, 0);
+        if(!AI_Enabled && !bReplaying)
+        {
+            Stats::getInstance()->addOne("totalWins");
+            if(garbageTarget->AI_Enabled==true && garbageTarget->bReplaying==false)
+            {
+                //We have defeated an AI
+                Stats::getInstance()->addOne("defeatedAI"+itoa(garbageTarget->getAIlevel()));
+            }
+        }
+        if(AI_Enabled && garbageTarget->AI_Enabled==false && garbageTarget->bReplaying==false)
+        {
+            //The AI have defeated a human player
+            Stats::getInstance()->addOne("defeatedByAI"+itoa(garbageTarget->getAIlevel()));
+        }
     }
 
     //void SetGameOver();
@@ -429,6 +455,8 @@ public:
         bDraw = true;
         showGame = false;
         Mix_HaltChannel(1);
+        if(!AI_Enabled && !bReplaying)
+            Stats::getInstance()->addOne("totalDraws");
     }
 
     //Function to get a boardpackage
@@ -2149,6 +2177,8 @@ public:
                 stop++;
             if ((puzzleMode)&&(!bGameOver)&&BoardEmpty()) {
                 if (!singlePuzzle) {
+                    if(puzzleCleared[Level]==false)
+                        Stats::getInstance()->addOne("puzzlesSolved");
                     puzzleCleared[Level] = true;
                     ofstream outfile;
                     stageButtonStatus = SBpuzzleMode;
