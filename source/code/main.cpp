@@ -1917,6 +1917,74 @@ bool OpenDialogbox(int x, int y, char *name)
     return accept;
 }
 
+void OpenStatsDisplay()
+{
+    bool done = false;     //We are done!
+    MakeBackground(1024,768);
+    DrawIMG(background,screen,0,0);
+    int y = 5;
+    const int y_spacing = 30;
+    SFont_Write(screen,fBlueFont,10,y,"Stats");
+    y+=y_spacing*2;
+    SFont_Write(screen,fBlueFont,10,y,"Chains");
+    for(int i=2;i<13;i++)
+    {
+        y+=y_spacing;
+        SFont_Write(screen,fBlueFont,10,y,(itoa(i)+"X").c_str());
+        string numberAsString = itoa(Stats::getInstance()->getNumberOf("chainX"+itoa(i)));
+        SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
+    }
+    y+=y_spacing*2;
+    SFont_Write(screen,fBlueFont,10,y,"Lines Pushed: ");
+    string numberAsString = itoa(Stats::getInstance()->getNumberOf("linesPushed"));
+    SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
+    
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,10,y,"Puzzles solved: ");
+    numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
+    SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
+    
+    const int x_offset = 1024/2+10;
+    y = 5+y_spacing*2;
+    SFont_Write(screen,fBlueFont,x_offset,y,"VS CPU (win/loss)");
+    for(int i=0;i<7;i++)
+    {
+        y += y_spacing;
+        SFont_Write(screen,fBlueFont,x_offset,y,("AI "+itoa(i+1)).c_str());
+        numberAsString = itoa(Stats::getInstance()->getNumberOf("defeatedAI"+itoa(i)));
+        string numberAsString2 = itoa(Stats::getInstance()->getNumberOf("defeatedByAI"+itoa(i)));
+        string toPrint = numberAsString + "/" + numberAsString2;
+        SFont_Write(screen,fBlueFont,x_offset+230,y,toPrint.c_str());
+    }
+    
+    SDL_Flip(screen); //Update screen
+    while (!done)
+    {
+        SDL_Delay(10);
+        SDL_Event event;
+        
+        while ( SDL_PollEvent(&event) )
+        {
+            if ( event.type == SDL_QUIT )  {
+                done = true;
+            }
+
+            if ( event.type == SDL_KEYDOWN )
+            {
+                if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
+                    done = true;
+                }
+                else
+                    if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
+                        done = true;
+                    }
+            }
+
+        }	//while(event)
+
+    }
+}
+
 
 //Open a puzzle file
 bool OpenFileDialogbox(int x, int y, char *name)
@@ -3764,6 +3832,7 @@ int main(int argc, char *argv[])
                             //char mitNavn[30];
                             //SelectThemeDialogbox(300,400,mitNavn);
                            // MainMenu();
+                            OpenStatsDisplay();
                         } //F11
                     }
                     if ( event.key.keysym.sym == SDLK_F12 ) {
