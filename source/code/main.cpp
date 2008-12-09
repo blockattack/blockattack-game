@@ -66,7 +66,7 @@ Copyright (C) 2008 Poul Sander
 #if USE_ABSTRACT_FS
     #include <physfs.h>         //Abstract file system. To use containers
 #endif
-#include "ttfont.h"        //To use True Type Fonts in SDL
+//#include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
 #include <vector>
 //#include "MenuSystem.h"
@@ -116,7 +116,6 @@ void closeAllMenus()
     bNetworkOpen = false;
 #endif
     showOptions = false;
-    showHighscores = false;
 
 }
 
@@ -238,8 +237,6 @@ void loadTheme(string themeName)
     CONVERTA(counter[1]);
     reloadIMG(&cursor[2],themeName+"/animations/counter/3.png");
     CONVERTA(counter[2]);
-    reloadIMG(&topscoresBack,themeName+"/topscores.png");
-    CONVERTA(topscoresBack);
     reloadIMG(&optionsBack,themeName+"/options.png");
     CONVERTA(optionsBack);
     reloadIMG(&bExit,themeName+"/bExit.png");
@@ -387,7 +384,7 @@ void loadTheme(string themeName)
     #endif
 }
 
-TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
+/*TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
 
     char * tmp;
     TTF_Font * ret=NULL;
@@ -406,7 +403,7 @@ TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
         cout << "failed to load font: " << TTF_GetError() << endl;
     free(tmp);
     return ret;
-}
+}*/
 
 Mix_Music * Mix_LoadMUS2(char* path)
 {
@@ -501,7 +498,6 @@ int InitImages()
             && (iChainBack = IMG_Load2((char*)"gfx/chainFrame.png"))
             && (iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png"))
             && (iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png"))
-            && (topscoresBack = IMG_Load2((char*)"gfx/topscores.png"))
             && (optionsBack = IMG_Load2((char*)"gfx/options.png"))
             && (bOn = IMG_Load2((char*)"gfx/bOn.png"))
             && (bOff = IMG_Load2((char*)"gfx/bOff.png"))
@@ -608,7 +604,6 @@ int InitImages()
     CONVERTA(counter[0]);
     CONVERTA(counter[1]);
     CONVERTA(counter[2]);
-    CONVERTA(topscoresBack);
     CONVERTA(optionsBack);
     CONVERT(bExit);
     CONVERT(bOn);
@@ -777,7 +772,6 @@ void UnloadImages()
     SDL_FreeSurface(iChainBack);
     //SDL_FreeSurface(iBlueFont); //Segfault
     //SDL_FreeSurface(iSmallFont); //Segfault
-    SDL_FreeSurface(topscoresBack);
     SDL_FreeSurface(optionsBack);
     SDL_FreeSurface(bOn);
     SDL_FreeSurface(bOff);
@@ -1296,37 +1290,6 @@ void writeScreenShot()
     SDL_SaveBMP( screen, buf );
     if (!NoSound)
         if (SoundEnabled)Mix_PlayChannel(1,photoClick,0);
-}
-
-//Draws the highscores
-inline void DrawHighscores(int x, int y)
-{
-    DrawIMG(topscoresBack,screen,x,y);
-    if (showEndless) SFont_Write(screen,fBlueFont,x+100,y+100,"Endless:");
-    else SFont_Write(screen,fBlueFont,x+100,y+100,"Time Trial:");
-    for (int i =0;i<10;i++)
-    {
-        char playerScore[32];
-        char playerName[32];
-        if (showEndless) 
-        {
-            sprintf(playerScore, "%i", theTopScoresEndless.getScoreNumber(i));
-        }
-        else 
-        {
-            sprintf(playerScore, "%i", theTopScoresTimeTrial.getScoreNumber(i));
-        }
-        if (showEndless) 
-        {
-            strcpy(playerName,theTopScoresEndless.getScoreName(i));
-        }
-        else 
-        {
-            strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
-        }
-        SFont_Write(screen,fBlueFont,x+420,y+150+i*35,playerScore);
-        SFont_Write(screen,fBlueFont,x+60,y+150+i*35,playerName);
-    }
 }
 
 char keyname[11];
@@ -1917,9 +1880,40 @@ bool OpenDialogbox(int x, int y, char *name)
     return accept;
 }
 
-void OpenStatsDisplay()
+//Draws the highscores
+void DrawHighscores(int x, int y, bool endless)
 {
-    bool done = false;     //We are done!
+    MakeBackground(1024,768);
+    DrawIMG(background,screen,0,0);
+    if (endless) SFont_Write(screen,fBlueFont,x+100,y+100,"Endless:");
+    else SFont_Write(screen,fBlueFont,x+100,y+100,"Time Trial:");
+    for (int i =0;i<10;i++)
+    {
+        char playerScore[32];
+        char playerName[32];
+        if (endless)
+        {
+            sprintf(playerScore, "%i", theTopScoresEndless.getScoreNumber(i));
+        }
+        else
+        {
+            sprintf(playerScore, "%i", theTopScoresTimeTrial.getScoreNumber(i));
+        }
+        if (endless)
+        {
+            strcpy(playerName,theTopScoresEndless.getScoreName(i));
+        }
+        else
+        {
+            strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
+        }
+        SFont_Write(screen,fBlueFont,x+420,y+150+i*35,playerScore);
+        SFont_Write(screen,fBlueFont,x+60,y+150+i*35,playerName);
+    }
+}
+
+void DrawStats()
+{
     MakeBackground(1024,768);
     DrawIMG(background,screen,0,0);
     int y = 5;
@@ -1938,12 +1932,12 @@ void OpenStatsDisplay()
     SFont_Write(screen,fBlueFont,10,y,"Lines Pushed: ");
     string numberAsString = itoa(Stats::getInstance()->getNumberOf("linesPushed"));
     SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
-    
+
     y+=y_spacing;
     SFont_Write(screen,fBlueFont,10,y,"Puzzles solved: ");
     numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
     SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
-    
+
     const int x_offset = 1024/2+10;
     y = 5+y_spacing*2;
     SFont_Write(screen,fBlueFont,x_offset,y,"VS CPU (win/loss)");
@@ -1956,10 +1950,34 @@ void OpenStatsDisplay()
         string toPrint = numberAsString + "/" + numberAsString2;
         SFont_Write(screen,fBlueFont,x_offset+230,y,toPrint.c_str());
     }
-    
+
     SDL_Flip(screen); //Update screen
+}
+
+void OpenScoresDisplay()
+{
+    bool done = false;     //We are done!
+    int page = 0;
+    const int numberOfPages = 3;
     while (!done)
     {
+        switch(page)
+        {
+            case 0:
+                //Highscores, endless
+                DrawHighscores(100,100,true);
+                break;
+            case 1:
+                //Highscores, Time Trial
+                DrawHighscores(100,100,false);
+                break;
+            case 2:
+            default:
+                DrawStats();
+        };
+        
+
+        SDL_Flip(screen); //Update screen
         SDL_Delay(10);
         SDL_Event event;
         
@@ -1971,6 +1989,20 @@ void OpenStatsDisplay()
 
             if ( event.type == SDL_KEYDOWN )
             {
+                if( (event.key.keysym.sym == SDLK_RIGHT))
+                {
+                    page++;
+                    if(page>=numberOfPages)
+                        page = 0;
+                }
+
+                if( (event.key.keysym.sym == SDLK_LEFT))
+                {
+                    page--;
+                    if(page<0)
+                        page = numberOfPages-1;
+                }
+
                 if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
                     done = true;
                 }
@@ -2541,7 +2573,6 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         DrawIMG(bSave,screen,360,40);
         DrawIMG(bLoad,screen,360,80);
     }
-    if (showHighscores) DrawHighscores(100,100);
     if (showOptions) DrawOptions(100,100);
 
     DrawBalls();
@@ -3217,8 +3248,6 @@ int main(int argc, char *argv[])
     xsize = 1024;     //screen size x
     int ysize = 768;      //screen size y
     int mousex, mousey;   //Mouse coordinates
-    showHighscores = false;
-    showEndless = true;
     showOptions = false;
     b1playerOpen = false;
     b2playersOpen = false;
@@ -3591,11 +3620,6 @@ int main(int argc, char *argv[])
                 {
                     if ( event.key.keysym.sym == SDLK_ESCAPE )
                     {
-                        if (showHighscores)
-                        {
-                            showHighscores = false;
-                        }
-                        else
                             if (showOptions)
                             {
                                 showOptions = false;
@@ -3676,15 +3700,11 @@ int main(int argc, char *argv[])
                     //common:
                     if ((!singlePuzzle)&&(!editorMode))
                     {
-                        if ( ((event.key.keysym.sym == SDLK_LEFT)||(event.key.keysym.sym == SDLK_RIGHT)) && (showHighscores) ) {
-                            showEndless = !showEndless;
-                        }
-
                         if ( event.key.keysym.sym == SDLK_F2 ) {
                             #if NETWORK
-                            if ((!showHighscores)&&(!showOptions)&&(!networkActive)){
+                            if ((!showOptions)&&(!networkActive)){
                             #else
-                            if ((!showHighscores)&&(!showOptions)){
+                            if ((!showOptions)){
                             #endif
                                 theGame.NewGame(50,100);
                                 theGame.timetrial = false;
@@ -3697,9 +3717,9 @@ int main(int argc, char *argv[])
                             }}
                         if ( event.key.keysym.sym == SDLK_F3 ) {
                             #if NETWORK
-                            if ((!showHighscores)&&(!showOptions)&&(!networkActive)){
+                            if ((!showOptions)&&(!networkActive)){
                             #else
-                            if ((!showHighscores)&&(!showOptions)){    
+                            if ((!showOptions)){    
                             #endif
                                 theGame.NewGame(50,100);
                                 theGame.timetrial = true;
@@ -3713,9 +3733,9 @@ int main(int argc, char *argv[])
                         if ( event.key.keysym.sym == SDLK_F5 )
                         {
                             #if NETWORK
-                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            if ((!showOptions)&&(!networkActive))
                             #else
-                            if ((!showHighscores)&&(!showOptions))    
+                            if ((!showOptions))    
                             #endif
                             {
                                 int myLevel = StageLevelSelect();
@@ -3732,9 +3752,9 @@ int main(int argc, char *argv[])
                         if ( event.key.keysym.sym == SDLK_F6 )
                         {
                             #if NETWORK
-                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            if ((!showOptions)&&(!networkActive))
                             #else
-                            if ((!showHighscores)&&(!showOptions))    
+                            if ((!showOptions))    
                             #endif
                             {
                                 theGame.NewVsGame(50,100,&theGame2);
@@ -3758,9 +3778,9 @@ int main(int argc, char *argv[])
                         if ( event.key.keysym.sym == SDLK_F4 )
                         {
                             #if NETWORK
-                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            if ((!showOptions)&&(!networkActive))
                             #else
-                            if ((!showHighscores)&&(!showOptions))    
+                            if ((!showOptions))    
                             #endif
                             {
                                 theGame.NewGame(50,100);
@@ -3785,9 +3805,9 @@ int main(int argc, char *argv[])
                         if ( event.key.keysym.sym == SDLK_F7 )
                         {
                             #if NETWORK
-                            if ((!showHighscores)&&(!showOptions)&&(!networkActive))
+                            if ((!showOptions)&&(!networkActive))
                             #else
-                            if ((!showHighscores)&&(!showOptions))    
+                            if ((!showOptions))    
                             #endif
                             {
                                 int myLevel = PuzzleLevelSelect();
@@ -3803,24 +3823,6 @@ int main(int argc, char *argv[])
                         }
                         if ( event.key.keysym.sym == SDLK_F8 )
                         {
-                            #if NETWORK
-                            if ((!showGame)&&(!showOptions)&&(!networkActive))
-                            #else
-                            if ((!showGame)&&(!showOptions))    
-                            #endif
-                                if (!showHighscores)
-                                {
-                                    closeAllMenus();
-                                    showHighscores = true;
-                                    MakeBackground(xsize,ysize,theGame,theGame2);
-                                    DrawIMG(background, screen, 0, 0);
-                                    closeAllMenus();
-                                    theGame2.SetGameOver();
-                                }
-                                else
-                                {
-                                    showEndless = !showEndless;
-                                }
                         }
                         if ( event.key.keysym.sym == SDLK_F9 ) {
                             writeScreenShot();
@@ -3832,7 +3834,7 @@ int main(int argc, char *argv[])
                             //char mitNavn[30];
                             //SelectThemeDialogbox(300,400,mitNavn);
                            // MainMenu();
-                            OpenStatsDisplay();
+                            OpenScoresDisplay();
                         } //F11
                     }
                     if ( event.key.keysym.sym == SDLK_F12 ) {
@@ -4169,7 +4171,6 @@ int main(int argc, char *argv[])
                         closeAllMenus();
                         bNewGameOpen = state; //theGame.NewGame(50,100);
                         showOptions = false;
-                        showHighscores = false;
                     }
                     else
 #if NETWORK
@@ -4382,7 +4383,6 @@ int main(int argc, char *argv[])
                                                                                     closeAllMenus();
                                                                                     if (!showOptions) {
                                                                                         showOptions = true;
-                                                                                        showHighscores = false;
                                                                                     }
                                                                                     else showOptions = false;
                                                                                     DrawIMG(background, screen, 0, 0);
@@ -4413,13 +4413,8 @@ int main(int argc, char *argv[])
                                                                                             if ((120*2<mousex) && (mousex<3*120) && (0<mousey) && (mousey<40) &&(!networkActive))
                                                                                             {
                                                                                                 //highscore button clicked
-                                                                                                bool state = showHighscores;
-                                                                                                closeAllMenus();
-                                                                                                if (!state) {
-                                                                                                    showHighscores = true;
-                                                                                                    showOptions = false;
-                                                                                                }
-                                                                                                DrawIMG(background, screen, 0, 0);
+                                                                                                OpenScoresDisplay();
+
                                                                                             }
                                                                                             else
                                                                                                 if ((360<mousex) && (mousex<4*120) && (0<mousey) && (mousey<40) &&(!networkActive))
@@ -4429,7 +4424,6 @@ int main(int argc, char *argv[])
                                                                                                     closeAllMenus();
                                                                                                     bReplayOpen = state; //theGame.NewGame(50,100);
                                                                                                     showOptions = false;
-                                                                                                    showHighscores = false;
                                                                                                 }
                                                                                                 else
                                                                                                     if ((360<mousex) && (mousex<4*120) && (40<mousey) && (mousey<80) &&(bReplayOpen))
@@ -4574,17 +4568,11 @@ int main(int argc, char *argv[])
                         MakeBackground(xsize,ysize,theGame,theGame2);
                         DrawIMG(background, screen, 0, 0);
                     }
-                    if ((showHighscores)&&(((mousex>150)&&(mousex<173))||((mousex>628)&&(mousex<650)))&&(mousey<652)&&(mousey>630))
-                    {
-                        //small arrors on Highscore board clicked!
-                        showEndless = !showEndless;
-                        DrawIMG(background, screen, 0, 0);
-                    }
 
                     /********************************************************************
                     **************** Here comes mouse play ******************************
                     ********************************************************************/
-                    if ((!showOptions)&&(!showHighscores))
+                    if ((!showOptions))
                     {
                         if (mouseplay1 && !theGame.AI_Enabled) //player 1
                             if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
@@ -4627,7 +4615,7 @@ int main(int argc, char *argv[])
                     /********************************************************************
                     **************** Here comes mouse play ******************************
                     ********************************************************************/
-                    if ((!showOptions)&&(!showHighscores))
+                    if (!showOptions)
                     {
                         if (mouseplay1 && !theGame.AI_Enabled) //player 1
                             if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))

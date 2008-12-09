@@ -102,7 +102,6 @@ SDL_Surface *crossover;     //Cross the bricks that will be cleared soon
 SDL_Surface *balls[7];      //The balls (the small ones that jump around)
 SDL_Surface *iBlueFont;      //Contains the blue font used
 SDL_Surface *iSmallFont;	//Small font used for the chain text
-SDL_Surface *topscoresBack;  //The backgound to the highscore list
 SDL_Surface *optionsBack;
 SDL_Surface *changeButtonsBack;
 SDL_Surface *dialogBox;
@@ -198,8 +197,6 @@ bool bReplayOpen;			//Show replay menu
 #if NETWORK
 bool bNetworkOpen;			//Show the network menu
 #endif
-bool showHighscores;        //true if highscores is displayed
-bool showEndless;           //if true show endless highscores else timetrial
 bool showGame;              //the game is active don't show highscores/options
 bool showOptions;           //true if options is open
 bool bScreenLocked;			//Don't take input or allow any mouse interaction! Used for dialogbox and warningbox
