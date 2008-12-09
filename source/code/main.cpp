@@ -1950,12 +1950,11 @@ void DrawStats()
         string toPrint = numberAsString + "/" + numberAsString2;
         SFont_Write(screen,fBlueFont,x_offset+230,y,toPrint.c_str());
     }
-
-    SDL_Flip(screen); //Update screen
 }
 
 void OpenScoresDisplay()
 {
+    int mousex,mousey;
     bool done = false;     //We are done!
     int page = 0;
     const int numberOfPages = 3;
@@ -1977,12 +1976,16 @@ void OpenScoresDisplay()
         };
         
 
-        SDL_Flip(screen); //Update screen
+        
         SDL_Delay(10);
         SDL_Event event;
+
+        SDL_GetMouseState(&mousex,&mousey);
         
         while ( SDL_PollEvent(&event) )
         {
+
+
             if ( event.type == SDL_QUIT )  {
                 done = true;
             }
@@ -2013,7 +2016,8 @@ void OpenScoresDisplay()
             }
 
         }	//while(event)
-
+        DrawIMG(mouse,screen,mousex,mousey);
+        SDL_Flip(screen); //Update screen
     }
 }
 
@@ -2085,13 +2089,13 @@ bool OpenFileDialogbox(int x, int y, char *name)
             bMouseUp = false;
 
             //The Forward Button:
-            if ( (mousex>x+460) && (mousex<x+460+120) && (mousey>y+420) && (mousey<y+420+40) )
+            if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
             {
                 lf.forward();
             }
 
             //The back button:
-            if ( (mousex>x+20) && (mousex<x+20+120) && (mousey>y+420) && (mousey<y+420+40) )
+            if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
             {
                 lf.back();
             }
@@ -2181,13 +2185,13 @@ bool SelectThemeDialogbox(int x, int y, char *name)
             bMouseUp = false;
 
             //The Forward Button:
-            if ( (mousex>x+460) && (mousex<x+460+120) && (mousey>y+420) && (mousey<y+420+40) )
+            if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
             {
                 lf.forward();
             }
 
             //The back button:
-            if ( (mousex>x+20) && (mousex<x+20+120) && (mousey>y+420) && (mousey<y+420+40) )
+            if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
             {
                 lf.back();
             }
@@ -2283,13 +2287,13 @@ bool OpenReplayDialogbox(int x, int y, char *name)
             bMouseUp = false;
 
             //The Forward Button:
-            if ( (mousex>x+460) && (mousex<x+460+120) && (mousey>y+420) && (mousey<y+420+40) )
+            if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
             {
                 lf.forward();
             }
 
             //The back button:
-            if ( (mousex>x+20) && (mousex<x+20+120) && (mousey>y+420) && (mousey<y+420+40) )
+            if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
             {
                 lf.back();
             }
@@ -2317,8 +2321,8 @@ bool OpenReplayDialogbox(int x, int y, char *name)
 //draws options:
 inline void DrawOptions(int x, int y)
 {
-    if (MusicEnabled) DrawIMG(bOn,optionsBack,400,120);
-    else DrawIMG(bOff,optionsBack,400,120);
+    if (MusicEnabled) DrawIMG(bOn,optionsBack,400,buttonXsize);
+    else DrawIMG(bOff,optionsBack,400,buttonXsize);
     if (SoundEnabled) DrawIMG(bOn,optionsBack,400,170);
     else DrawIMG(bOff,optionsBack,400,170);
     if (bFullscreen) DrawIMG(bOn,optionsBack,400,220);
@@ -2408,9 +2412,9 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         {
             //Here we draw the menu
             DrawIMG(bNewGame, screen, 0, 0);
-            DrawIMG(bOptions, screen, 120,0);
-            DrawIMG(bHighScore, screen, 2*120,0);
-            DrawIMG(bReplay,screen,3*120,0);
+            DrawIMG(bOptions, screen, buttonXsize,0);
+            DrawIMG(bHighScore, screen, 2*buttonXsize,0);
+            DrawIMG(bReplay,screen,3*buttonXsize,0);
         }
         else
         { //If network is active
@@ -2536,37 +2540,37 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         DrawIMG(b1player,screen,0,40);
         DrawIMG(b2players,screen,0,80);
 #if NETWORK
-        DrawIMG(bNetwork,screen,0,120);
+        DrawIMG(bNetwork,screen,0,buttonXsize);
 #endif
         if (b1playerOpen)
         {
-            DrawIMG(bEndless,screen,120,40);
-            DrawIMG(bTimeTrial,screen,120,80);
-            DrawIMG(bStageClear,screen,120,120);
-            DrawIMG(bPuzzle,screen,120,160);
-            DrawIMG(bVsMode,screen,120,200);
+            DrawIMG(bEndless,screen,buttonXsize,40);
+            DrawIMG(bTimeTrial,screen,buttonXsize,80);
+            DrawIMG(bStageClear,screen,buttonXsize,buttonXsize);
+            DrawIMG(bPuzzle,screen,buttonXsize,160);
+            DrawIMG(bVsMode,screen,buttonXsize,200);
         }
         else
             if (b2playersOpen)
             {
-                DrawIMG(bTimeTrial,screen,120,80);
-                DrawIMG(bVsMode,screen,120,120);
+                DrawIMG(bTimeTrial,screen,buttonXsize,80);
+                DrawIMG(bVsMode,screen,buttonXsize,120);
             }
 #if NETWORK
             else
                 if (bNetworkOpen)
                 {
-                    DrawIMG(bHost,screen,120,120);
-                    DrawIMG(bConnect,screen,120,160);
+                    DrawIMG(bHost,screen,buttonXsize,120);
+                    DrawIMG(bConnect,screen,buttonXsize,160);
                 }
 #endif
     }
     if (bOptionsOpen)
     {
-        DrawIMG(bConfigure,screen,120,40);
-        DrawIMG(bSelectPuzzle,screen,120,80);
-        DrawIMG(bVsModeConfig,screen,120,120);
-        DrawIMG(bTheme,screen,120,160);
+        DrawIMG(bConfigure,screen,buttonXsize,40);
+        DrawIMG(bSelectPuzzle,screen,buttonXsize,80);
+        DrawIMG(bVsModeConfig,screen,buttonXsize,120);
+        DrawIMG(bTheme,screen,buttonXsize,160);
     }
     if (bReplayOpen)
     {
@@ -4164,7 +4168,7 @@ int main(int argc, char *argv[])
                     #else
                     bool networkActive=false;
                     #endif
-                    if ((0<mousex) && (mousex<120) && (0<mousey) && (mousey<40) &&(!networkActive) )
+                    if ((0<mousex) && (mousex<buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive) )
                     {
                         //New game clicked
                         bool state = (!bNewGameOpen);
@@ -4174,7 +4178,7 @@ int main(int argc, char *argv[])
                     }
                     else
 #if NETWORK
-                        if ((0<mousex) && (mousex<120) && (0<mousey) && (mousey<40) &&(networkActive))
+                        if ((0<mousex) && (mousex<buttonXsize) && (0<mousey) && (mousey<40) &&(networkActive))
                         {
                             //Disconnect clicked!
                             cout << "Disconnect clicked!" << endl;
@@ -4182,7 +4186,7 @@ int main(int argc, char *argv[])
                         }
                         else
 #endif
-                            if ((0<mousex) && (mousex<120) && (40<mousey) && (mousey<80) && (bNewGameOpen) &&(!networkActive))
+                            if ((0<mousex) && (mousex<buttonXsize) && (40<mousey) && (mousey<80) && (bNewGameOpen) &&(!networkActive))
                             {
                                 //1player
                                 b1playerOpen = (!b1playerOpen);
@@ -4192,7 +4196,7 @@ int main(int argc, char *argv[])
 #endif
                             }
                             else
-                                if ((0<mousex) && (mousex<120) && (80<mousey) && (mousey<120) && (bNewGameOpen) &&(!networkActive))
+                                if ((0<mousex) && (mousex<buttonXsize) && (80<mousey) && (mousey<120) && (bNewGameOpen) &&(!networkActive))
                                 {
                                     //2player
                                     b2playersOpen = (!b2playersOpen);
@@ -4203,7 +4207,7 @@ int main(int argc, char *argv[])
                                 }
 #if NETWORK
                                 else
-                                    if ((0<mousex) && (mousex<120) && (120<mousey) && (mousey<160) && (bNewGameOpen) &&(!networkActive))
+                                    if ((0<mousex) && (mousex<buttonXsize) && (120<mousey) && (mousey<160) && (bNewGameOpen) &&(!networkActive))
                                     {
                                         //Network
                                         b1playerOpen = false;
@@ -4212,7 +4216,7 @@ int main(int argc, char *argv[])
                                     }
 #endif
                                     else
-                                        if ((120<mousex) && (mousex<240) && (40<mousey) && (mousey<80) && (b1playerOpen) &&(!networkActive))
+                                        if ((buttonXsize<mousex) && (mousex<240) && (40<mousey) && (mousey<80) && (b1playerOpen) &&(!networkActive))
                                         {
                                             //1 player - endless
                                             theGame.NewGame(50,100);
@@ -4224,7 +4228,7 @@ int main(int argc, char *argv[])
                                             showGame = true;
                                         }
                                         else
-                                            if ((120<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )
+                                            if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )
                                             {
                                                 //1 player - time trial
                                                 theGame.NewGame(50,100);
@@ -4237,7 +4241,7 @@ int main(int argc, char *argv[])
                                                 showGame = true;
                                             }
                                             else
-                                                if ((120<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b1playerOpen)&&(!networkActive) )
+                                                if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b1playerOpen)&&(!networkActive) )
                                                 {
                                                     //1 player - stage clear
                                                     bNewGameOpen = false;
@@ -4252,7 +4256,7 @@ int main(int argc, char *argv[])
                                                     vsMode = false;
                                                 }
                                                 else
-                                                    if ((120<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (b1playerOpen))
+                                                    if ((buttonXsize<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (b1playerOpen))
                                                     {
                                                         //1 player - puzzle
                                                         bNewGameOpen = false;
@@ -4267,7 +4271,7 @@ int main(int argc, char *argv[])
                                                         vsMode = false;
                                                     }
                                                     else
-                                                        if ((120<mousex) && (mousex<240) && (200<mousey) && (mousey<240) && (b1playerOpen))
+                                                        if ((buttonXsize<mousex) && (mousex<240) && (200<mousey) && (mousey<240) && (b1playerOpen))
                                                         {
                                                             //1 player - Vs mode
                                                             bNewGameOpen = false;
@@ -4287,7 +4291,7 @@ int main(int argc, char *argv[])
                                                             theGame2.putStartBlocks(theTime);
                                                         }
                                                         else
-                                                            if ((120<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b2playersOpen))
+                                                            if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b2playersOpen))
                                                             {
                                                                 //2 player - time trial
                                                                 theGame.NewGame(50,100);
@@ -4312,7 +4316,7 @@ int main(int argc, char *argv[])
                                                                 twoPlayers = true;
                                                             }
                                                             else
-                                                                if ((120<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b2playersOpen))
+                                                                if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b2playersOpen))
                                                                 {
                                                                     //2 player - VsMode
                                                                     theGame.NewVsGame(50,100,&theGame2);
@@ -4335,7 +4339,7 @@ int main(int argc, char *argv[])
                                                                 }
 #if NETWORK
                                                                 else
-                                                                    if ((120<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (bNetworkOpen))
+                                                                    if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (bNetworkOpen))
                                                                     {
                                                                         //Host
                                                                         cout << "Host" << endl;
@@ -4345,7 +4349,7 @@ int main(int argc, char *argv[])
                                                                         nt.startServer();
                                                                     }
                                                                     else
-                                                                        if ((120<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (bNetworkOpen))
+                                                                        if ((buttonXsize<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (bNetworkOpen))
                                                                         {
                                                                             //Connect
                                                                             cout << "Connect" << endl;
@@ -4362,7 +4366,7 @@ int main(int argc, char *argv[])
                                                                         }
 #endif
                                                                         else
-                                                                            if ((120<mousex) && (mousex<2*120) && (0<mousey) && (mousey<40) &&(!networkActive))
+                                                                            if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive))
                                                                             {
                                                                                 //options button clicked
                                                                                 if (bOptionsOpen)
@@ -4377,7 +4381,7 @@ int main(int argc, char *argv[])
                                                                                 }
                                                                             }
                                                                             else
-                                                                                if ((120<mousex) && (mousex<2*120) && (40<mousey) && (mousey<80) && (bOptionsOpen) )
+                                                                                if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (40<mousey) && (mousey<80) && (bOptionsOpen) )
                                                                                 {
                                                                                     //Configure button clicked
                                                                                     closeAllMenus();
@@ -4388,21 +4392,21 @@ int main(int argc, char *argv[])
                                                                                     DrawIMG(background, screen, 0, 0);
                                                                                 }
                                                                                 else
-                                                                                    if ((120<mousex) && (mousex<2*120) && (80<mousey) && (mousey<120) && (bOptionsOpen) )
+                                                                                    if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (80<mousey) && (mousey<120) && (bOptionsOpen) )
                                                                                     {
                                                                                         //Configure button clicked
                                                                                         closeAllMenus();
                                                                                         changePuzzleLevels();
                                                                                     }
                                                                                     else
-                                                                                        if ((120<mousex) && (mousex<2*120) && (120<mousey) && (mousey<160) && (bOptionsOpen) )
+                                                                                        if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (120<mousey) && (mousey<160) && (bOptionsOpen) )
                                                                                         {
                                                                                             //vsMode button clicked
                                                                                             closeAllMenus();
                                                                                             startVsMenu();
                                                                                         }
                                                                                         else
-                                                                                        if ((120<mousex) && (mousex<2*120) && (160<mousey) && (mousey<200) && (bOptionsOpen) )
+                                                                                        if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (160<mousey) && (mousey<200) && (bOptionsOpen) )
                                                                                         {
                                                                                             //selectThemClicked
                                                                                             closeAllMenus();
@@ -4410,14 +4414,14 @@ int main(int argc, char *argv[])
                                                                                             SelectThemeDialogbox(200,100,temp);
                                                                                         }
                                                                                         else
-                                                                                            if ((120*2<mousex) && (mousex<3*120) && (0<mousey) && (mousey<40) &&(!networkActive))
+                                                                                            if ((buttonXsize*2<mousex) && (mousex<3*buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive))
                                                                                             {
                                                                                                 //highscore button clicked
                                                                                                 OpenScoresDisplay();
 
                                                                                             }
                                                                                             else
-                                                                                                if ((360<mousex) && (mousex<4*120) && (0<mousey) && (mousey<40) &&(!networkActive))
+                                                                                                if ((360<mousex) && (mousex<4*buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive))
                                                                                                 {
                                                                                                     //Replay clicked!
                                                                                                     bool state = (!bReplayOpen);
@@ -4426,7 +4430,7 @@ int main(int argc, char *argv[])
                                                                                                     showOptions = false;
                                                                                                 }
                                                                                                 else
-                                                                                                    if ((360<mousex) && (mousex<4*120) && (40<mousey) && (mousey<80) &&(bReplayOpen))
+                                                                                                    if ((360<mousex) && (mousex<4*buttonXsize) && (40<mousey) && (mousey<80) &&(bReplayOpen))
                                                                                                     {
                                                                                                         //Replay->Save clicked!
                                                                                                         //cout << "Replay->Save clicked" << endl;
@@ -4451,7 +4455,7 @@ int main(int argc, char *argv[])
                                                                                                         closeAllMenus();
                                                                                                     }
                                                                                                     else
-                                                                                                        if ((360<mousex) && (mousex<4*120) && (80<mousey) && (mousey<120)&&(bReplayOpen))
+                                                                                                        if ((360<mousex) && (mousex<4*buttonXsize) && (80<mousey) && (mousey<120)&&(bReplayOpen))
                                                                                                         {
                                                                                                             //Replay->Load clicked!
                                                                                                             //cout << "Replay->Load clicked" << endl;
@@ -4497,7 +4501,7 @@ int main(int argc, char *argv[])
                                                                                                             closeAllMenus();
                                                                                                         }
                                                                                                         else
-                                                                                                            if ((xsize-120<mousex) && (xsize-20>mousex) && (ysize-120<mousey) && (ysize-20>mousey))
+                                                                                                            if ((xsize-120<mousex) && (xsize-20>mousex) && (ysize-buttonXsize<mousey) && (ysize-20>mousey))
                                                                                                             {
                                                                                                                 //Exit clicked
                                                                                                                 done=1;

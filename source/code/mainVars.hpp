@@ -321,6 +321,9 @@ enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
 
 stageButton stageButtonStatus = SBdontShow;
 
+const int buttonXsize = 120;
+const int buttonYsize = 40;
+
 struct ButtonCords
 {
     int x;
@@ -330,14 +333,14 @@ struct ButtonCords
 };
 
 ButtonCords cordNextButton = {
-cordNextButton.x = 150+(150-120)/2,
+cordNextButton.x = 150+(150-buttonXsize)/2,
 cordNextButton.y = 500,
-cordNextButton.xsize = 120,
-cordNextButton.ysize = 40};
+cordNextButton.xsize = buttonXsize,
+cordNextButton.ysize = buttonYsize};
 
 ButtonCords cordRetryButton = {
-cordRetryButton.x = (150-120)/2,
+cordRetryButton.x = (150-buttonXsize)/2,
 cordRetryButton.y = 500,
-cordRetryButton.xsize = 120,
-cordRetryButton.ysize = 40
+cordRetryButton.xsize = buttonXsize,
+cordRetryButton.ysize = buttonYsize
 };
