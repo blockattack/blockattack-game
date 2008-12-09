@@ -256,7 +256,7 @@ Uint8 player2handicap=0;
 
 unsigned long int currentTime;      //contains the current time, so we don't call SDL_GetTickets() too often...
 
-int xsize;
+int xsize = 1024;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
 char player1name[30];

@@ -1271,6 +1271,7 @@ textManeger theTextManeger;
 
 //Here comes the Block Game object
 #include "BlockGame.hpp"
+#include "SFont.h"
 
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
 void writeScreenShot()
@@ -1957,7 +1958,15 @@ void OpenScoresDisplay()
     int mousex,mousey;
     bool done = false;     //We are done!
     int page = 0;
+    const int ysize = 768;
     const int numberOfPages = 3;
+    //button coodinates:
+    const int scoreX = buttonXsize*2;
+    const int scoreY = 0;
+    const int backX = 20;
+    const int backY = ysize-buttonYsize-20;
+    const int nextX = xsize-buttonXsize-20;
+    const int nextY = backY;
     while (!done)
     {
         switch(page)
@@ -1974,8 +1983,15 @@ void OpenScoresDisplay()
             default:
                 DrawStats();
         };
-        
 
+        //Draw buttons:
+        DrawIMG(bHighScore,screen,scoreX,scoreY);
+        DrawIMG(bBack,screen,backX,backY);
+        DrawIMG(bNext,screen,nextX,nextY);
+
+        //Draw page number
+        string pageXofY = ((string)"Page ")+itoa(page+1)+((string)" of ")+itoa(numberOfPages);
+        SFont_Write(screen,fBlueFont,xsize/2-SFont_TextWidth(fBlueFont,pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
         
         SDL_Delay(10);
         SDL_Event event;
@@ -1998,13 +2014,15 @@ void OpenScoresDisplay()
                     if(page>=numberOfPages)
                         page = 0;
                 }
-
+                else
                 if( (event.key.keysym.sym == SDLK_LEFT))
                 {
                     page--;
                     if(page<0)
                         page = numberOfPages-1;
                 }
+                else
+                    done = true;
 
                 if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
                     done = true;
@@ -2016,6 +2034,38 @@ void OpenScoresDisplay()
             }
 
         }	//while(event)
+
+        // If the mouse button is released, make bMouseUp equal true
+        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+        {
+            bMouseUp=true;
+        }
+
+        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+        {
+            bMouseUp = false;
+
+            //The Score button:
+            if((mousex>scoreX) && (mousex<scoreX+buttonXsize) && (mousey>scoreY) && (mousey<scoreY+buttonYsize))
+                done =true;
+
+            //The back button:
+            if((mousex>backX) && (mousex<backX+buttonXsize) && (mousey>backY) && (mousey<backY+buttonYsize))
+            {
+                page--;
+                if(page<0)
+                    page = numberOfPages-1;
+            }
+
+            //The next button:
+            if((mousex>nextX) && (mousex<nextX+buttonXsize) && (mousey>nextY) && (mousey<nextY+buttonYsize))
+            {
+                page++;
+                if(page>=numberOfPages)
+                    page = 0;
+            }
+        }
+
         DrawIMG(mouse,screen,mousex,mousey);
         SDL_Flip(screen); //Update screen
     }
