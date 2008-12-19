@@ -24,9 +24,20 @@ Copyright (C) 2008 Poul Sander
     http://blockattack.sf.net
 */
 
+/*
+ *This is the common.h
+ *It contains some basic functions that nearly all multiplatform games are going
+ *to need.
+ */
+
 #ifndef _COMMON_H
 #define	_COMMON_H
 
+/*
+ *Files will be saved in:
+ * HOME/.gamesaves/"+GAMENAME (unix)
+ *or DOCUMENTS/My Games/GAMENAME (Windows)
+ */
 #define GAMENAME "blockattack"
 
 #include <string>
@@ -54,6 +65,12 @@ commonTime addTotalTime(commonTime toAdd);
 
 #define MAX_VAR_LENGTH 1024
 
+/*This is the Config class it is a map to hold config variables.
+ *It is inspired by Quake 3's CVAR system although a lot simpler.
+ *All variables have keys "varName" that is used to access a variable.
+ *
+ *This class is a singleton
+ */
 class Config
 {
 private: 
@@ -68,23 +85,56 @@ protected:
     
     
 public:
-    
+    /*Config is a singleton.
+     *It is accessed like this:
+     *Config::getInstance()->method2call(paramters);
+     */
     static Config* getInstance();
     
+    /*save()
+     *forces the config to be written to disk. This will also happened if the
+     *program terminates normally.
+     */
     void save();
     
+    /*getString(varName)
+     *Looks in the config file and returns the string that matches the key "varName"
+     *Returns an empty string if varName does not exist.
+     */
     string getString(string varName);
     
+    /*getInt(varName)
+     *Looks in the config file and returns the int that matches the key "varName"
+     *Returns "0" if varName does not exist or cannot be parsed.
+     */
     int getInt(string varName);
     
+    /*getValue(varName)
+     *Looks in the config file and returns the double that matches the key "varName"
+     *Returns "0.0" if varName does not exist or cannot be parsed.
+     */
     double getValue(string varName);
     
+    /*setString(varName,content)
+     *Sets the config variable with key "varName" to the value of "content"
+     */
     void setString(string varName,string content);
     
+    /*setInt(varName,content)
+     *Sets the config variable with key "varName" to the value of "content"
+     */
     void setInt(string varName,int content);
     
+    /*setValue(varName,content)
+     *Sets the config variable with key "varName" to the value of "content"
+     */
     void setValue(string varName,double content);
     
+    /*exists(varName)
+     *returns true if the key varName exists. This is used the first time 1.4.0
+     *starts so that it can see that it has to import configs from an earlier 
+     *version.
+     */
     bool exists(string varName);
 };
 

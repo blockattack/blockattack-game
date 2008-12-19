@@ -1168,7 +1168,7 @@ public:
                 if (chainUsed[i]==true) {
                     if ((vsMode)&&(chainSize[i]>1)) garbageTarget->CreateGarbage(6, chainSize[i]-1);
                     if ((SoundEnabled)&&(chainSize[i]>4))Mix_PlayChannel(1, applause, 0);
-                    if(chainSize[i]>1 && !puzzleMode)
+                    if(chainSize[i]>1 && !puzzleMode && !AI_Enabled)
                         Stats::getInstance()->addOne((string)"chainX"+itoa(chainSize[i]));
                     chainUsed[i]=false;
                 }

@@ -2023,6 +2023,10 @@ void OpenScoresDisplay()
                 }
                 else
                     done = true;
+                
+                if ( event.key.keysym.sym == SDLK_F9 ) {
+                    writeScreenShot();
+                }
 
                 if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
                     done = true;

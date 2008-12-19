@@ -42,6 +42,11 @@ string double2str(double num)
     return converter.str();
 }        
 
+/*
+ * str2double parses a string and returns a double with the value of the string
+ * if the string is not a double then 0.0 is returned instead of throing an error
+ * in that way this function will always return a useable value.
+ */
 double str2double(string str2parse)
 {
     try{
@@ -55,6 +60,11 @@ double str2double(string str2parse)
     }
 }
 
+/*
+ * str2int parses a string and returns an int with the value of the string
+ * if the string is not an int then 0 is returned instead of throing an error
+ * in that way this function will always return a useable value.
+ */
 int str2int(string str2parse)
 {
     try{
