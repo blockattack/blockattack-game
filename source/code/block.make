@@ -46,48 +46,48 @@ else
 BASE_CFLAGS += -DUSE_ABSTRACT_FS=0
 endif
 
-$(BINARY): 	main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o uploadReplay.o
-	$(CPP) -O -o $(BINARY) main.o highscore.o SFont.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o $(BASE_LIBS)
+$(BINARY): 	build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o build/uploadReplay.o
+	$(CPP) -O -o $(BINARY) build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o $(BASE_LIBS)
 #-lphysfs
 
-main.o:	main.cpp BlockGame.hpp mainVars.hpp common.h
-	$(CPP) $(BASE_CFLAGS) main.cpp
+build/main.o:	main.cpp BlockGame.hpp mainVars.hpp common.h
+	$(CPP) $(BASE_CFLAGS) main.cpp -o build/main.o
 
-highscore.o: highscore.h highscore.cpp
-	$(CPP) $(BASE_CFLAGS) highscore.cpp
+build/highscore.o: highscore.h highscore.cpp
+	$(CPP) $(BASE_CFLAGS) highscore.cpp -o build/highscore.o
 
-SFont.o: SFont.h SFont.c
-	$(CC) $(BASE_CFLAGS) SFont.c
+build/SFont.o: SFont.h SFont.c
+	$(CC) $(BASE_CFLAGS) SFont.c -o build/SFont.o
 
-ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
-	$(CPP) $(BASE_CFLAGS) ReadKeyboard.cpp
+build/ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
+	$(CPP) $(BASE_CFLAGS) ReadKeyboard.cpp -o build/ReadKeyboard.o
 
-joypad.o: joypad.h joypad.cpp
-	$(CPP) $(BASE_CFLAGS) joypad.cpp
+build/joypad.o: joypad.h joypad.cpp
+	$(CPP) $(BASE_CFLAGS) joypad.cpp -o build/joypad.o
 
-listFiles.o: listFiles.h listFiles.cpp
-	$(CPP) $(BASE_CFLAGS) listFiles.cpp
+build/listFiles.o: listFiles.h listFiles.cpp
+	$(CPP) $(BASE_CFLAGS) listFiles.cpp -o build/listFiles.o
 
-replay.o: replay.h replay.cpp
-	$(CPP) $(BASE_CFLAGS) replay.cpp
+build/replay.o: replay.h replay.cpp
+	$(CPP) $(BASE_CFLAGS) replay.cpp -o build/replay.o
 
-stats.o: stats.h stats.cc
-	$(CPP) $(BASE_CFLAGS) stats.cc
+build/stats.o: stats.h stats.cc
+	$(CPP) $(BASE_CFLAGS) stats.cc -o build/stats.o
 
-common.o: common.h common.cc
-	$(CPP) $(BASE_CFLAGS) common.cc
+build/common.o: common.h common.cc
+	$(CPP) $(BASE_CFLAGS) common.cc -o build/common.o
 
-uploadReplay.o: uploadReplay.cc uploadReplay.h
-	$(CPP) $(BASE_CFLAGS) uploadReplay.cc
+build/uploadReplay.o: uploadReplay.cc uploadReplay.h
+	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o build/uploadReplay.o
 
-#MenuSystem.o: MenuSystem.cc MenuSystem.h
-#	$(CPP) $(BASE_CFLAGS) MenuSystem.cc
+#build/MenuSystem.o: MenuSystem.cc MenuSystem.h
+#	$(CPP) $(BASE_CFLAGS) MenuSystem.cc -o build/MenuSystem.o
 
-#ttfont.o: ttfont.h ttfont.cc
-#	$(CPP) $(BASE_CFLAGS) ttfont.cc
+#build/ttfont.o: ttfont.h ttfont.cc
+#	$(CPP) $(BASE_CFLAGS) ttfont.cc -o build/ttfont.o
 
 
 run: $(BINARY)
 
 clean:
-	rm *o
+	rm build/*o
