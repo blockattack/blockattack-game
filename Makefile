@@ -16,7 +16,7 @@ standard:
 	@echo "Everything has been compiled!"
 	
 clean:
-	rm -f ./source/code/*.o
+	rm -f ./source/code/build/*.o
 	rm -f ./source/code/blockattack #Build by scons
 	rm -f ./Game/blockattack #build by this
 	

@@ -4784,15 +4784,8 @@ int main(int argc, char *argv[])
         configSettings->save();
     }
 
-    Stats::getInstance()->save();
-    
-    //Frees memory from music and fonts
-    //This is done after writing of configurations and stats since it often crashes the program :(
-    UnloadImages();
-    
-    
     //calculate uptime:
-    //int hours, mins, secs, 
+    //int hours, mins, secs,
     int time;
     commonTime ct;
     ct.days = 0;
@@ -4804,10 +4797,19 @@ int main(int argc, char *argv[])
     ct.seconds = time/1000;
 
     cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
-        
+
     ct = addTotalTime(ct);
-    
+
     cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
+
+    Stats::getInstance()->save();
+
+    Config::getInstance()->save();
+    
+    //Frees memory from music and fonts
+    //This is done after writing of configurations and stats since it often crashes the program :(
+    UnloadImages();
+    
 #if USE_ABSTRACT_FS    
     //Close file system Apstraction layer!
     PHYSFS_deinit();

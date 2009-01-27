@@ -112,61 +112,65 @@ string getPathToSaveFiles()
 #endif
 }
 
-
+commonTime ms2ct(unsigned int milliseconds)
+{
+    commonTime ct;
+    ct.days = 0;
+    unsigned int time = milliseconds;
+    ct.hours = time/(1000*60*60);
+    time = time % (1000*60*60);
+    ct.minutes = time/(1000*60);
+    time = time % (1000*60);
+    ct.seconds = time/1000;
+}
 
 commonTime getTotalTime()
 {
     commonTime ct;
-    string filename = getPathToSaveFiles()+"/totalTime";
-    ifstream inFile(filename.c_str());
-    if(inFile)
-    {
-        inFile >> ct.days;
-        inFile >> ct.hours;
-        inFile >> ct.minutes;
-        inFile >> ct.seconds;
-        inFile.close();
-    }
-    else
-    {
-        ct.days = 0;
-        ct.hours = 0;
-        ct.minutes = 0;
-        ct.seconds = 0;
-    }
+    ct.days = Config::getInstance()->getInt("totalTimeDays");
+    ct.hours = Config::getInstance()->getInt("totalTimeHours");
+    ct.minutes = Config::getInstance()->getInt("totalTimeMinutes");
+    ct.seconds = Config::getInstance()->getInt("totalTimeSeconds");
     return ct;
 }
 
-commonTime addTotalTime(commonTime toAdd)
+/*
+ * peekTotalTime
+ * Returns the total runtime with toAdd added but without writing it to config file. Used for stats
+ */
+commonTime peekTotalTime(commonTime toAdd)
 {
     commonTime ct = getTotalTime();
-    
+
     ct.seconds +=toAdd.seconds;
     ct.minutes +=ct.seconds/60;
     ct.seconds = ct.seconds%60;
-    
+
     ct.minutes += toAdd.minutes;
     ct.hours += ct.minutes/60;
     ct.minutes = ct.minutes%60;
-    
+
     ct.hours += toAdd.hours;
     ct.days += ct.hours/24;
     ct.hours = ct.hours%24;
-    
+
     ct.days += toAdd.days;
+    return ct;
+}
+
+/*
+ * addTotalTime
+ * Same as peekTotalTime but writes the time to the config file.
+ * Should only be called once... when the program shuts down
+ */
+commonTime addTotalTime(commonTime toAdd)
+{
+    commonTime ct = peekTotalTime(toAdd);
     
-    string filename = getPathToSaveFiles()+"/totalTime";
-    ofstream outFile(filename.c_str(),ios::trunc);
-    if(outFile)
-    {
-        outFile << ct.days << endl;
-        outFile << ct.hours << endl;
-        outFile << ct.minutes << endl;
-        outFile << ct.seconds << endl;
-        outFile.close();
-    }
-    else
-        cout << "Error writing total time to: " << filename << endl;
+    Config::getInstance()->setInt("totalTimeDays",ct.days);
+    Config::getInstance()->setInt("totalTimeHours",ct.hours);
+    Config::getInstance()->setInt("totalTimeMinutes",ct.minutes);
+    Config::getInstance()->setInt("totalTimeSeconds",ct.seconds);
     return ct;
 }
 
@@ -229,6 +233,7 @@ void Config::save()
         outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
         //This is checked on load too in case a user changes it himself.
     }
+    outFile.close();
 }
 
 bool Config::exists(string varName)

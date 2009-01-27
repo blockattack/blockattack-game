@@ -59,7 +59,11 @@ string itoa(int num);
 
 string getPathToSaveFiles();
 
+commonTime ms2ct(unsigned int milliseconds);
+
 commonTime getTotalTime();
+
+commonTime peekTotalTime(commonTime toAdd);
 
 commonTime addTotalTime(commonTime toAdd);
 

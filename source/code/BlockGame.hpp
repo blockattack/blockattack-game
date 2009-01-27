@@ -424,16 +424,16 @@ public:
         if(!AI_Enabled && !bReplaying)
         {
             Stats::getInstance()->addOne("totalWins");
-            if(garbageTarget->AI_Enabled==true && garbageTarget->bReplaying==false)
+            if(garbageTarget->AI_Enabled && !(garbageTarget->bReplaying))
             {
                 //We have defeated an AI
                 Stats::getInstance()->addOne("defeatedAI"+itoa(garbageTarget->getAIlevel()));
             }
         }
-        if(AI_Enabled && garbageTarget->AI_Enabled==false && garbageTarget->bReplaying==false)
+        if(AI_Enabled && !(garbageTarget->AI_Enabled) && garbageTarget->bReplaying==false)
         {
             //The AI have defeated a human player
-            Stats::getInstance()->addOne("defeatedByAI"+itoa(garbageTarget->getAIlevel()));
+            Stats::getInstance()->addOne("defeatedByAI"+itoa(getAIlevel()));
         }
     }
 
@@ -1322,7 +1322,7 @@ public:
         }
 
         if ((TowerHeight>12) && (!puzzleMode)&&(!bGameOver)&&(chain==0)) {
-            if ((theTopScoresEndless.isHighScore(score))&&(!AI_Enabled)) {
+            if ((!vsMode)&&(theTopScoresEndless.isHighScore(score))&&(!AI_Enabled)) {
                 if (SoundEnabled)Mix_PlayChannel(1, applause, 0);
                 theTopScoresEndless.addScore(name, score);
                 cout << "New high score!" << endl;
