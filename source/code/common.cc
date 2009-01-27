@@ -42,8 +42,8 @@ string double2str(double num)
     return converter.str();
 }        
 
-/*
- * str2double parses a string and returns a double with the value of the string
+/**
+ * str2double parses a string and returns a double with the value of the string.
  * if the string is not a double then 0.0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
@@ -60,8 +60,8 @@ double str2double(string str2parse)
     }
 }
 
-/*
- * str2int parses a string and returns an int with the value of the string
+/**
+ * str2int parses a string and returns an int with the value of the string.
  * if the string is not an int then 0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
@@ -101,6 +101,12 @@ string getMyDocumentsPath()
 
 #endif
 
+/**
+ * Returns the path to where all settings must be saved.
+ * On unix-like systems this is the home-folder under: ~/.gamesaves/GAMENAME
+ * In Windows it is My Documents/My Games
+ * Consider changing this for Vista that has a special save games folder
+ */
 string getPathToSaveFiles()
 {
 #ifdef __unix__
@@ -112,6 +118,9 @@ string getPathToSaveFiles()
 #endif
 }
 
+/**
+ * Takes a number of milliseconds and returns the value in commonTime format.
+ */
 commonTime ms2ct(unsigned int milliseconds)
 {
     commonTime ct;
@@ -122,6 +131,7 @@ commonTime ms2ct(unsigned int milliseconds)
     ct.minutes = time/(1000*60);
     time = time % (1000*60);
     ct.seconds = time/1000;
+    return ct;
 }
 
 commonTime getTotalTime()
@@ -134,9 +144,9 @@ commonTime getTotalTime()
     return ct;
 }
 
-/*
- * peekTotalTime
- * Returns the total runtime with toAdd added but without writing it to config file. Used for stats
+/**
+ * Returns the total runtime with toAdd added but without writing it to config file. 
+ * Used for stats
  */
 commonTime peekTotalTime(commonTime toAdd)
 {
@@ -158,10 +168,9 @@ commonTime peekTotalTime(commonTime toAdd)
     return ct;
 }
 
-/*
- * addTotalTime
+/**
  * Same as peekTotalTime but writes the time to the config file.
- * Should only be called once... when the program shuts down
+ * Should only be called only once! when the program shuts down
  */
 commonTime addTotalTime(commonTime toAdd)
 {

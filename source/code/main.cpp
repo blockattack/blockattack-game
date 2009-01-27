@@ -1939,6 +1939,18 @@ void DrawStats()
     numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
     SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
 
+    y+=y_spacing*2;
+    SFont_Write(screen,fBlueFont,10,y,"Run time: ");
+    commonTime ct = peekTotalTime(ms2ct(SDL_GetTicks()));
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,10,y,((string)("Days: "+itoa(ct.days))).c_str());
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,10,y,((string)("Hours: "+itoa(ct.hours))).c_str());
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,10,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,10,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+
     const int x_offset = 1024/2+10;
     y = 5+y_spacing*2;
     SFont_Write(screen,fBlueFont,x_offset,y,"VS CPU (win/loss)");
@@ -4786,15 +4798,7 @@ int main(int argc, char *argv[])
 
     //calculate uptime:
     //int hours, mins, secs,
-    int time;
-    commonTime ct;
-    ct.days = 0;
-    time = SDL_GetTicks();
-    ct.hours = time/(1000*60*60);
-    time = time % (1000*60*60);
-    ct.minutes = time/(1000*60);
-    time = time % (1000*60);
-    ct.seconds = time/1000;
+    commonTime ct = ms2ct(SDL_GetTicks());
 
     cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
 

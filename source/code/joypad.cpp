@@ -17,7 +17,7 @@ Copyright (C) 2005 Poul Sander
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     Poul Sander
-    Rævehøjvej 36, V. 1111
+    Rï¿½vehï¿½jvej 36, V. 1111
     2800 Kgs. Lyngby
     DENMARK
     blockattack@poulsander.com
@@ -111,7 +111,8 @@ Joypad::Joypad()
 
 Joypad::~Joypad()
 {
-    SDL_JoystickClose(joystick);
+	if(working)
+    		SDL_JoystickClose(joystick);
 }
 
 void Joypad::update()
