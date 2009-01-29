@@ -121,7 +121,7 @@ string getPathToSaveFiles()
 /**
  * Takes a number of milliseconds and returns the value in commonTime format.
  */
-commonTime ms2ct(unsigned int milliseconds)
+commonTime TimeHandler::ms2ct(unsigned int milliseconds)
 {
     commonTime ct;
     ct.days = 0;
@@ -134,13 +134,13 @@ commonTime ms2ct(unsigned int milliseconds)
     return ct;
 }
 
-commonTime getTotalTime()
+commonTime TimeHandler::getTime(string name)
 {
     commonTime ct;
-    ct.days = Config::getInstance()->getInt("totalTimeDays");
-    ct.hours = Config::getInstance()->getInt("totalTimeHours");
-    ct.minutes = Config::getInstance()->getInt("totalTimeMinutes");
-    ct.seconds = Config::getInstance()->getInt("totalTimeSeconds");
+    ct.days = Config::getInstance()->getInt(name+"Days");
+    ct.hours = Config::getInstance()->getInt(name+"Hours");
+    ct.minutes = Config::getInstance()->getInt(name+"Minutes");
+    ct.seconds = Config::getInstance()->getInt(name+"Seconds");
     return ct;
 }
 
@@ -148,9 +148,9 @@ commonTime getTotalTime()
  * Returns the total runtime with toAdd added but without writing it to config file. 
  * Used for stats
  */
-commonTime peekTotalTime(commonTime toAdd)
+commonTime TimeHandler::peekTime(string name, commonTime toAdd)
 {
-    commonTime ct = getTotalTime();
+    commonTime ct = getTime(name);
 
     ct.seconds +=toAdd.seconds;
     ct.minutes +=ct.seconds/60;
@@ -172,14 +172,14 @@ commonTime peekTotalTime(commonTime toAdd)
  * Same as peekTotalTime but writes the time to the config file.
  * Should only be called only once! when the program shuts down
  */
-commonTime addTotalTime(commonTime toAdd)
+commonTime TimeHandler::addTime(string name, commonTime toAdd)
 {
-    commonTime ct = peekTotalTime(toAdd);
+    commonTime ct = peekTime(name,toAdd);
     
-    Config::getInstance()->setInt("totalTimeDays",ct.days);
-    Config::getInstance()->setInt("totalTimeHours",ct.hours);
-    Config::getInstance()->setInt("totalTimeMinutes",ct.minutes);
-    Config::getInstance()->setInt("totalTimeSeconds",ct.seconds);
+    Config::getInstance()->setInt(name+"Days",ct.days);
+    Config::getInstance()->setInt(name+"Hours",ct.hours);
+    Config::getInstance()->setInt(name+"Minutes",ct.minutes);
+    Config::getInstance()->setInt(name+"Seconds",ct.seconds);
     return ct;
 }
 

@@ -107,6 +107,6 @@ void Stats::addOne(string statName)
 
 bool Stats::exists(string statName)
 {
-    //Using that find returns an iterator to the end of the map if not found
+    //Using that 'find' returns an iterator to the end of the map if not found
     return statMap.find(statName) != statMap.end();
 }

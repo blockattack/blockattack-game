@@ -1941,7 +1941,7 @@ void DrawStats()
 
     y+=y_spacing*2;
     SFont_Write(screen,fBlueFont,10,y,"Run time: ");
-    commonTime ct = peekTotalTime(ms2ct(SDL_GetTicks()));
+    commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
     y+=y_spacing;
     SFont_Write(screen,fBlueFont,10,y,((string)("Days: "+itoa(ct.days))).c_str());
     y+=y_spacing;
@@ -1950,6 +1950,19 @@ void DrawStats()
     SFont_Write(screen,fBlueFont,10,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
     y+=y_spacing;
     SFont_Write(screen,fBlueFont,10,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+
+    y-=y_spacing*4; //Four rows back
+    const int x_offset3 = 1024/3+10; //Ofset for three rows
+    SFont_Write(screen,fBlueFont,x_offset3,y,"Play time: ");
+    ct = TimeHandler::getTime("playTime");
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Days: "+itoa(ct.days))).c_str());
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Hours: "+itoa(ct.hours))).c_str());
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
+    y+=y_spacing;
+    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
 
     const int x_offset = 1024/2+10;
     y = 5+y_spacing*2;
@@ -4798,11 +4811,11 @@ int main(int argc, char *argv[])
 
     //calculate uptime:
     //int hours, mins, secs,
-    commonTime ct = ms2ct(SDL_GetTicks());
+    commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
     cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
 
-    ct = addTotalTime(ct);
+    ct = TimeHandler::addTime("totalTime",ct);
 
     cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
 

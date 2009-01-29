@@ -415,7 +415,13 @@ public:
     //Prints "winner" and ends game
     void setPlayerWon() {
         if (!bGameOver)
+        {
             gameEndedAfter = SDL_GetTicks()-gameStartedAt; //We game ends now!
+	    if(!AI_Enabled && !bReplaying)
+		{
+			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
+		}
+        }
         theReplay.setFinalFrame(getPackage(), 1);
         bGameOver = true;
         hasWonTheGame = true;
@@ -450,6 +456,10 @@ public:
     //Prints "draw" and ends the game
     void setDraw() {
         bGameOver = true;
+	if(!AI_Enabled && !bReplaying)
+	{
+		TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
+	}
         theReplay.setFinalFrame(getPackage(), 3);
         hasWonTheGame = false;
         bDraw = true;
@@ -1176,8 +1186,13 @@ public:
 
     //prints "Game Over" and ends game
     void SetGameOver() {
-        if (!bGameOver)
-            gameEndedAfter = SDL_GetTicks()-gameStartedAt; //We game ends now!
+        if (!bGameOver) {
+        	gameEndedAfter = SDL_GetTicks()-gameStartedAt; //We game ends now!
+		if(!AI_Enabled && !bReplaying)
+		{
+			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
+		}
+	}
         theReplay.setFinalFrame(getPackage(), 0);
         bGameOver = true;
         showGame = false;

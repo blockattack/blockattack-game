@@ -59,13 +59,17 @@ string itoa(int num);
 
 string getPathToSaveFiles();
 
-commonTime ms2ct(unsigned int milliseconds);
-
-commonTime getTotalTime();
-
-commonTime peekTotalTime(commonTime toAdd);
-
-commonTime addTotalTime(commonTime toAdd);
+class TimeHandler
+{
+public:
+	static commonTime ms2ct(unsigned int milliseconds);
+	
+	static commonTime getTime(string name);
+	
+	static commonTime peekTime(string name, commonTime toAdd);
+	
+	static commonTime addTime(string name, commonTime toAdd);
+};
 
 #define MAX_VAR_LENGTH 1024
 
