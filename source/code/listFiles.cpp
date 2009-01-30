@@ -50,32 +50,32 @@ void ListFiles::setDirectory(string directory)
     hFind = FindFirstFile(dictory.c_str(), &FindFileData);
     if (hFind == INVALID_HANDLE_VALUE)
     {
-        printf ("Invalid file handle. Error is %u\n", GetLastError());
+        cout << "Invalid file handle. Error is " << GetLastError() << endl;
     }
     else
     {
         nrOfFiles=0;
         filenames[nrOfFiles] = FindFileData.cFileName;
-        printf("File: %s\n",FindFileData.cFileName);
+        cout << "File: " << FindFileData.cFileName << endl;
         while ((FindNextFile(hFind, &FindFileData) != 0)&&(nrOfFiles<MAX_NR_OF_FILES-1))
         {
             nrOfFiles++;
             filenames[nrOfFiles] = FindFileData.cFileName;
-            printf("File: %s\n",FindFileData.cFileName);
+            cout << "File: " << FindFileData.cFileName << endl;
         }
 
         dwError = GetLastError();
         FindClose(hFind);
         if (dwError != ERROR_NO_MORE_FILES)
         {
-            printf ("FindNextFile error. Error is %s\n", dwError);
+            cout << "FindNextFile error. Error is " << dwError << endl;
         }
     }
 #elif defined(__unix__)
     DIR *DirectoryPointer;
     struct dirent *dp;
     nrOfFiles=0;
-    //printf("Will look in: %s\n",directory.c_str());
+    //cout << "Will look in: " << directory << endl;
     DirectoryPointer = opendir(directory.c_str());
     if(!DirectoryPointer)
         return;
@@ -113,7 +113,7 @@ void ListFiles::setDirectory2(string dic)
 #if defined(__unix__)
     DIR *DirectoryPointer;
     struct dirent *dp;
-    //printf("Will look in: %s\n",dic.c_str());
+    //cout << "Will look in: " << dic << endl;
     DirectoryPointer = opendir(dic.c_str());
     if(!DirectoryPointer)
         return;
