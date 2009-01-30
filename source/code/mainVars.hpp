@@ -257,6 +257,8 @@ Uint8 player2handicap=0;
 unsigned long int currentTime;      //contains the current time, so we don't call SDL_GetTickets() too often...
 
 int xsize = 1024;
+int ysize = 768;
+int bsize = 50;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
 char player1name[30];
@@ -333,14 +335,14 @@ struct ButtonCords
 };
 
 ButtonCords cordNextButton = {
-cordNextButton.x = 150+(150-buttonXsize)/2,
-cordNextButton.y = 500,
+cordNextButton.x = 3*bsize+(3*bsize-buttonXsize)/2,
+cordNextButton.y = 10*bsize,
 cordNextButton.xsize = buttonXsize,
 cordNextButton.ysize = buttonYsize};
 
 ButtonCords cordRetryButton = {
-cordRetryButton.x = (150-buttonXsize)/2,
-cordRetryButton.y = 500,
+cordRetryButton.x = (3*bsize-buttonXsize)/2,
+cordRetryButton.y = 10*bsize,
 cordRetryButton.xsize = buttonXsize,
 cordRetryButton.ysize = buttonYsize
 };

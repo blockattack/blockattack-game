@@ -24,6 +24,9 @@ Copyright (C) 2008 Poul Sander
     http://blockattack.sf.net
 */
 
+#include <string.h>
+
+
 
 
 
@@ -1613,7 +1616,7 @@ int OpenControlsBox(int x, int y, int player)
     Uint8 *keys;
     bool done =false;
     char *keyname;
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     while (!done)
     {
         SDL_Delay(10);
@@ -1817,7 +1820,7 @@ bool OpenDialogbox(int x, int y, char *name)
     ReadKeyboard rk = ReadKeyboard(name);
     Uint8* keys;
     string strHolder;
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
     while (!done)
     {
@@ -1884,7 +1887,7 @@ bool OpenDialogbox(int x, int y, char *name)
 //Draws the highscores
 void DrawHighscores(int x, int y, bool endless)
 {
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
     if (endless) SFont_Write(screen,fBlueFont,x+100,y+100,"Endless:");
     else SFont_Write(screen,fBlueFont,x+100,y+100,"Time Trial:");
@@ -1915,7 +1918,7 @@ void DrawHighscores(int x, int y, bool endless)
 
 void DrawStats()
 {
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
     int y = 5;
     const int y_spacing = 30;
@@ -1952,7 +1955,7 @@ void DrawStats()
     SFont_Write(screen,fBlueFont,10,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
 
     y-=y_spacing*4; //Four rows back
-    const int x_offset3 = 1024/3+10; //Ofset for three rows
+    const int x_offset3 = xsize/3+10; //Ofset for three rows
     SFont_Write(screen,fBlueFont,x_offset3,y,"Play time: ");
     ct = TimeHandler::getTime("playTime");
     y+=y_spacing;
@@ -1964,7 +1967,7 @@ void DrawStats()
     y+=y_spacing;
     SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
 
-    const int x_offset = 1024/2+10;
+    const int x_offset = xsize/2+10;
     y = 5+y_spacing*2;
     SFont_Write(screen,fBlueFont,x_offset,y,"VS CPU (win/loss)");
     for(int i=0;i<7;i++)
@@ -1983,7 +1986,6 @@ void OpenScoresDisplay()
     int mousex,mousey;
     bool done = false;     //We are done!
     int page = 0;
-    const int ysize = 768;
     const int numberOfPages = 3;
     //button coodinates:
     const int scoreX = buttonXsize*2;
@@ -2116,7 +2118,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
 #endif
     Uint8* keys;
     string strHolder;
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
     DrawIMG(bForward,background,x+460,y+420);
     DrawIMG(bBack,background,x+20,y+420);
@@ -2212,7 +2214,7 @@ bool SelectThemeDialogbox(int x, int y, char *name)
 #endif
     Uint8* keys;
     string strHolder;
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
     DrawIMG(bForward,background,x+460,y+420);
     DrawIMG(bBack,background,x+20,y+420);
@@ -2312,7 +2314,7 @@ bool OpenReplayDialogbox(int x, int y, char *name)
     cout << "Directory sat" << endl;
     Uint8* keys;
     string strHolder;
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
     DrawIMG(bForward,background,x+460,y+420);
     DrawIMG(bBack,background,x+20,y+420);
@@ -2680,14 +2682,18 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
 //Generates the standard background
 void MakeBackground(int xsize,int ysize)
 {
-    DrawIMG(backgroundImage,background,0,0);
+    int w = backgroundImage->w;
+    int h = backgroundImage->h;
+    for(int i=0;i*w<xsize;i++)
+        for(int j=0;j*h<ysize;j++)
+            DrawIMG(backgroundImage,background,i*w,j*h);
     standardBackground = true;
 }
 
 //Generates the background with red board backs
 void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2)
 {
-    DrawIMG(backgroundImage,background,0,0);
+    MakeBackground(xsize,ysize);
     DrawIMG(boardBackBack,background,theGame.topx-60,theGame.topy-68);
     DrawIMG(boardBackBack,background,theGame2.topx-60,theGame2.topy-68);
     standardBackground = false;
@@ -2695,7 +2701,7 @@ void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2)
 
 void MakeBackground(int xsize, int ysize, BlockGame &theGame)
 {
-    DrawIMG(backgroundImage,background,0,0);
+    MakeBackground(xsize,ysize);
     DrawIMG(boardBackBack,background,theGame.topx-60,theGame.topy-68);
     standardBackground = false;
 }
@@ -2718,7 +2724,7 @@ int PuzzleLevelSelect()
     int nowTime=SDL_GetTicks();
 
     ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     if (puzzleFile)
     {
         for (int i=0;(i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
@@ -2814,7 +2820,7 @@ int StageLevelSelect()
     //Keeps track of background;
     //int nowTime=SDL_GetTicks();
 
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
     if (stageFile)
     {
@@ -2960,7 +2966,7 @@ int startSingleVs()
     int mousex, mousey;	//To allow mouse
     bool done = false;	//When are we done?
 
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     DrawIMG(changeButtonsBack,background,xplace,yplace);
     SFont_Write(background,fBlueFont,xplace+10,yplace+10,"1 : Very Easy");
     SFont_Write(background,fBlueFont,xplace+10,yplace+40,"2 : Easy");
@@ -3072,9 +3078,9 @@ void startVsMenu()
     //Keeps track of background;
     //int nowTime=SDL_GetTicks();
 
-    MakeBackground(1024,768);
+    MakeBackground(xsize,ysize);
     SFont_Write(background,fBlueFont,360,650,"Press ESC to accept");
-    DrawIMG(bBack,background,1024/2-120/2,600);
+    DrawIMG(bBack,background,xsize/2-120/2,600);
     do
     {
         //nowTime=SDL_GetTicks();
@@ -3188,7 +3194,7 @@ void startVsMenu()
                 if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+330)&&(mousey<yplace+330+30))
                     player2handicap=i;
             }
-            if ((mousex>1024/2-120/2)&&(mousex<1024/2+120/2)&&(mousey>600)&&(mousey<640))
+            if ((mousex>xsize/2-120/2)&&(mousex<xsize/2+120/2)&&(mousey>600)&&(mousey<640))
                 done = true;
         }
 
@@ -3328,8 +3334,6 @@ int main(int argc, char *argv[])
 
     SoundEnabled = true;
     MusicEnabled = true;
-    xsize = 1024;     //screen size x
-    int ysize = 768;      //screen size y
     int mousex, mousey;   //Mouse coordinates
     showOptions = false;
     b1playerOpen = false;
@@ -3452,7 +3456,7 @@ int main(int argc, char *argv[])
     //SDL_FreeSurface(icon);
 
     //Copyright notice:
-    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2008 Poul Sander" << endl <<
+    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2009 Poul Sander" << endl <<
     "A SDL based game (see www.libsdl.org)" << endl <<
     "The game is availeble under the GPL, see COPYING for details." << endl;
 #if defined(_WIN32)
@@ -3485,10 +3489,6 @@ int main(int argc, char *argv[])
 
     strcpy(player1name, "Player 1                    \0");
     strcpy(player2name, "Player 2                    \0");
-
-#if NETWORK
-    strcpy(serverAddress, "192.168.0.2                 \0");
-#endif
 
     Config *configSettings = Config::getInstance();
     //configSettings->setString("aNumber"," A string");
@@ -3564,9 +3564,16 @@ int main(int argc, char *argv[])
             cout << "Unable to load options file, using default values" << endl;
         }
     }
+    
+#if NETWORK
+    strcpy(serverAddress, "192.168.0.2                 \0");
+    if(configSettings->exists("address0"))
+    {
+        strcpy(serverAddress, "                            \0");
+        strncpy(serverAddress,configSettings->getString("address0").c_str(),sizeof(serverAddress)-1);
+    }
+#endif
 
-    xsize = 1024;
-    ysize = 768;
     if (singlePuzzle)
     {
         xsize=300;
