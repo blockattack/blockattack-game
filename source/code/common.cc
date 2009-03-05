@@ -251,6 +251,13 @@ bool Config::exists(string varName)
     return configMap.find(varName) != configMap.end();
 }
 
+void Config::setDefault(string varName,string content)
+{
+    if(exists(varName))
+        return; //Already exists do not change
+    setString(varName,content);
+}
+
 void Config::setString(string varName, string content)
 {
     configMap[varName] = content;

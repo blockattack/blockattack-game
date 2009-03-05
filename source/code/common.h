@@ -144,6 +144,12 @@ public:
      *version.
      */
     bool exists(string varName);
+    
+    /*setDefault(varName,value)
+     *if the variable "varName" does not exist it will be created with value "value"
+     *if varName exists then this will have no effect
+     */
+    void setDefault(string varName, string content);
 };
 
 #endif	/* _COMMON_H */
