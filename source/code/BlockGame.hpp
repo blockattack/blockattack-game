@@ -157,6 +157,7 @@ public:
         }
         theReplay = Replay();
         showGame = true;              //The game is now active
+        lastCounter = -1;           //To prevent the final chunk to be played when stating the program
     }	//Constructor
 
     //Deconstructor, never really used... game used to crash when called, cause of the way sBoard was created
