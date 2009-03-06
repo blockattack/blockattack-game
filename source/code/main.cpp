@@ -4584,19 +4584,23 @@ int main(int argc, char *argv[])
                                                                                                                     Uint8 version = 0;
                                                                                                                     replayFileIn.read(reinterpret_cast<char*>(&version),sizeof(Uint8));                                                                                                                  replayFileIn.close();
                                                                                                                     Replay r1;
-                                                                                                                    r1.loadReplay(loadThis);
-                                                                                                                    Replay r2;
-                                                                                                                    play2 = r2.loadReplay2(loadThis);
-                                                                                                                    theGame.playReplay(50,100); //Fejlen sker her
-                                                                                                                    theGame.theReplay = r1;
-                                                                                                                    if (play2)
+                                                                                                                    if(r1.loadReplay(loadThis))
                                                                                                                     {
-                                                                                                                        theGame2.playReplay(xsize-500,100);
-                                                                                                                        theGame2.theReplay = r2;
+                                                                                                                        Replay r2;
+                                                                                                                        play2 = r2.loadReplay2(loadThis);
+                                                                                                                        theGame.playReplay(50,100); //Fejlen sker her
+                                                                                                                        theGame.theReplay = r1;
+                                                                                                                        if (play2)
+                                                                                                                        {
+                                                                                                                            theGame2.playReplay(xsize-500,100);
+                                                                                                                            theGame2.theReplay = r2;
+                                                                                                                        }
+                                                                                                                        else
+                                                                                                                            theGame2.SetGameOver();
+                                                                                                                        cout << "Replay should have been read" << endl;
                                                                                                                     }
                                                                                                                     else
-                                                                                                                        theGame2.SetGameOver();
-                                                                                                                    cout << "Replay should have been read" << endl;
+                                                                                                                        cout << "Failed to read replay" << endl;
                                                                                                                 }
                                                                                                             }
                                                                                                             closeAllMenus();

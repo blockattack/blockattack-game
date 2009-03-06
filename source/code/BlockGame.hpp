@@ -579,7 +579,8 @@ public:
         chain=bp.chain;
         speedLevel=bp.speed;
         Uint8 result = bp.result;
-        if (result%2==1) {
+        bGameOver = false; //Make sure that it is initialized!
+        if(result%2==1) {
             bGameOver=true;
             result-=1;
         }
@@ -1194,6 +1195,10 @@ public:
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
 	}
+        if(bReplaying)
+        {
+            bReplaying = false;
+        }
         theReplay.setFinalFrame(getPackage(), 0);
         bGameOver = true;
         showGame = false;
@@ -1975,7 +1980,7 @@ public:
                     if (board[j][i]%30==9)
                         DrawIMG(garbageML, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
                     if (board[j][i]%30==10)
-                        DrawIMG(garbageMR, sBoard, j*bsize, bsize-i*bsize-pixels); //good
+                        DrawIMG(garbageMR, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
                     if (board[j][i]%30==11)
                         DrawIMG(garbageTR, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
                     if (board[j][i]%30==12)

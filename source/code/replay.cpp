@@ -114,13 +114,13 @@ int Replay::getFinalStatus()
 
 bool Replay::saveReplay(string filename)
 {
-    //Saving as fileversion 2
-    cout << "Saving as version 2 save file" << endl;
+    //Saving as fileversion 3
+    cout << "Saving as version 3 save file" << endl;
     ofstream saveFile;
     saveFile.open(filename.c_str(),ios::binary|ios::trunc);
     if (saveFile)
     {
-        Uint32 version = 2; 
+        Uint32 version = 3;
         boardPackage bp;
         saveFile.write(reinterpret_cast<char*>(&version),sizeof(Uint32)); //Fileversion
         Uint8 nrOfReplays = 1;
@@ -129,18 +129,7 @@ bool Replay::saveReplay(string filename)
         for (int i=0; i<nrOfFrames && i<bps.size();i++)
         { //Writing frames
             bp = bps.at(i);
-            saveFile.write(reinterpret_cast<char*>(&bp.time),sizeof(Uint32));
-            for (int k=0;k<6;k++)
-                for (int g=0;g<13;g++)
-                {
-                    saveFile.write(reinterpret_cast<char*>(&bp.brick[k][g]),sizeof(Uint8));
-                }
-            saveFile.write(reinterpret_cast<char*>(&bp.pixels),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.cursorX),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.cursorY),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.score),sizeof(Uint32));
-            saveFile.write(reinterpret_cast<char*>(&bp.speed),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.chain),sizeof(Uint8));
+            saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
             
         }
         saveFile.write(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
@@ -155,13 +144,13 @@ bool Replay::saveReplay(string filename)
 
 bool Replay::saveReplay(string filename,Replay p2)
 {
-    //Saving as fileversion 2
-    cout << "Saving as version 2 save file (2 players)" << endl;
+    //Saving as fileversion 3
+    cout << "Saving as version 3 save file (2 players)" << endl;
     ofstream saveFile;
     saveFile.open(filename.c_str(),ios::binary|ios::trunc);
     if (saveFile)
     {
-        Uint32 version = 2;
+        Uint32 version = 3;
         boardPackage bp;
         saveFile.write(reinterpret_cast<char*>(&version),sizeof(Uint32)); //Fileversion
         Uint8 nrOfReplays = 2;
@@ -170,16 +159,7 @@ bool Replay::saveReplay(string filename,Replay p2)
         for (int i=0; i<nrOfFrames && i<bps.size();i++)
         { //Writing frames
             bp = bps.at(i);
-            saveFile.write(reinterpret_cast<char*>(&bp.time),sizeof(Uint32));
-            for (int k=0;k<6;k++)
-                for (int g=0;g<13;g++)
-                    saveFile.write(reinterpret_cast<char*>(&bp.brick[k][g]),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.pixels),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.cursorX),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.cursorY),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.score),sizeof(Uint32));
-            saveFile.write(reinterpret_cast<char*>(&bp.speed),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.chain),sizeof(Uint8));
+            saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
         }
         saveFile.write(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
         ///Player 2 starts here!!!!!!!!!!!!!!!!!!!!!!
@@ -187,16 +167,7 @@ bool Replay::saveReplay(string filename,Replay p2)
         for (int i=0; (i<p2.nrOfFrames)&& i<p2.bps.size();i++)
         { //Writing frames
             bp = p2.bps.at(i);
-            saveFile.write(reinterpret_cast<char*>(&bp.time),sizeof(Uint32));
-            for (int k=0;k<6;k++)
-                for (int g=0;g<13;g++)
-                    saveFile.write(reinterpret_cast<char*>(&bp.brick[k][g]),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.pixels),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.cursorX),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.cursorY),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.score),sizeof(Uint32));
-            saveFile.write(reinterpret_cast<char*>(&bp.speed),sizeof(Uint8));
-            saveFile.write(reinterpret_cast<char*>(&bp.chain),sizeof(Uint8));
+            saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
         }
         saveFile.write(reinterpret_cast<char*>(&p2.finalPack),sizeof(finalPack));
         saveFile.close();
@@ -219,8 +190,8 @@ bool Replay::loadReplay(string filename)
         loadFile.read(reinterpret_cast<char*>(&version),sizeof(Uint32));
         switch (version)
         {
-        case 2:
-            cout << "Loading a version 2 save game" << endl;
+        case 3:
+            cout << "Loading a version 3 save game" << endl;
             Uint8 nrOfPlayers;
             boardPackage bp;
             loadFile.read(reinterpret_cast<char*>(&nrOfPlayers),sizeof(Uint8));
@@ -228,16 +199,7 @@ bool Replay::loadReplay(string filename)
             bps.clear();
             for (int i=0; (i<nrOfFrames);i++)
             {
-                loadFile.read(reinterpret_cast<char*>(&bp.time),sizeof(Uint32));	//Writing frames
-                for (int k=0;k<6;k++)
-                    for (int g=0;g<13;g++)
-                        loadFile.read(reinterpret_cast<char*>(&bp.brick[k][g]),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.pixels),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.cursorX),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.cursorY),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.score),sizeof(Uint32));
-                loadFile.read(reinterpret_cast<char*>(&bp.speed),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.chain),sizeof(Uint8));
+                loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
                 bps.push_back(bp);
             }
             loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
@@ -268,7 +230,7 @@ bool Replay::loadReplay2(string filename)
         loadFile.read(reinterpret_cast<char*>(&version),sizeof(Uint32));
         switch (version)
         {
-        case 2:
+        case 3:
             Uint8 nrOfPlayers;
             boardPackage bp;
             loadFile.read(reinterpret_cast<char*>(&nrOfPlayers),sizeof(Uint8));
@@ -278,37 +240,19 @@ bool Replay::loadReplay2(string filename)
                 cout << "Only one player in replay" << endl;
                 return false;
             }
-            cout << "loading player 2" << endl;
+            cout << "loading player 3" << endl;
             loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
             for (int i=0; (i<nrOfFrames);i++)
             {
-                loadFile.read(reinterpret_cast<char*>(&bp.time),sizeof(Uint32));	//Writing frames
-                for (int k=0;k<6;k++)
-                    for (int g=0;g<13;g++)
-                        loadFile.read(reinterpret_cast<char*>(&bp.brick[k][g]),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.pixels),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.cursorX),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.cursorY),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.score),sizeof(Uint32));
-                loadFile.read(reinterpret_cast<char*>(&bp.speed),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.chain),sizeof(Uint8));
-                //bps.push_back(bp);
+                loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
+                //bps.push_back(bp); We have already read player 1 with another function
             }
             loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
             loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
             bps.reserve(nrOfFrames);
             for (int i=0; (i<nrOfFrames);i++)
             {
-                loadFile.read(reinterpret_cast<char*>(&bp.time),sizeof(Uint32));	//Writing frames
-                for (int k=0;k<6;k++)
-                    for (int g=0;g<13;g++)
-                        loadFile.read(reinterpret_cast<char*>(&bp.brick[k][g]),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.pixels),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.cursorX),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.cursorY),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.score),sizeof(Uint32));
-                loadFile.read(reinterpret_cast<char*>(&bp.speed),sizeof(Uint8));
-                loadFile.read(reinterpret_cast<char*>(&bp.chain),sizeof(Uint8));
+                loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
                 bps.push_back(bp);
             }
             loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
