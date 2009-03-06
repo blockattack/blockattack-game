@@ -13,7 +13,7 @@ BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
 
 #For developement only 
 ifndef DEBUG
-DEBUG=0
+DEBUG=1
 endif
 
 ifndef NETWORK

@@ -24,6 +24,9 @@ Copyright (C) 2008 Poul Sander
     http://blockattack.sf.net
 */
 
+#include "common.h"
+
+
 #include <string.h>
 
 
@@ -1281,7 +1284,7 @@ void writeScreenShot()
 {
     cout << "Saving screenshot" << endl;
     int rightNow = (int)time(NULL);
-#if defined(__unix__)
+/*#if defined(__unix__)
     char buf[514];
     sprintf( buf, "%s/.gamesaves/blockattack/screenshots/screenshot%i.bmp", getenv("HOME"), rightNow );
 #elif defined(__win32__)
@@ -1290,18 +1293,23 @@ void writeScreenShot()
 #else
     char buf[MAX_PATH];
     sprintf( buf, "screenshot%i.bmp", rightNow );
+#endif*/
+#if defined(__unix__)
+    string buf = (string)getenv("HOME")+"/.gamesaves/blockattack/screenshots/screenshot"+itoa(rightNow)+".bmp";
+#elif defined(__win32__)
+    string buf = getMyDocumentsPath()+"\\My Games\\blockattack\\screenshots\\screenshot"+itoa(rightNow)+".bmp";
+#else
+    string buf = "screenshot"+itoa(rightNow)+".bmp";
 #endif
-    SDL_SaveBMP( screen, buf );
+    SDL_SaveBMP( screen, buf.c_str() );
     if (!NoSound)
         if (SoundEnabled)Mix_PlayChannel(1,photoClick,0);
 }
 
-char keyname[11];
-
 //Function to return the name of a key, to be displayed...
-char* getKeyName(SDLKey key)
+string getKeyName(SDLKey key)
 {
-
+    string keyname;
     char charToPut = '\0';
     switch (key)
     {
@@ -1414,198 +1422,201 @@ char* getKeyName(SDLKey key)
         charToPut = '9';
         break;
     case SDLK_KP0:
-        sprintf(keyname,"NP_0");
+        keyname = "NP_0";
         break;
     case SDLK_KP1:
-        sprintf(keyname,"NP_1");
+        keyname = "NP_1";
         break;
     case SDLK_KP2:
-        sprintf(keyname,"NP_2");
+        keyname = "NP_2";
         break;
     case SDLK_KP3:
-        sprintf(keyname,"NP_3");
+        keyname = "NP_3";
         break;
     case SDLK_KP4:
-        sprintf(keyname,"NP_4");
+        keyname = "NP_4";
         break;
     case SDLK_KP5:
-        sprintf(keyname,"NP_5");
+        keyname = "NP_5";
         break;
     case SDLK_KP6:
-        sprintf(keyname,"NP_6");
+        keyname = "NP_6";
         break;
     case SDLK_KP7:
-        sprintf(keyname,"NP_7");
+        keyname = "NP_7";
         break;
     case SDLK_KP8:
-        sprintf(keyname,"NP_8");
+        keyname = "NP_8";
         break;
     case SDLK_KP9:
-        sprintf(keyname,"NP_9");
+        keyname = "NP_9";
         break;
     case SDLK_BACKSPACE:
-        sprintf(keyname,"Backspace");
+        keyname = "Backspace";
         break;
     case SDLK_TAB:
-        sprintf(keyname,"Tab");
+        keyname = "Tab";
         break;
     case SDLK_CLEAR:
-        sprintf(keyname,"Clear");
+        keyname = "Clear";
         break;
     case SDLK_RETURN:
-        sprintf(keyname,"Return");
+        keyname = "Return";
         break;
     case SDLK_PAUSE:
-        sprintf(keyname,"Pause");
+        keyname = "Pause";
         break;
     case SDLK_SPACE:
-        sprintf(keyname,"Space");
+        keyname = "Space";
         break;
     case SDLK_EXCLAIM:
         charToPut = '!';
         break;
     case SDLK_QUOTEDBL:
-        sprintf(keyname,"QuoteDBL");
+        keyname = "QuoteDBL";
         break;
     case SDLK_HASH:
         charToPut = '#';
         break;
     case SDLK_DOLLAR:
-        sprintf(keyname,"$");
+        keyname = "$";
         break;
     case SDLK_ASTERISK:
-        sprintf(keyname,"Asterisk");
+        keyname = "Asterisk";
         break;
     case SDLK_PLUS:
-        sprintf(keyname,"Plus");
+        keyname = "Plus";
         break;
     case SDLK_COMMA:
-        sprintf(keyname,"Comma");
+        keyname = "Comma";
         break;
     case SDLK_MINUS:
-        sprintf(keyname,"Minus");
+        keyname = "Minus";
         break;
     case SDLK_PERIOD:
-        sprintf(keyname,"Period");
+        keyname = "Period";
         break;
     case SDLK_SLASH:
         charToPut ='/';
         break;
     case SDLK_COLON:
-        sprintf(keyname,"Colon");
+        keyname = "Colon";
         break;
     case SDLK_SEMICOLON:
-        sprintf(keyname,"SemiColon");
+        keyname = "SemiColon";
         break;
     case SDLK_LESS:
         charToPut = '<';
         break;
     case SDLK_EQUALS:
-        sprintf(keyname,"Equals");
+        keyname = "Equals";
         break;
     case SDLK_DELETE:
-        sprintf(keyname,"Delete");
+        keyname = "Delete";
         break;
     case SDLK_KP_PERIOD:
-        sprintf(keyname,"NPperiod");
+        keyname = "NPperiod";
         break;
     case SDLK_KP_DIVIDE:
-        sprintf(keyname,"NPdivide");
+        keyname = "NPdivide";
         break;
     case SDLK_KP_MULTIPLY:
-        sprintf(keyname,"NPmultiply");
+        keyname = "NPmultiply";
         break;
     case SDLK_KP_MINUS:
-        sprintf(keyname,"NPminus");
+        keyname = "NPminus";
         break;
     case SDLK_KP_PLUS:
-        sprintf(keyname,"NPplus");
+        keyname = "NPplus";
         break;
     case SDLK_KP_ENTER:
-        sprintf(keyname,"NP_Enter");
+        keyname = "NP_Enter";
         break;
     case SDLK_KP_EQUALS:
-        sprintf(keyname,"NP=");
+        keyname = "NP=";
         break;
     case SDLK_UP:
-        sprintf(keyname,"UP");
+        keyname = "UP";
         break;
     case SDLK_DOWN:
-        sprintf(keyname,"DOWN");
+        keyname = "DOWN";
         break;
     case SDLK_RIGHT:
-        sprintf(keyname,"RIGHT");
+        keyname = "RIGHT";
         break;
     case SDLK_LEFT:
-        sprintf(keyname,"LEFT");
+        keyname = "LEFT";
         break;
     case SDLK_INSERT:
-        sprintf(keyname,"Insert");
+        keyname = "Insert";
         break;
     case SDLK_HOME:
-        sprintf(keyname,"Home");
+        keyname = "Home";
         break;
     case SDLK_END:
-        sprintf(keyname,"End");
+        keyname = "End";
         break;
     case SDLK_PAGEUP:
-        sprintf(keyname,"PageUp");
+        keyname = "PageUp";
         break;
     case SDLK_PAGEDOWN:
-        sprintf(keyname,"PageDown");
+        keyname = "PageDown";
         break;
     case SDLK_NUMLOCK:
-        sprintf(keyname,"NumLock");
+        keyname = "NumLock";
         break;
     case SDLK_CAPSLOCK:
-        sprintf(keyname,"CapsLock");
+        keyname = "CapsLock";
         break;
     case SDLK_SCROLLOCK:
-        sprintf(keyname,"ScrolLock");
+        keyname = "ScrolLock";
         break;
     case SDLK_RSHIFT:
-        sprintf(keyname,"Rshift");
+        keyname = "Rshift";
         break;
     case SDLK_LSHIFT:
-        sprintf(keyname,"Lshift");
+        keyname = "Lshift";
         break;
     case SDLK_RCTRL:
-        sprintf(keyname,"Rctrl");
+        keyname = "Rctrl";
         break;
     case SDLK_LCTRL:
-        sprintf(keyname,"Lctrl");
+        keyname = "Lctrl";
         break;
     case SDLK_RALT:
-        sprintf(keyname,"Ralt");
+        keyname = "Ralt";
         break;
     case SDLK_LALT:
-        sprintf(keyname,"Lalt");
+        keyname = "Lalt";
         break;
     case SDLK_RMETA:
-        sprintf(keyname,"Rmeta");
+        keyname = "Rmeta";
         break;
     case SDLK_LMETA:
-        sprintf(keyname,"Lmeta");
+        keyname = "Lmeta";
         break;
     case SDLK_LSUPER:
-        sprintf(keyname,"Lwin");
+        keyname = "Lwin";
         break;
     case SDLK_RSUPER:
-        sprintf(keyname,"Rwin");
+        keyname = "Rwin";
         break;
     case SDLK_MODE:
-        sprintf(keyname,"Mode");
+        keyname = "Mode";
         break;
     case SDLK_HELP:
-        sprintf(keyname,"Help");
+        keyname = "Help";
         break;
     default:
-        sprintf(keyname,"Unknown");
+        keyname = "Unknown";
         break;
     }
     if (charToPut != '\0')
-        sprintf(keyname,"%c",charToPut);
-    return &keyname[0];
+    {
+        keyname.clear();
+        keyname.append(1,charToPut);
+    }
+    return keyname;
 }
 
 void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2);
@@ -1615,7 +1626,7 @@ int OpenControlsBox(int x, int y, int player)
     int mousex, mousey;
     Uint8 *keys;
     bool done =false;
-    char *keyname;
+    string keyname;
     MakeBackground(xsize,ysize);
     while (!done)
     {
@@ -1628,22 +1639,22 @@ int OpenControlsBox(int x, int y, int player)
             SFont_Write(screen,fBlueFont,x+40,y+2,"Player 2 keys");
         SFont_Write(screen,fBlueFont,x+6,y+50,"Up");
         keyname = getKeyName(keySettings[player].up);
-        SFont_Write(screen,fBlueFont,x+200,y+50,keyname);
+        SFont_Write(screen,fBlueFont,x+200,y+50,keyname.c_str());
         SFont_Write(screen,fBlueFont,x+6,y+100,"Down");
         keyname = getKeyName(keySettings[player].down);
-        SFont_Write(screen,fBlueFont,x+200,y+100,keyname);
+        SFont_Write(screen,fBlueFont,x+200,y+100,keyname.c_str());
         SFont_Write(screen,fBlueFont,x+6,y+150,"Left");
         keyname = getKeyName(keySettings[player].left);
-        SFont_Write(screen,fBlueFont,x+200,y+150,keyname);
+        SFont_Write(screen,fBlueFont,x+200,y+150,keyname.c_str());
         SFont_Write(screen,fBlueFont,x+6,y+200,"Right");
         keyname = getKeyName(keySettings[player].right);
-        SFont_Write(screen,fBlueFont,x+200,y+200,keyname);
+        SFont_Write(screen,fBlueFont,x+200,y+200,keyname.c_str());
         SFont_Write(screen,fBlueFont,x+6,y+250,"Push");
         keyname = getKeyName(keySettings[player].push);
-        SFont_Write(screen,fBlueFont,x+200,y+250,keyname);
+        SFont_Write(screen,fBlueFont,x+200,y+250,keyname.c_str());
         SFont_Write(screen,fBlueFont,x+6,y+300,"Change");
         keyname = getKeyName(keySettings[player].change);
-        SFont_Write(screen,fBlueFont,x+200,y+300,keyname);
+        SFont_Write(screen,fBlueFont,x+200,y+300,keyname.c_str());
         //Ask for mouse play
         SFont_Write(screen,fBlueFont,x+6,y+350,"Mouse play?");
         DrawIMG(iLevelCheckBox,screen,x+220,y+350);
