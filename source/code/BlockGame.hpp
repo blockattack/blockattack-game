@@ -801,11 +801,13 @@ public:
             {
                 start=0;
                 end=start+wide;
+                bGarbageFallLeft = false;
             }
             else
             {
                 start=6-wide;
                 end = 6;
+                bGarbageFallLeft = true;
             }
             for (int i = startPosition; i <startPosition+height; i++)
                 for (int j = start; j < end; j++) {
@@ -813,7 +815,7 @@ public:
                 }
             nextGarbageNumber++;
             if (nextGarbageNumber>999999) nextGarbageNumber = 10;
-            bGarbageFallLeft = !(bGarbageFallLeft);
+            //bGarbageFallLeft = !(bGarbageFallLeft);
             return true;
         }
     }

@@ -240,7 +240,7 @@ bool Replay::loadReplay2(string filename)
                 cout << "Only one player in replay" << endl;
                 return false;
             }
-            cout << "loading player 3" << endl;
+            cout << "loading player 2" << endl;
             loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
             for (int i=0; (i<nrOfFrames);i++)
             {
