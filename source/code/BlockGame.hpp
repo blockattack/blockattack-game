@@ -481,7 +481,9 @@ public:
             for (int j=0;j<13;j++) {
                 if (board[i][j]%10<7)
                     bp.brick[i][j]=board[i][j]%10+1;
-                if ((board[i][j]/1000000)%10>0) {
+                if ((board[i][j]/1000000)%10==1)
+                {
+                    //Ordinary garbage
                     int aInt=0; //N=1, S=2, W=4, E=8
                     if (i==0)
                         aInt+=4;
@@ -541,6 +543,11 @@ public:
                         bp.brick[i][j]=0;
                     };
                     //cout << "garbage added to replay: " << aInt << endl;
+                }
+                if ((board[i][j]/1000000)%10==2)
+                {
+                    //Gray garbage
+                    bp.brick[i][j]=21;
                 }
                 if ((board[i][j]/BLOCKHANG)%10==1) //If "get ready"
                     bp.brick[i][j]+=30;
@@ -2001,6 +2008,17 @@ public:
                         DrawIMG(garbageB, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
                     if (board[j][i]%30==19)
                         DrawIMG(garbageL, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
+                    if (board[j][i]%30==20)
+                        switch(j) {
+                            case 0:
+                                DrawIMG(garbageGML, sBoard,j*bsize, 12*bsize-i*bsize-pixels);
+                                break;
+                            case 5:
+                                DrawIMG(garbageGMR, sBoard,j*bsize, 12*bsize-i*bsize-pixels);
+                                break;
+                            default:
+                                DrawIMG(garbageGM, sBoard,j*bsize, 12*bsize-i*bsize-pixels);
+                        }
                     //cout << "IS: " << board[j][i] << endl;
                 }
 
