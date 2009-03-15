@@ -75,6 +75,7 @@ Copyright (C) 2008 Poul Sander
 //#include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
 #include <vector>
+#include <SDL/SDL_timer.h>
 //#include "MenuSystem.h"
 
 //if SHAREDIR is not used we look in current directory
@@ -3437,7 +3438,7 @@ int main(int argc, char *argv[])
     PHYSFS_addToSearchPath("blockattack.data", 1);
 
 #endif
-    
+
     //Init SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
     {
@@ -3484,6 +3485,12 @@ int main(int argc, char *argv[])
     cout << "Alternative build" << endl;
 #endif
     cout << "-------------------------------------------" << endl;
+
+    //The menu cannot be activated the first second to prevent unexpected events
+    keymenu.canBeActivatedTime = SDL_GetTicks()+1000;
+    keymenu.activated = false;
+    for(int i=0;i<KEYMENU_MAXWITH;i++)
+        keymenu.menumap[i][0] = true;
 
     keySettings[0].up= SDLK_UP;
     keySettings[0].down = SDLK_DOWN;
@@ -3928,6 +3935,12 @@ int main(int argc, char *argv[])
                         }
                         if ( event.key.keysym.sym == SDLK_F8 )
                         {
+                            if(!keymenu.activated && keymenu.canBeActivatedTime > SDL_GetTicks())
+                            {
+                                keymenu.activated = true;
+                                keymenu.x = 0;
+                                keymenu.y = 0;
+                            }
                         }
                         if ( event.key.keysym.sym == SDLK_F9 ) {
                             writeScreenShot();

@@ -319,6 +319,23 @@ struct control
 
 control keySettings[3];	//array to hold the controls (default and two custom)
 
+#define KEYMENU_MAXWITH 4
+#define KEYMENU_MAXDEPTH 7
+
+//The following struct holds variables relevant to selecting menu items with 
+//keyboard/joypad.
+struct KeyMenu_t
+{
+    unsigned long canBeActivatedTime; //Time that the KeyMenu can be activated by pressing a button
+    bool activated; //The keymenu is activated
+    //Here comes the coordinates to the key we are howering.
+    int x;
+    int y;
+    bool menumap[KEYMENU_MAXWITH][KEYMENU_MAXDEPTH];
+};
+
+KeyMenu_t keymenu;
+
 enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
 
 stageButton stageButtonStatus = SBdontShow;
