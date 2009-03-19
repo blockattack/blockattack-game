@@ -4766,6 +4766,7 @@ int main(int argc, char *argv[])
         if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled))
         {
             // then starts playing it.
+            Mix_VolumeMusic(MIX_MAX_VOLUME/2);
             Mix_PlayMusic(bgMusic, 0); //music loop
         }
 
