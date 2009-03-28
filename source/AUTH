@@ -136,7 +136,9 @@ counter.ogg			openarena-svn900:/sound/feedback/hitlo.wav
 counterFinal.ogg		openarena-svn900:/sound/feedback/hit.wav
 
 /music/
-bgMusic.ogg			Trackballs team (http://trackballs.sourceforge.net/) v 1.2 (GPL2)
+bgMusic.ogg			Trackballs team (http://trackballs.sourceforge.net/) v 1.2 (GPL2), copy of tb_design.ogg
+highbeat.ogg			Trackballs team (http://trackballs.sourceforge.net/) v 1.2 (GPL2), derived from tb_genesis.ogg
+
 
 
 

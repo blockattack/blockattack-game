@@ -25,6 +25,7 @@
 
 #include "stats.h"
 #include "common.h"
+#include "mainVars.hpp"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2123,10 +2124,26 @@ public:
         }
         else
         {
-            if( (0==lastCounter) && (SoundEnabled)&&(!NoSound))
-                Mix_PlayChannel(1,counterFinalChunk,0);
-            lastCounter = -1;
+            if(SoundEnabled&&(!NoSound)&&(timetrial)&&(SDL_GetTicks()>gameStartedAt+10000)&&(!bGameOver))
+            {
+                int currentCounter = (SDL_GetTicks()-(int)gameStartedAt)/1000;
+                if(currentCounter!=lastCounter)
+                {
+                    if(currentCounter>117 && currentCounter<120)
+                        Mix_PlayChannel(1,counterChunk,0);
+                }
+                lastCounter = currentCounter;
+            }
+            else
+            {
+                if( (0==lastCounter) && (SoundEnabled)&&(!NoSound))
+                {
+                    Mix_PlayChannel(1,counterFinalChunk,0);
+                }
+                lastCounter = -1;
+            }
         }
+        
         if ((bGameOver)&&(!editorMode))
             if (hasWonTheGame)DrawIMG(iWinner, sBoard, 0, 5*bsize);
             else if (bDraw) DrawIMG(iDraw, sBoard, 0, 5*bsize);
@@ -2199,8 +2216,12 @@ public:
                 stageButtonStatus = SBstageClear;
             }
             if ((TowerHeight>12)&&(prevTowerHeight<13)&&(!puzzleMode)) {
-                if (SoundEnabled) Mix_PlayChannel(1, heartBeat, 0);
+                //if (SoundEnabled) Mix_PlayChannel(1, heartBeat, 0);
                 stop+=1000;
+            }
+
+            if ((TowerHeight>12)&&(!puzzleMode)&&(!bGameOver)) {
+                bNearDeath = true;
             }
             
             while (nowTime>nrStops*40+gameStartedAt) //Increase stops, till we reach nowTime
@@ -2279,8 +2300,8 @@ public:
             }
             ReduceStuff();
             if ((timetrial) && (!bGameOver) && (nowTime>gameStartedAt+2*60*1000)) {
-                if (SoundEnabled) Mix_PlayChannel(1, timesUp, 0);
                 SetGameOver();
+                if(!NoSound && SoundEnabled)Mix_PlayChannel(1,counterFinalChunk,0);
                 if ((theTopScoresTimeTrial.isHighScore(score))&&(!AI_Enabled)) {
                     theTopScoresTimeTrial.addScore(name, score);
                     //new highscore

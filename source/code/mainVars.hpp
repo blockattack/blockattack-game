@@ -23,6 +23,10 @@ Copyright (C) 2007 Poul Sander
     blockattack@poulsander.com
 */
 
+//Make sure it is only included once
+#ifndef _MAINVARS_HPP
+#define	_MAINVARS_HPP
+
 //main variables and constants
 
 //Some definitions
@@ -110,9 +114,6 @@ SDL_Surface *bOn;
 SDL_Surface *bOff;
 SDL_Surface *bChange;
 SDL_Surface *b1024;
-//SDL_Surface *b1280;
-//SDL_Surface *b1400;
-//SDL_Surface *b1600;
 SDL_Surface *iLevelCheck;		//To the level select screen
 SDL_Surface *iLevelCheckBox;
 SDL_Surface *iCheckBoxArea;
@@ -129,15 +130,11 @@ SDL_Surface *garbageFill;
 SDL_Surface *garbageM;
 SDL_Surface *garbageML;
 SDL_Surface *garbageMR;
-//new in 1.3.0 start
 SDL_Surface *smiley[4];
 SDL_Surface *garbageGM;
 SDL_Surface *garbageGML;
 SDL_Surface *garbageGMR;
-//new in 1.3.0 end
-//new in 1.3.2 start
 SDL_Surface *transCover;        //The transperant block, covers the upcomming
-//also new in 1.3.2 for the editor
 #if LEVELEDITOR
 SDL_Surface *bCreateFile;
 SDL_Surface *bDeletePuzzle;
@@ -154,8 +151,6 @@ SDL_Surface *bSavePuzzle;
 SDL_Surface *bSaveToFile;
 SDL_Surface *bTestPuzzle;
 #endif
-//new in 1.3.2 end
-//new in 1.4.0
 SDL_Surface *bTheme;
 SDL_Surface *bSkip;
 SDL_Surface *bRetry;
@@ -175,11 +170,10 @@ SFont_Font *fSmallFont;		//Stores the small font (SFont)
 //TTFont ttfont;           //Stores the TTF font (TTFSDL)
 
 Mix_Music *bgMusic;         //backgroundMusic
+Mix_Music *highbeatMusic;   //Background music with higher beat
 Mix_Chunk *boing;           //boing sound when clearing
-Mix_Chunk *timesUp;         //whistle when times up
 Mix_Chunk *applause;        //Applause, then the player is good
 Mix_Chunk *photoClick;      //clickSound
-Mix_Chunk *heartBeat;		//heart beat
 Mix_Chunk *typingChunk;          //When writing
 Mix_Chunk *counterChunk;         //When counting down
 Mix_Chunk *counterFinalChunk;
@@ -201,22 +195,20 @@ bool showGame;              //the game is active don't show highscores/options
 bool showOptions;           //true if options is open
 bool bScreenLocked;			//Don't take input or allow any mouse interaction! Used for dialogbox and warningbox
 bool showDialog;
-//new in 1.3.1
 bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline
 //prevents crash on systems without a soundcard
-//end new 1.3.1
 bool MusicEnabled;			//true if background music is enabled
 bool SoundEnabled;			//true if sound effects is enabled
+bool bNearDeath;                        //Play music faster or louder while tru
+bool bNearDeathPrev;                    //Near death status last time checked.
 bool bFullscreen;			//true if game is running fullscreen
 bool puzzleLoaded;          //true if the puzzle levels have been loaded
 bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
 bool standardBackground;
 bool highPriority;
 
-//new in 1.3.2
 bool editorMode = false;
 bool editorModeTest = false;
-//end new 1.3.2
 
 //Things for network play:
 #if NETWORK
@@ -352,14 +344,17 @@ struct ButtonCords
 };
 
 ButtonCords cordNextButton = {
-cordNextButton.x = 3*bsize+(3*bsize-buttonXsize)/2,
-cordNextButton.y = 10*bsize,
-cordNextButton.xsize = buttonXsize,
-cordNextButton.ysize = buttonYsize};
+    cordNextButton.x = 3*bsize+(3*bsize-buttonXsize)/2,
+    cordNextButton.y = 10*bsize,
+    cordNextButton.xsize = buttonXsize,
+    cordNextButton.ysize = buttonYsize
+};
 
 ButtonCords cordRetryButton = {
-cordRetryButton.x = (3*bsize-buttonXsize)/2,
-cordRetryButton.y = 10*bsize,
-cordRetryButton.xsize = buttonXsize,
-cordRetryButton.ysize = buttonYsize
+    cordRetryButton.x = (3*bsize-buttonXsize)/2,
+    cordRetryButton.y = 10*bsize,
+    cordRetryButton.xsize = buttonXsize,
+    cordRetryButton.ysize = buttonYsize
 };
+
+#endif

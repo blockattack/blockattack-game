@@ -693,13 +693,12 @@ int InitImages()
     {
         //And here the music:
         bgMusic = Mix_LoadMUS2((char*)"music/bgMusic.ogg");
+        highbeatMusic = Mix_LoadMUS2((char*)"music/highbeat.ogg");
         //the music... we just hope it exists, else the user won't hear anything
         //Same goes for the sounds
         boing = Mix_LoadWAV2((char*)"sound/pop.ogg");
-        timesUp = Mix_LoadWAV2((char*)"sound/whistleblow.ogg");
         applause = Mix_LoadWAV2((char*)"sound/applause.ogg");
         photoClick = Mix_LoadWAV2((char*)"sound/cameraclick.ogg");
-        heartBeat = Mix_LoadWAV2((char*)"sound/heartbeat3.ogg");
         typingChunk = Mix_LoadWAV2((char*)"sound/typing.ogg");
         counterChunk = Mix_LoadWAV2((char*)"sound/counter.ogg");
         counterFinalChunk = Mix_LoadWAV2((char*)"sound/counterFinal.ogg");
@@ -717,11 +716,10 @@ void UnloadImages()
     if (!NoSound) //Only unload then it has been loaded!
     {
         Mix_FreeMusic(bgMusic);
+        Mix_FreeMusic(highbeatMusic);
         Mix_FreeChunk(boing);
-        Mix_FreeChunk(timesUp);
         Mix_FreeChunk(applause);
         Mix_FreeChunk(photoClick);
-        Mix_FreeChunk(heartBeat);
         Mix_FreeChunk(counterChunk);
         Mix_FreeChunk(counterFinalChunk);
         Mix_FreeChunk(typingChunk);
@@ -981,7 +979,7 @@ public:
     }
 };  //aBall
 
-const int maxNumberOfBalls = 100;
+const int maxNumberOfBalls = 6*12*2*2;
 
 class ballManeger
 {
@@ -1001,18 +999,19 @@ public:
         }
     }
 
+    //Adds a ball to the screen at given coordiantes, traveling right or not with color
     int addBall(int x, int y,bool right,int color)
     {
-        //cout << "Tries to add a ball" << endl;
         int ballNumber = 0;
+        //Find a free ball
         while ((ballUsed[ballNumber])&&(ballNumber<maxNumberOfBalls))
             ballNumber++;
+        //Could not find a free ball, return -1
         if (ballNumber==maxNumberOfBalls)
             return -1;
         currentTime = SDL_GetTicks();
         ballArray[ballNumber] = aBall(x,y,right,color);
         ballUsed[ballNumber] = true;
-        //cout << "Ball added" << endl;
         return 1;
     }  //addBall
 
@@ -1027,7 +1026,7 @@ public:
                 oldBallUsed[i] = true;
                 oldBallArray[i] = ballArray[i];
                 ballArray[i].update();
-                if (ballArray[i].getY()>800)
+                if (ballArray[i].getY()>800 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize)
                 {
                     ballArray[i].~aBall();
                     ballUsed[i] = false;
@@ -2548,7 +2547,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         if (seconds>9)
             strHolder = itoa(minutes)+":"+itoa(seconds);
         else strHolder = itoa(minutes)+":0"+itoa(seconds);
-        if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
+        //if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
         SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+150,strHolder.c_str());
     }
     else
@@ -2606,7 +2605,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
                 strHolder = itoa(minutes)+":"+itoa(seconds);
             else
                 strHolder = itoa(minutes)+":0"+itoa(seconds);
-            if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
+            //if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
             SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+150,strHolder.c_str());
         }
         else
@@ -3251,8 +3250,28 @@ void changePuzzleLevels()
 
 }
 
+class Keymenu {
+    static void setXY(int x, int y)
+    {
+        keymenu.x = x;
+        keymenu.y = y;
+    }
+
+    static void startMenu()
+    {
+        keymenu.activated = true;
+        setXY(0,0);
+    }
+
+    static void stopMenu()
+    {
+        keymenu.activated = false;
+    }
+};
+
 #if NETWORK
 #include "NetworkThing.hpp"
+#include "MenuSystem.h"
 #endif
 
 //The main function, quite big... too big
@@ -3496,8 +3515,8 @@ int main(int argc, char *argv[])
     keySettings[0].down = SDLK_DOWN;
     keySettings[0].left = SDLK_LEFT;
     keySettings[0].right = SDLK_RIGHT;
-    keySettings[0].change = SDLK_KP_ENTER;
-    keySettings[0].push = SDLK_KP0;
+    keySettings[0].change = SDLK_RCTRL;
+    keySettings[0].push = SDLK_RSHIFT;
 
     keySettings[2].up= SDLK_w;
     keySettings[2].down = SDLK_s;
@@ -4047,6 +4066,22 @@ int main(int argc, char *argv[])
             ***************************** Joypad start ****************************
             **********************************************************************/
 
+            //Menu
+            if(joypad1.working)
+            {
+                joypad1.update();
+                if(joypad1.but1)
+                {
+                    if(!keymenu.activated && keymenu.canBeActivatedTime > SDL_GetTicks())
+                    {
+                        keymenu.activated = true;
+                        keymenu.x = 0;
+                        keymenu.y = 0;
+                    }
+                }
+            }
+
+            //Gameplay
             if (joyplay1||joyplay2)
             {
                 if (joypad1.working && !theGame.AI_Enabled)
@@ -4204,7 +4239,13 @@ int main(int argc, char *argv[])
 
             keys = SDL_GetKeyState(NULL);
 
-            SDL_GetMouseState(&mousex,&mousey);
+            if(keymenu.activated)
+            {
+                mousex = keymenu.x*buttonXsize-10;
+                mousey = keymenu.y*buttonYsize-10;
+            }
+            else
+                SDL_GetMouseState(&mousex,&mousey);
 
             /********************************************************************
             **************** Here comes mouse play ******************************
@@ -4763,13 +4804,36 @@ int main(int argc, char *argv[])
 
 
         //Sees if music is stopped and if music is enabled
-        if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled))
+        if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled)&&(!bNearDeath))
         {
             // then starts playing it.
-            Mix_VolumeMusic(MIX_MAX_VOLUME/2);
-            Mix_PlayMusic(bgMusic, 0); //music loop
+            Mix_VolumeMusic(MIX_MAX_VOLUME);
+            Mix_PlayMusic(bgMusic, -1); //music loop
         }
 
+        if(bNearDeath!=bNearDeathPrev)
+        {
+            if(bNearDeath)
+            {
+                if(!NoSound &&(MusicEnabled)) {
+                    Mix_VolumeMusic(MIX_MAX_VOLUME);
+                    Mix_PlayMusic(highbeatMusic, 1);
+                }
+            }
+            else
+            {
+                if(!NoSound &&(MusicEnabled)) {
+                    Mix_VolumeMusic(MIX_MAX_VOLUME);
+                    Mix_PlayMusic(bgMusic, -1);
+                }
+            }
+        }
+
+        bNearDeathPrev = bNearDeath;
+
+
+        //set bNearDeath to false theGame*.Update() will change to true as needed
+        bNearDeath = false;
         //Updates the objects
         theGame.Update();
         theGame2.Update();
