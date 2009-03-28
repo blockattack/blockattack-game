@@ -27,6 +27,8 @@ Copyright (C) 2005 Poul Sander
 Handles replay
 */
 
+#include <string.h>
+
 #include "replay.h"
 
 Replay::Replay()
@@ -42,6 +44,7 @@ Replay::Replay(const Replay& r)
     nrOfFrames = r.nrOfFrames;
     isLoaded = r.isLoaded;
     theResult = r.theResult;
+    strncpy(name,r.name,sizeof(name));
 }
 
 Uint32 Replay::getNumberOfFrames()
@@ -133,6 +136,8 @@ bool Replay::saveReplay(string filename)
             
         }
         saveFile.write(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
+        saveFile.write(reinterpret_cast<char*>(&theResult),sizeof(theResult));
+        saveFile.write(reinterpret_cast<char*>(&name),sizeof(name));
         saveFile.close();
         return true;
     }
@@ -162,6 +167,8 @@ bool Replay::saveReplay(string filename,Replay p2)
             saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
         }
         saveFile.write(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
+        saveFile.write(reinterpret_cast<char*>(&theResult),sizeof(theResult));
+        saveFile.write(reinterpret_cast<char*>(&name),sizeof(name));
         ///Player 2 starts here!!!!!!!!!!!!!!!!!!!!!!
         saveFile.write(reinterpret_cast<char*>(&p2.nrOfFrames),sizeof(Uint32)); //Nr of frames in file
         for (int i=0; (i<p2.nrOfFrames)&& i<p2.bps.size();i++)
@@ -170,6 +177,8 @@ bool Replay::saveReplay(string filename,Replay p2)
             saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
         }
         saveFile.write(reinterpret_cast<char*>(&p2.finalPack),sizeof(finalPack));
+        saveFile.write(reinterpret_cast<char*>(&p2.theResult),sizeof(theResult));
+        saveFile.write(reinterpret_cast<char*>(&p2.name),sizeof(name));
         saveFile.close();
         return true;
     }
@@ -203,6 +212,8 @@ bool Replay::loadReplay(string filename)
                 bps.push_back(bp);
             }
             loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
+            loadFile.read(reinterpret_cast<char*>(&theResult),sizeof(theResult));
+            loadFile.read(reinterpret_cast<char*>(&name),sizeof(name));
             break;
         default:
             cout << "Unknown version" << endl;
@@ -248,6 +259,8 @@ bool Replay::loadReplay2(string filename)
                 //bps.push_back(bp); We have already read player 1 with another function
             }
             loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
+            loadFile.read(reinterpret_cast<char*>(&theResult),sizeof(theResult));
+            loadFile.read(reinterpret_cast<char*>(&name),sizeof(name));
             loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
             bps.reserve(nrOfFrames);
             for (int i=0; (i<nrOfFrames);i++)
@@ -256,6 +269,8 @@ bool Replay::loadReplay2(string filename)
                 bps.push_back(bp);
             }
             loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
+            loadFile.read(reinterpret_cast<char*>(&theResult),sizeof(theResult));
+            loadFile.read(reinterpret_cast<char*>(&name),sizeof(name));
             break;
         default:
             cout << "Unknown version: " << version << endl;

@@ -183,6 +183,8 @@ bool reloadIMG(SDL_Surface **surface2replace, string replaceWith)
 
 void loadTheme(string themeName)
 {
+    if(themeName.compare("default")==0)
+        themeName = "../gfx";
     reloadIMG(&backgroundImage,themeName+"/background.png");
     reloadIMG(&backgroundImage,themeName+"/background.jpg");
     CONVERT(backgroundImage); //We should always convert even if we don't have to or else: SEGFAULT!
@@ -3845,6 +3847,8 @@ int main(int argc, char *argv[])
                                 theGame2.SetGameOver();
                                 showGame = true;
                                 vsMode = false;
+                                strcpy(theGame.name, player1name);
+                                strcpy(theGame2.name, player2name);
                             }}
                         if ( event.key.keysym.sym == SDLK_F3 ) {
                             #if NETWORK
@@ -3860,6 +3864,8 @@ int main(int argc, char *argv[])
                                 theGame2.SetGameOver();
                                 showGame = true;
                                 vsMode = false;
+                                strcpy(theGame.name, player1name);
+                                strcpy(theGame2.name, player2name);
                             }}
                         if ( event.key.keysym.sym == SDLK_F5 )
                         {
@@ -3878,6 +3884,8 @@ int main(int argc, char *argv[])
                                 theGame2.SetGameOver();
                                 showGame = true;
                                 vsMode = false;
+                                strcpy(theGame.name, player1name);
+                                strcpy(theGame2.name, player2name);
                             }
                         }
                         if ( event.key.keysym.sym == SDLK_F6 )
@@ -3892,6 +3900,8 @@ int main(int argc, char *argv[])
                                 theGame2.NewVsGame(xsize-500,100,&theGame);
                                 closeAllMenus();
                                 vsMode = true;
+                                strcpy(theGame.name, player1name);
+                                strcpy(theGame2.name, player2name);
                                 theGame.setGameSpeed(player1Speed);
                                 theGame2.setGameSpeed(player2Speed);
                                 theGame.setHandicap(player1handicap);
@@ -3931,6 +3941,8 @@ int main(int argc, char *argv[])
                                 theGame2.AI_Enabled = player2AI;
                                 theGame.setAIlevel(player1AIlevel);
                                 theGame2.setAIlevel(player2AIlevel);
+                                strcpy(theGame.name, player1name);
+                                strcpy(theGame2.name, player2name);
                             }
                         }
                         if ( event.key.keysym.sym == SDLK_F7 )
@@ -3950,6 +3962,8 @@ int main(int argc, char *argv[])
                                 theGame2.SetGameOver();
                                 showGame = true;
                                 vsMode = true;
+                                strcpy(theGame.name, player1name);
+                                strcpy(theGame2.name, player2name);
                             }
                         }
                         if ( event.key.keysym.sym == SDLK_F8 )
@@ -4381,6 +4395,8 @@ int main(int argc, char *argv[])
                                             twoPlayers =false;
                                             theGame2.SetGameOver();
                                             showGame = true;
+                                            strcpy(theGame.name, player1name);
+                                            strcpy(theGame2.name, player2name);
                                         }
                                         else
                                             if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )
@@ -4394,6 +4410,8 @@ int main(int argc, char *argv[])
                                                 twoPlayers =false;
                                                 theGame2.SetGameOver();
                                                 showGame = true;
+                                                strcpy(theGame.name, player1name);
+                                                strcpy(theGame2.name, player2name);
                                             }
                                             else
                                                 if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b1playerOpen)&&(!networkActive) )
@@ -4409,6 +4427,8 @@ int main(int argc, char *argv[])
                                                     theGame2.SetGameOver();
                                                     showGame = true;
                                                     vsMode = false;
+                                                    strcpy(theGame.name, player1name);
+                                                    strcpy(theGame2.name, player2name);
                                                 }
                                                 else
                                                     if ((buttonXsize<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (b1playerOpen))
@@ -4424,6 +4444,8 @@ int main(int argc, char *argv[])
                                                         theGame2.SetGameOver();
                                                         showGame = true;
                                                         vsMode = false;
+                                                        strcpy(theGame.name, player1name);
+                                                        strcpy(theGame2.name, player2name);
                                                     }
                                                     else
                                                         if ((buttonXsize<mousex) && (mousex<240) && (200<mousey) && (mousey<240) && (b1playerOpen))
@@ -4444,6 +4466,8 @@ int main(int argc, char *argv[])
                                                             int theTime = time(0);
                                                             theGame.putStartBlocks(theTime);
                                                             theGame2.putStartBlocks(theTime);
+                                                            strcpy(theGame.name, player1name);
+                                                            strcpy(theGame2.name, player2name);
                                                         }
                                                         else
                                                             if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b2playersOpen))
@@ -4469,6 +4493,8 @@ int main(int argc, char *argv[])
                                                                 theGame.setAIlevel(player1AIlevel);
                                                                 theGame2.setAIlevel(player2AIlevel);
                                                                 twoPlayers = true;
+                                                                strcpy(theGame.name, player1name);
+                                                                strcpy(theGame2.name, player2name);
                                                             }
                                                             else
                                                                 if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b2playersOpen))
@@ -4491,6 +4517,8 @@ int main(int argc, char *argv[])
                                                                     int theTime = time(0);
                                                                     theGame.putStartBlocks(theTime);
                                                                     theGame2.putStartBlocks(theTime);
+                                                                    strcpy(theGame.name, player1name);
+                                                                    strcpy(theGame2.name, player2name);
                                                                 }
 #if NETWORK
                                                                 else
@@ -4694,6 +4722,7 @@ int main(int argc, char *argv[])
                         //change name
                         bScreenLocked = true;
                         showDialog = true;
+                        strcpy(theGame.name, player1name);
                         if (OpenDialogbox(200,100,player1name))
                             strcpy(theGame.name, player1name);
                         else
@@ -4708,6 +4737,7 @@ int main(int argc, char *argv[])
                         //change name
                         bScreenLocked = true;
                         showDialog = true;
+                        strcpy(theGame2.name, player2name);
                         if (OpenDialogbox(200,100,player2name))
                             strcpy(theGame2.name, player2name);
                         else

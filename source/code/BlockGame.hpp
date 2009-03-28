@@ -383,6 +383,8 @@ public:
         AI_Enabled = AI;
         if(!AI)
             Stats::getInstance()->addOne("VSgamesStarted");
+        else
+            strcpy(name,"CPU\0");
         putStartBlocks();
         garbageTarget = target;
     }
@@ -1208,6 +1210,10 @@ public:
         if(bReplaying)
         {
             bReplaying = false;
+        }
+        else
+        {
+            strncpy(theReplay.name,name,30);
         }
         theReplay.setFinalFrame(getPackage(), 0);
         bGameOver = true;
@@ -2157,6 +2163,7 @@ public:
         Uint32 nowTime = SDL_GetTicks(); //We remember the time, so it doesn't change during this call
         if (bReplaying) {
             setBoard(theReplay.getFrameSec((Uint32)(nowTime-gameStartedAt)));
+            strncpy(name,theReplay.name,30);
             if (theReplay.isFinnished((Uint32)(nowTime-gameStartedAt)))
                 switch (theReplay.getFinalStatus()) {
                 case 1: //Winner

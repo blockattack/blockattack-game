@@ -68,7 +68,12 @@ private:
 //If we are loaded from a file, then we are read only
     bool isLoaded;
 
+
 public:
+    
+    //Store player name
+    char name[30];
+
     Replay(); //Constructor
     Replay(const Replay& r); //Copy constructor
     Uint32 getNumberOfFrames(); //Returns number of frames
@@ -84,5 +89,6 @@ public:
     bool saveReplay(string,Replay p2); //saves a replay, plus another replay given as a parameter
     bool loadReplay(string); //laods a replay
     bool loadReplay2(string); //loads the second part of the replay file, if it exists, returns false otherwise
-    
+
+
 };
