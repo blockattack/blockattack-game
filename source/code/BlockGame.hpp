@@ -1574,7 +1574,7 @@ public:
     }
 
     //The AI will try to clear block horisontally
-    inline void AI_ClearHori() {
+    void AI_ClearHori() {
         //   cout << "AI: ClearHori";
         int lowestLine = AIlineToClear;
         //AIcolorToClear
@@ -1688,6 +1688,9 @@ public:
             placeToCenter++;
             if (placeToCenter>5)
                 placeToCenter=0;
+        }
+        if(unlimitedLoop>9) {
+            AIstatus = 0;
         }
         //cout << ", ptc: " << placeToCenter << ", line: " << AIlineToClear << ", cy: " << cursory;
         if (cursory+1>AIlineToClear+2) {
@@ -2135,7 +2138,7 @@ public:
                 int currentCounter = (SDL_GetTicks()-(int)gameStartedAt)/1000;
                 if(currentCounter!=lastCounter)
                 {
-                    if(currentCounter>117 && currentCounter<120)
+                    if(currentCounter>115 && currentCounter<120)
                         Mix_PlayChannel(1,counterChunk,0);
                 }
                 lastCounter = currentCounter;

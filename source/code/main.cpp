@@ -212,9 +212,9 @@ void loadTheme(string themeName)
     CONVERTA(bConfigure);
     reloadIMG(&bSelectPuzzle,themeName+"/bSelectPuzzle.png");
     CONVERTA(bSelectPuzzle);
-    reloadIMG(&bReplay,themeName+"/bReplay.png");
+    reloadIMG(&bReplay,themeName+"/bReplays.png");
     CONVERTA(bReplay);
-    reloadIMG(&bReplay,themeName+"/bSave.png");
+    reloadIMG(&bSave,themeName+"/bSave.png");
     CONVERTA(bSave);
     reloadIMG(&bLoad,themeName+"/bLoad.png");
     CONVERTA(bLoad);
