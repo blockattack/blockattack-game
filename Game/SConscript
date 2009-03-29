@@ -1,0 +1,161 @@
+#-------------#
+# Import Vars #
+#-------------#
+Import('*')
+
+env.Install ('$destdir/$sharedir/gfx/smileys/',[
+'gfx/smileys/0.png',
+'gfx/smileys/1.png',
+'gfx/smileys/2.png',
+'gfx/smileys/3.png'])
+env.Alias('install',['$destdir/$sharedir/gfx/smileys'])
+
+env.Install ('$destdir/$sharedir/gfx/garbage/',[
+'gfx/garbage/garbageB.png',
+'gfx/garbage/garbageBL.png',
+'gfx/garbage/garbageBR.png',
+'gfx/garbage/garbageFill.png',
+'gfx/garbage/garbageGM.png',
+'gfx/garbage/garbageGML.png',
+'gfx/garbage/garbageGMR.png',
+'gfx/garbage/garbageL.png',
+'gfx/garbage/garbageM.png',
+'gfx/garbage/garbageML.png',
+'gfx/garbage/garbageMR.png',
+'gfx/garbage/garbageR.png',
+'gfx/garbage/garbageT.png',
+'gfx/garbage/garbageTL.png',
+'gfx/garbage/garbageTR.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/garbage'])
+
+env.Install ('$destdir/$sharedir/gfx/counter/',[
+'gfx/counter/1.png',
+'gfx/counter/2.png',
+'gfx/counter/3.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/counter'])
+
+env.Install ('$destdir/$sharedir/gfx/balls/',[
+'gfx/balls/ballYellow.png',
+'gfx/balls/ballTurkish.png',
+'gfx/balls/ballRed.png',
+'gfx/balls/ballPurple.png',
+'gfx/balls/ballGreen.png',
+'gfx/balls/ballGray.png',
+'gfx/balls/ballBlue.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/balls'])
+
+env.Install ('$destdir/$sharedir/gfx/animations/bomb/',[
+'gfx/animations/bomb/bomb_1.png',
+'gfx/animations/bomb/bomb_2.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/animations'])
+
+env.Install ('$destdir/$sharedir/gfx/animations/explosion/',[
+'gfx/animations/explosion/3.png',
+'gfx/animations/explosion/2.png',
+'gfx/animations/explosion/1.png',
+'gfx/animations/explosion/0.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/animations/explosion'])
+
+
+env.Install ('$destdir/$sharedir/gfx/animations/cursor/',[
+'gfx/animations/cursor/2.png',
+'gfx/animations/cursor/1.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/animations/cursor'])
+
+
+env.Install ('$destdir/$sharedir/gfx/animations/ready/',[
+'gfx/animations/ready/ready_2.png',
+'gfx/animations/ready/ready_1.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/animations/ready'])
+
+env.Install ('$destdir/$sharedir/gfx/bricks',[
+'gfx/bricks/green.png',
+'gfx/bricks/blue.png',
+'gfx/bricks/yellow.png',
+'gfx/bricks/turkish.png',
+'gfx/bricks/red.png',
+'gfx/bricks/purple.png',
+'gfx/bricks/grey.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx/bricks'])
+
+env.Install ('$destdir/$sharedir/gfx/',[
+'gfx/14P_Arial_Angle_Red.png',
+'gfx/24P_Arial_Blue.png',
+'gfx/b1024.png',
+'gfx/background.png',
+'gfx/blackBackGround.png',
+'gfx/blockAttack.ico',
+'gfx/bBack.png',
+'gfx/bChange.png',
+'gfx/bConfigure.png',
+'gfx/bConnect.png',
+'gfx/bEndless.png',
+'gfx/bExit.png',
+'gfx/bForward.png',
+'gfx/bHighScore.png',
+'gfx/bHost.png',
+'gfx/bHowToPlay.png',
+'gfx/bInternet.png',
+'gfx/bLoad.png',
+'gfx/bNetwork.png',
+'gfx/bNewGame.png',
+'gfx/bNext.png',
+'gfx/bOff.png',
+'gfx/bOn.png',
+'gfx/bOnePlayer.png',
+'gfx/bOptions.png',
+'gfx/bPuzzle.png',
+'gfx/bReplays.png',
+'gfx/bRetry.png',
+'gfx/bSave.png',
+'gfx/bSelectPuzzle.png',
+'gfx/bStageClear.png',
+'gfx/bTheme.png',
+'gfx/bTimeTrial.png',
+'gfx/bTwoPlayers.png',
+'gfx/bVsGame.png',
+'gfx/bVsGameConfig.png',
+'gfx/chainFrame.png',
+'gfx/changeButtonsBack1.png',
+'gfx/crossover.png',
+'gfx/dialogbox.png',
+'gfx/SmallStone.png',
+'gfx/iGameOver.png',
+'gfx/transCover.png',
+'gfx/fileDialogbox.png',
+'gfx/iCheckBoxArea.png',
+'gfx/changeButtonsBack.png',
+'gfx/BackBoard.png',
+'gfx/boardBackBack.png',
+'gfx/topscores.png',
+'gfx/iLoser.png',
+'gfx/iLevelCheck.png',
+'gfx/iLevelCheckBox.png',
+'gfx/iWinner.png',
+'gfx/iStageClearLimit.png',
+'gfx/options.png',
+'gfx/icon.png',
+'gfx/blackLine.png',
+'gfx/iDraw.png',
+'gfx/mouse.png'])
+env.Alias('install', ['$destdir/$sharedir/gfx'])
+
+env.Install ('$destdir/$sharedir/sound/',[
+#'sound/applause.ogg',
+#'sound/whistleblow.ogg',
+#'sound/heartbeat3.ogg',
+'sound/typing.ogg',
+'sound/cameraclick.ogg',
+'sound/pop.ogg',
+'sound/counter.ogg',
+'sound/counterFinal.ogg'])
+env.Alias('install', ['$destdir/$sharedir/sound'])
+
+env.Install ('$destdir/$sharedir/res/',[
+'res/testPuzzles',
+'res/puzzle.levels'])
+env.Alias('install', ['$destdir/$sharedir/res'])
+
+#env.Install ('$destdir/$sharedir/music/',[
+#'music/bgMusic.ogg'])
+#env.Alias('install', ['$destdir/$sharedir/music'])
