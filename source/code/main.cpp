@@ -3273,7 +3273,7 @@ class Keymenu {
 
 #if NETWORK
 #include "NetworkThing.hpp"
-#include "MenuSystem.h"
+//#include "MenuSystem.h"
 #endif
 
 //The main function, quite big... too big

@@ -38,7 +38,7 @@ Copyright (C) 2008 Poul Sander
 #include <iostream>
 #include <string>
 #include "SDL.h"
-#include "SDL_ttf.h"        //To use True Type Fonts in SDL
+//#include "SDL_ttf.h"        //To use True Type Fonts in SDL
 
 using namespace std;
 

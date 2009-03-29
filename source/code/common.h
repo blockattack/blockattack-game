@@ -45,6 +45,10 @@ Copyright (C) 2008 Poul Sander
 #include <fstream>
 #include <map>
 #include <stdlib.h>
+#ifdef WIN32
+#include "windows.h"
+#include "shlobj.h"
+#endif
 
 using namespace std;
 
@@ -58,6 +62,10 @@ struct commonTime{
 string itoa(int num);
 
 string getPathToSaveFiles();
+
+#ifdef WIN32
+string getMyDocumentsPath();
+#endif
 
 class TimeHandler
 {

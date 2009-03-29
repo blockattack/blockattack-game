@@ -83,7 +83,8 @@ int str2int(string str2parse)
 string getMyDocumentsPath()
 {
     TCHAR pszPath[MAX_PATH];
-    if (SUCCEEDED(SHGetSpecialFolderPath(NULL, pszPath, CSIDL_PERSONAL, FALSE))) {
+    //if (SUCCEEDED(SHGetSpecialFolderPath(NULL, pszPath, CSIDL_PERSONAL, FALSE))) {
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, pszPath))) {
         // pszPath is now the path that you want
 #if DEBUG
         cout << "MyDocuments Located: " << pszPath << endl;

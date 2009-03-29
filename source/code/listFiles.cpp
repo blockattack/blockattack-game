@@ -46,8 +46,8 @@ void ListFiles::setDirectory(string directory)
         filenames[i]="";
 #if defined(_WIN32)
     DWORD dwError;
-    dictory+="/*";
-    hFind = FindFirstFile(dictory.c_str(), &FindFileData);
+    directory+="/*";
+    hFind = FindFirstFile(directory.c_str(), &FindFileData);
     if (hFind == INVALID_HANDLE_VALUE)
     {
         cout << "Invalid file handle. Error is " << GetLastError() << endl;
