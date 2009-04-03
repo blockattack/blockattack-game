@@ -34,7 +34,7 @@ Copyright (C) 2008 Poul Sander
 
 
 #ifndef VERSION_NUMBER
-    #define VERSION_NUMBER "version 1.4.0 BETA"
+    #define VERSION_NUMBER "version 1.4.0"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
@@ -179,179 +179,179 @@ bool reloadIMG(SDL_Surface **surface2replace, string replaceWith)
     #endif
     *surface2replace = * surface2replace;
     return false;
-}
+} 
 
 void loadTheme(string themeName)
 {
     if(themeName.compare("default")==0)
-        themeName = "../gfx";
-    reloadIMG(&backgroundImage,themeName+"/background.png");
-    reloadIMG(&backgroundImage,themeName+"/background.jpg");
+        themeName = "..";
+    reloadIMG(&backgroundImage,themeName+"/gfx/background.png");
+    reloadIMG(&backgroundImage,themeName+"/gfx/background.jpg");
     CONVERT(backgroundImage); //We should always convert even if we don't have to or else: SEGFAULT!
-    reloadIMG(&bNewGame,themeName+"/bNewGame.png");
+    reloadIMG(&bNewGame,themeName+"/gfx/bNewGame.png");
     CONVERT(bNewGame);
-    reloadIMG(&b1player,themeName+"/bOnePlayer.png");
+    reloadIMG(&b1player,themeName+"/gfx/bOnePlayer.png");
     CONVERT(b1player);
-    reloadIMG(&b2players,themeName+"/bTwoPlayers.png");
+    reloadIMG(&b2players,themeName+"/gfx/bTwoPlayers.png");
     CONVERT(b2players);
-    reloadIMG(&bVsMode,themeName+"/bVsGame.png");
+    reloadIMG(&bVsMode,themeName+"/gfx/bVsGame.png");
     CONVERT(bVsMode);
-    reloadIMG(&bVsModeConfig,themeName+"/bVsGameConfig.png");
+    reloadIMG(&bVsModeConfig,themeName+"/gfx/bVsGameConfig.png");
     CONVERT(bVsModeConfig);
-    reloadIMG(&bPuzzle,themeName+"/bPuzzle.png");
+    reloadIMG(&bPuzzle,themeName+"/gfx/bPuzzle.png");
     CONVERT(bPuzzle);
-    reloadIMG(&bStageClear,themeName+"/bStageClear.png");
+    reloadIMG(&bStageClear,themeName+"/gfx/bStageClear.png");
     CONVERT(bStageClear);
-    reloadIMG(&bTimeTrial,themeName+"/bTimeTrial.png");
+    reloadIMG(&bTimeTrial,themeName+"/gfx/bTimeTrial.png");
     CONVERT(bTimeTrial);
-    reloadIMG(&bEndless,themeName+"/bEndless.png");
+    reloadIMG(&bEndless,themeName+"/gfx/bEndless.png");
     CONVERT(bEndless);
-    reloadIMG(&bOptions,themeName+"/bOptions.png");
+    reloadIMG(&bOptions,themeName+"/gfx/bOptions.png");
     CONVERT(bOptions);
-    reloadIMG(&bConfigure,themeName+"/bConfigure.png");
+    reloadIMG(&bConfigure,themeName+"/gfx/bConfigure.png");
     CONVERTA(bConfigure);
-    reloadIMG(&bSelectPuzzle,themeName+"/bSelectPuzzle.png");
+    reloadIMG(&bSelectPuzzle,themeName+"/gfx/bSelectPuzzle.png");
     CONVERTA(bSelectPuzzle);
-    reloadIMG(&bReplay,themeName+"/bReplays.png");
+    reloadIMG(&bReplay,themeName+"/gfx/bReplays.png");
     CONVERTA(bReplay);
-    reloadIMG(&bSave,themeName+"/bSave.png");
+    reloadIMG(&bSave,themeName+"/gfx/bSave.png");
     CONVERTA(bSave);
-    reloadIMG(&bLoad,themeName+"/bLoad.png");
+    reloadIMG(&bLoad,themeName+"/gfx/bLoad.png");
     CONVERTA(bLoad);
 #if NETWORK
-    reloadIMG(&bNetwork,themeName+"/bNetwork.png");
+    reloadIMG(&bNetwork,themeName+"/gfx/bNetwork.png");
     CONVERTA(bNetwork);
-    reloadIMG(&bHost,themeName+"/bHost.png");
+    reloadIMG(&bHost,themeName+"/gfx/bHost.png");
     CONVERTA(bHost);
-    reloadIMG(&bConnect,themeName+"/bConnect.png");
+    reloadIMG(&bConnect,themeName+"/gfx/bConnect.png");
     CONVERTA(bConnect);
 #endif
-    reloadIMG(&bHighScore,themeName+"/bHighScore.png");
+    reloadIMG(&bHighScore,themeName+"/gfx/bHighScore.png");
     CONVERT(bHighScore);
-    reloadIMG(&boardBackBack,themeName+"/boardBackBack.png");
+    reloadIMG(&boardBackBack,themeName+"/gfx/boardBackBack.png");
     CONVERTA(boardBackBack);
-    reloadIMG(&backBoard,themeName+"/BackBoard.png");
+    reloadIMG(&backBoard,themeName+"/gfx/BackBoard.png");
     CONVERT(backBoard);
-    reloadIMG(&blackLine,themeName+"/blackLine.png");
+    reloadIMG(&blackLine,themeName+"/gfx/blackLine.png");
     CONVERT(blackLine);
-    reloadIMG(&changeButtonsBack,themeName+"/changeButtonsBack.png");
+    reloadIMG(&changeButtonsBack,themeName+"/gfx/changeButtonsBack.png");
     CONVERTA(changeButtonsBack);
-    reloadIMG(&cursor[0],themeName+"/animations/cursor/1.png");
+    reloadIMG(&cursor[0],themeName+"/gfx/animations/cursor/1.png");
     CONVERTA(cursor[0]);
-    reloadIMG(&cursor[1],themeName+"/animations/cursor/2.png");
+    reloadIMG(&cursor[1],themeName+"/gfx/animations/cursor/2.png");
     CONVERTA(cursor[1]);
-    reloadIMG(&cursor[0],themeName+"/animations/counter/1.png");
+    reloadIMG(&cursor[0],themeName+"/gfx/animations/counter/1.png");
     CONVERTA(counter[0]);
-    reloadIMG(&cursor[1],themeName+"/animations/counter/2.png");
+    reloadIMG(&cursor[1],themeName+"/gfx/animations/counter/2.png");
     CONVERTA(counter[1]);
-    reloadIMG(&cursor[2],themeName+"/animations/counter/3.png");
+    reloadIMG(&cursor[2],themeName+"/gfx/animations/counter/3.png");
     CONVERTA(counter[2]);
-    reloadIMG(&optionsBack,themeName+"/options.png");
+    reloadIMG(&optionsBack,themeName+"/gfx/options.png");
     CONVERTA(optionsBack);
-    reloadIMG(&bExit,themeName+"/bExit.png");
+    reloadIMG(&bExit,themeName+"/gfx/bExit.png");
     CONVERT(bExit);
-    reloadIMG(&bOn,themeName+"/bOn.png");
+    reloadIMG(&bOn,themeName+"/gfx/bOn.png");
     CONVERT(bOn);
-    reloadIMG(&bOff,themeName+"/bOff.png");
+    reloadIMG(&bOff,themeName+"/gfx/bOff.png");
     CONVERT(bOff);
-    reloadIMG(&bChange,themeName+"/bChange.png");
+    reloadIMG(&bChange,themeName+"/gfx/bChange.png");
     CONVERT(bChange);
-    reloadIMG(&b1024,themeName+"/b1024.png");
+    reloadIMG(&b1024,themeName+"/gfx/b1024.png");
     CONVERT(b1024);
-    reloadIMG(&dialogBox,themeName+"/dialogbox.png");
+    reloadIMG(&dialogBox,themeName+"/gfx/dialogbox.png");
     CONVERTA(dialogBox);
 //	CONVERTA(fileDialogBox);
-    reloadIMG(&iLevelCheck,themeName+"/iLevelCheck.png");
+    reloadIMG(&iLevelCheck,themeName+"/gfx/iLevelCheck.png");
     CONVERTA(iLevelCheck);
-    reloadIMG(&iLevelCheckBox,themeName+"/iLevelCheckBox.png");
+    reloadIMG(&iLevelCheckBox,themeName+"/gfx/iLevelCheckBox.png");
     CONVERT(iLevelCheckBox);
-    reloadIMG(&iCheckBoxArea,themeName+"/iCheckBoxArea.png");
+    reloadIMG(&iCheckBoxArea,themeName+"/gfx/iCheckBoxArea.png");
     CONVERTA(iCheckBoxArea);
     for (int i = 0;i<4;i++)
     {
-        reloadIMG(&explosion[i],themeName+"/animations/explosion/"+(char)('0'+i)+".png");
+        reloadIMG(&explosion[i],themeName+"/gfx/animations/explosion/"+(char)('0'+i)+".png");
         CONVERTA(explosion[i]);
     }
-    reloadIMG(&bricks[0],themeName+"/bricks/blue.png");
-    reloadIMG(&bricks[1],themeName+"/bricks/green.png");
-    reloadIMG(&bricks[2],themeName+"/bricks/purple.png");
-    reloadIMG(&bricks[3],themeName+"/bricks/red.png");
-    reloadIMG(&bricks[4],themeName+"/bricks/turkish.png");
-    reloadIMG(&bricks[5],themeName+"/bricks/yellow.png");
-    reloadIMG(&bricks[6],themeName+"/bricks/grey.png");
-    reloadIMG(&balls[0],themeName+"/balls/ballBlue.png");
-    reloadIMG(&balls[1],themeName+"/balls/ballGreen.png");
-    reloadIMG(&balls[2],themeName+"/balls/ballPurple.png");
-    reloadIMG(&balls[3],themeName+"/balls/ballRed.png");
-    reloadIMG(&balls[4],themeName+"/balls/ballTurkish.png");
-    reloadIMG(&balls[5],themeName+"/balls/ballYellow.png");
-    reloadIMG(&balls[6],themeName+"/balls/ballGray.png");
+    reloadIMG(&bricks[0],themeName+"/gfx/bricks/blue.png");
+    reloadIMG(&bricks[1],themeName+"/gfx/bricks/green.png");
+    reloadIMG(&bricks[2],themeName+"/gfx/bricks/purple.png");
+    reloadIMG(&bricks[3],themeName+"/gfx/bricks/red.png");
+    reloadIMG(&bricks[4],themeName+"/gfx/bricks/turkish.png");
+    reloadIMG(&bricks[5],themeName+"/gfx/bricks/yellow.png");
+    reloadIMG(&bricks[6],themeName+"/gfx/bricks/grey.png");
+    reloadIMG(&balls[0],themeName+"/gfx/balls/ballBlue.png");
+    reloadIMG(&balls[1],themeName+"/gfx/balls/ballGreen.png");
+    reloadIMG(&balls[2],themeName+"/gfx/balls/ballPurple.png");
+    reloadIMG(&balls[3],themeName+"/gfx/balls/ballRed.png");
+    reloadIMG(&balls[4],themeName+"/gfx/balls/ballTurkish.png");
+    reloadIMG(&balls[5],themeName+"/gfx/balls/ballYellow.png");
+    reloadIMG(&balls[6],themeName+"/gfx/balls/ballGray.png");
     for (int i = 0; i<7; i++)
     {
         CONVERTA(bricks[i]);
         CONVERTA(balls[i]);
     }
-    reloadIMG(&crossover,themeName+"/crossover.png");
+    reloadIMG(&crossover,themeName+"/gfx/crossover.png");
     CONVERTA(crossover);
-    reloadIMG(&garbageTL,themeName+"/garbage/garbageTL.png");
+    reloadIMG(&garbageTL,themeName+"/gfx/garbage/garbageTL.png");
     CONVERTA(garbageTL);
-    reloadIMG(&garbageT,themeName+"/garbage/garbageT.png");
+    reloadIMG(&garbageT,themeName+"/gfx/garbage/garbageT.png");
     CONVERTA(garbageT);
-    reloadIMG(&garbageTR,themeName+"/garbage/garbageTR.png");
+    reloadIMG(&garbageTR,themeName+"/gfx/garbage/garbageTR.png");
     CONVERTA(garbageTR);
-    reloadIMG(&garbageR,themeName+"/garbage/garbageR.png");
+    reloadIMG(&garbageR,themeName+"/gfx/garbage/garbageR.png");
     CONVERTA(garbageR);
-    reloadIMG(&garbageBR,themeName+"/garbage/garbageBR.png");
+    reloadIMG(&garbageBR,themeName+"/gfx/garbage/garbageBR.png");
     CONVERTA(garbageBR);
-    reloadIMG(&garbageB,themeName+"/garbage/garbageB.png");
+    reloadIMG(&garbageB,themeName+"/gfx/garbage/garbageB.png");
     CONVERTA(garbageB);
-    reloadIMG(&garbageBL,themeName+"/garbage/garbageBL.png");
+    reloadIMG(&garbageBL,themeName+"/gfx/garbage/garbageBL.png");
     CONVERTA(garbageBL);
-    reloadIMG(&garbageL,themeName+"/garbage/garbageL.png");
+    reloadIMG(&garbageL,themeName+"/gfx/garbage/garbageL.png");
     CONVERTA(garbageL);
-    reloadIMG(&garbageFill,themeName+"/garbage/garbageFill.png");
+    reloadIMG(&garbageFill,themeName+"/gfx/garbage/garbageFill.png");
     CONVERTA(garbageFill);
-    reloadIMG(&garbageML,themeName+"/garbage/garbageML.png");
+    reloadIMG(&garbageML,themeName+"/gfx/garbage/garbageML.png");
     CONVERTA(garbageML);
-    reloadIMG(&garbageMR,themeName+"/garbage/garbageMR.png");
+    reloadIMG(&garbageMR,themeName+"/gfx/garbage/garbageMR.png");
     CONVERTA(garbageMR);
-    reloadIMG(&garbageM,themeName+"/garbage/garbageM.png");
+    reloadIMG(&garbageM,themeName+"/gfx/garbage/garbageM.png");
     CONVERTA(garbageM);
-    reloadIMG(&garbageGML,themeName+"/garbage/garbageGML.png");
+    reloadIMG(&garbageGML,themeName+"/gfx/garbage/garbageGML.png");
     CONVERTA(garbageGML);
-    reloadIMG(&garbageGMR,themeName+"/garbage/garbageGMR.png");
+    reloadIMG(&garbageGMR,themeName+"/gfx/garbage/garbageGMR.png");
     CONVERTA(garbageGMR);
-    reloadIMG(&garbageGM,themeName+"/garbage/garbageGM.png");
+    reloadIMG(&garbageGM,themeName+"/gfx/garbage/garbageGM.png");
     CONVERTA(garbageGM);
-    reloadIMG(&smiley[0],themeName+"/smileys/0.png");
+    reloadIMG(&smiley[0],themeName+"/gfx/smileys/0.png");
     CONVERTA(smiley[0]);
-    reloadIMG(&smiley[1],themeName+"/smileys/1.png");
+    reloadIMG(&smiley[1],themeName+"/gfx/smileys/1.png");
     CONVERTA(smiley[1]);
-    reloadIMG(&smiley[2],themeName+"/smileys/2.png");
+    reloadIMG(&smiley[2],themeName+"/gfx/smileys/2.png");
     CONVERTA(smiley[2]);
-    reloadIMG(&smiley[3],themeName+"/smileys/3.png");
+    reloadIMG(&smiley[3],themeName+"/gfx/smileys/3.png");
     CONVERTA(smiley[3]);
-    reloadIMG(&iWinner,themeName+"/iWinner.png");
+    reloadIMG(&iWinner,themeName+"/gfx/iWinner.png");
     CONVERTA(iWinner);
-    reloadIMG(&iDraw,themeName+"/iDraw.png");
+    reloadIMG(&iDraw,themeName+"/gfx/iDraw.png");
     CONVERTA(iDraw);
-    reloadIMG(&iLoser,themeName+"/iLoser.png");
+    reloadIMG(&iLoser,themeName+"/gfx/iLoser.png");
     CONVERTA(iLoser);
-    reloadIMG(&iChainBack,themeName+"/chainFrame.png");
+    reloadIMG(&iChainBack,themeName+"/gfx/chainFrame.png");
     CONVERTA(iChainBack);
-    reloadIMG(&iGameOver,themeName+"/iGameOver.png");
+    reloadIMG(&iGameOver,themeName+"/gfx/iGameOver.png");
     CONVERTA(iGameOver);
-    reloadIMG(&mouse,themeName+"/mouse.png");
+    reloadIMG(&mouse,themeName+"/gfx/mouse.png");
     CONVERTA(mouse);
-    reloadIMG(&stageBobble,themeName+"/iStageClearLimit.png");
+    reloadIMG(&stageBobble,themeName+"/gfx/iStageClearLimit.png");
     CONVERTA(stageBobble);
-    reloadIMG(&bTheme,themeName+"/bTheme.png");
+    reloadIMG(&bTheme,themeName+"/gfx/bTheme.png");
     CONVERTA(bTheme);
-    reloadIMG(&bSkip,themeName+"/bSkip.png");
+    reloadIMG(&bSkip,themeName+"/gfx/bSkip.png");
     CONVERTA(bSkip);
-    reloadIMG(&bRetry,themeName+"/bRetry.png");
+    reloadIMG(&bRetry,themeName+"/gfx/bRetry.png");
     CONVERTA(bRetry);
-    reloadIMG(&bNext,themeName+"/bNext.png");
+    reloadIMG(&bNext,themeName+"/gfx/bNext.png");
     CONVERTA(bNext);
     /**
      *Fonts is a special case
@@ -363,8 +363,8 @@ void loadTheme(string themeName)
     iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png");
     iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png");
 //Then we reload the images:
-    reloadIMG(&iBlueFont,themeName+"/24P_Arial_Blue.png");
-    reloadIMG(&iSmallFont,themeName+"/14P_Arial_Angle_Red.png");
+    reloadIMG(&iBlueFont,themeName+"/gfx/24P_Arial_Blue.png");
+    reloadIMG(&iSmallFont,themeName+"/gfx/14P_Arial_Angle_Red.png");
     //Then we convert them:
     CONVERTA(iBlueFont);
     CONVERTA(iSmallFont);

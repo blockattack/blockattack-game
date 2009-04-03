@@ -156,6 +156,7 @@ env.Install ('$destdir/$sharedir/res/',[
 'res/puzzle.levels'])
 env.Alias('install', ['$destdir/$sharedir/res'])
 
-#env.Install ('$destdir/$sharedir/music/',[
-#'music/bgMusic.ogg'])
-#env.Alias('install', ['$destdir/$sharedir/music'])
+env.Install ('$destdir/$sharedir/music/',[
+'music/bgMusic.ogg',
+'music/highbeat.ogg'])
+env.Alias('install', ['$destdir/$sharedir/music'])

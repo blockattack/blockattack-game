@@ -22,7 +22,7 @@ env.Append(LIBPATH = ['/usr/lib'])
 
 # Compile Executable #
 blockattack = env.Program('blockattack', src)
-Default(blockattack)
+#Default(blockattack)
 
 # Install blockattack itself
 env.Install('$destdir/$bindir/', blockattack)

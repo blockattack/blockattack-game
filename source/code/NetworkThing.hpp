@@ -277,7 +277,7 @@ public:
                     ENetPacket * namePacket = enet_packet_create(bgHome->name,sizeof(char[30]),ENET_PACKET_FLAG_RELIABLE);
                     //if(weAreAServer)
                     enet_host_broadcast (server, 3, namePacket);
-                    ENetPacket * answerPacket = enet_packet_create("version2",sizeof("version2"),ENET_PACKET_FLAG_RELIABLE);
+                    ENetPacket * answerPacket = enet_packet_create("version3",sizeof("version3"),ENET_PACKET_FLAG_RELIABLE);
                     enet_host_broadcast (server, 3, answerPacket);
                     theSeed = time(0)/4;
                     bgHome->putStartBlocks(theSeed);
@@ -342,16 +342,16 @@ public:
                         }
                     }
                     else
-                        if (event.packet->dataLength==sizeof("2")) //We have recieved aversion number
+                        if (event.packet->dataLength==sizeof("version3")) //We have recieved aversion number
                         {
-                            if (0!=strcmp((const char*)event.packet->data,"version2"))
+                            if (0!=strcmp((const char*)event.packet->data,"version3"))
                             {
-                                cout << "Incompatible version: " << event.packet->data << "!=" << "version2" << endl;
+                                cout << "Incompatible version: " << event.packet->data << "!=" << "version3" << endl;
                                 ntDisconnect();
                             }
                             if (weAreAClient) //We will send our version number
                             {
-                                ENetPacket * answerPacket = enet_packet_create("version2",sizeof("version2"),ENET_PACKET_FLAG_RELIABLE);
+                                ENetPacket * answerPacket = enet_packet_create("version3",sizeof("version3"),ENET_PACKET_FLAG_RELIABLE);
                                 enet_peer_send (peer, 3, answerPacket);
                             }
                         }
