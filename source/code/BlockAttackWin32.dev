@@ -31,21 +31,21 @@ CompilerSettings=0000000000000000000000
 
 [VersionInfo]
 Major=1
-Minor=3
-Release=2
-Build=27
+Minor=4
+Release=0
+Build=1
 LanguageID=1033
 CharsetID=1252
 CompanyName=
-FileVersion=1.3.2
+FileVersion=1.4.0
 FileDescription=Block Attack - Rise of the Blocks (tetris Attack Clone)
 InternalName=
 LegalCopyright=Poul Sander
 LegalTrademarks=
 OriginalFilename=
 ProductName=Block Attack - Rise of the Blocks
-ProductVersion=1.3.2
-AutoIncBuildNr=1
+ProductVersion=1.4.0
+AutoIncBuildNr=0
 
 [Unit1]
 FileName=BlockGame.hpp
