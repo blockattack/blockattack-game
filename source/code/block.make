@@ -47,7 +47,7 @@ else
 BASE_CFLAGS += -DUSE_ABSTRACT_FS=0
 endif
 
-$(BINARY): 	build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o build/uploadReplay.o
+$(BINARY): 	build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o 
 	$(CPP) -O -o $(BINARY) build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o $(BASE_LIBS)
 #-lphysfs
 
@@ -78,8 +78,8 @@ build/stats.o: stats.h stats.cc
 build/common.o: common.h common.cc
 	$(CPP) $(BASE_CFLAGS) common.cc -o build/common.o
 
-build/uploadReplay.o: uploadReplay.cc uploadReplay.h
-	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o build/uploadReplay.o
+#build/uploadReplay.o: uploadReplay.cc uploadReplay.h
+#	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o build/uploadReplay.o
 
 #build/MenuSystem.o: MenuSystem.cc MenuSystem.h
 #	$(CPP) $(BASE_CFLAGS) MenuSystem.cc -o build/MenuSystem.o

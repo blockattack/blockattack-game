@@ -101,7 +101,7 @@ Copyright (C) 2008 Poul Sander
 #if LEVELEDITOR
 #include "editor/editorMain.hpp" //The level editor
 #endif
-#include "uploadReplay.h"   //Takes care of everything libcurl related
+//#include "uploadReplay.h"   //Takes care of everything libcurl related
 
 #include "common.h"
 

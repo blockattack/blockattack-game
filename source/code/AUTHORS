@@ -8,5 +8,8 @@ Done some work for making it work with SHAREDIR and all Scons scripts
 Contains SFont - SDL Font Library by
 Karl Bartel <karlb@gmx.net>
 
+A lot of the 1.4.0 graphics is by
+Iwan Gabovitch aka qubodup
+
 Jordà Polo
 Two patches
