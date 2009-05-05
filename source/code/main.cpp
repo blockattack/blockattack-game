@@ -170,9 +170,7 @@ SDL_Surface * IMG_Load2(char* path)
         return NULL;
     }
 
-    SDL_Surface* surface = IMG_Load_RW(rw,0);
-
-    SDL_FreeRW(rw);
+    SDL_Surface* surface = IMG_Load_RW(rw,true); //the second argument tells the function to three RWops
 
     return surface;
 }
@@ -464,6 +462,54 @@ void loadTheme(string themeName)
     return ret;
 }*/
 
+#if USE_ABSTRACT_FS
+Mix_Music * Mix_LoadMUS2(char* path)
+{
+    if (!PHYSFS_exists(path))
+    {
+        cout << "File not in blockattack.data: " << path << endl;
+        return NULL; //file doesn't exist
+    }
+
+    PHYSFS_file* myfile = PHYSFS_openRead(path);
+
+    // Get the lenght of the file
+    unsigned int m_size = PHYSFS_fileLength(myfile);
+
+    // Get the file data.
+    char *m_data = new char[m_size];
+
+    int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
+
+    if (length_read != (int)m_size)
+    {
+            delete [] m_data;
+            m_data = 0;
+            PHYSFS_close(myfile);
+            cout << "Error. Curropt data file!" << endl;
+            return NULL;
+    }
+
+    PHYSFS_close(myfile);
+
+// And this is how you load from a memory buffer with SDL
+    SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+
+    //The above might fail an return null.
+    if(!rw)
+    {
+        delete [] m_data;
+        m_data = 0;
+        PHYSFS_close(myfile);
+        cout << "Error. Curropt data file!" << endl;
+        return NULL;
+    }
+
+    Mix_Music* ret = Mix_LoadMUS_RW(rw);
+
+    return ret;
+}
+#else
 Mix_Music * Mix_LoadMUS2(char* path)
 {
     Mix_Music * ret=NULL;
@@ -476,7 +522,56 @@ Mix_Music * Mix_LoadMUS2(char* path)
 
     return ret;
 }
+#endif
 
+#if USE_ABSTRACT_FS
+Mix_Chunk * Mix_LoadWAV2(char* path)
+{
+    if (!PHYSFS_exists(path))
+    {
+        cout << "File not in blockattack.data: " << path << endl;
+        return NULL; //file doesn't exist
+    }
+
+    PHYSFS_file* myfile = PHYSFS_openRead(path);
+
+    // Get the lenght of the file
+    unsigned int m_size = PHYSFS_fileLength(myfile);
+
+    // Get the file data.
+    char *m_data = new char[m_size];
+
+    int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
+
+    if (length_read != (int)m_size)
+    {
+            delete [] m_data;
+            m_data = 0;
+            PHYSFS_close(myfile);
+            cout << "Error. Curropt data file!" << endl;
+            return NULL;
+    }
+
+    PHYSFS_close(myfile);
+
+// And this is how you load from a memory buffer with SDL
+    SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+
+    //The above might fail an return null.
+    if(!rw)
+    {
+        delete [] m_data;
+        m_data = 0;
+        PHYSFS_close(myfile);
+        cout << "Error. Curropt data file!" << endl;
+        return NULL;
+    }
+
+    Mix_Chunk* ret = Mix_LoadWAV_RW(rw,true); //the second argument tells the function to three RWops
+
+    return ret;
+}
+#else
 Mix_Chunk * Mix_LoadWAV2(char* path)
 {
     Mix_Chunk * ret=NULL;
@@ -489,6 +584,7 @@ Mix_Chunk * Mix_LoadWAV2(char* path)
 
     return ret;
 }
+#endif
 
 //Load all image files to memory
 int InitImages()
