@@ -34,7 +34,7 @@ Copyright (C) 2008 Poul Sander
 
 
 #ifndef VERSION_NUMBER
-    #define VERSION_NUMBER "version 1.4.0"
+    #define VERSION_NUMBER "version 1.4.1 BETA"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
@@ -49,7 +49,7 @@ Copyright (C) 2008 Poul Sander
 
 //Abstract layer is experimental and appears to cause trouble in some cercumstances. And it is not implemented
 #ifndef USE_ABSTRACT_FS
-    #define USE_ABSTRACT_FS 0
+    #define USE_ABSTRACT_FS 1
 #endif
 
 //Build-in level editor is still experimental!
@@ -127,7 +127,56 @@ void closeAllMenus()
 }
 
 
+#if USE_ABSTRACT_FS
+SDL_Surface * IMG_Load2(char* path)
+{
+    if (!PHYSFS_exists(path))
+    {
+        cout << "File not in blockattack.data: " << path << endl;
+        return NULL; //file doesn't exist
+    }
 
+    PHYSFS_file* myfile = PHYSFS_openRead(path);
+
+    // Get the lenght of the file
+    unsigned int m_size = PHYSFS_fileLength(myfile);
+
+    // Get the file data.
+    char *m_data = new char[m_size];
+
+    int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
+
+    if (length_read != (int)m_size)
+    {
+            delete [] m_data;
+            m_data = 0;
+            PHYSFS_close(myfile);
+            cout << "Error. Curropt data file!" << endl;
+            return NULL;
+    }
+
+    PHYSFS_close(myfile);
+
+// And this is how you load an image from a memory buffer with SDL
+    SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+
+    //The above might fail an return null.
+    if(!rw)
+    {
+        delete [] m_data;
+        m_data = 0;
+        PHYSFS_close(myfile);
+        cout << "Error. Curropt data file!" << endl;
+        return NULL;
+    }
+
+    SDL_Surface* surface = IMG_Load_RW(rw,0);
+
+    SDL_FreeRW(rw);
+
+    return surface;
+}
+#else
 //Because we use the SHAREDIR we need:
 SDL_Surface * IMG_Load2(char* path) {
 
@@ -141,6 +190,7 @@ SDL_Surface * IMG_Load2(char* path) {
         ret = IMG_Load(path);
     return ret;
 }
+#endif
 
 //Function to replace an image (ie. for a theme). Return true if replacing
 bool reloadIMG(SDL_Surface **surface2replace, string replaceWith)

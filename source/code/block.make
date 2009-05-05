@@ -23,7 +23,7 @@ endif
 
 #Never use the apstract fs, it is not implemented and just linking it breaks on some systems
 ifndef USE_ABSTRACT_FS
-USE_ABSTRACT_FS=0
+USE_ABSTRACT_FS=1
 endif
 
 #Compile with debug information or optimized.
