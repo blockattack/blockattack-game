@@ -3438,13 +3438,13 @@ int main(int argc, char *argv[])
 #elif defined(_WIN32)
     //Now for Windows NT/2k/xp/2k3 etc.
     string tempA = getMyDocumentsPath()+"\\My Games";
-    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+    CreateDirectory(tempA.c_str(),NULL);
     tempA = getMyDocumentsPath()+"\\My Games\\blockattack";
-    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+    CreateDirectory(tempA.c_str(),NULL);
     tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\replays";
-    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+    CreateDirectory(tempA.c_str(),NULL);
     tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\screenshots";
-    CreateDirectory(tempA.c_str(),NULL);//system(tempA.c_str());
+    CreateDirectory(tempA.c_str(),NULL);
 #endif
     highPriority = false;	//if true the game will take most resources, but increase framerate.
     bFullscreen = false;
@@ -3602,8 +3602,17 @@ int main(int argc, char *argv[])
 #if USE_ABSTRACT_FS
     //Init the file system abstraction layer
     PHYSFS_init(argv[0]);
-    PHYSFS_addToSearchPath("blockattack.data", 1);
-
+    //Look in blockattack.data
+    PHYSFS_addToSearchPath(((string)SHAREDIR+"blockattack.data").c_str(), 1);
+    //Look in folder
+    PHYSFS_addToSearchPath(SHAREDIR, 1);
+    //Look in home folder
+    #if defined(__unix__)
+    PHYSFS_addToSearchPath(home+"/.gamesaves/blockattack", 1);
+    #elif defined(_WIN32)
+    if (&home!=NULL)
+       PHYSFS_addToSearchPath((home+"/My Games/blockattack").c_str(), 1);
+    #endif
 #endif
 
     //Init SDL

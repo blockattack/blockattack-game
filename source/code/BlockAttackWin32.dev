@@ -12,9 +12,9 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=-lmingw32 -lSDLmain -lSDL -lSDL_Mixer -lSDL_image_@@_../../../../../Dev-Cpp/lib/libwsock32.a_@@_../../../../../Dev-Cpp/lib/libws2_32.a_@@_../../../../../Dev-Cpp/lib/libenet.a_@@_-lwsock32_@@_-lwinmm_@@_-lws2_32_@@_
+Linker=-lmingw32 -lSDLmain -lSDL -lSDL_Mixer -lSDL_image_@@_../../../../../Dev-Cpp/lib/libwsock32.a_@@_../../../../../Dev-Cpp/lib/libws2_32.a_@@_../../../../../Dev-Cpp/lib/libenet.a_@@_-lwsock32_@@_-lwinmm_@@_-lws2_32_@@_-lphysfs_@@_-lz_@@_
 IsCpp=1
-Icon=BlockAttackWin32.ico
+Icon=
 ExeOutput=..\..\Game
 ObjectOutput=Objects
 OverrideOutput=1
@@ -27,24 +27,24 @@ CustomMakefile=
 IncludeVersionInfo=1
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000000000000000000000
+CompilerSettings=0000000001001000000100
 
 [VersionInfo]
 Major=1
 Minor=4
-Release=0
+Release=1
 Build=1
 LanguageID=1033
 CharsetID=1252
 CompanyName=
-FileVersion=1.4.0
+FileVersion=1.4.1
 FileDescription=Block Attack - Rise of the Blocks (tetris Attack Clone)
 InternalName=
 LegalCopyright=Poul Sander
 LegalTrademarks=
 OriginalFilename=
 ProductName=Block Attack - Rise of the Blocks
-ProductVersion=1.4.0
+ProductVersion=1.4.1
 AutoIncBuildNr=0
 
 [Unit1]
