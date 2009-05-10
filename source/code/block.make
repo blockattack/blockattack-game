@@ -21,11 +21,6 @@ ifndef NETWORK
 NETWORK=1
 endif
 
-#Never use the apstract fs, it is not implemented and just linking it breaks on some systems
-ifndef USE_ABSTRACT_FS
-USE_ABSTRACT_FS=1
-endif
-
 #Compile with debug information or optimized.
 ifeq ($(DEBUG),1)
 BASE_CFLAGS += -g -DDEBUG=1
@@ -40,12 +35,7 @@ else
 BASE_CFLAGS += -DNETWORK=0
 endif
 
-ifeq ($(USE_ABSTRACT_FS),1)
-BASE_CFLAGS += -DUSE_ABSTRACT_FS=1
 BASE_LIBS += -lphysfs
-else
-BASE_CFLAGS += -DUSE_ABSTRACT_FS=0
-endif
 
 $(BINARY): 	build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o 
 	$(CPP) -O -o $(BINARY) build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o $(BASE_LIBS)

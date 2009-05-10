@@ -47,11 +47,6 @@ Copyright (C) 2008 Poul Sander
     #define NETWORK 1
 #endif
 
-//Abstract layer is experimental and appears to cause trouble in some cercumstances. And it is not implemented
-#ifndef USE_ABSTRACT_FS
-    #define USE_ABSTRACT_FS 1
-#endif
-
 //Build-in level editor is still experimental!
 #ifndef LEVELEDITOR
     #define LEVELEDITOR 0
@@ -69,10 +64,8 @@ Copyright (C) 2008 Poul Sander
 #include "SDL.h"            //The SDL libary, used for most things
 #include <SDL_mixer.h>      //Used for sound & music
 #include <SDL_image.h>      //To load PNG images!
-#if USE_ABSTRACT_FS
-    #include <physfs.h>         //Abstract file system. To use containers
-    #include "physfs_stream.hpp" //To use C++ style file streams
-#endif
+#include <physfs.h>         //Abstract file system. To use containers
+#include "physfs_stream.hpp" //To use C++ style file streams
 //#include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
 #include <vector>
@@ -128,7 +121,6 @@ void closeAllMenus()
 }
 
 
-#if USE_ABSTRACT_FS
 SDL_Surface * IMG_Load2(char* path)
 {
     if (!PHYSFS_exists(path))
@@ -175,31 +167,16 @@ SDL_Surface * IMG_Load2(char* path)
 
     return surface;
 }
-#else
-//Because we use the SHAREDIR we need:
-SDL_Surface * IMG_Load2(char* path) {
-
-    string tmp = "";
-    SDL_Surface * ret=NULL;
-    tmp = (string)""+sharedir+(string)"/"+path;
-#if DEBUG
-    cout << "loading " << tmp << endl;
-#endif
-    if (!(ret = IMG_Load(tmp.c_str())))
-        ret = IMG_Load(path);
-    return ret;
-}
-#endif
 
 void UnloadImages();
 int InitImages();
 
-#if USE_ABSTRACT_FS
 static string oldThemePath = "default";
+static bool loaded = false;
 
 void loadTheme(string themeName)
 {
-    if(themeName.compare("start")!=0)
+    if(loaded)
         UnloadImages();
 #if defined(__unix__)
     string home = (string)getenv("HOME")+(string)"/.gamesaves/blockattack";
@@ -219,6 +196,7 @@ void loadTheme(string themeName)
     if(themeName.compare("default")==0 || (themeName.compare("start")==0))
     {
         InitImages();
+        loaded =true;
         return; //Nothing more to do
     }
     oldThemePath = "themes/"+themeName;
@@ -227,8 +205,8 @@ void loadTheme(string themeName)
     PHYSFS_addToSearchPath((home+(string)"/"+oldThemePath).c_str(), 0);
     #endif
     InitImages();
+    loaded = true;
 }
-#endif
 
 /*TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
 
@@ -251,7 +229,7 @@ void loadTheme(string themeName)
     return ret;
 }*/
 
-#if USE_ABSTRACT_FS
+
 Mix_Music * Mix_LoadMUS2(char* path)
 {
     if (!PHYSFS_exists(path))
@@ -298,22 +276,8 @@ Mix_Music * Mix_LoadMUS2(char* path)
 
     return ret;
 }
-#else
-Mix_Music * Mix_LoadMUS2(char* path)
-{
-    Mix_Music * ret=NULL;
-    string tmp = (string)""+sharedir+(string)"/"+path;
-#if DEBUG
-    cout << "loading " << tmp << endl;
-#endif
-    if (!(ret = Mix_LoadMUS(tmp.c_str())))
-        ret = Mix_LoadMUS(path);
 
-    return ret;
-}
-#endif
 
-#if USE_ABSTRACT_FS
 Mix_Chunk * Mix_LoadWAV2(char* path)
 {
     if (!PHYSFS_exists(path))
@@ -360,20 +324,6 @@ Mix_Chunk * Mix_LoadWAV2(char* path)
 
     return ret;
 }
-#else
-Mix_Chunk * Mix_LoadWAV2(char* path)
-{
-    Mix_Chunk * ret=NULL;
-    string tmp = (string)""+sharedir+(string)"/"+path;
-#if DEBUG
-    cout << "loading " << tmp << endl;
-#endif
-    if (!(ret = Mix_LoadWAV(tmp.c_str())))
-        ret = Mix_LoadWAV(path);
-
-    return ret;
-}
-#endif
 
 //Load all image files to memory
 int InitImages()
@@ -776,30 +726,12 @@ int LoadPuzzleStages()
 {
     //if(puzzleLoaded)
     //    return 1;
-#if USE_ABSTRACT_FS
     if (!PHYSFS_exists(("puzzles/"+puzzleName).c_str()))
     {
         cout << "File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
         return -1; //file doesn't exist
     }
     PhysFS::ifstream inFile(("puzzles/"+puzzleName).c_str());
-#else
-#ifdef __unix__
-    string filename0 = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles/";
-    filename0 = filename0+puzzleName;
-    if (singlePuzzle)
-        filename0 = singlePuzzleFile;
-#endif //__unix__
-    string filename = (string)SHAREDIR+(string)"/puzzles/";
-    filename = filename+puzzleName;
-#ifdef __unix__
-    ifstream inFile(filename0.c_str());
-    if (!inFile)
-        inFile.open(filename.c_str());
-#else
-    ifstream inFile(filename.c_str());
-#endif
-#endif
 
     inFile >> nrOfPuzzles;
     if (nrOfPuzzles>maxNrOfPuzzleStages)
@@ -3574,15 +3506,10 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-#if USE_ABSTRACT_FS
     //Init the file system abstraction layer
     PHYSFS_init(argv[0]);
     //Load default theme
     loadTheme("start");
-#else
-    //Loading all images into memory
-    InitImages();
-#endif
     //Now sets the icon:
     SDL_Surface *icon = IMG_Load2((char*)"gfx/icon.png");
     SDL_WM_SetIcon(icon,NULL);
@@ -4911,10 +4838,8 @@ int main(int argc, char *argv[])
     //Frees memory from music and fonts
     //This is done after writing of configurations and stats since it often crashes the program :(
     UnloadImages();
-    
-#if USE_ABSTRACT_FS    
+      
     //Close file system Apstraction layer!
     PHYSFS_deinit();
-#endif
     return 0;
 }
