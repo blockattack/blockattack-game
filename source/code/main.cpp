@@ -191,256 +191,44 @@ SDL_Surface * IMG_Load2(char* path) {
 }
 #endif
 
-//Function to replace an image (ie. for a theme). Return true if replacing
-bool reloadIMG(SDL_Surface **surface2replace, string replaceWith)
-{
-    string fullPath = SHAREDIR+(string)"/themes/"+replaceWith;
-    #if DEBUG
-    cout << "Trying to load " << fullPath << endl;
-    #endif
-    SDL_Surface * temp = NULL;
-    temp = IMG_Load(fullPath.c_str());
-    if(temp) //If we loaded a new image
-    {
-        #if DEBUG
-        cout << "Found in game folder: " << fullPath << endl;
-        #endif
-        SDL_FreeSurface(*surface2replace);
-        *surface2replace = temp;
-        return true;
-    }
-    //Stop if under windows:
-    #ifdef __unix__
-    fullPath = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes/"+replaceWith;
-    #if DEBUG
-    cout << "Trying to load " << fullPath << endl;
-    #endif
-    temp = IMG_Load(fullPath.c_str());
-    if(temp) //If we loaded a new image
-    {
-        #if DEBUG
-        cout << "Found in home folder: " << fullPath << endl;
-        #endif
-        SDL_FreeSurface(*surface2replace);
-        *surface2replace = temp;
-        return true;
-    }
-    #endif
-    *surface2replace = * surface2replace;
-    return false;
-} 
+void UnloadImages();
+int InitImages();
+
+#if USE_ABSTRACT_FS
+static string oldThemePath = "default";
 
 void loadTheme(string themeName)
 {
-    if(themeName.compare("default")==0)
-        themeName = "..";
-    reloadIMG(&backgroundImage,themeName+"/gfx/background.png");
-    reloadIMG(&backgroundImage,themeName+"/gfx/background.jpg");
-    CONVERT(backgroundImage); //We should always convert even if we don't have to or else: SEGFAULT!
-    reloadIMG(&bNewGame,themeName+"/gfx/bNewGame.png");
-    CONVERT(bNewGame);
-    reloadIMG(&b1player,themeName+"/gfx/bOnePlayer.png");
-    CONVERT(b1player);
-    reloadIMG(&b2players,themeName+"/gfx/bTwoPlayers.png");
-    CONVERT(b2players);
-    reloadIMG(&bVsMode,themeName+"/gfx/bVsGame.png");
-    CONVERT(bVsMode);
-    reloadIMG(&bVsModeConfig,themeName+"/gfx/bVsGameConfig.png");
-    CONVERT(bVsModeConfig);
-    reloadIMG(&bPuzzle,themeName+"/gfx/bPuzzle.png");
-    CONVERT(bPuzzle);
-    reloadIMG(&bStageClear,themeName+"/gfx/bStageClear.png");
-    CONVERT(bStageClear);
-    reloadIMG(&bTimeTrial,themeName+"/gfx/bTimeTrial.png");
-    CONVERT(bTimeTrial);
-    reloadIMG(&bEndless,themeName+"/gfx/bEndless.png");
-    CONVERT(bEndless);
-    reloadIMG(&bOptions,themeName+"/gfx/bOptions.png");
-    CONVERT(bOptions);
-    reloadIMG(&bConfigure,themeName+"/gfx/bConfigure.png");
-    CONVERTA(bConfigure);
-    reloadIMG(&bSelectPuzzle,themeName+"/gfx/bSelectPuzzle.png");
-    CONVERTA(bSelectPuzzle);
-    reloadIMG(&bReplay,themeName+"/gfx/bReplays.png");
-    CONVERTA(bReplay);
-    reloadIMG(&bSave,themeName+"/gfx/bSave.png");
-    CONVERTA(bSave);
-    reloadIMG(&bLoad,themeName+"/gfx/bLoad.png");
-    CONVERTA(bLoad);
-#if NETWORK
-    reloadIMG(&bNetwork,themeName+"/gfx/bNetwork.png");
-    CONVERTA(bNetwork);
-    reloadIMG(&bHost,themeName+"/gfx/bHost.png");
-    CONVERTA(bHost);
-    reloadIMG(&bConnect,themeName+"/gfx/bConnect.png");
-    CONVERTA(bConnect);
+    if(themeName.compare("start")!=0)
+        UnloadImages();
+#if defined(__unix__)
+    string home = (string)getenv("HOME")+(string)"/.gamesaves/blockattack";
+#elif defined(_WIN32)
+    string home = (string)getMyDocumentsPath()+(string)"/My Games/blockattack";
 #endif
-    reloadIMG(&bHighScore,themeName+"/gfx/bHighScore.png");
-    CONVERT(bHighScore);
-    reloadIMG(&boardBackBack,themeName+"/gfx/boardBackBack.png");
-    CONVERTA(boardBackBack);
-    reloadIMG(&backBoard,themeName+"/gfx/BackBoard.png");
-    CONVERT(backBoard);
-    reloadIMG(&blackLine,themeName+"/gfx/blackLine.png");
-    CONVERT(blackLine);
-    reloadIMG(&changeButtonsBack,themeName+"/gfx/changeButtonsBack.png");
-    CONVERTA(changeButtonsBack);
-    reloadIMG(&cursor[0],themeName+"/gfx/animations/cursor/1.png");
-    CONVERTA(cursor[0]);
-    reloadIMG(&cursor[1],themeName+"/gfx/animations/cursor/2.png");
-    CONVERTA(cursor[1]);
-    reloadIMG(&cursor[0],themeName+"/gfx/animations/counter/1.png");
-    CONVERTA(counter[0]);
-    reloadIMG(&cursor[1],themeName+"/gfx/animations/counter/2.png");
-    CONVERTA(counter[1]);
-    reloadIMG(&cursor[2],themeName+"/gfx/animations/counter/3.png");
-    CONVERTA(counter[2]);
-    reloadIMG(&optionsBack,themeName+"/gfx/options.png");
-    CONVERTA(optionsBack);
-    reloadIMG(&bExit,themeName+"/gfx/bExit.png");
-    CONVERT(bExit);
-    reloadIMG(&bOn,themeName+"/gfx/bOn.png");
-    CONVERT(bOn);
-    reloadIMG(&bOff,themeName+"/gfx/bOff.png");
-    CONVERT(bOff);
-    reloadIMG(&bChange,themeName+"/gfx/bChange.png");
-    CONVERT(bChange);
-    reloadIMG(&b1024,themeName+"/gfx/b1024.png");
-    CONVERT(b1024);
-    reloadIMG(&dialogBox,themeName+"/gfx/dialogbox.png");
-    CONVERTA(dialogBox);
-//	CONVERTA(fileDialogBox);
-    reloadIMG(&iLevelCheck,themeName+"/gfx/iLevelCheck.png");
-    CONVERTA(iLevelCheck);
-    reloadIMG(&iLevelCheckBox,themeName+"/gfx/iLevelCheckBox.png");
-    CONVERT(iLevelCheckBox);
-    reloadIMG(&iCheckBoxArea,themeName+"/gfx/iCheckBoxArea.png");
-    CONVERTA(iCheckBoxArea);
-    for (int i = 0;i<4;i++)
-    {
-        reloadIMG(&explosion[i],themeName+"/gfx/animations/explosion/"+(char)('0'+i)+".png");
-        CONVERTA(explosion[i]);
-    }
-    reloadIMG(&bricks[0],themeName+"/gfx/bricks/blue.png");
-    reloadIMG(&bricks[1],themeName+"/gfx/bricks/green.png");
-    reloadIMG(&bricks[2],themeName+"/gfx/bricks/purple.png");
-    reloadIMG(&bricks[3],themeName+"/gfx/bricks/red.png");
-    reloadIMG(&bricks[4],themeName+"/gfx/bricks/turkish.png");
-    reloadIMG(&bricks[5],themeName+"/gfx/bricks/yellow.png");
-    reloadIMG(&bricks[6],themeName+"/gfx/bricks/grey.png");
-    reloadIMG(&balls[0],themeName+"/gfx/balls/ballBlue.png");
-    reloadIMG(&balls[1],themeName+"/gfx/balls/ballGreen.png");
-    reloadIMG(&balls[2],themeName+"/gfx/balls/ballPurple.png");
-    reloadIMG(&balls[3],themeName+"/gfx/balls/ballRed.png");
-    reloadIMG(&balls[4],themeName+"/gfx/balls/ballTurkish.png");
-    reloadIMG(&balls[5],themeName+"/gfx/balls/ballYellow.png");
-    reloadIMG(&balls[6],themeName+"/gfx/balls/ballGray.png");
-    for (int i = 0; i<7; i++)
-    {
-        CONVERTA(bricks[i]);
-        CONVERTA(balls[i]);
-    }
-    reloadIMG(&crossover,themeName+"/gfx/crossover.png");
-    CONVERTA(crossover);
-    reloadIMG(&garbageTL,themeName+"/gfx/garbage/garbageTL.png");
-    CONVERTA(garbageTL);
-    reloadIMG(&garbageT,themeName+"/gfx/garbage/garbageT.png");
-    CONVERTA(garbageT);
-    reloadIMG(&garbageTR,themeName+"/gfx/garbage/garbageTR.png");
-    CONVERTA(garbageTR);
-    reloadIMG(&garbageR,themeName+"/gfx/garbage/garbageR.png");
-    CONVERTA(garbageR);
-    reloadIMG(&garbageBR,themeName+"/gfx/garbage/garbageBR.png");
-    CONVERTA(garbageBR);
-    reloadIMG(&garbageB,themeName+"/gfx/garbage/garbageB.png");
-    CONVERTA(garbageB);
-    reloadIMG(&garbageBL,themeName+"/gfx/garbage/garbageBL.png");
-    CONVERTA(garbageBL);
-    reloadIMG(&garbageL,themeName+"/gfx/garbage/garbageL.png");
-    CONVERTA(garbageL);
-    reloadIMG(&garbageFill,themeName+"/gfx/garbage/garbageFill.png");
-    CONVERTA(garbageFill);
-    reloadIMG(&garbageML,themeName+"/gfx/garbage/garbageML.png");
-    CONVERTA(garbageML);
-    reloadIMG(&garbageMR,themeName+"/gfx/garbage/garbageMR.png");
-    CONVERTA(garbageMR);
-    reloadIMG(&garbageM,themeName+"/gfx/garbage/garbageM.png");
-    CONVERTA(garbageM);
-    reloadIMG(&garbageGML,themeName+"/gfx/garbage/garbageGML.png");
-    CONVERTA(garbageGML);
-    reloadIMG(&garbageGMR,themeName+"/gfx/garbage/garbageGMR.png");
-    CONVERTA(garbageGMR);
-    reloadIMG(&garbageGM,themeName+"/gfx/garbage/garbageGM.png");
-    CONVERTA(garbageGM);
-    reloadIMG(&smiley[0],themeName+"/gfx/smileys/0.png");
-    CONVERTA(smiley[0]);
-    reloadIMG(&smiley[1],themeName+"/gfx/smileys/1.png");
-    CONVERTA(smiley[1]);
-    reloadIMG(&smiley[2],themeName+"/gfx/smileys/2.png");
-    CONVERTA(smiley[2]);
-    reloadIMG(&smiley[3],themeName+"/gfx/smileys/3.png");
-    CONVERTA(smiley[3]);
-    reloadIMG(&iWinner,themeName+"/gfx/iWinner.png");
-    CONVERTA(iWinner);
-    reloadIMG(&iDraw,themeName+"/gfx/iDraw.png");
-    CONVERTA(iDraw);
-    reloadIMG(&iLoser,themeName+"/gfx/iLoser.png");
-    CONVERTA(iLoser);
-    reloadIMG(&iChainBack,themeName+"/gfx/chainFrame.png");
-    CONVERTA(iChainBack);
-    reloadIMG(&iGameOver,themeName+"/gfx/iGameOver.png");
-    CONVERTA(iGameOver);
-    reloadIMG(&mouse,themeName+"/gfx/mouse.png");
-    CONVERTA(mouse);
-    reloadIMG(&stageBobble,themeName+"/gfx/iStageClearLimit.png");
-    CONVERTA(stageBobble);
-    reloadIMG(&bTheme,themeName+"/gfx/bTheme.png");
-    CONVERTA(bTheme);
-    reloadIMG(&bSkip,themeName+"/gfx/bSkip.png");
-    CONVERTA(bSkip);
-    reloadIMG(&bRetry,themeName+"/gfx/bRetry.png");
-    CONVERTA(bRetry);
-    reloadIMG(&bNext,themeName+"/gfx/bNext.png");
-    CONVERTA(bNext);
-    /**
-     *Fonts is a special case
-     */
-    //First we free them:
-    SFont_FreeFont(fBlueFont);
-    SFont_FreeFont(fSmallFont);
-//SFont frees the surfaces then it frees the Font! So we start by loading the fonts we know are there:
-    iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png");
-    iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png");
-//Then we reload the images:
-    reloadIMG(&iBlueFont,themeName+"/gfx/24P_Arial_Blue.png");
-    reloadIMG(&iSmallFont,themeName+"/gfx/14P_Arial_Angle_Red.png");
-    //Then we convert them:
-    CONVERTA(iBlueFont);
-    CONVERTA(iSmallFont);
-    //Then create the fonts again:
-    fBlueFont = SFont_InitFont(iBlueFont);
-    fSmallFont = SFont_InitFont(iSmallFont);
-    //Editor:
-    #if LEVELEDITOR
-    CONVERTA(bCreateFile);
-    CONVERTA(bDeletePuzzle);
-    CONVERTA(bLoadFile);
-    CONVERTA(bMoveBack);
-    CONVERTA(bMoveDown);
-    CONVERTA(bMoveForward);
-    CONVERTA(bMoveLeft);
-    CONVERTA(bMoveRight);
-    CONVERTA(bMoveUp);
-    CONVERTA(bNewPuzzle);
-    CONVERTA(bSaveFileAs);
-    CONVERTA(bSavePuzzle);
-    CONVERTA(bSaveToFile);
-    CONVERTA(bTestPuzzle);
+    //Remove old theme
+    PHYSFS_removeFromSearchPath(oldThemePath.c_str());
+    //Look in blockattack.data
+    PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
+    //Look in folder
+    PHYSFS_addToSearchPath(SHAREDIR, 1);
+    //Look in home folder
+    #if defined(__unix__) || defined(_WIN32)
+    PHYSFS_addToSearchPath(home.c_str(), 1);
     #endif
-    #if DEBUG
-    cout << "Loading succeded" << endl;
+    if(themeName.compare("default")==0 || (themeName.compare("start")==0))
+    {
+        InitImages();
+        return; //Nothing more to do
+    }
+    oldThemePath = "themes/"+themeName;
+    PHYSFS_addToSearchPath(oldThemePath.c_str(),0);
+    #if defined(__unix__) || defined(_WIN32)
+    PHYSFS_addToSearchPath((home+(string)"/"+oldThemePath).c_str(), 0);
     #endif
+    InitImages();
 }
+#endif
 
 /*TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
 
@@ -859,11 +647,13 @@ int InitImages()
 //Unload images and fonts and sounds
 void UnloadImages()
 {
+    cout << "Unloading data..." << endl;
     //Fonts and Sounds needs to be freed
     SFont_FreeFont(fBlueFont);
     SFont_FreeFont(fSmallFont);
     if (!NoSound) //Only unload then it has been loaded!
     {
+        Mix_HaltMusic();
         Mix_FreeMusic(bgMusic);
         Mix_FreeMusic(highbeatMusic);
         Mix_FreeChunk(boing);
@@ -875,6 +665,7 @@ void UnloadImages()
     }
     //Free surfaces:
     //I think this will crash, at least it happend to me...
+    //Chrashes no more. Caused by an undocumented double free
     SDL_FreeSurface(backgroundImage);
     SDL_FreeSurface(background);
     SDL_FreeSurface(bNewGame);
@@ -3610,21 +3401,7 @@ int main(int argc, char *argv[])
 
     Uint8 *keys;
 
-#if USE_ABSTRACT_FS
-    //Init the file system abstraction layer
-    PHYSFS_init(argv[0]);
-    //Look in blockattack.data
-    PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
-    //Look in folder
-    PHYSFS_addToSearchPath(SHAREDIR, 1);
-    //Look in home folder
-    #if defined(__unix__)
-    PHYSFS_addToSearchPath((home+"/.gamesaves/blockattack").c_str(), 1);
-    #elif defined(_WIN32)
-    if (&home!=NULL)
-       PHYSFS_addToSearchPath((home+"/My Games/blockattack").c_str(), 1);
-    #endif
-#endif
+
 
     //Init SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
@@ -3653,10 +3430,7 @@ int main(int argc, char *argv[])
         }
 
     SDL_WM_SetCaption("Block Attack - Rise of the Blocks", NULL); //Sets title line
-    //Now sets the icon:
-    SDL_Surface *icon = IMG_Load2((char*)"gfx/icon.png");
-    SDL_WM_SetIcon(icon,NULL);
-    //SDL_FreeSurface(icon);
+    
 
     //Copyright notice:
     cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2009 Poul Sander" << endl <<
@@ -3800,8 +3574,19 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+#if USE_ABSTRACT_FS
+    //Init the file system abstraction layer
+    PHYSFS_init(argv[0]);
+    //Load default theme
+    loadTheme("start");
+#else
     //Loading all images into memory
     InitImages();
+#endif
+    //Now sets the icon:
+    SDL_Surface *icon = IMG_Load2((char*)"gfx/icon.png");
+    SDL_WM_SetIcon(icon,NULL);
+    //SDL_FreeSurface(icon);
 
     cout << "Images loaded" << endl;
 
