@@ -57,7 +57,7 @@ Copyright (C) 2008 Poul Sander
     #define LEVELEDITOR 0
 #endif
 
-//Macros to convert surfaces (for faster drawing)
+//Macros to convert surfaces (ffor faster drawing)
 #define CONVERT(n) tmp = SDL_DisplayFormat(n); SDL_FreeSurface(n); n = tmp
 #define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
 
@@ -71,6 +71,7 @@ Copyright (C) 2008 Poul Sander
 #include <SDL_image.h>      //To load PNG images!
 #if USE_ABSTRACT_FS
     #include <physfs.h>         //Abstract file system. To use containers
+    #include "physfs_stream.hpp" //To use C++ style file streams
 #endif
 //#include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
@@ -984,13 +985,21 @@ int LoadPuzzleStages()
 {
     //if(puzzleLoaded)
     //    return 1;
+#if USE_ABSTRACT_FS
+    if (!PHYSFS_exists(("puzzles/"+puzzleName).c_str()))
+    {
+        cout << "File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
+        return -1; //file doesn't exist
+    }
+    PhysFS::ifstream inFile(("puzzles/"+puzzleName).c_str());
+#else
 #ifdef __unix__
     string filename0 = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles/";
     filename0 = filename0+puzzleName;
     if (singlePuzzle)
         filename0 = singlePuzzleFile;
 #endif //__unix__
-    string filename = (string)SHAREDIR+(string)"/res/";
+    string filename = (string)SHAREDIR+(string)"/puzzles/";
     filename = filename+puzzleName;
 #ifdef __unix__
     ifstream inFile(filename0.c_str());
@@ -999,10 +1008,12 @@ int LoadPuzzleStages()
 #else
     ifstream inFile(filename.c_str());
 #endif
+#endif
+
     inFile >> nrOfPuzzles;
     if (nrOfPuzzles>maxNrOfPuzzleStages)
         nrOfPuzzles=maxNrOfPuzzleStages;
-    for (int k=0; (k<nrOfPuzzles)&&(!inFile.eof()); k++)
+    for (int k=0; (k<nrOfPuzzles) /*&&(!inFile.eof())*/ ; k++)
     {
         inFile >> nrOfMovesAllowed[k];
         for (int i=11;i>=0;i--)
@@ -2268,7 +2279,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
     bool done = false;	//We are done!
     int mousex, mousey;
     ListFiles lf = ListFiles();
-    string folder = (string)SHAREDIR+(string)"/res";
+    string folder = (string)SHAREDIR+(string)"/puzzles";
     cout << "Looking in " << folder << endl;
     lf.setDirectory(folder.c_str());
 #ifdef __unix__
@@ -3603,12 +3614,12 @@ int main(int argc, char *argv[])
     //Init the file system abstraction layer
     PHYSFS_init(argv[0]);
     //Look in blockattack.data
-    PHYSFS_addToSearchPath(((string)SHAREDIR+"blockattack.data").c_str(), 1);
+    PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
     //Look in folder
     PHYSFS_addToSearchPath(SHAREDIR, 1);
     //Look in home folder
     #if defined(__unix__)
-    PHYSFS_addToSearchPath(home+"/.gamesaves/blockattack", 1);
+    PHYSFS_addToSearchPath((home+"/.gamesaves/blockattack").c_str(), 1);
     #elif defined(_WIN32)
     if (&home!=NULL)
        PHYSFS_addToSearchPath((home+"/My Games/blockattack").c_str(), 1);
