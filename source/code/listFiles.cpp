@@ -57,7 +57,7 @@ void ListFiles::setDirectory(string directory)
         nrOfFiles=0;
         filenames[nrOfFiles] = FindFileData.cFileName;
         cout << "File: " << FindFileData.cFileName << endl;
-        while ((FindNextFile(hFind, &FindFileData) != 0)&&(nrOfFiles<MAX_NR_OF_FILES-1))
+        while ((FindNextFile(hFind, &FindFileData) != 0) && FindFileData.cFileName.name[0]!='.' && (nrOfFiles<MAX_NR_OF_FILES-1))
         {
             nrOfFiles++;
             filenames[nrOfFiles] = FindFileData.cFileName;
@@ -82,7 +82,7 @@ void ListFiles::setDirectory(string directory)
     while ((dp=readdir(DirectoryPointer))&&(nrOfFiles<MAX_NR_OF_FILES-1))
     {
         string name = (string)(char*)dp->d_name;
-        if (!isInList(name) && name != "." && name != "..")
+        if (!isInList(name) && name[0]!='.' )
         {
             nrOfFiles++;
             filenames[nrOfFiles] = name;

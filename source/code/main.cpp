@@ -52,6 +52,8 @@ Copyright (C) 2008 Poul Sander
     #define LEVELEDITOR 0
 #endif
 
+#define WITH_SDL 1
+
 //Macros to convert surfaces (ffor faster drawing)
 #define CONVERT(n) tmp = SDL_DisplayFormat(n); SDL_FreeSurface(n); n = tmp
 #define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
@@ -193,6 +195,11 @@ void loadTheme(string themeName)
     #if defined(__unix__) || defined(_WIN32)
     PHYSFS_addToSearchPath(home.c_str(), 1);
     #endif
+    if(themeName.compare(Config::getInstance()->getString("themename"))!=0)
+    {
+        //If this is a theme different from the saved one. Remember it!
+        Config::getInstance()->setString("themename",themeName);
+    }
     if(themeName.compare("default")==0 || (themeName.compare("start")==0))
     {
         InitImages();
@@ -3182,6 +3189,8 @@ int main(int argc, char *argv[])
 #endif
     highPriority = false;	//if true the game will take most resources, but increase framerate.
     bFullscreen = false;
+    //Set default Config variables:
+    Config::getInstance()->setDefault("themename","default");
     if (argc > 1)
     {
         int argumentNr = 1;
@@ -3195,13 +3204,15 @@ int main(int argc, char *argv[])
             char singlePuzzleString[] = "-SP";
             char noSoundAtAll[] = "-nosound";
             char IntegratedEditor[] = "-editor";
+            char selectTheme[] = "-theme";
             if (!(strncmp(argv[argumentNr],helpString,6)))
             {
                 cout << "Block Attack Help" << endl << "--help Display this message" <<
                 endl << "-priority  Starts game in high priority" << endl <<
                 "-forceredraw  Redraw the whole screen every frame, prevents garbage" << endl <<
                 "-forcepartdraw  Only draw what is changed, sometimes cause garbage" << endl <<
-                "-nosound  No sound will be played at all, and sound hardware want be loaded (use this if game crashes because of sound)" << endl <<
+                "-nosound  No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)" << endl <<
+                "-theme <THEMENAME>  Changes to the theme <THEMENAME> on startup" << endl <<
                 "-editor  Starts the build-in editor (not yet integrated)" << endl;
 #ifdef WIN32
                 system("Pause");
@@ -3243,7 +3254,14 @@ int main(int argc, char *argv[])
                 cout << "Integrated Puzzle Editor Activated" << endl;
                 #else
                 cout << "Integrated Puzzle Editor was disabled at compile time" << endl;
+                return -1;
                 #endif
+            }
+            if(!(strncmp(argv[argumentNr],selectTheme,6)))
+            {
+                argumentNr++; //Go to themename (the next argument)
+                cout << "Theme set to \"" << argv[argumentNr] << '"' << endl;
+                Config::getInstance()->setString("themename",argv[argumentNr]);
             }
             argumentNr++;
         }   //while
@@ -3509,7 +3527,7 @@ int main(int argc, char *argv[])
     //Init the file system abstraction layer
     PHYSFS_init(argv[0]);
     //Load default theme
-    loadTheme("start");
+    loadTheme(Config::getInstance()->getString("themename"));
     //Now sets the icon:
     SDL_Surface *icon = IMG_Load2((char*)"gfx/icon.png");
     SDL_WM_SetIcon(icon,NULL);

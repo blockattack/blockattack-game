@@ -79,7 +79,9 @@ public:
     Uint32 gameStartedAt;
     Uint32 gameEndedAfter;		//How long did the game last?
     int linesCleared;
+    #if WITH_SDL
     SDL_Surface* sBoard;
+    #endif
     int TowerHeight;
     BlockGame *garbageTarget;
     Sint32 board[7][30];
@@ -107,9 +109,11 @@ public:
 
     //Constructor
     BlockGame(int tx, int ty) {
+        #if WITH_SDL
         tmp = IMG_Load2((char*)"gfx/BackBoard.png");
         sBoard = SDL_DisplayFormat(tmp);
         SDL_FreeSurface(tmp);
+        #endif
         srand((int)time(NULL));
         nrFellDown = 0;
         nrPushedPixel = 0;
@@ -164,7 +168,9 @@ public:
     //Deconstructor, never really used... game used to crash when called, cause of the way sBoard was created
     //It should work now and can be used if we want to assign more players in network games that we need to free later
     ~BlockGame() {
+        #if WITH_SDL
         SDL_FreeSurface(sBoard);
+        #endif
     }
 
     void setGameSpeed(Uint8 globalSpeedLevel) {
@@ -237,13 +243,13 @@ public:
 
 #endif
 
+    #if WITH_SDL
     //Loads BackBoard again if surface format has changed
     void convertSurface() {
         SDL_FreeSurface(sBoard);
-        cout << "2.1" << endl;
         sBoard = SDL_DisplayFormat(backBoard);
-        cout << "2.2" << endl;
     }
+    #endif
 
     //Instead of creating new object new game is called, to prevent memory leaks
     void NewGame(int tx, int ty) {
@@ -1814,6 +1820,7 @@ public:
 ///////////////////////////// AI ends here! //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
+#if WITH_SDL
     //Draws all the bricks to the board (including garbage)
     void PaintBricks() {
         for (int i=0;((i<13)&&(i<30));i++)
@@ -2159,6 +2166,8 @@ public:
             else
                 DrawIMG(iGameOver, sBoard, 0, 5*bsize);
     }
+
+    #endif
 
     //Updates evrything, if not called nothing happends
     void Update() {
