@@ -17,7 +17,7 @@ common.cc""")
 # Modify Build Environment #
 env.ParseConfig('sdl-config --cflags --libs')
 env.Append(CPPDEFINES = [('SHAREDIR', '\\"$sharedir\\"')])
-env.Append(LIBS = ['SDL', 'enet','SDL_image','SDL_mixer'])
+env.Append(LIBS = ['SDL', 'enet','SDL_image','SDL_mixer','physfs'])
 env.Append(LIBPATH = ['/usr/lib'])
 
 # Compile Executable #
