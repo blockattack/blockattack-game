@@ -34,7 +34,7 @@ Copyright (C) 2008 Poul Sander
 
 
 #ifndef VERSION_NUMBER
-    #define VERSION_NUMBER "version 1.4.1"
+    #define VERSION_NUMBER "version 1.4.2 BETA"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
@@ -2466,7 +2466,19 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
     //DrawIMG(boardBackBack,screen,theGame2.topx-60,theGame2.topy-68);
     if (!editorMode)
     {
-        DrawIMG(theGame2.sBoard,screen,theGame2.topx,theGame2.topy);
+        if(!theGame.bGameOver && theGame2.bGameOver)
+        {
+            DrawIMG(backBoard,screen,theGame2.topx,theGame2.topy);
+            //getKeyName(SDLKey key)
+            int y = theGame2.topy+400;
+            SFont_Write(screen,fBlueFont,theGame2.topx+10,y,"Movement keys:" );
+            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
+        }
+        else
+            DrawIMG(theGame2.sBoard,screen,theGame2.topx,theGame2.topy);
         strHolder = itoa(theGame2.score+theGame2.handicap);
         SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+100,strHolder.c_str());
         if (theGame2.AI_Enabled)
@@ -3383,7 +3395,7 @@ int main(int argc, char *argv[])
     
 
     //Copyright notice:
-    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2009 Poul Sander" << endl <<
+    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2010 Poul Sander" << endl <<
     "A SDL based game (see www.libsdl.org)" << endl <<
     "The game is availeble under the GPL, see COPYING for details." << endl;
 #if defined(_WIN32)
