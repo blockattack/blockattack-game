@@ -270,6 +270,7 @@ vector<bool> puzzleCleared(maxNrOfPuzzleStages); //vector that tells if puzzle c
 vector<int> nrOfMovesAllowed(maxNrOfPuzzleStages);  //Moves to clear
 int puzzleLevels[maxNrOfPuzzleStages][6][12]; //Contains board layout;
 int nrOfPuzzles;    //How many are there actually?
+bool twoPlayers;    //True if two players are playing
 
 //Old mouse position:
 int oldMousex, oldMousey;

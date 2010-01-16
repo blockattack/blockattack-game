@@ -2466,16 +2466,56 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
     //DrawIMG(boardBackBack,screen,theGame2.topx-60,theGame2.topy-68);
     if (!editorMode)
     {
-        if(!theGame.bGameOver && theGame2.bGameOver)
+        /*
+         *If single player mode (and not VS)
+         */
+        if(!twoPlayers && !theGame.bGameOver)
         {
+            //Blank player2's board:
             DrawIMG(backBoard,screen,theGame2.topx,theGame2.topy);
-            //getKeyName(SDLKey key)
+            //Write a description:
+            if(theGame.timetrial)
+            {
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Time Trial");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "Score as much");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "as possible in");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"2 minutes");
+            } else if(theGame.stageClear)
+            {
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Stage Clear");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "You must clear a");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "number of lines.");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"Speed is rapidly");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*3,"increased.");
+            } else if(theGame.puzzleMode)
+            {
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Puzzle");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "Clear the entire");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "board with a");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"limited number of");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*3,"moves.");
+            } else
+            {
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Endless");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "Score as much as");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "possible. No time");
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"limit.");
+            }
+
+            //Write the keys that are in use
             int y = theGame2.topy+400;
-            SFont_Write(screen,fBlueFont,theGame2.topx+10,y,"Movement keys:" );
-            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
-            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
-            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
-            SFont_Write(screen,fBlueFont,theGame2.topx+10,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2.topx+7,y,"Movement keys:" );
+            SFont_Write(screen,fBlueFont,theGame2.topx+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2.topx+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2.topx+7,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
+            if(theGame.puzzleMode)
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,y+160,("Restart: "+getKeyName(keySettings[0].push) ).c_str() );
+            else
+                SFont_Write(screen,fBlueFont,theGame2.topx+7,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
         }
         else
             DrawIMG(theGame2.sBoard,screen,theGame2.topx,theGame2.topy);
@@ -3287,7 +3327,7 @@ int main(int argc, char *argv[])
     b2playersOpen = false;
     bReplayOpen = false;
     bScreenLocked = false;
-    bool twoPlayers = false;	//true if two players splitscreen
+    twoPlayers = false;	//true if two players splitscreen
     bool vsMode = false;
     theTopScoresEndless = Highscore(1);
     theTopScoresTimeTrial = Highscore(2);
