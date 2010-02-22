@@ -40,17 +40,15 @@ void Stats::load()
     string filename = getPathToSaveFiles()+"/statsFile";
     ifstream inFile(filename.c_str());
     string key;
-    unsigned int value;
+    char value[MAX_VAR_LENGTH];
     if(inFile)
     {
-        //int antal;
-        //inFile >> antal;
-        //for(int i = 0;i<antal;i++)
         while(!inFile.eof())
         {
-            inFile >> key;
-            inFile >> value;
-            statMap[key] = value;
+            inFile >> key; // The key is first on line
+            inFile.get(); //Take the space
+            inFile.getline(value,MAX_VAR_LENGTH); //The rest of the line is the value.
+            statMap[key] = str2int(value);
         }
         inFile.close();
     }

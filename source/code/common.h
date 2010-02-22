@@ -63,6 +63,13 @@ string itoa(int num);
 
 string getPathToSaveFiles();
 
+/**
+ * str2int parses a string and returns an int with the value of the string.
+ * if the string is not an int then 0 is returned instead of throing an error
+ * in that way this function will always return a useable value.
+ */
+int str2int(string str2parse);
+
 #ifdef WIN32
 string getMyDocumentsPath();
 #endif
