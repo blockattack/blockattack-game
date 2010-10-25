@@ -87,7 +87,7 @@ public:
                 enemyHasStarted = false;
             }
             //If the game is running then we disconnect, we are considered the looser!
-            if ((!bgHome->bGameOver)&&(!bgAway->bGameOver))
+            if ((!bgHome->isGameOver())&&(!bgAway->isGameOver()))
             {
                 bgAway->setPlayerWon();
                 bgHome->SetGameOver();
@@ -226,7 +226,7 @@ public:
             //cout << "Package sent" << endl;
 
             //See if we are game over and in that case notify the other player
-            if ((gameHasStarted)&&(bgHome->bGameOver))
+            if ((gameHasStarted)&&(bgHome->isGameOver()))
             {
                 ENetPacket * packet = enet_packet_create("G",2,ENET_PACKET_FLAG_RELIABLE);
                 if (weAreAServer)
@@ -303,7 +303,7 @@ public:
                 }
                 if (event.channelID==1) //reliable (used for GameOver notifications only!)
                 {
-                    if ((bgHome->bGameOver)&&(!bgHome->hasWonTheGame)&&(gameHasStarted))
+                    if ((bgHome->isGameOver())&&(!bgHome->GetIsWinner())&&(gameHasStarted))
                     {
                         bgHome->setDraw();
                         bgAway->setDraw();
@@ -377,7 +377,7 @@ public:
 
                 event.peer -> data = NULL;
                 //weAreConnected = false;
-                if ((!bgHome->bGameOver)&&(!bgAway->bGameOver))
+                if ((!bgHome->isGameOver())&&(!bgAway->isGameOver()))
                 {
                     bgHome->setPlayerWon();
                     bgAway->SetGameOver();

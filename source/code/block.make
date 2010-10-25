@@ -18,7 +18,7 @@ DEBUG=1
 endif
 
 ifndef NETWORK
-NETWORK=0
+NETWORK=1
 endif
 
 #Compile with debug information or optimized.

@@ -47,6 +47,7 @@ private:
     Uint32 nrPushedPixel, nrFellDown, nrStops;
     bool garbageToBeCleared[7][30];
     Uint32 lastAImove;
+    unsigned int ticks;
 
     Sint16 AI_LineOffset; //how many lines have changed since command
     string strHolder;
@@ -74,14 +75,10 @@ private:
         return i;
     }
 
-public:
-    char name[30];
+//public:
     Uint32 gameStartedAt;
     Uint32 gameEndedAfter;		//How long did the game last?
     int linesCleared;
-    #if WITH_SDL
-    SDL_Surface* sBoard;
-    #endif
     int TowerHeight;
     BlockGame *garbageTarget;
     Sint32 board[7][30];
@@ -103,9 +100,16 @@ public:
     bool hasWonTheGame;
     int AI_MoveSpeed;   //How often will the computer move? milliseconds
     bool AI_Enabled;
-    Replay theReplay;   //Stores the replay
 
     Uint32 handicap;
+
+public:
+    
+    char name[30];
+    Replay theReplay;   //Stores the replay
+    #if WITH_SDL
+    SDL_Surface* sBoard;
+    #endif
 
     //Constructor
     BlockGame(int tx, int ty) {
@@ -147,7 +151,7 @@ public:
         baseSpeed = 0.5;           //All other speeds are relative to this
         speed = baseSpeed;
         speedLevel = 1;
-        gameStartedAt = SDL_GetTicks();
+        gameStartedAt = ticks;
         gameEndedAfter = 0;
         pushedPixelAt = gameStartedAt;
         nextGarbageNumber = 10;
@@ -201,7 +205,9 @@ public:
     }
 
     //Set the move speed of the AI based on the aiLevel parameter
+    //Also enables AI
     void setAIlevel(Uint8 aiLevel) {
+        AI_Enabled = true;
         AI_MoveSpeed=120-(20*(aiLevel-3));
     };
     
@@ -209,6 +215,92 @@ public:
         return (120-AI_MoveSpeed)/20+3;
     }
 
+    int GetScore() {
+        return score;
+    }
+
+    int GetHandicap() {
+        return handicap;
+    }
+
+    bool isGameOver() {
+        return bGameOver;
+    }
+
+    int GetTopX() {
+        return topx;
+    }
+
+    int GetTopY() {
+        return topy;
+    }
+
+    unsigned int GetGameStartedAt() {
+        return gameStartedAt;
+    }
+
+    unsigned int GetGameEndedAt() {
+        return gameEndedAfter;
+    }
+
+    bool isTimeTrial() {
+        return timetrial;
+    }
+
+    bool isStageClear() {
+        return stageClear;
+    }
+
+    bool isVsMode() {
+        return vsMode;
+    }
+
+    bool isPuzzleMode() {
+        return puzzleMode;
+    }
+
+    int GetLinesCleared() {
+        return linesCleared;
+    }
+
+    int GetStageClearLimit() {
+        return stageClearLimit;
+    }
+
+    int GetChains() {
+        return chain;
+    }
+
+    int GetPixels() {
+        return pixels;
+    }
+
+    int GetSpeedLevel() {
+        return speedLevel;
+    }
+
+    int GetTowerHeight() {
+        return TowerHeight;
+    }
+
+    int GetCursorX() {
+        return cursorx;
+    }
+
+    int GetCursorY() {
+        return cursory;
+    }
+
+    void MoveCursorTo(int x, int y) {
+        cursorx = x;
+        cursory = y;
+    }
+
+    bool GetIsWinner() {
+        return hasWonTheGame;
+    }
+
+private:
 #if NETWORK
 #define garbageStackSize 10
     Uint8 garbageStack[garbageStackSize][3]; //A garbage stack with space for 10 garbage blocks. 0=x,1=y,2=type
@@ -230,7 +322,7 @@ public:
         garbageStackUsed++;
         return true;
     }
-
+public:
     bool popGarbage(Uint8 *width, Uint8 *height, Uint8 *type) {
         if (garbageStackUsed<1)
             return false;
@@ -240,6 +332,7 @@ public:
         *type=garbageStack[garbageStackUsed][2];
         return true;
     }
+private:
 
 #endif
 
@@ -251,8 +344,10 @@ public:
     }
     #endif
 
+public:
     //Instead of creating new object new game is called, to prevent memory leaks
-    void NewGame(int tx, int ty) {
+    void NewGame(int tx, int ty, unsigned int ticks) {
+        this->ticks = ticks;
         stageButtonStatus = SBdontShow;
         bReplaying  =  false;
         #if NETWORK
@@ -284,7 +379,7 @@ public:
         baseSpeed= 0.5;
         speed = baseSpeed;
         speedLevel = 1;
-        gameStartedAt = SDL_GetTicks()+3000;
+        gameStartedAt = ticks+3000;
         pushedPixelAt = gameStartedAt;
         nextGarbageNumber = 10;
         handicap=0;
@@ -296,15 +391,21 @@ public:
             chainUsed[i]=false;
             chainSize[i] = 0;
         }
-        lastAImove = SDL_GetTicks()+3000;
+        lastAImove = ticks+3000;
         showGame = true;
         theReplay = Replay();
     }	//NewGame
 
+    void NewTimeTrialGame(int x,int y, unsigned int ticks) {
+        NewGame(x,y,ticks);
+        timetrial = true;
+        putStartBlocks();
+    }
+
     //Starts a new stage game, takes level as input!
-    void NewStageGame(int level, int tx, int ty) {
+    void NewStageGame(int level, int tx, int ty,unsigned int ticks) {
         if (level > -1) {
-            NewGame(tx, ty);
+            NewGame(tx, ty,ticks);
             stageClear = true;
             Level = level;
             Stats::getInstance()->addOne("PlayedStageLevel"+itoa2(level));
@@ -314,9 +415,9 @@ public:
         }
     }
 
-    void NewPuzzleGame(int level, int tx, int ty) {
+    void NewPuzzleGame(int level, int tx, int ty, unsigned int ticks) {
         if (level>-1) {
-            NewGame(tx, ty);
+            NewGame(tx, ty,ticks);
             puzzleMode = true;
             Level = level;
             MovesLeft = nrOfMovesAllowed[Level];
@@ -348,34 +449,34 @@ public:
     }
     
     //Replay the current level
-    void retryLevel()
+    void retryLevel(unsigned int ticks)
     {
         if(puzzleMode)
-            NewPuzzleGame(Level,topx,topy);
+            NewPuzzleGame(Level,topx,topy,ticks);
         else
             if(stageClear)
-                NewStageGame(Level,topx,topy);
+                NewStageGame(Level,topx,topy,ticks);
     }
     
     //Play the next level
-    void nextLevel()
+    void nextLevel(unsigned int ticks)
     {
         if(puzzleMode)
         {
             if(Level<nrOfPuzzles-1)
-                NewPuzzleGame(Level+1,topx,topy);
+                NewPuzzleGame(Level+1,topx,topy,ticks);
         }
         else
             if(stageClear)
             {
                 if(Level<50-1)
-                    NewStageGame(Level+1,topx,topy);
+                    NewStageGame(Level+1,topx,topy,ticks);
             }
     }
 
     //Starts new Vs Game (two Player)
-    void NewVsGame(int tx, int ty, BlockGame *target) {
-        NewGame(tx, ty);
+    void NewVsGame(int tx, int ty, BlockGame *target,unsigned int ticks) {
+        NewGame(tx, ty,ticks);
         vsMode = true;
         putStartBlocks();
         garbageTarget = target;
@@ -383,8 +484,8 @@ public:
     }
 
     //Starts new Vs Game (two Player)
-    void NewVsGame(int tx, int ty, BlockGame *target, bool AI) {
-        NewGame(tx, ty);
+    void NewVsGame(int tx, int ty, BlockGame *target, bool AI,unsigned int ticks) {
+        NewGame(tx, ty,ticks);
         vsMode = true;
         AI_Enabled = AI;
         if(!AI)
@@ -394,28 +495,31 @@ public:
         putStartBlocks();
         garbageTarget = target;
     }
+private:
 
     //Go in Demonstration mode, no movement
     void Demonstration(bool toggle) {
         speed=0;
         baseSpeed = 0;
     }
-
+public:
     //We want to play the replay (must have been loaded beforehand)
-    void playReplay(int tx, int ty) {
-        NewGame(tx, ty);
-        gameStartedAt = SDL_GetTicks();
+    void playReplay(int tx, int ty, unsigned int ticks) {
+        NewGame(tx, ty,ticks);
+        gameStartedAt = ticks;
         bReplaying = true; //We are playing, no calculations
         #if NETWORK
         bNetworkPlayer = false; //Take input from replay file
         #endif
     }
 
+
 #if NETWORK
+
     //network play
-    void playNetwork(int tx, int ty) {
-        NewGame(tx, ty);
-        gameStartedAt = SDL_GetTicks();
+    void playNetwork(int tx, int ty,unsigned int ticks) {
+        NewGame(tx, ty,ticks);
+        gameStartedAt = ticks;
         bReplaying = false; //We are playing, no calculations
         bNetworkPlayer = true; //Don't Take input from replay file
         emptyGarbageStack();
@@ -426,7 +530,7 @@ public:
     void setPlayerWon() {
         if (!bGameOver)
         {
-            gameEndedAfter = SDL_GetTicks()-gameStartedAt; //We game ends now!
+            gameEndedAfter = ticks-gameStartedAt; //We game ends now!
 	    if(!AI_Enabled && !bReplaying)
 		{
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
@@ -482,10 +586,10 @@ public:
     //Function to get a boardpackage
     boardPackage getPackage() {
         boardPackage bp;
-        if(SDL_GetTicks()<gameStartedAt)
+        if(ticks<gameStartedAt)
             bp.time = 0;
         else
-            bp.time = (Uint32)(SDL_GetTicks()-gameStartedAt);
+            bp.time = (Uint32)(ticks-gameStartedAt);
         for (int i=0;i<6;i++)
             for (int j=0;j<13;j++) {
                 if (board[i][j]%10<7)
@@ -580,7 +684,7 @@ public:
 
     //Takes a package and sets the board like it
     void setBoard(boardPackage bp) {
-        //gameStartedAt = SDL_GetTicks()-bp.time;
+        //gameStartedAt = ticks-bp.time;
         for (int i=0;i<6;i++)
             for (int j=0;j<13;j++) {
                 //if(bp.brick[i][j]/8==0)
@@ -609,6 +713,8 @@ public:
         }
 
     }
+
+private:
 
     //Test if LineNr is an empty line, returns false otherwise.
     bool LineEmpty(int lineNr) {
@@ -647,6 +753,7 @@ public:
         putStartBlocks(time(0));
     }
 
+public:
     void putStartBlocks(Uint32 n) {
         for (int i=0;i<7;i++)
             for (int j=0;j<30;j++) {
@@ -765,9 +872,11 @@ public:
         };
     }
 
+private:
+
     //decreases hang for all hanging blocks and wait for waiting blocks
     void ReduceStuff() {
-        Uint32 howMuchHang = (SDL_GetTicks() - FRAMELENGTH*hangTicks)/FRAMELENGTH;
+        Uint32 howMuchHang = (ticks - FRAMELENGTH*hangTicks)/FRAMELENGTH;
         if (howMuchHang>0) {
             for (int i=0; i<7; i++)
                 for (int j=0; j<30; j++) {
@@ -795,6 +904,8 @@ public:
         }
         hangTicks+=howMuchHang;
     }
+
+public:
 
     //Creates garbage using a given wide and height
     bool CreateGarbage(int wide, int height) {
@@ -865,6 +976,7 @@ public:
         }
     }
 
+private:
 
     //Clears garbage, must take one the lower left corner!
     int GarbageClearer(int x, int y, int number, bool aLineToClear, int chain) {
@@ -1204,10 +1316,11 @@ public:
                 }
     } //ClearBlocks
 
+public:
     //prints "Game Over" and ends game
     void SetGameOver() {
         if (!bGameOver) {
-        	gameEndedAfter = SDL_GetTicks()-gameStartedAt; //We game ends now!
+        	gameEndedAfter = ticks-gameStartedAt; //We game ends now!
 		if(!AI_Enabled && !bReplaying)
 		{
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
@@ -1227,6 +1340,12 @@ public:
         if(stageClear)
             stageButtonStatus = SBstageClear;
     }
+
+    bool GetAIenabled() {
+        return AI_Enabled;
+    }
+
+private:
 
     //Moves all peaces a spot down if possible
     int FallBlock(int x, int y, int number) {
@@ -1286,6 +1405,7 @@ public:
         nrFellDown++;      //Sets number of this fall, so we know then the next will occur
     }
 
+public:
     //Moves the cursor, receaves N,S,E or W as a char an moves as desired
     void MoveCursor(char way) {
         if (!bGameOver)       //If game over nothing happends
@@ -1303,18 +1423,18 @@ public:
 
     //switches the two blocks at the cursor position, unless game over
     void SwitchAtCursor() {
-        if ((board[cursorx][cursory+1]<7) && (board[cursorx+1][cursory+1]<7) && (!bGameOver) && ((!puzzleMode)||(MovesLeft>0)) && (gameStartedAt<SDL_GetTicks())) {
+        if ((board[cursorx][cursory+1]<7) && (board[cursorx+1][cursory+1]<7) && (!bGameOver) && ((!puzzleMode)||(MovesLeft>0)) && (gameStartedAt<ticks)) {
             int temp = board[cursorx][cursory+1];
             board[cursorx][cursory+1] = board[cursorx+1][cursory+1];
             board[cursorx+1][cursory+1] = temp;
         }
-        if ((puzzleMode)&&(gameStartedAt<SDL_GetTicks())&&(MovesLeft>0)) MovesLeft--;
+        if ((puzzleMode)&&(gameStartedAt<ticks)&&(MovesLeft>0)) MovesLeft--;
     }
 
     //Generates a new line and moves the field one block up (restart puzzle mode)
     void PushLine() {
         //If not game over, not high tower and not puzzle mode
-        if ((!bGameOver) && TowerHeight<13 && (!puzzleMode) && (gameStartedAt<SDL_GetTicks())&&(chain==0)) {
+        if ((!bGameOver) && TowerHeight<13 && (!puzzleMode) && (gameStartedAt<ticks)&&(chain==0)) {
             for (int i=19;i>0;i--)
                 for (int j=0;j<6;j++) {
                     board[j][i] = board[j][i-1];
@@ -1340,7 +1460,7 @@ public:
             }
             pixels = 0;
             stop=0;
-            pushedPixelAt = SDL_GetTicks();
+            pushedPixelAt = ticks;
             linesCleared++;
             AI_LineOffset++;
             nrPushedPixel=(int)((double)(pushedPixelAt-gameStartedAt)/(1000.0*speed));
@@ -1375,6 +1495,8 @@ public:
         
         
     }//PushLine
+
+private:
 
     //Pushes a single pixel, so it appears to scrool
     void PushPixels() {
@@ -1493,7 +1615,7 @@ public:
     }
 
     //Types 0..6 in line
-    inline int nrOfRealTypes(int line) {
+    int nrOfRealTypes(int line) {
         //cout << "Start_ nrOfReal" << endl;
         int counter = 0;
         for (int i=0; i<6; i++)
@@ -1558,7 +1680,7 @@ public:
     }
 
     //The AI will remove a tower
-    inline void AI_ClearTower() {
+    void AI_ClearTower() {
         //   cout << "AI: ClearTower, line: " << AIlineToClear << endl;
         int place = (int)firstInLine(AIlineToClear-1, -1); //Find an empty field to frop a brick into
         int xplace = closestTo(AIlineToClear, place); //Find the brick to drop in it
@@ -1650,7 +1772,7 @@ public:
     }
 
     //Test if vertical clear is possible
-    inline bool veriClearPossible() {
+    bool veriClearPossible() {
         bool found=false;
         int colors[7] = {0, 0, 0, 0, 0, 0, 0};
         for (int i=12;(i>0)&&(!found);i--) {
@@ -1684,7 +1806,7 @@ public:
     }
 
     //The AI will try to clear blocks vertically
-    inline void AI_ClearVertical() {
+    void AI_ClearVertical() {
         // cout << "AI: ClearVeri";
         //First we find the place there we will align the bricks
         int placeToCenter = (int)(firstInLine(AIlineToClear, AIcolorToClear)/3.0+firstInLine(AIlineToClear+1, AIcolorToClear)/3.0+firstInLine(AIlineToClear+2, AIcolorToClear)/3.0);
@@ -1828,9 +1950,9 @@ public:
                 if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0)) {
                     DrawIMG(bricks[board[j][i]%10], sBoard, j*bsize, bsize*12-i*bsize-pixels);
                     if ((board[j][i]/BLOCKWAIT)%10==1)
-                        DrawIMG(bomb[(SDL_GetTicks()/BOMBTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+                        DrawIMG(bomb[(ticks/BOMBTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
                     if ((board[j][i]/BLOCKHANG)%10==1)
-                        DrawIMG(ready[(SDL_GetTicks()/READYTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+                        DrawIMG(ready[(ticks/READYTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
 
                 }
                 if ((board[j][i]/1000000)%10==1) {
@@ -1996,9 +2118,9 @@ public:
                 if ((board[j][i]%10 != -1) && (board[j][i]%30 < 7)) {
                     DrawIMG(bricks[board[j][i]%10], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
                     if (bbomb[j][i])
-                        DrawIMG(bomb[(SDL_GetTicks()/BOMBTIME)%2], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
+                        DrawIMG(bomb[(ticks/BOMBTIME)%2], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
                     if (getReady[j][i])
-                        DrawIMG(ready[(SDL_GetTicks()/READYTIME)%2], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
+                        DrawIMG(ready[(ticks/READYTIME)%2], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
                 }
                 if (board[j][i]%30>6) {
                     if (board[j][i]%30==7)
@@ -2060,7 +2182,7 @@ public:
     }
     
     int lastCounter;
-
+public:
     //Draws everything
     void DoPaintJob() {
         DrawIMG(backBoard, sBoard, 0, 0);
@@ -2117,10 +2239,10 @@ public:
             SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
         }
 #endif
-        if (!bGameOver)DrawIMG(cursor[(SDL_GetTicks()/600)%2],sBoard,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
-        if (SDL_GetTicks()<gameStartedAt)
+        if (!bGameOver)DrawIMG(cursor[(ticks/600)%2],sBoard,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
+        if (ticks<gameStartedAt)
         {
-            int currentCounter = abs((int)SDL_GetTicks()-(int)gameStartedAt)/1000;
+            int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
             if( (currentCounter!=lastCounter) && (SoundEnabled)&&(!NoSound))
                 Mix_PlayChannel(1,counterChunk,0);
             lastCounter = currentCounter;
@@ -2140,9 +2262,9 @@ public:
         }
         else
         {
-            if(SoundEnabled&&(!NoSound)&&(timetrial)&&(SDL_GetTicks()>gameStartedAt+10000)&&(!bGameOver))
+            if(SoundEnabled&&(!NoSound)&&(timetrial)&&(ticks>gameStartedAt+10000)&&(!bGameOver))
             {
-                int currentCounter = (SDL_GetTicks()-(int)gameStartedAt)/1000;
+                int currentCounter = (ticks-(int)gameStartedAt)/1000;
                 if(currentCounter!=lastCounter)
                 {
                     if(currentCounter>115 && currentCounter<120)
@@ -2169,10 +2291,12 @@ public:
 
     #endif
 
+private:
+
     //Updates evrything, if not called nothing happends
     void Update() {
         Uint32 tempUInt32;
-        Uint32 nowTime = SDL_GetTicks(); //We remember the time, so it doesn't change during this call
+        Uint32 nowTime = ticks; //We remember the time, so it doesn't change during this call
         if (bReplaying) {
             setBoard(theReplay.getFrameSec((Uint32)(nowTime-gameStartedAt)));
             strncpy(name,theReplay.name,30);
@@ -2304,9 +2428,9 @@ public:
             }
             else
                 if (AI_Enabled)
-                    if (lastAImove+AI_MoveSpeed<SDL_GetTicks()) {
+                    if (lastAImove+AI_MoveSpeed<ticks) {
                         AI_Move();
-                        lastAImove=SDL_GetTicks();
+                        lastAImove=ticks;
                     }
 
             /*************************************************************
@@ -2352,6 +2476,11 @@ public:
         DoPaintJob();
     }
 
+public:
+    void Update(int newtick) {
+        ticks = newtick;
+        Update();
+    }
 }; //class BlockGame
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// BlockAttack class end ////////////////////////////////

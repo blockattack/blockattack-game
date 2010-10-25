@@ -757,7 +757,7 @@ int LoadPuzzleStages()
 }
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
+void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
 {
     SDL_Rect dest;
     dest.x = x;
@@ -2300,7 +2300,7 @@ bool OpenReplayDialogbox(int x, int y, char *name)
 
 
 //draws options:
-inline void DrawOptions(int x, int y)
+void DrawOptions(int x, int y)
 {
     if (MusicEnabled) DrawIMG(bOn,optionsBack,400,buttonXsize);
     else DrawIMG(bOff,optionsBack,400,buttonXsize);
@@ -2362,7 +2362,7 @@ void UndrawBalls()
 }   //UndrawBalls
 
 //draws everything
-void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2)
+void DrawEverything(int xsize, int ysize,BlockGame *theGame, BlockGame *theGame2)
 {
     SDL_ShowCursor(SDL_DISABLE);
     //draw background:
@@ -2403,168 +2403,168 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         }
     if (!editorMode)
         DrawIMG(bExit, screen, xsize-120,ysize-120);
-    //DrawIMG(boardBackBack,screen,theGame.topx-60,theGame.topy-68);
-    DrawIMG(theGame.sBoard,screen,theGame.topx,theGame.topy);
+    //DrawIMG(boardBackBack,screen,theGame->GetTopX()-60,theGame->GetTopY()-68);
+    DrawIMG(theGame->sBoard,screen,theGame->GetTopX(),theGame->GetTopY());
     string strHolder;
-    strHolder = itoa(theGame.score+theGame.handicap);
-    SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+100,strHolder.c_str());
-    if (theGame.AI_Enabled)
-        SFont_Write(screen,fBlueFont,theGame.topx+10,theGame.topy-40,"CPU");
+    strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
+    SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
+    if (theGame->GetAIenabled())
+        SFont_Write(screen,fBlueFont,theGame->GetTopX()+10,theGame->GetTopY()-40,"CPU");
     else
         if (editorMode)
-            SFont_Write(screen,fBlueFont,theGame.topx+10,theGame.topy-40,"Playing field");
+            SFont_Write(screen,fBlueFont,theGame->GetTopX()+10,theGame->GetTopY()-40,"Playing field");
         else
             if (!singlePuzzle)
-                SFont_Write(screen,fBlueFont,theGame.topx+10,theGame.topy-40,player1name);
-    if (theGame.timetrial)
+                SFont_Write(screen,fBlueFont,theGame->GetTopX()+10,theGame->GetTopY()-40,player1name);
+    if (theGame->isTimeTrial())
     {
-        int tid = (int)SDL_GetTicks()-theGame.gameStartedAt;
+        int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
         int minutes;
         int seconds;
         if (tid>=0)
         {
-            minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))/60/1000;
-            seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))%(60*1000))/1000;
+            minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
+            seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
         }
         else
         {
-            minutes = ((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))/60/1000;
-            seconds = (((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))%(60*1000))/1000;
+            minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
+            seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
         }
-        if (theGame.bGameOver) minutes=0;
-        if (theGame.bGameOver) seconds=0;
+        if (theGame->isGameOver()) minutes=0;
+        if (theGame->isGameOver()) seconds=0;
         if (seconds>9)
             strHolder = itoa(minutes)+":"+itoa(seconds);
         else strHolder = itoa(minutes)+":0"+itoa(seconds);
         //if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-        SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+150,strHolder.c_str());
+        SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
     }
     else
     {
-        int minutes = ((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))/60/1000;
-        int seconds = (((abs((int)SDL_GetTicks()-(int)theGame.gameStartedAt)))%(60*1000))/1000;
-        if (theGame.bGameOver) minutes=(theGame.gameEndedAfter/1000/60)%100;
-        if (theGame.bGameOver) seconds=(theGame.gameEndedAfter/1000)%60;
+        int minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
+        int seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
+        if (theGame->isGameOver()) minutes=(theGame->GetGameEndedAt()/1000/60)%100;
+        if (theGame->isGameOver()) seconds=(theGame->GetGameEndedAt()/1000)%60;
         if (seconds>9)
             strHolder = itoa(minutes)+":"+itoa(seconds);
         else
             strHolder = itoa(minutes)+":0"+itoa(seconds);
-        SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+150,strHolder.c_str());
+        SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
     }
-    strHolder = itoa(theGame.chain);
-    SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+200,strHolder.c_str());
+    strHolder = itoa(theGame->GetChains());
+    SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+200,strHolder.c_str());
     //drawspeedLevel:
-    strHolder = itoa(theGame.speedLevel);
-    SFont_Write(screen,fBlueFont,theGame.topx+310,theGame.topy+250,strHolder.c_str());
-    if ((theGame.stageClear) &&(theGame.topy+700+50*(theGame.stageClearLimit-theGame.linesCleared)-theGame.pixels-1<600+theGame.topy))
+    strHolder = itoa(theGame->GetSpeedLevel());
+    SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
+    if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY()))
     {
-        oldBubleX = theGame.topx+280;
-        oldBubleY = theGame.topy+650+50*(theGame.stageClearLimit-theGame.linesCleared)-theGame.pixels-1;
-        DrawIMG(stageBobble,screen,theGame.topx+280,theGame.topy+650+50*(theGame.stageClearLimit-theGame.linesCleared)-theGame.pixels-1);
+        oldBubleX = theGame->GetTopX()+280;
+        oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
+        DrawIMG(stageBobble,screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
     }
     //player1 finnish, player2 start
-    //DrawIMG(boardBackBack,screen,theGame2.topx-60,theGame2.topy-68);
+    //DrawIMG(boardBackBack,screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
     if (!editorMode)
     {
         /*
          *If single player mode (and not VS)
          */
-        if(!twoPlayers && !theGame.bGameOver)
+        if(!twoPlayers && !theGame->isGameOver())
         {
             //Blank player2's board:
-            DrawIMG(backBoard,screen,theGame2.topx,theGame2.topy);
+            DrawIMG(backBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
             //Write a description:
-            if(theGame.timetrial)
+            if(theGame->isTimeTrial())
             {
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Time Trial");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "Score as much");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "as possible in");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"2 minutes");
-            } else if(theGame.stageClear)
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "as possible in");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"2 minutes");
+            } else if(theGame->isStageClear())
             {
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Stage Clear");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "You must clear a");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "number of lines.");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"Speed is rapidly");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*3,"increased.");
-            } else if(theGame.puzzleMode)
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "You must clear a");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "number of lines.");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"Speed is rapidly");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"increased.");
+            } else if(theGame->isPuzzleMode())
             {
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Puzzle");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "Clear the entire");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "board with a");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"limited number of");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*3,"moves.");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Clear the entire");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "board with a");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limited number of");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"moves.");
             } else
             {
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+10,"Endless");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32,     "Score as much as");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28,  "possible. No time");
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,theGame2.topy+160+32+28*2,"limit.");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much as");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "possible. No time");
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limit.");
             }
 
             //Write the keys that are in use
-            int y = theGame2.topy+400;
-            SFont_Write(screen,fBlueFont,theGame2.topx+7,y,"Movement keys:" );
-            SFont_Write(screen,fBlueFont,theGame2.topx+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
-            SFont_Write(screen,fBlueFont,theGame2.topx+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
-            SFont_Write(screen,fBlueFont,theGame2.topx+7,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
-            if(theGame.puzzleMode)
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,y+160,("Restart: "+getKeyName(keySettings[0].push) ).c_str() );
+            int y = theGame2->GetTopY()+400;
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y,"Movement keys:" );
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
+            if(theGame->isPuzzleMode())
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+160,("Restart: "+getKeyName(keySettings[0].push) ).c_str() );
             else
-                SFont_Write(screen,fBlueFont,theGame2.topx+7,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
+                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
         }
         else
-            DrawIMG(theGame2.sBoard,screen,theGame2.topx,theGame2.topy);
-        strHolder = itoa(theGame2.score+theGame2.handicap);
-        SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+100,strHolder.c_str());
-        if (theGame2.AI_Enabled)
-            SFont_Write(screen,fBlueFont,theGame2.topx+10,theGame2.topy-40,"CPU");
+            DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
+        strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
+        SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
+        if (theGame2->GetAIenabled())
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+10,theGame2->GetTopY()-40,"CPU");
         else
-            SFont_Write(screen,fBlueFont,theGame2.topx+10,theGame2.topy-40,theGame2.name);
-        if (theGame2.timetrial)
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+10,theGame2->GetTopY()-40,theGame2->name);
+        if (theGame2->isTimeTrial())
         {
-            int tid = (int)SDL_GetTicks()-theGame2.gameStartedAt;
+            int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();
             int minutes;
             int seconds;
             if (tid>=0)
             {
-                minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))/60/1000;
-                seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))%(60*1000))/1000;
+                minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
+                seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
             }
             else
             {
-                minutes = ((abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))/60/1000;
-                seconds = (((abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)))%(60*1000))/1000;
+                minutes = ((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
+                seconds = (((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
             }
-            if (theGame2.bGameOver) minutes=0;
-            if (theGame2.bGameOver) seconds=0;
+            if (theGame2->isGameOver()) minutes=0;
+            if (theGame2->isGameOver()) seconds=0;
             if (seconds>9)
                 strHolder = itoa(minutes)+":"+itoa(seconds);
             else
                 strHolder = itoa(minutes)+":0"+itoa(seconds);
             //if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-            SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+150,strHolder.c_str());
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
         }
         else
         {
-            int minutes = (abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt))/60/1000;
-            int seconds = (abs((int)SDL_GetTicks()-(int)theGame2.gameStartedAt)%(60*1000))/1000;
-            if (theGame2.bGameOver) minutes=(theGame2.gameEndedAfter/1000/60)%100;
-            if (theGame2.bGameOver) seconds=(theGame2.gameEndedAfter/1000)%60;
+            int minutes = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt()))/60/1000;
+            int seconds = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())%(60*1000))/1000;
+            if (theGame2->isGameOver()) minutes=(theGame2->GetGameEndedAt()/1000/60)%100;
+            if (theGame2->isGameOver()) seconds=(theGame2->GetGameEndedAt()/1000)%60;
             if (seconds>9)
                 strHolder = itoa(minutes)+":"+itoa(seconds);
             else
                 strHolder = itoa(minutes)+":0"+itoa(seconds);
-            SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+150,strHolder.c_str());
+            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
         }
-        strHolder = itoa(theGame2.chain);
-        SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+200,strHolder.c_str());
-        strHolder = itoa(theGame2.speedLevel);
-        SFont_Write(screen,fBlueFont,theGame2.topx+310,theGame2.topy+250,strHolder.c_str());
+        strHolder = itoa(theGame2->GetChains());
+        SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
+        strHolder = itoa(theGame2->GetSpeedLevel());
+        SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
     }
     //player2 finnish
 
@@ -2643,18 +2643,18 @@ void MakeBackground(int xsize,int ysize)
 }
 
 //Generates the background with red board backs
-void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2)
+void MakeBackground(int xsize,int ysize,BlockGame *theGame, BlockGame *theGame2)
 {
     MakeBackground(xsize,ysize);
-    DrawIMG(boardBackBack,background,theGame.topx-60,theGame.topy-68);
-    DrawIMG(boardBackBack,background,theGame2.topx-60,theGame2.topy-68);
+    DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
+    DrawIMG(boardBackBack,background,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
     standardBackground = false;
 }
 
-void MakeBackground(int xsize, int ysize, BlockGame &theGame)
+void MakeBackground(int xsize, int ysize, BlockGame *theGame)
 {
     MakeBackground(xsize,ysize);
-    DrawIMG(boardBackBack,background,theGame.topx-60,theGame.topy-68);
+    DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
     standardBackground = false;
 }
 
@@ -3591,13 +3591,13 @@ int main(int argc, char *argv[])
 
     BlockGame theGame = BlockGame(50,100);			//creates game objects
     BlockGame theGame2 = BlockGame(xsize-500,100);
-    if (singlePuzzle)
+    /*if (singlePuzzle)
     {
-        theGame.topy=0;
-        theGame.topx=0;
-        theGame2.topy=10000;
-        theGame2.topx=10000;
-    }
+        theGame.GetTopY()=0;
+        theGame.GetTopX()=0;
+        theGame2.GetTopY()=10000;
+        theGame2.GetTopX()=10000;
+    }*/
     theGame.DoPaintJob();			//Makes sure what there is something to paint
     theGame2.DoPaintJob();
     theGame.SetGameOver();		//sets the game over in the beginning
@@ -3620,17 +3620,17 @@ int main(int argc, char *argv[])
     if (singlePuzzle)
     {
         LoadPuzzleStages();
-        theGame.NewPuzzleGame(singlePuzzleNr,0,0);
+        theGame.NewPuzzleGame(singlePuzzleNr,0,0,SDL_GetTicks());
         showGame = true;
         vsMode = true;
     }
     //Draws everything to screen
     if (!editorMode)
-        MakeBackground(xsize,ysize,theGame,theGame2);
+        MakeBackground(xsize,ysize,&theGame,&theGame2);
     else
-        MakeBackground(xsize,ysize,theGame);
+        MakeBackground(xsize,ysize,&theGame);
     DrawIMG(background, screen, 0, 0);
-    DrawEverything(xsize,ysize,theGame,theGame2);
+    DrawEverything(xsize,ysize,&theGame,&theGame2);
     SDL_Flip(screen);
     //game loop
     int done = 0;
@@ -3641,14 +3641,14 @@ int main(int argc, char *argv[])
 
         if ((standardBackground)&&(!editorMode))
         {
-            MakeBackground(xsize,ysize,theGame,theGame2);
+            MakeBackground(xsize,ysize,&theGame,&theGame2);
             DrawIMG(background, screen, 0, 0);
         }
 
         if ((standardBackground)&&(editorMode))
         {
             DrawIMG(backgroundImage, screen, 0, 0);
-            MakeBackground(xsize,ysize,theGame);
+            MakeBackground(xsize,ysize,&theGame);
             DrawIMG(background, screen, 0, 0);
         }
 
@@ -3672,9 +3672,9 @@ int main(int argc, char *argv[])
             networkPlay=true;
             if (!weWhereConnected) //We have just connected
             {
-                theGame.NewVsGame(50,100,&theGame2);
+                theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
                 theGame.putStartBlocks(nt.theSeed);
-                theGame2.playNetwork(xsize-500,100);
+                theGame2.playNetwork(xsize-500,100,SDL_GetTicks());
                 nt.theGameHasStarted();
                 DrawIMG(background, screen, 0, 0);
             }
@@ -3710,7 +3710,7 @@ int main(int argc, char *argv[])
                         DrawIMG(background, screen, 0, 0);
 
                     }
-                    if ((!editorMode)&&(!editorModeTest)&&(!theGame.AI_Enabled))
+                    if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled()))
                     {
                         //player1:
                         if ( event.key.keysym.sym == keySettings[player1keys].up ) {
@@ -3744,7 +3744,7 @@ int main(int argc, char *argv[])
                             theGame.SwitchAtCursor();
                         }
                     }
-                    if (!editorMode && !theGame2.AI_Enabled)
+                    if (!editorMode && !theGame2.GetAIenabled())
                     {
                         //player2:
                         if ( event.key.keysym.sym == keySettings[player2keys].up ) {
@@ -3787,9 +3787,7 @@ int main(int argc, char *argv[])
                             #else
                             if ((!showOptions)){
                             #endif
-                                theGame.NewGame(50,100);
-                                theGame.timetrial = false;
-                                theGame.putStartBlocks();
+                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
                                 closeAllMenus();
                                 twoPlayers =false;
                                 theGame2.SetGameOver();
@@ -3804,9 +3802,7 @@ int main(int argc, char *argv[])
                             #else
                             if ((!showOptions)){    
                             #endif
-                                theGame.NewGame(50,100);
-                                theGame.timetrial = true;
-                                theGame.putStartBlocks();
+                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
                                 closeAllMenus();
                                 twoPlayers =false;
                                 theGame2.SetGameOver();
@@ -3824,8 +3820,8 @@ int main(int argc, char *argv[])
                             #endif
                             {
                                 int myLevel = StageLevelSelect();
-                                theGame.NewStageGame(myLevel,50,100);
-                                MakeBackground(xsize,ysize,theGame,theGame2);
+                                theGame.NewStageGame(myLevel,50,100,SDL_GetTicks());
+                                MakeBackground(xsize,ysize,&theGame,&theGame2);
                                 DrawIMG(background, screen, 0, 0);
                                 closeAllMenus();
                                 twoPlayers =false;
@@ -3844,8 +3840,8 @@ int main(int argc, char *argv[])
                             if ((!showOptions))    
                             #endif
                             {
-                                theGame.NewVsGame(50,100,&theGame2);
-                                theGame2.NewVsGame(xsize-500,100,&theGame);
+                                theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
+                                theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
                                 closeAllMenus();
                                 vsMode = true;
                                 strcpy(theGame.name, player1name);
@@ -3854,10 +3850,10 @@ int main(int argc, char *argv[])
                                 theGame2.setGameSpeed(player2Speed);
                                 theGame.setHandicap(player1handicap);
                                 theGame2.setHandicap(player2handicap);
-                                theGame.AI_Enabled = player1AI;
-                                theGame2.AI_Enabled = player2AI;
-                                theGame.setAIlevel(player1AIlevel);
-                                theGame2.setAIlevel(player2AIlevel);
+                                if(player1AI)
+                                    theGame.setAIlevel(player1AIlevel);
+                                if(player2AI)
+                                    theGame2.setAIlevel(player2AIlevel);
                                 int theTime = time(0);
                                 theGame.putStartBlocks(theTime);
                                 theGame2.putStartBlocks(theTime);
@@ -3872,10 +3868,8 @@ int main(int argc, char *argv[])
                             if ((!showOptions))    
                             #endif
                             {
-                                theGame.NewGame(50,100);
-                                theGame2.NewGame(xsize-500,100);
-                                theGame.timetrial = true;
-                                theGame2.timetrial = true;
+                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
+                                theGame2.NewTimeTrialGame(xsize-500,100,SDL_GetTicks());
                                 int theTime = time(0);
                                 theGame.putStartBlocks(theTime);
                                 theGame2.putStartBlocks(theTime);
@@ -3885,10 +3879,10 @@ int main(int argc, char *argv[])
                                 theGame2.setGameSpeed(player2Speed);
                                 theGame.setHandicap(player1handicap);
                                 theGame2.setHandicap(player2handicap);
-                                theGame.AI_Enabled = player1AI;
-                                theGame2.AI_Enabled = player2AI;
-                                theGame.setAIlevel(player1AIlevel);
-                                theGame2.setAIlevel(player2AIlevel);
+                                if(player1AI)
+                                    theGame.setAIlevel(player1AIlevel);
+                                if(player2AI)
+                                    theGame2.setAIlevel(player2AIlevel);
                                 strcpy(theGame.name, player1name);
                                 strcpy(theGame2.name, player2name);
                             }
@@ -3902,8 +3896,8 @@ int main(int argc, char *argv[])
                             #endif
                             {
                                 int myLevel = PuzzleLevelSelect();
-                                theGame.NewPuzzleGame(myLevel,50,100);
-                                MakeBackground(xsize,ysize,theGame,theGame2);
+                                theGame.NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
+                                MakeBackground(xsize,ysize,&theGame,&theGame2);
                                 DrawIMG(background, screen, 0, 0);
                                 closeAllMenus();
                                 twoPlayers = false;
@@ -4046,7 +4040,7 @@ int main(int argc, char *argv[])
             //Gameplay
             if (joyplay1||joyplay2)
             {
-                if (joypad1.working && !theGame.AI_Enabled)
+                if (joypad1.working && !theGame.GetAIenabled())
                     if (joyplay1)
                     {
                         joypad1.update();
@@ -4119,7 +4113,7 @@ int main(int argc, char *argv[])
                         if (joypad1.but2)
                             theGame2.PushLine();
                     }
-                if (joypad2.working && !theGame2.AI_Enabled)
+                if (joypad2.working && !theGame2.GetAIenabled())
                     if (!joyplay2)
                     {
                         joypad2.update();
@@ -4213,17 +4207,17 @@ int main(int argc, char *argv[])
             **************** Here comes mouse play ******************************
             ********************************************************************/
 
-            if ((mouseplay1)&&((!editorMode)&&(!theGame.AI_Enabled)||(editorModeTest))) //player 1
+            if ((mouseplay1)&&((!editorMode)&&(!theGame.GetAIenabled())||(editorModeTest))) //player 1
                 if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
                 {
                     int yLine, xLine;
-                    yLine = ((100+600)-(mousey-100+theGame.pixels))/50;
+                    yLine = ((100+600)-(mousey-100+theGame.GetPixels()))/50;
                     xLine = (mousex-50+25)/50;
                     yLine-=2;
                     xLine-=1;
-                    if ((yLine>10)&&(theGame.TowerHeight<12))
+                    if ((yLine>10)&&(theGame.GetTowerHeight()<12))
                         yLine=10;
-                    if (((theGame.pixels==50)||(theGame.pixels==0)) && (yLine>11))
+                    if (((theGame.GetPixels()==50)||(theGame.GetPixels()==0)) && (yLine>11))
                         yLine=11;
                     if (yLine<0)
                         yLine=0;
@@ -4231,21 +4225,20 @@ int main(int argc, char *argv[])
                         xLine=0;
                     if (xLine>4)
                         xLine=4;
-                    theGame.cursorx=xLine;
-                    theGame.cursory=yLine;
+                    theGame.MoveCursorTo(xLine,yLine);
                 }
 
-            if ((mouseplay2)&&(!editorMode)&&(!theGame2.AI_Enabled)) //player 2
+            if ((mouseplay2)&&(!editorMode)&&(!theGame2.GetAIenabled())) //player 2
                 if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
                 {
                     int yLine, xLine;
-                    yLine = ((100+600)-(mousey-100+theGame2.pixels))/50;
+                    yLine = ((100+600)-(mousey-100+theGame2.GetPixels()))/50;
                     xLine = (mousex-(xsize-500)+25)/50;
                     yLine-=2;
                     xLine-=1;
-                    if ((yLine>10)&&(theGame2.TowerHeight<12))
+                    if ((yLine>10)&&(theGame2.GetTowerHeight()<12))
                         yLine=10;
-                    if (((theGame2.pixels==50)||(theGame2.pixels==0)) && (yLine>11))
+                    if (((theGame2.GetPixels()==50)||(theGame2.GetPixels()==0)) && (yLine>11))
                         yLine=11;
                     if (yLine<0)
                         yLine=0;
@@ -4253,8 +4246,7 @@ int main(int argc, char *argv[])
                         xLine=0;
                     if (xLine>4)
                         xLine=4;
-                    theGame2.cursorx=xLine;
-                    theGame2.cursory=yLine;
+                    theGame2.MoveCursorTo(xLine,yLine);
                 }
 
             /********************************************************************
@@ -4336,8 +4328,8 @@ int main(int argc, char *argv[])
                                         if ((buttonXsize<mousex) && (mousex<240) && (40<mousey) && (mousey<80) && (b1playerOpen) &&(!networkActive))
                                         {
                                             //1 player - endless
-                                            theGame.NewGame(50,100);
-                                            theGame.putStartBlocks();
+                                            theGame.NewGame(50,100,SDL_GetTicks());
+                                            theGame.putStartBlocks(time(0));
                                             bNewGameOpen = false;
                                             b1playerOpen = false;
                                             twoPlayers =false;
@@ -4350,9 +4342,7 @@ int main(int argc, char *argv[])
                                             if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )
                                             {
                                                 //1 player - time trial
-                                                theGame.NewGame(50,100);
-                                                theGame.timetrial=true;
-                                                theGame.putStartBlocks();
+                                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
                                                 bNewGameOpen = false;
                                                 b1playerOpen = false;
                                                 twoPlayers =false;
@@ -4368,8 +4358,8 @@ int main(int argc, char *argv[])
                                                     bNewGameOpen = false;
                                                     b1playerOpen = false;
                                                     int myLevel = StageLevelSelect();
-                                                    theGame.NewStageGame(myLevel,50,100);
-                                                    MakeBackground(xsize,ysize,theGame,theGame2);
+                                                    theGame.NewStageGame(myLevel,50,100,SDL_GetTicks());
+                                                    MakeBackground(xsize,ysize,&theGame,&theGame2);
                                                     DrawIMG(background, screen, 0, 0);
                                                     twoPlayers =false;
                                                     theGame2.SetGameOver();
@@ -4385,8 +4375,8 @@ int main(int argc, char *argv[])
                                                         bNewGameOpen = false;
                                                         b1playerOpen = false;
                                                         int myLevel = PuzzleLevelSelect();
-                                                        theGame.NewPuzzleGame(myLevel,50,100);
-                                                        MakeBackground(xsize,ysize,theGame,theGame2);
+                                                        theGame.NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
+                                                        MakeBackground(xsize,ysize,&theGame,&theGame2);
                                                         DrawIMG(background, screen, 0, 0);
                                                         twoPlayers =false;
                                                         theGame2.SetGameOver();
@@ -4402,14 +4392,13 @@ int main(int argc, char *argv[])
                                                             bNewGameOpen = false;
                                                             b1playerOpen = false;
                                                             int theAIlevel = startSingleVs();
-                                                            theGame.NewVsGame(50,100,&theGame2);
-                                                            theGame2.NewVsGame(xsize-500,100,&theGame);
-                                                            MakeBackground(xsize,ysize,theGame,theGame2);
+                                                            theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
+                                                            theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
+                                                            MakeBackground(xsize,ysize,&theGame,&theGame2);
                                                             DrawIMG(background, screen, 0, 0);
                                                             twoPlayers = true; //Single player, but AI plays
                                                             showGame = true;
                                                             vsMode = true;
-                                                            theGame2.AI_Enabled=true; //Of course we need an AI
                                                             theGame2.setAIlevel((Uint8)theAIlevel);
                                                             int theTime = time(0);
                                                             theGame.putStartBlocks(theTime);
@@ -4421,14 +4410,11 @@ int main(int argc, char *argv[])
                                                             if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b2playersOpen))
                                                             {
                                                                 //2 player - time trial
-                                                                theGame.NewGame(50,100);
-                                                                theGame.timetrial=true;
+                                                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
                                                                 bNewGameOpen = false;
                                                                 b2playersOpen = false;
-                                                                theGame.NewGame(50,100);
-                                                                theGame2.NewGame(xsize-500,100);
-                                                                theGame.timetrial = true;
-                                                                theGame2.timetrial = true;
+                                                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
+                                                                theGame2.NewTimeTrialGame(xsize-500,100,SDL_GetTicks());
                                                                 int theTime = time(0);
                                                                 theGame.putStartBlocks(theTime);
                                                                 theGame2.putStartBlocks(theTime);
@@ -4436,10 +4422,10 @@ int main(int argc, char *argv[])
                                                                 theGame2.setGameSpeed(player2Speed);
                                                                 theGame.setHandicap(player1handicap);
                                                                 theGame2.setHandicap(player2handicap);
-                                                                theGame.AI_Enabled = player1AI;
-                                                                theGame2.AI_Enabled = player2AI;
-                                                                theGame.setAIlevel(player1AIlevel);
-                                                                theGame2.setAIlevel(player2AIlevel);
+                                                                if(player1AI)
+                                                                    theGame.setAIlevel(player1AIlevel);
+                                                                if(player1AI)
+                                                                    theGame2.setAIlevel(player2AIlevel);
                                                                 twoPlayers = true;
                                                                 strcpy(theGame.name, player1name);
                                                                 strcpy(theGame2.name, player2name);
@@ -4448,8 +4434,8 @@ int main(int argc, char *argv[])
                                                                 if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b2playersOpen))
                                                                 {
                                                                     //2 player - VsMode
-                                                                    theGame.NewVsGame(50,100,&theGame2);
-                                                                    theGame2.NewVsGame(xsize-500,100,&theGame);
+                                                                    theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
+                                                                    theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
                                                                     bNewGameOpen = false;
                                                                     vsMode = true;
                                                                     twoPlayers = true;
@@ -4458,10 +4444,10 @@ int main(int argc, char *argv[])
                                                                     theGame2.setGameSpeed(player2Speed);
                                                                     theGame.setHandicap(player1handicap);
                                                                     theGame2.setHandicap(player2handicap);
-                                                                    theGame.AI_Enabled = player1AI;
-                                                                    theGame2.AI_Enabled = player2AI;
-                                                                    theGame.setAIlevel(player1AIlevel);
-                                                                    theGame2.setAIlevel(player2AIlevel);
+                                                                    if(player1AI)
+                                                                        theGame.setAIlevel(player1AIlevel);
+                                                                    if(player2AI)
+                                                                        theGame2.setAIlevel(player2AIlevel);
                                                                     int theTime = time(0);
                                                                     theGame.putStartBlocks(theTime);
                                                                     theGame2.putStartBlocks(theTime);
@@ -4618,11 +4604,11 @@ int main(int argc, char *argv[])
                                                                                                                     {
                                                                                                                         Replay r2;
                                                                                                                         play2 = r2.loadReplay2(loadThis);
-                                                                                                                        theGame.playReplay(50,100); //Fejlen sker her
+                                                                                                                        theGame.playReplay(50,100,SDL_GetTicks()); //Fejlen sker her
                                                                                                                         theGame.theReplay = r1;
                                                                                                                         if (play2)
                                                                                                                         {
-                                                                                                                            theGame2.playReplay(xsize-500,100);
+                                                                                                                            theGame2.playReplay(xsize-500,100,SDL_GetTicks());
                                                                                                                             theGame2.theReplay = r2;
                                                                                                                         }
                                                                                                                         else
@@ -4677,7 +4663,7 @@ int main(int argc, char *argv[])
                             strcpy(player1name,theGame.name);
                         bScreenLocked = false;
                         showDialog = false;
-                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        MakeBackground(xsize,ysize,&theGame,&theGame2);
                         DrawIMG(background, screen, 0, 0);
                     }
                     if ((showOptions) && (mousex>330) && (mousex<470) && (mousey>600) && (mousey<640))
@@ -4692,21 +4678,21 @@ int main(int argc, char *argv[])
                             strcpy(player2name,theGame2.name);
                         bScreenLocked = false;
                         showDialog = false;
-                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        MakeBackground(xsize,ysize,&theGame,&theGame2);
                         DrawIMG(background, screen, 0, 0);
                     }
                     if ((showOptions) && (mousex>510) && (mousex<630) && (mousey>535) && (mousey<585))
                     {
                         //changeControls
                         OpenControlsBox(200,100,0);
-                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        MakeBackground(xsize,ysize,&theGame,&theGame2);
                         DrawIMG(background, screen, 0, 0);
                     }
                     if ((showOptions) && (mousex>510) && (mousex<630) && (mousey>600) && (mousey<640))
                     {
                         //changeControls
                         OpenControlsBox(200,100,2);
-                        MakeBackground(xsize,ysize,theGame,theGame2);
+                        MakeBackground(xsize,ysize,&theGame,&theGame2);
                         DrawIMG(background, screen, 0, 0);
                     }
 
@@ -4715,12 +4701,12 @@ int main(int argc, char *argv[])
                     ********************************************************************/
                     if ((!showOptions))
                     {
-                        if (mouseplay1 && !theGame.AI_Enabled) //player 1
+                        if (mouseplay1 && !theGame.GetAIenabled()) //player 1
                             if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
                             {
                                 theGame.SwitchAtCursor();
                             }
-                        if (mouseplay2 && !theGame2.AI_Enabled) //player 2
+                        if (mouseplay2 && !theGame2.GetAIenabled()) //player 2
                             if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
                             {
                                 theGame2.SwitchAtCursor();
@@ -4730,19 +4716,19 @@ int main(int argc, char *argv[])
                     **************** Here ends mouse play *******************************
                     ********************************************************************/
 
-                    if(stageButtonStatus != SBdontShow && (mousex > theGame.topx+cordNextButton.x)
-                            &&(mousex < theGame.topx+cordNextButton.x+cordNextButton.xsize)
-                            &&(mousey > theGame.topy+cordNextButton.y)&&(mousey < theGame.topy+cordNextButton.y+cordNextButton.ysize))
+                    if(stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
+                            &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
+                            &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize))
                     {
                         //Clicked the next button after a stage clear or puzzle
-                        theGame.nextLevel();
+                        theGame.nextLevel(SDL_GetTicks());
                     }
-                    if(stageButtonStatus != SBdontShow && (mousex > theGame.topx+cordRetryButton .x)
-                            &&(mousex < theGame.topx+cordRetryButton.x+cordRetryButton.xsize)
-                            &&(mousey > theGame.topy+cordRetryButton.y)&&(mousey < theGame.topy+cordRetryButton.y+cordRetryButton.ysize))
+                    if(stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
+                            &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
+                            &&(mousey > theGame.GetTopY()+cordRetryButton.y)&&(mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize))
                     {
                         //Clicked the retry button
-                        theGame.retryLevel();
+                        theGame.retryLevel(SDL_GetTicks());
                     }
                         
                     
@@ -4758,12 +4744,12 @@ int main(int argc, char *argv[])
                     ********************************************************************/
                     if (!showOptions)
                     {
-                        if (mouseplay1 && !theGame.AI_Enabled) //player 1
+                        if (mouseplay1 && !theGame.GetAIenabled()) //player 1
                             if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
                             {
                                 theGame.PushLine();
                             }
-                        if (mouseplay2 && !theGame2.AI_Enabled) //player 2
+                        if (mouseplay2 && !theGame2.GetAIenabled()) //player 2
                             if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
                             {
                                 theGame2.PushLine();
@@ -4813,8 +4799,8 @@ int main(int argc, char *argv[])
         //set bNearDeath to false theGame*.Update() will change to true as needed
         bNearDeath = false;
         //Updates the objects
-        theGame.Update();
-        theGame2.Update();
+        theGame.Update(SDL_GetTicks());
+        theGame2.Update(SDL_GetTicks());
 
 //see if anyone has won (two players only)
         #if NETWORK
@@ -4823,12 +4809,12 @@ int main(int argc, char *argv[])
             if (twoPlayers)
             {
                 lastNrOfPlayers = 2;
-                if ((theGame.bGameOver) && (theGame2.bGameOver))
+                if ((theGame.isGameOver()) && (theGame2.isGameOver()))
                 {
-                    if (theGame.score+theGame.handicap>theGame2.score+theGame2.handicap)
+                    if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap())
                         theGame.setPlayerWon();
                     else
-                        if (theGame.score+theGame.handicap<theGame2.score+theGame2.handicap)
+                        if (theGame.GetScore()+theGame.GetHandicap()<theGame2.GetScore()+theGame2.GetHandicap())
                             theGame2.setPlayerWon();
                         else {
                             theGame.setDraw();
@@ -4836,12 +4822,12 @@ int main(int argc, char *argv[])
                         }
                     twoPlayers = false;
                 }
-                if ((theGame.bGameOver) && (!theGame2.bGameOver))
+                if ((theGame.isGameOver()) && (!theGame2.isGameOver()))
                 {
                     theGame2.setPlayerWon();
                     twoPlayers = false;
                 }
-                if ((!theGame.bGameOver) && (theGame2.bGameOver))
+                if ((!theGame.isGameOver()) && (theGame2.isGameOver()))
                 {
                     theGame.setPlayerWon();
                     twoPlayers = false;
@@ -4849,7 +4835,7 @@ int main(int argc, char *argv[])
             }
 
         //Once evrything has been checked, update graphics
-        DrawEverything(xsize,ysize,theGame, theGame2);
+        DrawEverything(xsize,ysize,&theGame,&theGame2);
         SDL_GetMouseState(&mousex,&mousey);
         //Remember mouse placement
         oldMousex = mousex;
