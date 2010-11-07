@@ -38,11 +38,14 @@ endif
 BASE_LIBS += -lphysfs
 
 $(BINARY): 	build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o 
-	$(CPP) -O -o $(BINARY) build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o $(BASE_LIBS)
+	$(CPP) -O -o $(BINARY) build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o  $(BASE_LIBS)
 #-lphysfs
 
-build/main.o:	main.cpp BlockGame.hpp mainVars.hpp common.h
+build/main.o:	main.cpp mainVars.hpp common.h
 	$(CPP) $(BASE_CFLAGS) main.cpp -o build/main.o
+
+#build/blockgame.o:	BlockGame.hpp BlockGame.cpp
+#	$(CPP) $(BASE_CFLAGS) BlockGame.cpp -o build/blockgame.o
 
 build/highscore.o: highscore.h highscore.cpp
 	$(CPP) $(BASE_CFLAGS) highscore.cpp -o build/highscore.o

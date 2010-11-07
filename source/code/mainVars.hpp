@@ -29,18 +29,6 @@ Copyright (C) 2007 Poul Sander
 
 //main variables and constants
 
-//Some definitions
-//The game is divided in frames. FALLTIME means the blocks will fall one block every FRAMELENGTH*FALLTIME millisecond
-#define FRAMELENGTH 50
-#define HANGTIME 40
-#define FALLTIME 20
-//Don't change the following, they are fundamental and later some functions are hardcoded
-#define BLOCKFALL 10000
-#define BLOCKWAIT 100000
-#define BLOCKHANG 1000
-#define GARBAGE 1000000
-#define CHAINPLACE 10000000
-#define NUMBEROFCHAINS 100
 
 //Animation lengths:
 #define READYTIME 500

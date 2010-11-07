@@ -1166,6 +1166,7 @@ textManeger theTextManeger;
 
 //Here comes the Block Game object
 #include "BlockGame.hpp"
+#include "BlockGame.cpp"
 #include "SFont.h"
 
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename

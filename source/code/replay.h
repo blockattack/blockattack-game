@@ -29,6 +29,9 @@ replay is used to save a replay, there is saved 10 moves per second, should be
 able to give a realistic replay
 */
 
+#ifndef REPLAY_H
+#define REPLAY_H 1
+
 //constants - 3000 is 5 minutes
 #define FRAMESPERSEC 10
 
@@ -92,3 +95,5 @@ public:
 
 
 };
+
+#endif
