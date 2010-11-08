@@ -31,7 +31,6 @@
 #include "SDL.h"
 #include "replay.h"
 
-#define WITH_SDL 1
 
 //Some definitions
 //The game is divided in frames. FALLTIME means the blocks will fall one block every FRAMELENGTH*FALLTIME millisecond
@@ -54,21 +53,13 @@ private:
     int prevTowerHeight;
     bool bGarbageFallLeft;
 
-    bool bDraw;
-    bool bReplaying; //true if we are watching a replay
-    #if NETWORK
-    bool bNetworkPlayer; //must recieve packages from the net
-    bool bDisconnected; //The player has disconnected
-    #endif
     Uint32 nextGarbageNumber;
     Uint32 pushedPixelAt;
     Uint32 nrPushedPixel, nrFellDown, nrStops;
     bool garbageToBeCleared[7][30];
     Uint32 lastAImove;
-    unsigned int ticks;
 
     Sint16 AI_LineOffset; //how many lines have changed since command
-    string strHolder;
     Uint32 hangTicks;    //How many times have hang been decreased?
     //int the two following index 0 may NOT be used (what the fuck did I meen?)
     Uint8 chainSize[NUMBEROFCHAINS]; //Contains the chains
@@ -80,6 +71,16 @@ private:
     int firstUnusedChain();
 
 //public:
+protected:
+    int lastCounter;
+    string strHolder;
+    bool bDraw;
+    bool bReplaying; //true if we are watching a replay
+    #if NETWORK
+    bool bNetworkPlayer; //must recieve packages from the net
+    bool bDisconnected; //The player has disconnected
+    #endif
+    unsigned int ticks;
     Uint32 gameStartedAt;
     Uint32 gameEndedAfter;		//How long did the game last?
     int linesCleared;
@@ -107,16 +108,20 @@ private:
 
     Uint32 handicap;
 
+
+    int AIlineToClear;
+
+    short AIstatus;   //Status flags:
+    //0: nothing, 2: clear tower, 3: clear horisontal, 4: clear vertical
+    //1: make more lines, 5: make 2 lines, 6: make 1 line
+
 public:
     
     char name[30];
     Replay theReplay;   //Stores the replay
-    #if WITH_SDL
-    SDL_Surface* sBoard;
-    #endif
 
     //Constructor
-    BlockGame(int tx, int ty);
+    BlockGame();
 
     //Deconstructor, never really used... game used to crash when called, cause of the way sBoard was created
     //It should work now and can be used if we want to assign more players in network games that we need to free later
@@ -164,10 +169,6 @@ private:
 
 #endif
 
-    #if WITH_SDL
-    //Loads BackBoard again if surface format has changed
-    void convertSurface();
-    #endif
 
 public:
     //Instead of creating new object new game is called, to prevent memory leaks
@@ -263,7 +264,6 @@ private:
     //First the helpet functions:
     int nrOfType(int line, int type);
     int AIcolorToClear;
-    int AIlineToClear;
     //See if a combo can be made in this line
     int horiInLine(int line);
     bool horiClearPossible();
@@ -288,25 +288,12 @@ private:
     int closestTo(int line, int type, int place);
     //The AI will try to clear blocks vertically
     void AI_ClearVertical();
-    short AIstatus;   //Status flags:
-    //0: nothing, 2: clear tower, 3: clear horisontal, 4: clear vertical
-    //1: make more lines, 5: make 2 lines, 6: make 1 line
     bool firstLineCreated;
     void AI_Move();
 //////////////////////////////////////////////////////////////////////////
 ///////////////////////////// AI ends here! //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-#if WITH_SDL
-    //Draws all the bricks to the board (including garbage)
-    void PaintBricks();
-    //Paints the bricks gotten from a replay/net package
-    void SimplePaintBricks();
-    int lastCounter;
-public:
-    //Draws everything
-    void DoPaintJob();
-    #endif
 private:
 
     //Updates evrything, if not called nothing happends

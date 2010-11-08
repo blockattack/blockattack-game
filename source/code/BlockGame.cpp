@@ -1,5 +1,5 @@
 /*
- * BlockGame.hpp (this was cut from main.cpp for the overview)
+ * BlockGame.cpp (this was cut from main.cpp for the overview)
  * Copyright (C) 2005 Poul Sander
  *
  * This program is free software; you can redistribute it and/or modify
@@ -47,19 +47,14 @@
     }
 
     //Constructor
-    BlockGame::BlockGame(int tx, int ty) {
-        #if WITH_SDL
-        tmp = IMG_Load2((char*)"gfx/BackBoard.png");
-        sBoard = SDL_DisplayFormat(tmp);
-        SDL_FreeSurface(tmp);
-        #endif
+    BlockGame::BlockGame() {
         srand((int)time(NULL));
         nrFellDown = 0;
         nrPushedPixel = 0;
         garbageTarget = this;
         nrStops=0;
-        topx = tx;
-        topy = ty;
+        //topx = tx;
+        //topy = ty;
         cursorx = 2;
         cursory = 3;
         stop = 0;
@@ -107,9 +102,6 @@
     //Deconstructor, never really used... game used to crash when called, cause of the way sBoard was created
     //It should work now and can be used if we want to assign more players in network games that we need to free later
     BlockGame::~BlockGame() {
-        #if WITH_SDL
-        SDL_FreeSurface(sBoard);
-        #endif
     }
 
     void BlockGame::setGameSpeed(Uint8 globalSpeedLevel) {
@@ -267,13 +259,6 @@
 
 #endif
 
-    #if WITH_SDL
-    //Loads BackBoard again if surface format has changed
-    void BlockGame::convertSurface() {
-        SDL_FreeSurface(sBoard);
-        sBoard = SDL_DisplayFormat(backBoard);
-    }
-    #endif
 
     //Instead of creating new object new game is called, to prevent memory leaks
     void BlockGame::NewGame(int tx, int ty, unsigned int ticks) {
@@ -1822,352 +1807,6 @@
 ///////////////////////////// AI ends here! //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-#if WITH_SDL
-    //Draws all the bricks to the board (including garbage)
-    void BlockGame::PaintBricks() {
-        for (int i=0;((i<13)&&(i<30));i++)
-            for (int j=0;j<6;j++) {
-                if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0)) {
-                    DrawIMG(bricks[board[j][i]%10], sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((board[j][i]/BLOCKWAIT)%10==1)
-                        DrawIMG(bomb[(ticks/BOMBTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((board[j][i]/BLOCKHANG)%10==1)
-                        DrawIMG(ready[(ticks/READYTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
-
-                }
-                if ((board[j][i]/1000000)%10==1) {
-                    int left, right, over, under;
-                    int number = board[j][i];
-                    if (j<1) left = -1;
-                    else left = board[j-1][i];
-                    if (j>5) right = -1;
-                    else right = board[j+1][i];
-                    if (i>28) over = -1;
-                    else over = board[j][i+1];
-                    if (i<1) under = -1;
-                    else under = board[j][i-1];
-                    if ((left == number)&&(right == number)&&(over == number)&&(under == number))
-                        DrawIMG(garbageFill, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left != number)&&(right == number)&&(over == number)&&(under == number))
-                        DrawIMG(garbageL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left == number)&&(right != number)&&(over == number)&&(under == number))
-                        DrawIMG(garbageR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left == number)&&(right == number)&&(over != number)&&(under == number))
-                        DrawIMG(garbageT, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left == number)&&(right == number)&&(over == number)&&(under != number))
-                        DrawIMG(garbageB, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left != number)&&(right == number)&&(over != number)&&(under == number))
-                        DrawIMG(garbageTL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left != number)&&(right == number)&&(over == number)&&(under != number))
-                        DrawIMG(garbageBL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left == number)&&(right != number)&&(over != number)&&(under == number))
-                        DrawIMG(garbageTR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left == number)&&(right != number)&&(over == number)&&(under != number))
-                        DrawIMG(garbageBR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left == number)&&(right != number)&&(over != number)&&(under != number))
-                        DrawIMG(garbageMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left == number)&&(right == number)&&(over != number)&&(under != number))
-                        DrawIMG(garbageM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    if ((left != number)&&(right == number)&&(over != number)&&(under != number))
-                        DrawIMG(garbageML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                }
-                if ((board[j][i]/1000000)%10==2) {
-                    if (j==0)
-                        DrawIMG(garbageGML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                    else
-                        if (j==5)
-                            DrawIMG(garbageGMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                        else
-                            DrawIMG(garbageGM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
-                }
-            }
-        const int j = 0;
-
-        int garbageSize=0;
-        for (int i=0;i<20;i++) {
-            if ((board[j][i]/1000000)%10==1) {
-                int left, right, over, under;
-                int number = board[j][i];
-                if (j<1) left = -1;
-                else left = board[j-1][i];
-                if (j>5) right = -1;
-                else right = board[j+1][i];
-                if (i>28) over = -1;
-                else over = board[j][i+1];
-                if (i<1) under = -1;
-                else under = board[j][i-1];
-                if (((left != number)&&(right == number)&&(over != number)&&(under == number))&&(garbageSize>0)) {
-                    DrawIMG(smiley[board[j][i]%4], sBoard, 2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
-                }
-                if (!((left != number)&&(right == number)&&(over == number)&&(under == number))) //not in garbage
-                {
-                    garbageSize=0;
-                }
-                else {
-                    //cout << "In garbage" << endl;
-                    garbageSize++;
-                }
-
-            }
-        }
-        for (int i=0;i<6;i++)
-            if (board[i][0]!=-1)
-                DrawIMG(transCover, sBoard, i*bsize, 12*bsize-pixels); //Make the appering blocks transperant
-
-    }
-
-    //Paints the bricks gotten from a replay/net package
-    void BlockGame::SimplePaintBricks() {
-        /*
-         * We will need to mark the blocks that must have a bomb, we will here need to see, what is falling
-         */
-        bool bbomb[6][13]; //has a bomb on it!
-        bool falling[6][13]; //this is falling
-        bool getReady[6][13]; //getReady
-        for (int i=0;i<6;i++)
-            for (int j=0;j<13;j++) {
-                bbomb[i][j]=false; //All false by default
-                falling[i][j]=false;
-                if (board[i][j]>29)
-                    getReady[i][j]=true;
-                else
-                    getReady[i][j]=false;
-            }
-        //See that is falling
-        for (int i=0;i<6;i++) {
-            bool rowFalling = false;
-            for (int j=0;j<13;j++) {
-                if (rowFalling)
-                    falling[i][j]=true;
-                if ((!rowFalling)&&(board[i][j]%30==-1))
-                    rowFalling = true;
-                if ((rowFalling)&&(board[i][j]%30>6))
-                    rowFalling = false;
-                if (getReady[i][j]) {
-                    falling[i][j]=true; //getReady is the same as falling
-                    rowFalling = false;
-                }
-            }
-        }
-        //Now looking at rows:
-        for (int i=0;i<6;i++) {
-            int count = 0;
-            int color = -1;
-            for (int j=1;j<13;j++) {
-                if ((board[i][j]%30==color)&&(!falling[i][j]))
-                    count++;
-                else
-                    if (falling[i][j]) {
-                        count = 0;
-                    }
-                    else {
-                        color=board[i][j]%30;
-                        count=1;
-                    }
-                if ((count>2)&&(color>-1)&&(color)<7) {
-                    bbomb[i][j]=true;
-                    bbomb[i][j-1]=true;
-                    bbomb[i][j-2]=true;
-                }
-            }
-        }
-        //now looking for lines
-        for (int i=1;i<13;i++) {
-            int count = 0;
-            int color = -1;
-            for (int j=0;j<6;j++) {
-                if ((board[j][i]%30==color)&&(!falling[j][i]))
-                    count++;
-                else
-                    if (falling[j][i]) {
-                        count = 0;
-                    }
-                    else {
-                        color=board[j][i]%30;
-                        count=1;
-                    }
-                if ((count>2)&&(color>-1)&&(color<7)) {
-                    bbomb[j][i]=true;
-                    bbomb[j-1][i]=true;
-                    bbomb[j-2][i]=true;
-                }
-            }
-        }
-        for (int i=0;((i<13)&&(i<30));i++)
-            for (int j=0;j<6;j++) {
-                if ((board[j][i]%10 != -1) && (board[j][i]%30 < 7)) {
-                    DrawIMG(bricks[board[j][i]%10], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
-                    if (bbomb[j][i])
-                        DrawIMG(bomb[(ticks/BOMBTIME)%2], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
-                    if (getReady[j][i])
-                        DrawIMG(ready[(ticks/READYTIME)%2], sBoard, j*bsize, 12*bsize-i*bsize-pixels);
-                }
-                if (board[j][i]%30>6) {
-                    if (board[j][i]%30==7)
-                        DrawIMG(garbageR, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==9)
-                        DrawIMG(garbageML, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==10)
-                        DrawIMG(garbageMR, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==11)
-                        DrawIMG(garbageTR, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==12)
-                        DrawIMG(garbageTL, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==13)
-                        DrawIMG(garbageBL, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==14)
-                        DrawIMG(garbageBR, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==15)
-                        DrawIMG(garbageM, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==16)
-                        DrawIMG(garbageFill, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==17)
-                        DrawIMG(garbageT, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==18)
-                        DrawIMG(garbageB, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==19)
-                        DrawIMG(garbageL, sBoard, j*bsize, 12*bsize-i*bsize-pixels); //good
-                    if (board[j][i]%30==20)
-                        switch(j) {
-                            case 0:
-                                DrawIMG(garbageGML, sBoard,j*bsize, 12*bsize-i*bsize-pixels);
-                                break;
-                            case 5:
-                                DrawIMG(garbageGMR, sBoard,j*bsize, 12*bsize-i*bsize-pixels);
-                                break;
-                            default:
-                                DrawIMG(garbageGM, sBoard,j*bsize, 12*bsize-i*bsize-pixels);
-                        }
-                    //cout << "IS: " << board[j][i] << endl;
-                }
-
-
-            }
-
-        int garbageSize=0;
-        for (int i=0;i<20;i++) {
-            if ((board[0][i]%30==12)&&(garbageSize>0)) {
-                DrawIMG(smiley[0], sBoard, 2*bsize, bsize-i*bsize-pixels+(bsize/2)*garbageSize);
-            }
-            if (board[0][i]%30!=19) //not in garbage
-            {
-                garbageSize=0;
-            }
-            else {
-                //cout << "In garbage" << endl;
-                garbageSize++;
-            }
-
-        }
-    }
-
-    //Draws everything
-    void BlockGame::DoPaintJob() {
-        DrawIMG(backBoard, sBoard, 0, 0);
-        #if NETWORK
-        if ((!bReplaying)&&(!bNetworkPlayer))
-        #else
-        if (!bReplaying)
-        #endif
-            PaintBricks();
-        else
-            SimplePaintBricks();
-        if (stageClear) DrawIMG(blackLine, sBoard, 0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
-        if (puzzleMode&&(!bGameOver)) {
-            //We need to write nr. of moves left!
-            strHolder = "Moves left: " + itoa(MovesLeft);
-            SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
-        }
-        if(puzzleMode && stageButtonStatus == SBpuzzleMode)
-        {
-            DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
-            if(Level<nrOfPuzzles-1)
-            {
-                if(hasWonTheGame)
-                    DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
-                else
-                    DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
-            }
-            else
-            {
-                strHolder = "Last puzzle";
-                SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
-            }
-        }
-        if(stageClear && stageButtonStatus == SBstageClear)
-        {
-            DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
-            if(Level<50-1)
-            {
-                if(hasWonTheGame)
-                    DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
-                else
-                    DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
-            }
-            else
-            {
-                strHolder = "Last stage";
-                SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
-            }
-        }
-
-#if DEBUG
-        if (AI_Enabled&&(!bGameOver)) {
-            strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
-            SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
-        }
-#endif
-        if (!bGameOver)DrawIMG(cursor[(ticks/600)%2],sBoard,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
-        if (ticks<gameStartedAt)
-        {
-            int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
-            if( (currentCounter!=lastCounter) && (SoundEnabled)&&(!NoSound))
-                Mix_PlayChannel(1,counterChunk,0);
-            lastCounter = currentCounter;
-            switch (currentCounter) {
-            case 2:
-                DrawIMG(counter[2], sBoard, 2*bsize, 5*bsize);
-                break;
-            case 1:
-                DrawIMG(counter[1], sBoard, 2*bsize, 5*bsize);
-                break;
-            case 0:
-                DrawIMG(counter[0], sBoard, 2*bsize, 5*bsize);
-                break;
-            default:
-                break;
-            }
-        }
-        else
-        {
-            if(SoundEnabled&&(!NoSound)&&(timetrial)&&(ticks>gameStartedAt+10000)&&(!bGameOver))
-            {
-                int currentCounter = (ticks-(int)gameStartedAt)/1000;
-                if(currentCounter!=lastCounter)
-                {
-                    if(currentCounter>115 && currentCounter<120)
-                        Mix_PlayChannel(1,counterChunk,0);
-                }
-                lastCounter = currentCounter;
-            }
-            else
-            {
-                if( (0==lastCounter) && (SoundEnabled)&&(!NoSound))
-                {
-                    Mix_PlayChannel(1,counterFinalChunk,0);
-                }
-                lastCounter = -1;
-            }
-        }
-
-        if ((bGameOver)&&(!editorMode))
-            if (hasWonTheGame)DrawIMG(iWinner, sBoard, 0, 5*bsize);
-            else if (bDraw) DrawIMG(iDraw, sBoard, 0, 5*bsize);
-            else
-                DrawIMG(iGameOver, sBoard, 0, 5*bsize);
-    }
-
-    #endif
 
     //Updates evrything, if not called nothing happends
     void BlockGame::Update() {
@@ -2349,7 +1988,6 @@
             //cout << nowTime << " bigger than " << gameStartedAt << endl;
             theReplay.setFrameSecTo(nowTime-gameStartedAt, getPackage());
         }
-        DoPaintJob();
     }
 
     void BlockGame::Update(int newtick) {
