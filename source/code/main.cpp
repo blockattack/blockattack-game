@@ -103,7 +103,7 @@ Copyright (C) 2008 Poul Sander
 *******************************************************************************/
 #include "mainVars.hpp"
 
-void MakeBackground(int,int);
+static void MakeBackground(int,int);
 
 void closeAllMenus()
 {
@@ -167,8 +167,8 @@ SDL_Surface * IMG_Load2(char* path)
     return surface;
 }
 
-void UnloadImages();
-int InitImages();
+static void UnloadImages();
+static int InitImages();
 
 static string oldThemePath = "default";
 static bool loaded = false;
@@ -330,7 +330,7 @@ Mix_Chunk * Mix_LoadWAV2(char* path)
 }
 
 //Load all image files to memory
-int InitImages()
+static int InitImages()
 {
     if (!((backgroundImage = IMG_Load2((char*)"gfx/background.png"))
             && (background = IMG_Load2((char*)"gfx/blackBackGround.png"))
@@ -716,7 +716,7 @@ void UnloadImages()
 }*/
 
 //Function to convert numbers to string (2 diget)
-string itoa2(int num)
+static string itoa2(int num)
 {
     stringstream converter;
     if(num<10)
@@ -726,7 +726,7 @@ string itoa2(int num)
 }
 
 /*Loads all the puzzle levels*/
-int LoadPuzzleStages()
+static int LoadPuzzleStages()
 {
     //if(puzzleLoaded)
     //    return 1;
@@ -865,7 +865,7 @@ public:
     }
 };  //aBall
 
-const int maxNumberOfBalls = 6*12*2*2;
+static const int maxNumberOfBalls = 6*12*2*2;
 
 class ballManeger
 {
@@ -929,7 +929,7 @@ public:
 
 }; //theBallManeger
 
-ballManeger theBallManeger;
+static ballManeger theBallManeger;
 
 //a explosions, non moving
 class anExplosion
@@ -1045,7 +1045,7 @@ public:
 
 }; //explosionManeger
 
-explosionManeger theExplosionManeger;
+static explosionManeger theExplosionManeger;
 
 //text pop-up
 class textMessage
@@ -1159,7 +1159,7 @@ public:
 
 }; //textManeger
 
-textManeger theTextManeger;
+static textManeger theTextManeger;
 
 //Here comes the Block Game object
 #include "BlockGame.hpp"
@@ -1569,313 +1569,7 @@ void writeScreenShot()
 //Function to return the name of a key, to be displayed...
 string getKeyName(SDLKey key)
 {
-    string keyname;
-    char charToPut = '\0';
-    switch (key)
-    {
-    case SDLK_a:
-        charToPut = 'A';
-        break;
-    case SDLK_b:
-        charToPut = 'B';
-        break;
-    case SDLK_c:
-        charToPut = 'C';
-        break;
-    case SDLK_d:
-        charToPut = 'D';
-        break;
-    case SDLK_e:
-        charToPut = 'E';
-        break;
-    case SDLK_f:
-        charToPut = 'F';
-        break;
-    case SDLK_g:
-        charToPut = 'G';
-        break;
-    case SDLK_h:
-        charToPut = 'H';
-        break;
-    case SDLK_i:
-        charToPut = 'I';
-        break;
-    case SDLK_j:
-        charToPut = 'J';
-        break;
-    case SDLK_k:
-        charToPut = 'K';
-        break;
-    case SDLK_l:
-        charToPut = 'L';
-        break;
-    case SDLK_m:
-        charToPut = 'M';
-        break;
-    case SDLK_n:
-        charToPut = 'N';
-        break;
-    case SDLK_o:
-        charToPut = 'O';
-        break;
-    case SDLK_p:
-        charToPut = 'P';
-        break;
-    case SDLK_q:
-        charToPut = 'Q';
-        break;
-    case SDLK_r:
-        charToPut = 'R';
-        break;
-    case SDLK_s:
-        charToPut = 'S';
-        break;
-    case SDLK_t:
-        charToPut = 'T';
-        break;
-    case SDLK_u:
-        charToPut = 'U';
-        break;
-    case SDLK_v:
-        charToPut = 'V';
-        break;
-    case SDLK_w:
-        charToPut = 'W';
-        break;
-    case SDLK_x:
-        charToPut = 'X';
-        break;
-    case SDLK_y:
-        charToPut = 'Y';
-        break;
-    case SDLK_z:
-        charToPut = 'Z';
-        break;
-    case SDLK_0:
-        charToPut = '0';
-        break;
-    case SDLK_1:
-        charToPut = '1';
-        break;
-    case SDLK_2:
-        charToPut = '2';
-        break;
-    case SDLK_3:
-        charToPut = '3';
-        break;
-    case SDLK_4:
-        charToPut = '4';
-        break;
-    case SDLK_5:
-        charToPut = '5';
-        break;
-    case SDLK_6:
-        charToPut = '6';
-        break;
-    case SDLK_7:
-        charToPut = '7';
-        break;
-    case SDLK_8:
-        charToPut = '8';
-        break;
-    case SDLK_9:
-        charToPut = '9';
-        break;
-    case SDLK_KP0:
-        keyname = "NP_0";
-        break;
-    case SDLK_KP1:
-        keyname = "NP_1";
-        break;
-    case SDLK_KP2:
-        keyname = "NP_2";
-        break;
-    case SDLK_KP3:
-        keyname = "NP_3";
-        break;
-    case SDLK_KP4:
-        keyname = "NP_4";
-        break;
-    case SDLK_KP5:
-        keyname = "NP_5";
-        break;
-    case SDLK_KP6:
-        keyname = "NP_6";
-        break;
-    case SDLK_KP7:
-        keyname = "NP_7";
-        break;
-    case SDLK_KP8:
-        keyname = "NP_8";
-        break;
-    case SDLK_KP9:
-        keyname = "NP_9";
-        break;
-    case SDLK_BACKSPACE:
-        keyname = "Backspace";
-        break;
-    case SDLK_TAB:
-        keyname = "Tab";
-        break;
-    case SDLK_CLEAR:
-        keyname = "Clear";
-        break;
-    case SDLK_RETURN:
-        keyname = "Return";
-        break;
-    case SDLK_PAUSE:
-        keyname = "Pause";
-        break;
-    case SDLK_SPACE:
-        keyname = "Space";
-        break;
-    case SDLK_EXCLAIM:
-        charToPut = '!';
-        break;
-    case SDLK_QUOTEDBL:
-        keyname = "QuoteDBL";
-        break;
-    case SDLK_HASH:
-        charToPut = '#';
-        break;
-    case SDLK_DOLLAR:
-        keyname = "$";
-        break;
-    case SDLK_ASTERISK:
-        keyname = "Asterisk";
-        break;
-    case SDLK_PLUS:
-        keyname = "Plus";
-        break;
-    case SDLK_COMMA:
-        keyname = "Comma";
-        break;
-    case SDLK_MINUS:
-        keyname = "Minus";
-        break;
-    case SDLK_PERIOD:
-        keyname = "Period";
-        break;
-    case SDLK_SLASH:
-        charToPut ='/';
-        break;
-    case SDLK_COLON:
-        keyname = "Colon";
-        break;
-    case SDLK_SEMICOLON:
-        keyname = "SemiColon";
-        break;
-    case SDLK_LESS:
-        charToPut = '<';
-        break;
-    case SDLK_EQUALS:
-        keyname = "Equals";
-        break;
-    case SDLK_DELETE:
-        keyname = "Delete";
-        break;
-    case SDLK_KP_PERIOD:
-        keyname = "NPperiod";
-        break;
-    case SDLK_KP_DIVIDE:
-        keyname = "NPdivide";
-        break;
-    case SDLK_KP_MULTIPLY:
-        keyname = "NPmultiply";
-        break;
-    case SDLK_KP_MINUS:
-        keyname = "NPminus";
-        break;
-    case SDLK_KP_PLUS:
-        keyname = "NPplus";
-        break;
-    case SDLK_KP_ENTER:
-        keyname = "NP_Enter";
-        break;
-    case SDLK_KP_EQUALS:
-        keyname = "NP=";
-        break;
-    case SDLK_UP:
-        keyname = "UP";
-        break;
-    case SDLK_DOWN:
-        keyname = "DOWN";
-        break;
-    case SDLK_RIGHT:
-        keyname = "RIGHT";
-        break;
-    case SDLK_LEFT:
-        keyname = "LEFT";
-        break;
-    case SDLK_INSERT:
-        keyname = "Insert";
-        break;
-    case SDLK_HOME:
-        keyname = "Home";
-        break;
-    case SDLK_END:
-        keyname = "End";
-        break;
-    case SDLK_PAGEUP:
-        keyname = "PageUp";
-        break;
-    case SDLK_PAGEDOWN:
-        keyname = "PageDown";
-        break;
-    case SDLK_NUMLOCK:
-        keyname = "NumLock";
-        break;
-    case SDLK_CAPSLOCK:
-        keyname = "CapsLock";
-        break;
-    case SDLK_SCROLLOCK:
-        keyname = "ScrolLock";
-        break;
-    case SDLK_RSHIFT:
-        keyname = "Rshift";
-        break;
-    case SDLK_LSHIFT:
-        keyname = "Lshift";
-        break;
-    case SDLK_RCTRL:
-        keyname = "Rctrl";
-        break;
-    case SDLK_LCTRL:
-        keyname = "Lctrl";
-        break;
-    case SDLK_RALT:
-        keyname = "Ralt";
-        break;
-    case SDLK_LALT:
-        keyname = "Lalt";
-        break;
-    case SDLK_RMETA:
-        keyname = "Rmeta";
-        break;
-    case SDLK_LMETA:
-        keyname = "Lmeta";
-        break;
-    case SDLK_LSUPER:
-        keyname = "Lwin";
-        break;
-    case SDLK_RSUPER:
-        keyname = "Rwin";
-        break;
-    case SDLK_MODE:
-        keyname = "Mode";
-        break;
-    case SDLK_HELP:
-        keyname = "Help";
-        break;
-    default:
-        keyname = "Unknown";
-        break;
-    }
-    if (charToPut != '\0')
-    {
-        keyname.clear();
-        keyname.append(1,charToPut);
-    }
+    string keyname(SDL_GetKeyName(key));
     return keyname;
 }
 
@@ -2689,7 +2383,7 @@ void DrawOptions(int x, int y)
 }  //drawOptions
 
 //Draws the balls and explosions
-void DrawBalls()
+static void DrawBalls()
 {
     for (int i = 0; i< maxNumberOfBalls; i++)
     {
@@ -3005,7 +2699,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 }
 
 //Generates the standard background
-void MakeBackground(int xsize,int ysize)
+static void MakeBackground(int xsize,int ysize)
 {
     int w = backgroundImage->w;
     int h = backgroundImage->h;
@@ -3016,7 +2710,7 @@ void MakeBackground(int xsize,int ysize)
 }
 
 //Generates the background with red board backs
-void MakeBackground(int xsize,int ysize,BlockGame *theGame, BlockGame *theGame2)
+static void MakeBackground(int xsize,int ysize,BlockGame *theGame, BlockGame *theGame2)
 {
     MakeBackground(xsize,ysize);
     DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
@@ -3024,7 +2718,7 @@ void MakeBackground(int xsize,int ysize,BlockGame *theGame, BlockGame *theGame2)
     standardBackground = false;
 }
 
-void MakeBackground(int xsize, int ysize, BlockGame *theGame)
+static void MakeBackground(int xsize, int ysize, BlockGame *theGame)
 {
     MakeBackground(xsize,ysize);
     DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
@@ -3725,15 +3419,6 @@ int main(int argc, char *argv[])
     bool weWhereConnected = false;
 
     //Things used for repeating keystrokes:
-    /*bool repeatingP1N = false; //The key is being held
-    bool repeatingP1S = false; //The key is being held
-    bool repeatingP1W = false; //The key is being held
-    bool repeatingP1E = false; //The key is being held
-    bool repeatingP2N = false; //The key is being held
-    bool repeatingP2S = false; //The key is being held
-    bool repeatingP2W = false; //The key is being held
-    bool repeatingP2E = false; //The key is being held
-     * */
     bool repeatingS[2] = {false,false};
     bool repeatingW[2] = {false,false};
     bool repeatingN[2] = {false,false};
