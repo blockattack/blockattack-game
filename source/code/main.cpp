@@ -3583,6 +3583,22 @@ class Keymenu {
     }
 };
 
+static BlockGameSdl *player1;
+static BlockGameSdl *player2;
+
+void StartSinglePlayerEndless() {
+    //1 player - endless
+    player1->NewGame(50,100,SDL_GetTicks());
+    player1->putStartBlocks(time(0));
+    bNewGameOpen = false;
+    b1playerOpen = false;
+    twoPlayers =false;
+    player2->SetGameOver();
+    showGame = true;
+    strcpy(player1->name, player1name);
+    strcpy(player2->name, player2name);
+}
+
 #if NETWORK
 #include "NetworkThing.hpp"
 //#include "MenuSystem.h"
@@ -3709,7 +3725,7 @@ int main(int argc, char *argv[])
     bool weWhereConnected = false;
 
     //Things used for repeating keystrokes:
-    bool repeatingP1N = false; //The key is being held
+    /*bool repeatingP1N = false; //The key is being held
     bool repeatingP1S = false; //The key is being held
     bool repeatingP1W = false; //The key is being held
     bool repeatingP1E = false; //The key is being held
@@ -3717,6 +3733,11 @@ int main(int argc, char *argv[])
     bool repeatingP2S = false; //The key is being held
     bool repeatingP2W = false; //The key is being held
     bool repeatingP2E = false; //The key is being held
+     * */
+    bool repeatingS[2] = {false,false};
+    bool repeatingW[2] = {false,false};
+    bool repeatingN[2] = {false,false};
+    bool repeatingE[2] = {false,false};
     const int startRepeat = 200;
     const int repeatDelay = 100;    //Repeating
     unsigned long timeHeldP1N = 0;
@@ -3964,6 +3985,8 @@ int main(int argc, char *argv[])
 
     BlockGameSdl theGame = BlockGameSdl(50,100);			//creates game objects
     BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
+    player1 = &theGame;
+    player2 = &theGame2;
     /*if (singlePuzzle)
     {
         theGame.GetTopY()=0;
@@ -4088,25 +4111,25 @@ int main(int argc, char *argv[])
                         //player1:
                         if ( event.key.keysym.sym == keySettings[player1keys].up ) {
                             theGame.MoveCursor('N');
-                            repeatingP1N=true;
+                            repeatingN[0]=true;
                             timeHeldP1N=SDL_GetTicks();
                             timesRepeatedP1N=0;
                         }
                         if ( event.key.keysym.sym == keySettings[player1keys].down ) {
                             theGame.MoveCursor('S');
-                            repeatingP1S=true;
+                            repeatingS[0]=true;
                             timeHeldP1S=SDL_GetTicks();
                             timesRepeatedP1S=0;
                         }
                         if ( (event.key.keysym.sym == keySettings[player1keys].left) && (showGame) ) {
                             theGame.MoveCursor('W');
-                            repeatingP1W=true;
+                            repeatingW[0]=true;
                             timeHeldP1W=SDL_GetTicks();
                             timesRepeatedP1W=0;
                         }
                         if ( (event.key.keysym.sym == keySettings[player1keys].right) && (showGame) ) {
                             theGame.MoveCursor('E');
-                            repeatingP1E=true;
+                            repeatingE[0]=true;
                             timeHeldP1E=SDL_GetTicks();
                             timesRepeatedP1E=0;
                         }
@@ -4122,25 +4145,25 @@ int main(int argc, char *argv[])
                         //player2:
                         if ( event.key.keysym.sym == keySettings[player2keys].up ) {
                             theGame2.MoveCursor('N');
-                            repeatingP2N=true;
+                            repeatingN[1]=true;
                             timeHeldP2N=SDL_GetTicks();
                             timesRepeatedP2N=0;
                         }
                         if ( event.key.keysym.sym == keySettings[player2keys].down ) {
                             theGame2.MoveCursor('S');
-                            repeatingP2S=true;
+                            repeatingS[1]=true;
                             timeHeldP2S=SDL_GetTicks();
                             timesRepeatedP2S=0;
                         }
                         if ( (event.key.keysym.sym == keySettings[player2keys].left) && (showGame) ) {
                             theGame2.MoveCursor('W');
-                            repeatingP2W=true;
+                            repeatingW[1]=true;
                             timeHeldP2W=SDL_GetTicks();
                             timesRepeatedP2W=0;
                         }
                         if ( (event.key.keysym.sym == keySettings[player2keys].right) && (showGame) ) {
                             theGame2.MoveCursor('E');
-                            repeatingP2E=true;
+                            repeatingE[1]=true;
                             timeHeldP2E=SDL_GetTicks();
                             timesRepeatedP2E=0;
                         }
@@ -4160,14 +4183,7 @@ int main(int argc, char *argv[])
                             #else
                             if ((!showOptions)){
                             #endif
-                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
-                                closeAllMenus();
-                                twoPlayers =false;
-                                theGame2.SetGameOver();
-                                showGame = true;
-                                vsMode = false;
-                                strcpy(theGame.name, player1name);
-                                strcpy(theGame2.name, player2name);
+                                StartSinglePlayerEndless();
                             }}
                         if ( event.key.keysym.sym == SDLK_F3 ) {
                             #if NETWORK
@@ -4319,32 +4335,32 @@ int main(int argc, char *argv[])
 
 //Player 1 start
             if (!(keys[keySettings[player1keys].up]))
-                repeatingP1N=false;
-            while ((repeatingP1N)&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat))
+                repeatingN[0]=false;
+            while ((repeatingN[0])&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat))
             {
                 theGame.MoveCursor('N');
                 timesRepeatedP1N++;
             }
 
             if (!(keys[keySettings[player1keys].down]))
-                repeatingP1S=false;
-            while ((repeatingP1S)&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat))
+                repeatingS[0]=false;
+            while ((repeatingS[0])&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat))
             {
                 theGame.MoveCursor('S');
                 timesRepeatedP1S++;
             }
 
             if (!(keys[keySettings[player1keys].left]))
-                repeatingP1W=false;
-            while ((repeatingP1W)&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat))
+                repeatingW[0]=false;
+            while ((repeatingW[0])&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat))
             {
                 timesRepeatedP1W++;
                 theGame.MoveCursor('W');
             }
 
             if (!(keys[keySettings[player1keys].right]))
-                repeatingP1E=false;
-            while ((repeatingP1E)&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat))
+                repeatingE[0]=false;
+            while ((repeatingE[0])&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat))
             {
                 timesRepeatedP1E++;
                 theGame.MoveCursor('E');
@@ -4354,32 +4370,32 @@ int main(int argc, char *argv[])
 
 //Player 2 start
             if (!(keys[keySettings[player2keys].up]))
-                repeatingP2N=false;
-            while ((repeatingP2N)&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat))
+                repeatingN[1]=false;
+            while ((repeatingN[1])&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat))
             {
                 theGame2.MoveCursor('N');
                 timesRepeatedP2N++;
             }
 
             if (!(keys[keySettings[player2keys].down]))
-                repeatingP2S=false;
-            while ((repeatingP2S)&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat))
+                repeatingS[1]=false;
+            while ((repeatingS[1])&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat))
             {
                 theGame2.MoveCursor('S');
                 timesRepeatedP2S++;
             }
 
             if (!(keys[keySettings[player2keys].left]))
-                repeatingP2W=false;
-            while ((repeatingP2W)&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat))
+                repeatingW[1]=false;
+            while ((repeatingW[1])&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat))
             {
                 theGame2.MoveCursor('W');
                 timesRepeatedP2W++;
             }
 
             if (!(keys[keySettings[player2keys].right]))
-                repeatingP2E=false;
-            while ((repeatingP2E)&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat))
+                repeatingE[1]=false;
+            while ((repeatingE[1])&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat))
             {
                 theGame2.MoveCursor('E');
                 timesRepeatedP2E++;
@@ -4420,28 +4436,28 @@ int main(int argc, char *argv[])
                         if (joypad1.up)
                         {
                             theGame.MoveCursor('N');
-                            repeatingP1N=true;
+                            repeatingN[0]=true;
                             timeHeldP1N=SDL_GetTicks();
                             timesRepeatedP1N=0;
                         }
                         if (joypad1.down)
                         {
                             theGame.MoveCursor('S');
-                            repeatingP1S=true;
+                            repeatingS[0]=true;
                             timeHeldP1S=SDL_GetTicks();
                             timesRepeatedP1S=0;
                         }
                         if (joypad1.left)
                         {
                             theGame.MoveCursor('W');
-                            repeatingP1W=true;
+                            repeatingW[0]=true;
                             timeHeldP1W=SDL_GetTicks();
                             timesRepeatedP1W=0;
                         }
                         if (joypad1.right)
                         {
                             theGame.MoveCursor('E');
-                            repeatingP1E=true;
+                            repeatingE[0]=true;
                             timeHeldP1E=SDL_GetTicks();
                             timesRepeatedP1E=0;
                         }
@@ -4456,28 +4472,28 @@ int main(int argc, char *argv[])
                         if (joypad1.up)
                         {
                             theGame2.MoveCursor('N');
-                            repeatingP2N=true;
+                            repeatingN[1]=true;
                             timeHeldP2N=SDL_GetTicks();
                             timesRepeatedP2N=0;
                         }
                         if (joypad1.down)
                         {
                             theGame2.MoveCursor('S');
-                            repeatingP2S=true;
+                            repeatingS[1]=true;
                             timeHeldP2S=SDL_GetTicks();
                             timesRepeatedP2S=0;
                         }
                         if (joypad1.left)
                         {
                             theGame2.MoveCursor('W');
-                            repeatingP2W=true;
+                            repeatingW[1]=true;
                             timeHeldP2W=SDL_GetTicks();
                             timesRepeatedP2W=0;
                         }
                         if (joypad1.right)
                         {
                             theGame2.MoveCursor('E');
-                            repeatingP2E=true;
+                            repeatingE[1]=true;
                             timeHeldP2E=SDL_GetTicks();
                             timesRepeatedP2E=0;
                         }
@@ -4493,28 +4509,28 @@ int main(int argc, char *argv[])
                         if (joypad2.up)
                         {
                             theGame.MoveCursor('N');
-                            repeatingP1N=true;
+                            repeatingN[0]=true;
                             timeHeldP1N=SDL_GetTicks();
                             timesRepeatedP1N=0;
                         }
                         if (joypad2.down)
                         {
                             theGame.MoveCursor('S');
-                            repeatingP1S=true;
+                            repeatingS[0]=true;
                             timeHeldP1S=SDL_GetTicks();
                             timesRepeatedP1S=0;
                         }
                         if (joypad2.left)
                         {
                             theGame.MoveCursor('W');
-                            repeatingP1W=true;
+                            repeatingW[0]=true;
                             timeHeldP1W=SDL_GetTicks();
                             timesRepeatedP1W=0;
                         }
                         if (joypad2.right)
                         {
                             theGame.MoveCursor('E');
-                            repeatingP1E=true;
+                            repeatingE[0]=true;
                             timeHeldP1E=SDL_GetTicks();
                             timesRepeatedP1E=0;
                         }
@@ -4529,28 +4545,28 @@ int main(int argc, char *argv[])
                         if (joypad2.up)
                         {
                             theGame2.MoveCursor('N');
-                            repeatingP2N=true;
+                            repeatingN[1]=true;
                             timeHeldP2N=SDL_GetTicks();
                             timesRepeatedP2N=0;
                         }
                         if (joypad2.down)
                         {
                             theGame2.MoveCursor('S');
-                            repeatingP2S=true;
+                            repeatingS[1]=true;
                             timeHeldP2S=SDL_GetTicks();
                             timesRepeatedP2S=0;
                         }
                         if (joypad2.left)
                         {
                             theGame2.MoveCursor('W');
-                            repeatingP2W=true;
+                            repeatingW[1]=true;
                             timeHeldP2W=SDL_GetTicks();
                             timesRepeatedP2W=0;
                         }
                         if (joypad2.right)
                         {
                             theGame2.MoveCursor('E');
-                            repeatingP2E=true;
+                            repeatingE[1]=true;
                             timeHeldP2E=SDL_GetTicks();
                             timesRepeatedP2E=0;
                         }
@@ -4700,16 +4716,7 @@ int main(int argc, char *argv[])
                                     else
                                         if ((buttonXsize<mousex) && (mousex<240) && (40<mousey) && (mousey<80) && (b1playerOpen) &&(!networkActive))
                                         {
-                                            //1 player - endless
-                                            theGame.NewGame(50,100,SDL_GetTicks());
-                                            theGame.putStartBlocks(time(0));
-                                            bNewGameOpen = false;
-                                            b1playerOpen = false;
-                                            twoPlayers =false;
-                                            theGame2.SetGameOver();
-                                            showGame = true;
-                                            strcpy(theGame.name, player1name);
-                                            strcpy(theGame2.name, player2name);
+                                            StartSinglePlayerEndless();
                                         }
                                         else
                                             if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )

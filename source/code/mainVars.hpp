@@ -40,176 +40,176 @@ using namespace std;	//remove it if you dare...
 char sharedir[] = SHAREDIR;
 
 //All graphic in the game (as pointers):
-SDL_Surface *background;    //Stores background
-SDL_Surface *backgroundImage; //Stores the background image
-int backgroundImageW, backgroundImageH; //size of background image
-SDL_Surface *backBoard;     //Stores the background to the board
-SDL_Surface *b1player;
-SDL_Surface *b2players;
-SDL_Surface *bVsMode;
-SDL_Surface *bVsModeConfig; //Added in 1.4.0
-SDL_Surface *bStageClear;
-SDL_Surface *bPuzzle;
-SDL_Surface *bNewGame;      //The New Game botton
-SDL_Surface *bEndless;      //Endless button (sub to new)
-SDL_Surface *bTimeTrial;    //Time trial button (sub to new)
-SDL_Surface *bOptions;      //The Options botton
+static SDL_Surface *background;    //Stores background
+static SDL_Surface *backgroundImage; //Stores the background image
+static int backgroundImageW, backgroundImageH; //size of background image
+static SDL_Surface *backBoard;     //Stores the background to the board
+static SDL_Surface *b1player;
+static SDL_Surface *b2players;
+static SDL_Surface *bVsMode;
+static SDL_Surface *bVsModeConfig; //Added in 1.4.0
+static SDL_Surface *bStageClear;
+static SDL_Surface *bPuzzle;
+static SDL_Surface *bNewGame;      //The New Game botton
+static SDL_Surface *bEndless;      //Endless button (sub to new)
+static SDL_Surface *bTimeTrial;    //Time trial button (sub to new)
+static SDL_Surface *bOptions;      //The Options botton
 //new in 1.1.1
-SDL_Surface *bConfigure;    //The configure button
-SDL_Surface *bSelectPuzzle; //The Select Puzzle Button
-SDL_Surface *bBack;         //The "Back" button
-SDL_Surface *bForward;      //The "forward" button
+static SDL_Surface *bConfigure;    //The configure button
+static SDL_Surface *bSelectPuzzle; //The Select Puzzle Button
+static SDL_Surface *bBack;         //The "Back" button
+static SDL_Surface *bForward;      //The "forward" button
 //new in 1.1.1 end
 //new in 1.1.2
-SDL_Surface *iChainBack;
+static SDL_Surface *iChainBack;
 //new in 1.1.2 end (nota that iSmallFont has also been added)
 //new in 1.2.0
-SDL_Surface *bReplay;
-SDL_Surface *bSave;
-SDL_Surface *bLoad;
+static SDL_Surface *bReplay;
+static SDL_Surface *bSave;
+static SDL_Surface *bLoad;
 #if NETWORK
-SDL_Surface *bNetwork;
-SDL_Surface *bConnect;
-SDL_Surface *bHost;
+static SDL_Surface *bNetwork;
+static SDL_Surface *bConnect;
+static SDL_Surface *bHost;
 #endif
 //new in 1.2.0 end
-SDL_Surface *bHighScore;    //The High Score botton
-SDL_Surface *bExit;         //The Exit botton
-SDL_Surface *blackLine;		//The seperator in stage clear
-SDL_Surface *stageBobble;	//The bobble instage clear
-SDL_Surface *screen;        //The whole screen;
-SDL_Surface *iGameOver;     //The gameOver image
-SDL_Surface *iWinner;		//the "winner" image
-SDL_Surface *iDraw;			//the "draw" image
-SDL_Surface *iLoser;		//the "loser" image
+static SDL_Surface *bHighScore;    //The High Score botton
+static SDL_Surface *bExit;         //The Exit botton
+static SDL_Surface *blackLine;		//The seperator in stage clear
+static SDL_Surface *stageBobble;	//The bobble instage clear
+static SDL_Surface *screen;        //The whole screen;
+static SDL_Surface *iGameOver;     //The gameOver image
+static SDL_Surface *iWinner;		//the "winner" image
+static SDL_Surface *iDraw;			//the "draw" image
+static SDL_Surface *iLoser;		//the "loser" image
 //Animations:
-SDL_Surface *cursor[2];    //The animated cursor
-SDL_Surface *bomb[2];       //Bomb then the bricks should blow
-SDL_Surface *ready[2];      //Before the blocks fall
-SDL_Surface *explosion[4];   //Then a block explodes
+static SDL_Surface *cursor[2];    //The animated cursor
+static SDL_Surface *bomb[2];       //Bomb then the bricks should blow
+static SDL_Surface *ready[2];      //Before the blocks fall
+static SDL_Surface *explosion[4];   //Then a block explodes
 //Animations end
-SDL_Surface *counter[3];    //Counts down from 3
-SDL_Surface *bricks[7];     //The bricks, saved in an array of pointers
-SDL_Surface *crossover;     //Cross the bricks that will be cleared soon
-SDL_Surface *balls[7];      //The balls (the small ones that jump around)
-SDL_Surface *iBlueFont;      //Contains the blue font used
-SDL_Surface *iSmallFont;	//Small font used for the chain text
-SDL_Surface *optionsBack;
-SDL_Surface *changeButtonsBack;
-SDL_Surface *dialogBox;
+static SDL_Surface *counter[3];    //Counts down from 3
+static SDL_Surface *bricks[7];     //The bricks, saved in an array of pointers
+static SDL_Surface *crossover;     //Cross the bricks that will be cleared soon
+static SDL_Surface *balls[7];      //The balls (the small ones that jump around)
+static SDL_Surface *iBlueFont;      //Contains the blue font used
+static SDL_Surface *iSmallFont;	//Small font used for the chain text
+static SDL_Surface *optionsBack;
+static SDL_Surface *changeButtonsBack;
+static SDL_Surface *dialogBox;
 //SDL_Surface *fileDialogBox;  //Manual entering of filename, new in 1.1.1, obsolute in 1.1.2
-SDL_Surface *bOn;
-SDL_Surface *bOff;
-SDL_Surface *bChange;
-SDL_Surface *b1024;
-SDL_Surface *iLevelCheck;		//To the level select screen
-SDL_Surface *iLevelCheckBox;
-SDL_Surface *iCheckBoxArea;
-SDL_Surface *boardBackBack;
-SDL_Surface *garbageTL;			//the Garbage Blocks
-SDL_Surface *garbageT;
-SDL_Surface *garbageTR;
-SDL_Surface *garbageR;
-SDL_Surface *garbageBR;
-SDL_Surface *garbageB;
-SDL_Surface *garbageBL;
-SDL_Surface *garbageL;
-SDL_Surface *garbageFill;
-SDL_Surface *garbageM;
-SDL_Surface *garbageML;
-SDL_Surface *garbageMR;
-SDL_Surface *smiley[4];
-SDL_Surface *garbageGM;
-SDL_Surface *garbageGML;
-SDL_Surface *garbageGMR;
-SDL_Surface *transCover;        //The transperant block, covers the upcomming
+static SDL_Surface *bOn;
+static SDL_Surface *bOff;
+static SDL_Surface *bChange;
+static SDL_Surface *b1024;
+static SDL_Surface *iLevelCheck;		//To the level select screen
+static SDL_Surface *iLevelCheckBox;
+static SDL_Surface *iCheckBoxArea;
+static SDL_Surface *boardBackBack;
+static SDL_Surface *garbageTL;			//the Garbage Blocks
+static SDL_Surface *garbageT;
+static SDL_Surface *garbageTR;
+static SDL_Surface *garbageR;
+static SDL_Surface *garbageBR;
+static SDL_Surface *garbageB;
+static SDL_Surface *garbageBL;
+static SDL_Surface *garbageL;
+static SDL_Surface *garbageFill;
+static SDL_Surface *garbageM;
+static SDL_Surface *garbageML;
+static SDL_Surface *garbageMR;
+static SDL_Surface *smiley[4];
+static SDL_Surface *garbageGM;
+static SDL_Surface *garbageGML;
+static SDL_Surface *garbageGMR;
+static SDL_Surface *transCover;        //The transperant block, covers the upcomming
 #if LEVELEDITOR
-SDL_Surface *bCreateFile;
-SDL_Surface *bDeletePuzzle;
-SDL_Surface *bLoadFile;
-SDL_Surface *bMoveBack;
-SDL_Surface *bMoveDown;
-SDL_Surface *bMoveForward;
-SDL_Surface *bMoveLeft;
-SDL_Surface *bMoveRight;
-SDL_Surface *bMoveUp;
-SDL_Surface *bNewPuzzle;
-SDL_Surface *bSaveFileAs;
-SDL_Surface *bSavePuzzle;
-SDL_Surface *bSaveToFile;
-SDL_Surface *bTestPuzzle;
+static SDL_Surface *bCreateFile;
+static SDL_Surface *bDeletePuzzle;
+static SDL_Surface *bLoadFile;
+static SDL_Surface *bMoveBack;
+static SDL_Surface *bMoveDown;
+static SDL_Surface *bMoveForward;
+static SDL_Surface *bMoveLeft;
+static SDL_Surface *bMoveRight;
+static SDL_Surface *bMoveUp;
+static SDL_Surface *bNewPuzzle;
+static SDL_Surface *bSaveFileAs;
+static SDL_Surface *bSavePuzzle;
+static SDL_Surface *bSaveToFile;
+static SDL_Surface *bTestPuzzle;
 #endif
-SDL_Surface *bTheme;
-SDL_Surface *bSkip;
-SDL_Surface *bRetry;
-SDL_Surface *bNext;
+static SDL_Surface *bTheme;
+static SDL_Surface *bSkip;
+static SDL_Surface *bRetry;
+static SDL_Surface *bNext;
 
 //SDL_Surface *menuMarked;
 //SDL_Surface *menuUnmarked;
 //end new in 1.4.0
-SDL_Surface *mouse;				//The mouse cursor
+static SDL_Surface *mouse;				//The mouse cursor
 
 
-SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
+static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
 
 
-SFont_Font *fBlueFont;      //Stores the blue font (SFont)
-SFont_Font *fSmallFont;		//Stores the small font (SFont)
+static SFont_Font *fBlueFont;      //Stores the blue font (SFont)
+static SFont_Font *fSmallFont;		//Stores the small font (SFont)
 //TTFont ttfont;           //Stores the TTF font (TTFSDL)
 
-Mix_Music *bgMusic;         //backgroundMusic
-Mix_Music *highbeatMusic;   //Background music with higher beat
-Mix_Chunk *boing;           //boing sound when clearing
-Mix_Chunk *applause;        //Applause, then the player is good
-Mix_Chunk *photoClick;      //clickSound
-Mix_Chunk *typingChunk;          //When writing
-Mix_Chunk *counterChunk;         //When counting down
-Mix_Chunk *counterFinalChunk;
+static Mix_Music *bgMusic;         //backgroundMusic
+static Mix_Music *highbeatMusic;   //Background music with higher beat
+static Mix_Chunk *boing;           //boing sound when clearing
+static Mix_Chunk *applause;        //Applause, then the player is good
+static Mix_Chunk *photoClick;      //clickSound
+static Mix_Chunk *typingChunk;          //When writing
+static Mix_Chunk *counterChunk;         //When counting down
+static Mix_Chunk *counterFinalChunk;
 
 Highscore theTopScoresEndless;      //Stores highscores for endless
 Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
 
-bool bMouseUp;              //true if the mouse(1) is unpressed
-bool bMouseUp2;             //true if the mouse(2) is unpressed
-bool bNewGameOpen;          //show sub menues
-bool bOptionsOpen;          //Show OptionsMenu (Configure and Select Puzzle)
-bool b1playerOpen;			//show submenu
-bool b2playersOpen;			//show submenu
-bool bReplayOpen;			//Show replay menu
+static bool bMouseUp;              //true if the mouse(1) is unpressed
+static bool bMouseUp2;             //true if the mouse(2) is unpressed
+static bool bNewGameOpen;          //show sub menues
+static bool bOptionsOpen;          //Show OptionsMenu (Configure and Select Puzzle)
+static bool b1playerOpen;			//show submenu
+static bool b2playersOpen;			//show submenu
+static bool bReplayOpen;			//Show replay menu
 #if NETWORK
-bool bNetworkOpen;			//Show the network menu
+static bool bNetworkOpen;			//Show the network menu
 #endif
-bool showGame;              //the game is active don't show highscores/options
-bool showOptions;           //true if options is open
-bool bScreenLocked;			//Don't take input or allow any mouse interaction! Used for dialogbox and warningbox
-bool showDialog;
-bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline
+static bool showGame;              //the game is active don't show highscores/options
+static bool showOptions;           //true if options is open
+static bool bScreenLocked;			//Don't take input or allow any mouse interaction! Used for dialogbox and warningbox
+static bool showDialog;
+static bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline
 //prevents crash on systems without a soundcard
-bool MusicEnabled;			//true if background music is enabled
-bool SoundEnabled;			//true if sound effects is enabled
-bool bNearDeath;                        //Play music faster or louder while tru
-bool bNearDeathPrev;                    //Near death status last time checked.
-bool bFullscreen;			//true if game is running fullscreen
-bool puzzleLoaded;          //true if the puzzle levels have been loaded
-bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
-bool standardBackground;
-bool highPriority;
+static bool MusicEnabled;			//true if background music is enabled
+static bool SoundEnabled;			//true if sound effects is enabled
+static bool bNearDeath;                        //Play music faster or louder while tru
+static bool bNearDeathPrev;                    //Near death status last time checked.
+static bool bFullscreen;			//true if game is running fullscreen
+static bool puzzleLoaded;          //true if the puzzle levels have been loaded
+static bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
+static bool standardBackground;
+static bool highPriority;
 
-bool editorMode = false;
-bool editorModeTest = false;
+static bool editorMode = false;
+static bool editorModeTest = false;
 
 //Things for network play:
 #if NETWORK
-bool networkPlay;
-bool networkActive;
-Uint8 nrOfNetworkPlayers;  //Up to 4 players (inkl. self)
-bool playerAlive[4];
+static bool networkPlay;
+static bool networkActive;
+static Uint8 nrOfNetworkPlayers;  //Up to 4 players (inkl. self)
+static bool playerAlive[4];
 //sockets here
 #define SERVERPORT 41780
 #define CLIENTPORT 41781
 
 
-char serverAddress[30];
+static char serverAddress[30];
 #endif
 
 //should be automatically disabled if framerate to low (isn't implemented and wont be soon/ever):
@@ -217,40 +217,40 @@ char serverAddress[30];
 //const int ballsFpsDisable = 10;    //If framerate lower -> disable balls
 
 //other ball constants:
-const double gravity = 200.8; //acceleration
-const double startVelocityY = 50.0;
-const double VelocityX = 50.0;
-const int ballSize = 16;
-const double minVelocity = 200.0;
+static const double gravity = 200.8; //acceleration
+static const double startVelocityY = 50.0;
+static const double VelocityX = 50.0;
+static const int ballSize = 16;
+static const double minVelocity = 200.0;
 
 //global settings (reset everytime the game starts)
-Uint8 player1Speed=0;
-Uint8 player2Speed=0;
-bool player1AI=false;		//Is AI enabled?
-bool player2AI=false;		//Is AI enabled for player 2 (opponent in single player)
-Uint8 player1AIlevel=3;		//What level is AI? 0 min, 6 max
-Uint8 player2AIlevel=3;
-const Uint8 AIlevels=7;		//7 possible levels: 0..6
-Uint8 player1handicap=0;
-Uint8 player2handicap=0;
+static Uint8 player1Speed=0;
+static Uint8 player2Speed=0;
+static bool player1AI=false;		//Is AI enabled?
+static bool player2AI=false;		//Is AI enabled for player 2 (opponent in single player)
+static Uint8 player1AIlevel=3;		//What level is AI? 0 min, 6 max
+static Uint8 player2AIlevel=3;
+static const Uint8 AIlevels=7;		//7 possible levels: 0..6
+static Uint8 player1handicap=0;
+static Uint8 player2handicap=0;
 
 unsigned long int currentTime;      //contains the current time, so we don't call SDL_GetTickets() too often...
 
-int xsize = 1024;
-int ysize = 768;
-int bsize = 50;
+static int xsize = 1024;
+static int ysize = 768;
+static int bsize = 50;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
-char player1name[30];
-char player2name[30];
+static char player1name[30];
+static char player2name[30];
 
 //paths
-string stageClearSavePath;
-string puzzleSavePath;
-string puzzleName;              //The filename of
+static string stageClearSavePath;
+static string puzzleSavePath;
+static string puzzleName;              //The filename of
 
-const int nrOfStageLevels = 50;		//number of stages in stage Clear
-const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
+static const int nrOfStageLevels = 50;		//number of stages in stage Clear
+static const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
 vector<bool> stageCleared(nrOfStageLevels);		//vector that tells if a stage is cleared
 vector<Uint32> stageTimes(nrOfStageLevels);             //For statistical puposes
 vector<Uint32> stageScores(nrOfStageLevels);            //--||--
@@ -261,16 +261,16 @@ int nrOfPuzzles;    //How many are there actually?
 bool twoPlayers;    //True if two players are playing
 
 //Old mouse position:
-int oldMousex, oldMousey;
+static int oldMousex, oldMousey;
 //Old Stage Clear Buble
-int oldBubleX, oldBubleY;
+static int oldBubleX, oldBubleY;
 
 //bool doublebuf = false; //if true, screen is double buffered
-char forceredraw; //If 1: always redraw, if 2: rarely redraw
+static char forceredraw; //If 1: always redraw, if 2: rarely redraw
 
-bool singlePuzzle = false; //if true we are just in a little 300x600 window
-int singlePuzzleNr = 0;
-string singlePuzzleFile;
+static bool singlePuzzle = false; //if true we are just in a little 300x600 window
+static int singlePuzzleNr = 0;
+static string singlePuzzleFile;
 
 #if DEBUG
 //frame counter (fps)
@@ -298,7 +298,7 @@ struct control
     SDLKey push;
 };
 
-control keySettings[3];	//array to hold the controls (default and two custom)
+static control keySettings[3];	//array to hold the controls (default and two custom)
 
 #define KEYMENU_MAXWITH 4
 #define KEYMENU_MAXDEPTH 7
@@ -315,14 +315,14 @@ struct KeyMenu_t
     bool menumap[KEYMENU_MAXWITH][KEYMENU_MAXDEPTH];
 };
 
-KeyMenu_t keymenu;
+static KeyMenu_t keymenu;
 
 enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
 
-stageButton stageButtonStatus = SBdontShow;
+static stageButton stageButtonStatus = SBdontShow;
 
-const int buttonXsize = 120;
-const int buttonYsize = 40;
+static const int buttonXsize = 120;
+static const int buttonYsize = 40;
 
 struct ButtonCords
 {
