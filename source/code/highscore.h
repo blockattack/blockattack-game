@@ -17,7 +17,7 @@ Copyright (C) 2005 Poul Sander
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     Poul Sander
-    Rævehøjvej 36, V. 1111
+    Rï¿½vehï¿½jvej 36, V. 1111
     2800 Kgs. Lyngby
     DENMARK
     blockattack@poulsander.com
@@ -52,7 +52,7 @@ class Highscore
 {
 private:
     record tabel[top];
-    char* filename;
+    string filename;
     int ourType;     //This is ugly, remove me, plz!
     void writeFile();
 public:

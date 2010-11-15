@@ -17,7 +17,7 @@ Copyright (C) 2007 Poul Sander
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA   
                                                                                 
     Poul Sander
-    Rævehøjvej 36, V. 1111                                                    
+    Rï¿½vehï¿½jvej 36, V. 1111                                                    
     2800 Kgs. Lyngby
     DENMARK
     blockattack@poulsander.com       
@@ -161,3 +161,8 @@ void theEditor::click(int x, int y)
              (&(buttons[i]))->click(x,y);
      }
 }     
+
+int main() {
+    theEditor te;
+    te.drawButtons();
+}

@@ -135,6 +135,7 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed)
         return true;
     }
     char charToPut;
+    if(keyPressed)
     switch (keyPressed)
     {
     case SDLK_a:

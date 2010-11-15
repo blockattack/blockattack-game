@@ -17,7 +17,7 @@ Copyright (C) 2005 Poul Sander
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     Poul Sander
-    Rævehøjvej 36, V. 1111
+    Rï¿½vehï¿½jvej 36, V. 1111
     2800 Kgs. Lyngby
     DENMARK
     blockattack@poulsander.com
@@ -72,15 +72,9 @@ Highscore::Highscore(int type)
     string filename2 = "timetrial.dat";
 #endif
     ourType = type;
-    if (type == 1) filename = (char*)malloc(filename1.length()+1);
-    if (type == 2) filename = (char*)malloc(filename2.length()+1);
-    if (filename == NULL){
-        cout << "Out of memory" << endl;
-        exit(1);
-    }
-    if (type == 1) memcpy(filename,filename1.c_str(),filename1.length()+1);
-    if (type == 2) memcpy(filename,filename2.c_str(),filename2.length()+1);
-    ifstream scorefile(filename, ios::binary);
+    if (type == 1) filename = filename1;
+    if (type == 2) filename = filename2;
+    ifstream scorefile(filename.c_str(), ios::binary);
     if (scorefile)
     {
         for (int i = 0; i<top; i++)
@@ -98,7 +92,6 @@ Highscore::Highscore(int type)
         }
     }
     scorefile.close();
-    free(filename);
     writeFile();
 }
 
@@ -125,17 +118,11 @@ void Highscore::writeFile()
     string filename1 = "endless.dat";
     string filename2 = "timetrial.dat";
 #endif
-    if (ourType == 1) filename = (char*)malloc(filename1.length()+1);
-    if (ourType == 2) filename = (char*)malloc(filename2.length()+1);
-    if (filename == NULL){
-        cout << "Out of memory" << endl;
-        exit(1);
-    }
-    if (ourType == 1) memcpy(filename,filename1.c_str(),filename1.length()+1);
-    if (ourType == 2) memcpy(filename,filename2.c_str(),filename2.length()+1);
-
+    if (ourType == 1) filename = filename1;
+    if (ourType == 2) filename = filename2;
+    
     ofstream outfile;
-    outfile.open(Highscore::filename, ios::binary |ios::trunc);
+    outfile.open(Highscore::filename.c_str(), ios::binary |ios::trunc);
     if (!outfile)
     {
         cout << "Error writing to file: " << filename << endl;
@@ -147,7 +134,6 @@ void Highscore::writeFile()
         outfile.write(reinterpret_cast<char*>(&tabel[i].score),sizeof(int));
     }
     outfile.close();
-    free(filename);
 }
 
 bool Highscore::isHighScore(int newScore)

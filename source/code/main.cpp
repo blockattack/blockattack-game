@@ -119,16 +119,15 @@ void closeAllMenus()
 
 }
 
-
-SDL_Surface * IMG_Load2(char* path)
+SDL_Surface * IMG_Load2(string path)
 {
-    if (!PHYSFS_exists(path))
+    if (!PHYSFS_exists(path.c_str()))
     {
         cout << "File not in blockattack.data: " << path << endl;
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -234,15 +233,15 @@ void loadTheme(string themeName)
 }*/
 
 
-Mix_Music * Mix_LoadMUS2(char* path)
+Mix_Music * Mix_LoadMUS2(string path)
 {
-    if (!PHYSFS_exists(path))
+    if (!PHYSFS_exists(path.c_str()))
     {
         cout << "File not in blockattack.data: " << path << endl;
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -332,13 +331,13 @@ Mix_Chunk * Mix_LoadWAV2(char* path)
 //Load all image files to memory
 static int InitImages()
 {
-    if (!((backgroundImage = IMG_Load2((char*)"gfx/background.png"))
-            && (background = IMG_Load2((char*)"gfx/blackBackGround.png"))
-            && (bNewGame = IMG_Load2((char*)"gfx/bNewGame.png"))
-            && (b1player = IMG_Load2((char*)"gfx/bOnePlayer.png"))
-            && (b2players = IMG_Load2((char*)"gfx/bTwoPlayers.png"))
-            && (bVsMode = IMG_Load2((char*)"gfx/bVsGame.png"))
-            && (bVsModeConfig = IMG_Load2((char*)"gfx/bVsGameConfig.png"))
+    if (!((backgroundImage = IMG_Load2("gfx/background.png"))
+            && (background = IMG_Load2("gfx/blackBackGround.png"))
+            && (bNewGame = IMG_Load2("gfx/bNewGame.png"))
+            && (b1player = IMG_Load2("gfx/bOnePlayer.png"))
+            && (b2players = IMG_Load2("gfx/bTwoPlayers.png"))
+            && (bVsMode = IMG_Load2("gfx/bVsGame.png"))
+            && (bVsModeConfig = IMG_Load2("gfx/bVsGameConfig.png"))
             && (bPuzzle = IMG_Load2((char*)"gfx/bPuzzle.png"))
             && (bStageClear = IMG_Load2((char*)"gfx/bStageClear.png"))
             && (bTimeTrial = IMG_Load2((char*)"gfx/bTimeTrial.png"))
@@ -3660,7 +3659,7 @@ int main(int argc, char *argv[])
     //Load default theme
     loadTheme(Config::getInstance()->getString("themename"));
     //Now sets the icon:
-    SDL_Surface *icon = IMG_Load2((char*)"gfx/icon.png");
+    SDL_Surface *icon = IMG_Load2("gfx/icon.png");
     SDL_WM_SetIcon(icon,NULL);
     //SDL_FreeSurface(icon);
 
