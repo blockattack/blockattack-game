@@ -17,9 +17,6 @@ Copyright (C) 2005 Poul Sander
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     Poul Sander
-    R�veh�jvej 36, V. 1111
-    2800 Kgs. Lyngby
-    DENMARK
     blockattack@poulsander.com
 */
 
