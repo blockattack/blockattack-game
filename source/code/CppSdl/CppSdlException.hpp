@@ -10,17 +10,28 @@
 
 #include <string>
 
+#define CPPSDL_ERROR_DATA 1
+#define CPPSDL_ERROR_INVALID 2
+#define CPPSDL_ERROR_MISSINGFILE 3
+#define CPPSDL_ERROR_NULLPOINTER 4
+
+enum Subsystem {OTHER,IMAGE,TILE,SPRITE,LAYER,SCREEN };
+
 
 namespace CppSdl {
 class CppSdlException : std::exception{
 public:
-    CppSdlException();
-    CppSdlException(std::string msg);
+    //CppSdlException();
+    CppSdlException(Subsystem subsystem, long errorNumber, std::string msg);
     CppSdlException(const CppSdlException& orig);
     virtual ~CppSdlException() throw();
     virtual const char* what() const throw();
+    long GetErrorNumber();
+    long GetSubSystem();
 private:
-    std::string message;
+    std::string _message;
+    long _errorNumber;
+    Subsystem _subsystem;
 };
 
 

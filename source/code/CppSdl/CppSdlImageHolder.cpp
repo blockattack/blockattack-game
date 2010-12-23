@@ -15,7 +15,7 @@ CppSdlImageHolder::CppSdlImageHolder(std::string filename) {
     if(!data)
     {
         //Here we should throw an exception
-        CppSdlException e("Could not read file \""+filename+"\"");
+        CppSdlException e(IMAGE,CPPSDL_ERROR_MISSINGFILE,"Could not read file \""+filename+"\"");
         throw e;
     }
     SDL_GetClipRect(data,&area);
@@ -36,7 +36,7 @@ CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize) {
     //The above might fail an return null.
     if(!rw)
     {
-        CppSdlException e("Could not read raw data");
+        CppSdlException e(IMAGE,CPPSDL_ERROR_NULLPOINTER, "Could not read raw data");
         throw e;
     }
 
@@ -44,7 +44,7 @@ CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize) {
 
     if(!data)
     {
-        CppSdlException e("Could not read raw data");
+        CppSdlException e(IMAGE,CPPSDL_ERROR_DATA,"Could not read raw data");
         throw e;
     }
     

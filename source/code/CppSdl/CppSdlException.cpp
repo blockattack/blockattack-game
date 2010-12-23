@@ -9,12 +9,10 @@
 
 namespace CppSdl {
 
-CppSdlException::CppSdlException() {
-    message = "An CppSdlException";
-}
-
-CppSdlException::CppSdlException(std::string msg) {
-    message = msg;
+CppSdlException::CppSdlException(Subsystem subsystem,long errorNumber, std::string msg) {
+    _errorNumber = errorNumber;
+    _message = msg;
+    _subsystem = subsystem;
 }
 
 CppSdlException::CppSdlException(const CppSdlException& orig) {
@@ -24,7 +22,15 @@ CppSdlException::CppSdlException(const CppSdlException& orig) {
 //}
 
 const char* CppSdlException::what() const throw() {
-    return message.c_str();
+    return _message.c_str();
+}
+
+long CppSdlException::GetErrorNumber() {
+    return _errorNumber;
+}
+
+Subsystem CppSdlException::GetSubSystem() {
+    return _subsystem;
 }
 
 }
