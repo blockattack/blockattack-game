@@ -81,6 +81,7 @@
         baseSpeed = 0.5;           //All other speeds are relative to this
         speed = baseSpeed;
         speedLevel = 1;
+        ticks = 0;
         gameStartedAt = ticks;
         gameEndedAfter = 0;
         pushedPixelAt = gameStartedAt;
