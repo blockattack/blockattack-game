@@ -913,9 +913,7 @@ public:
                 ballArray[i].update();
                 if (ballArray[i].getY()>800 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize)
                 {
-                    ballArray[i].~aBall();
                     ballUsed[i] = false;
-                    //cout << "Ball removed" << endl;
                 }
             }
             else
@@ -3003,58 +3001,30 @@ int startSingleVs()
         while ( SDL_PollEvent(&event) )
             if ( event.type == SDL_KEYDOWN )
             {
-                if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+                if ( event.key.keysym.sym == SDLK_KP_ENTER || event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_RETURN ) {
                     done = true;
                 }
-                if ( event.key.keysym.sym == SDLK_RETURN ) {
-                    done = true;
-                }
-                if ( event.key.keysym.sym == SDLK_KP_ENTER ) {
-                    done = true;
-                }
-                if ( event.key.keysym.sym == SDLK_1 ) {
+                if ( event.key.keysym.sym == SDLK_1 || event.key.keysym.sym == SDLK_KP1 ) {
                     return 0;
                 }
-                if ( event.key.keysym.sym == SDLK_2 ) {
+                if ( event.key.keysym.sym == SDLK_2 || event.key.keysym.sym == SDLK_KP2 ) {
                     return 1;
                 }
-                if ( event.key.keysym.sym == SDLK_3 ) {
+                if ( event.key.keysym.sym == SDLK_3 || event.key.keysym.sym == SDLK_KP3 ) {
                     return 2;
                 }
-                if ( event.key.keysym.sym == SDLK_4 ) {
+                if ( event.key.keysym.sym == SDLK_4 || event.key.keysym.sym == SDLK_KP4 ) {
                     return 3;
                 }
-                if ( event.key.keysym.sym == SDLK_5 ) {
+                if ( event.key.keysym.sym == SDLK_5 || event.key.keysym.sym == SDLK_KP5 ) {
                     return 4;
                 }
-                if ( event.key.keysym.sym == SDLK_6 ) {
+                if ( event.key.keysym.sym == SDLK_6 || event.key.keysym.sym == SDLK_KP6 ) {
                     return 5;
                 }
-                if ( event.key.keysym.sym == SDLK_7 ) {
+                if ( event.key.keysym.sym == SDLK_7 || event.key.keysym.sym == SDLK_KP7 ) {
                     return 6;
                 }
-                if ( event.key.keysym.sym == SDLK_KP1 ) {
-                    return 0;
-                }
-                if ( event.key.keysym.sym == SDLK_KP2 ) {
-                    return 1;
-                }
-                if ( event.key.keysym.sym == SDLK_KP3 ) {
-                    return 2;
-                }
-                if ( event.key.keysym.sym == SDLK_KP4 ) {
-                    return 3;
-                }
-                if ( event.key.keysym.sym == SDLK_KP5 ) {
-                    return 4;
-                }
-                if ( event.key.keysym.sym == SDLK_KP6 ) {
-                    return 5;
-                }
-                if ( event.key.keysym.sym == SDLK_KP7 ) {
-                    return 6;
-                }
-
             }
 
         // If the mouse button is released, make bMouseUp equal true
@@ -3292,6 +3262,61 @@ void StartSinglePlayerEndless() {
     strcpy(player2->name, player2name);
 }
 
+void StartSinglePlayerTimeTrial() {
+    player1->NewTimeTrialGame(50,100,SDL_GetTicks());
+    closeAllMenus();
+    twoPlayers =false;
+    player2->SetGameOver();
+    showGame = true;
+    //vsMode = false;
+    strcpy(player1->name, player1name);
+    strcpy(player2->name, player2name);
+}
+
+
+void StarTwoPlayerTimeTrial() {
+    player1->NewTimeTrialGame(50,100,SDL_GetTicks());
+    player2->NewTimeTrialGame(xsize-500,100,SDL_GetTicks());
+    int theTime = time(0);
+    player1->putStartBlocks(theTime);
+    player2->putStartBlocks(theTime);
+    closeAllMenus();
+    twoPlayers = true;
+    player1->setGameSpeed(player1Speed);
+    player2->setGameSpeed(player2Speed);
+    player1->setHandicap(player1handicap);
+    player2->setHandicap(player2handicap);
+    if(player1AI)
+        player1->setAIlevel(player1AIlevel);
+    if(player2AI)
+        player2->setAIlevel(player2AIlevel);
+    strcpy(player1->name, player1name);
+    strcpy(player2->name, player2name);
+}
+
+void StartTwoPlayerVs() {
+    //2 player - VsMode
+    player1->NewVsGame(50,100,player2,SDL_GetTicks());
+    player2->NewVsGame(xsize-500,100,player1,SDL_GetTicks());
+    bNewGameOpen = false;
+    //vsMode = true;
+    twoPlayers = true;
+    b2playersOpen = false;
+    player1->setGameSpeed(player1Speed);
+    player2->setGameSpeed(player2Speed);
+    player1->setHandicap(player1handicap);
+    player2->setHandicap(player2handicap);
+    if(player1AI)
+        player1->setAIlevel(player1AIlevel);
+    if(player2AI)
+        player2->setAIlevel(player2AIlevel);
+    int theTime = time(0);
+    player1->putStartBlocks(theTime);
+    player2->putStartBlocks(theTime);
+    strcpy(player1->name, player1name);
+    strcpy(player2->name, player2name);
+}
+
 #if NETWORK
 #include "NetworkThing.hpp"
 //#include "MenuSystem.h"
@@ -3513,7 +3538,7 @@ int main(int argc, char *argv[])
     
 
     //Copyright notice:
-    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2010 Poul Sander" << endl <<
+    cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2011 Poul Sander" << endl <<
     "A SDL based game (see www.libsdl.org)" << endl <<
     "The game is availeble under the GPL, see COPYING for details." << endl;
 #if defined(_WIN32)
@@ -3661,7 +3686,6 @@ int main(int argc, char *argv[])
     //Now sets the icon:
     SDL_Surface *icon = IMG_Load2("gfx/icon.png");
     SDL_WM_SetIcon(icon,NULL);
-    //SDL_FreeSurface(icon);
 
     cout << "Images loaded" << endl;
 
@@ -3875,14 +3899,7 @@ int main(int argc, char *argv[])
                             #else
                             if ((!showOptions)){    
                             #endif
-                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
-                                closeAllMenus();
-                                twoPlayers =false;
-                                theGame2.SetGameOver();
-                                showGame = true;
-                                vsMode = false;
-                                strcpy(theGame.name, player1name);
-                                strcpy(theGame2.name, player2name);
+                                StartSinglePlayerTimeTrial();
                             }}
                         if ( event.key.keysym.sym == SDLK_F5 )
                         {
@@ -3913,24 +3930,7 @@ int main(int argc, char *argv[])
                             if ((!showOptions))    
                             #endif
                             {
-                                theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
-                                theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
-                                closeAllMenus();
-                                vsMode = true;
-                                strcpy(theGame.name, player1name);
-                                strcpy(theGame2.name, player2name);
-                                theGame.setGameSpeed(player1Speed);
-                                theGame2.setGameSpeed(player2Speed);
-                                theGame.setHandicap(player1handicap);
-                                theGame2.setHandicap(player2handicap);
-                                if(player1AI)
-                                    theGame.setAIlevel(player1AIlevel);
-                                if(player2AI)
-                                    theGame2.setAIlevel(player2AIlevel);
-                                int theTime = time(0);
-                                theGame.putStartBlocks(theTime);
-                                theGame2.putStartBlocks(theTime);
-                                twoPlayers = true;
+                                StartTwoPlayerVs();
                             }
                         }
                         if ( event.key.keysym.sym == SDLK_F4 )
@@ -3941,23 +3941,7 @@ int main(int argc, char *argv[])
                             if ((!showOptions))    
                             #endif
                             {
-                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
-                                theGame2.NewTimeTrialGame(xsize-500,100,SDL_GetTicks());
-                                int theTime = time(0);
-                                theGame.putStartBlocks(theTime);
-                                theGame2.putStartBlocks(theTime);
-                                closeAllMenus();
-                                twoPlayers = true;
-                                theGame.setGameSpeed(player1Speed);
-                                theGame2.setGameSpeed(player2Speed);
-                                theGame.setHandicap(player1handicap);
-                                theGame2.setHandicap(player2handicap);
-                                if(player1AI)
-                                    theGame.setAIlevel(player1AIlevel);
-                                if(player2AI)
-                                    theGame2.setAIlevel(player2AIlevel);
-                                strcpy(theGame.name, player1name);
-                                strcpy(theGame2.name, player2name);
+                                StarTwoPlayerTimeTrial();
                             }
                         }
                         if ( event.key.keysym.sym == SDLK_F7 )
@@ -4405,15 +4389,7 @@ int main(int argc, char *argv[])
                                         else
                                             if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )
                                             {
-                                                //1 player - time trial
-                                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
-                                                bNewGameOpen = false;
-                                                b1playerOpen = false;
-                                                twoPlayers =false;
-                                                theGame2.SetGameOver();
-                                                showGame = true;
-                                                strcpy(theGame.name, player1name);
-                                                strcpy(theGame2.name, player2name);
+                                                StartSinglePlayerTimeTrial();
                                             }
                                             else
                                                 if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b1playerOpen)&&(!networkActive) )
@@ -4473,50 +4449,12 @@ int main(int argc, char *argv[])
                                                         else
                                                             if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b2playersOpen))
                                                             {
-                                                                //2 player - time trial
-                                                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
-                                                                bNewGameOpen = false;
-                                                                b2playersOpen = false;
-                                                                theGame.NewTimeTrialGame(50,100,SDL_GetTicks());
-                                                                theGame2.NewTimeTrialGame(xsize-500,100,SDL_GetTicks());
-                                                                int theTime = time(0);
-                                                                theGame.putStartBlocks(theTime);
-                                                                theGame2.putStartBlocks(theTime);
-                                                                theGame.setGameSpeed(player1Speed);
-                                                                theGame2.setGameSpeed(player2Speed);
-                                                                theGame.setHandicap(player1handicap);
-                                                                theGame2.setHandicap(player2handicap);
-                                                                if(player1AI)
-                                                                    theGame.setAIlevel(player1AIlevel);
-                                                                if(player1AI)
-                                                                    theGame2.setAIlevel(player2AIlevel);
-                                                                twoPlayers = true;
-                                                                strcpy(theGame.name, player1name);
-                                                                strcpy(theGame2.name, player2name);
+                                                                StarTwoPlayerTimeTrial();
                                                             }
                                                             else
                                                                 if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b2playersOpen))
                                                                 {
-                                                                    //2 player - VsMode
-                                                                    theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
-                                                                    theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
-                                                                    bNewGameOpen = false;
-                                                                    vsMode = true;
-                                                                    twoPlayers = true;
-                                                                    b2playersOpen = false;
-                                                                    theGame.setGameSpeed(player1Speed);
-                                                                    theGame2.setGameSpeed(player2Speed);
-                                                                    theGame.setHandicap(player1handicap);
-                                                                    theGame2.setHandicap(player2handicap);
-                                                                    if(player1AI)
-                                                                        theGame.setAIlevel(player1AIlevel);
-                                                                    if(player2AI)
-                                                                        theGame2.setAIlevel(player2AIlevel);
-                                                                    int theTime = time(0);
-                                                                    theGame.putStartBlocks(theTime);
-                                                                    theGame2.putStartBlocks(theTime);
-                                                                    strcpy(theGame.name, player1name);
-                                                                    strcpy(theGame2.name, player2name);
+                                                                    StartTwoPlayerVs();
                                                                 }
 #if NETWORK
                                                                 else

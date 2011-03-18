@@ -19,7 +19,7 @@ CppSdlImageHolder::CppSdlImageHolder(std::string filename) {
         throw e;
     }
     SDL_GetClipRect(data,&area);
-
+    OptimizeForBlit();
     counter=1;
 }
 
@@ -49,6 +49,7 @@ CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize) {
     }
     
     SDL_GetClipRect(data,&area);
+    OptimizeForBlit();
     counter = 1;
 }
 
@@ -108,4 +109,36 @@ void CppSdlImageHolder::Cut(Uint32 x, Uint32 y, Sint32 w = -1, Sint32 h = -1)
     area.h = h;
 }
 
+void CppSdlImageHolder::PaintTo(SDL_Surface* target, int x, int y) {
+    static SDL_Rect dest; //static for reuse
+    dest.x = x;
+    dest.y = y;
+    SDL_BlitSurface(data,&area, target,&dest);
 }
+
+void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha) {
+    static SDL_Surface tmp;
+    if(allowAlpha)
+        tmp = SDL_DisplayFormatAlpha(data);
+    else
+        tmp = SDL_DisplayFormat(data);
+    SDL_FreeSurface(data);
+    data = tmp;
+}
+
+}
+
+/*
+ void DrawIMG(SDL_Surface *img, SDL_Surface * target, int x, int y, int w, int h, int x2, int y2)
+{
+    SDL_Rect dest;
+    dest.x = x;
+    dest.y = y;
+    SDL_Rect dest2;
+    dest2.x = x2;
+    dest2.y = y2;
+    dest2.w = w;
+    dest2.h = h;
+    SDL_BlitSurface(img, &dest2, target, &dest);
+}
+ */
