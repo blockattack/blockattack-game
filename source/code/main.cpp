@@ -69,6 +69,7 @@ Copyright (C) 2008 Poul Sander
 //#include "config.h"
 #include <vector>
 #include <SDL/SDL_timer.h>
+#include "CppSdl/CppSdlImageHolder.hpp"
 //#include "MenuSystem.h"
 
 //if SHAREDIR is not used we look in current directory
@@ -162,6 +163,40 @@ SDL_Surface * IMG_Load2(string path)
     }
 
     SDL_Surface* surface = IMG_Load_RW(rw,true); //the second argument tells the function to three RWops
+
+    return surface;
+}
+
+CppSdl::CppSdlImageHolder IMG_Load3(string path)
+{
+    if (!PHYSFS_exists(path.c_str()))
+    {
+        cout << "File not in blockattack.data: " << path << endl;
+        throw exception();
+    }
+
+    PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
+
+    // Get the lenght of the file
+    unsigned int m_size = PHYSFS_fileLength(myfile);
+
+    // Get the file data.
+    char *m_data = new char[m_size];
+
+    int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
+
+    if (length_read != (int)m_size)
+    {
+            delete [] m_data;
+            m_data = 0;
+            PHYSFS_close(myfile);
+            cout << "Error. Curropt data file!" << endl;
+            throw exception();
+    }
+
+    PHYSFS_close(myfile);
+
+    CppSdl::CppSdlImageHolder surface(m_data, m_size);
 
     return surface;
 }
@@ -453,11 +488,17 @@ static int InitImages()
             //&& (menuMarked = IMG_Load2((char*)"gfx/menu/marked.png"))
             //&& (menuUnmarked = IMG_Load2((char*)"gfx/menu/unmarked.png"))
             //end new in 1.4.0
-            && (mouse = IMG_Load2((char*)"gfx/mouse.png"))
+            //&& (mouse = IMG_Load2((char*)"gfx/mouse.png"))
          ))
         //if there was a problem ie. "File not found"
     {
         cout << "Error loading image file: " << SDL_GetError() << endl;
+        exit(1);
+    }
+    try{
+        mouse = IMG_Load3("gfx/mouse.png");
+    } catch (exception e) {
+        cout << e.what() << endl;
         exit(1);
     }
 
@@ -548,7 +589,8 @@ static int InitImages()
     CONVERTA(iBlueFont);
     CONVERTA(iSmallFont);
     CONVERTA(iGameOver);
-    CONVERTA(mouse);
+//    CONVERTA(mouse);
+    mouse.OptimizeForBlit(true);
     CONVERTA(stageBobble);
     CONVERTA(transCover);
     //Editor:
@@ -702,7 +744,8 @@ void UnloadImages()
     SDL_FreeSurface(smiley[2]);
     SDL_FreeSurface(smiley[3]);
     SDL_FreeSurface(transCover);
-    SDL_FreeSurface(mouse);
+    //SDL_FreeSurface(mouse);
+    mouse.MakeNull();
     
 }
 
@@ -1763,7 +1806,8 @@ int OpenControlsBox(int x, int y, int player)
             }
         }	//get mouse state
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen);
     }	//while !done
     DrawIMG(background, screen, 0, 0);
@@ -2059,7 +2103,8 @@ void OpenScoresDisplay()
             }
         }
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //Update screen
     }
 
@@ -2158,7 +2203,8 @@ bool OpenFileDialogbox(int x, int y, char *name)
             }
         }
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //Update screen
     }
 }
@@ -2255,7 +2301,8 @@ bool SelectThemeDialogbox(int x, int y, char *name)
             }
         }
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //Update screen
     }
 }
@@ -2357,7 +2404,8 @@ bool OpenReplayDialogbox(int x, int y, char *name)
             }
         }
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //Update screen
     }
 }
@@ -2812,7 +2860,8 @@ int PuzzleLevelSelect()
                     }
         }
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //draws it all to the screen
 
     } while (!levelSelected);
@@ -2964,7 +3013,8 @@ int StageLevelSelect()
             string totalString = "Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
             SFont_Write(screen,fBlueFont,200,600,totalString.c_str());   
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //draws it all to the screen
 
     } while (!levelSelected);
@@ -3046,7 +3096,8 @@ int startSingleVs()
 
         SDL_GetMouseState(&mousex,&mousey);
         DrawIMG(background, screen, 0, 0);
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //draws it all to the screen
     }while (!done);
 
@@ -3186,7 +3237,8 @@ void startVsMenu()
                 done = true;
         }
 
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //draws it all to the screen
         SDL_Delay(10);
 
@@ -4843,7 +4895,8 @@ int main(int argc, char *argv[])
         oldMousex = mousex;
         oldMousey = mousey;
         //Draw the mouse:
-        DrawIMG(mouse,screen,mousex,mousey);
+        //DrawIMG(mouse,screen,mousex,mousey);
+        mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen);
     } //game loop
 

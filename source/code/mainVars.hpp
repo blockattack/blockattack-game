@@ -147,7 +147,8 @@ static SDL_Surface *bNext;
 //SDL_Surface *menuMarked;
 //SDL_Surface *menuUnmarked;
 //end new in 1.4.0
-static SDL_Surface *mouse;				//The mouse cursor
+//static SDL_Surface *mouse;				//The mouse cursor
+static CppSdl::CppSdlImageHolder mouse;
 
 
 static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat

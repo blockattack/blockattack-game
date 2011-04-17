@@ -2,12 +2,19 @@ GAMEDIR=../../Game/
 
 BINARY=$(GAMEDIR)blockattack
 
+ifndef CC
 CC=gcc
+endif
 
+ifndef CPP
 CPP=g++
+endif
 
 BASE_CFLAGS=-c $(shell sdl-config --cflags)
 
+ifndef BUILDDIR
+BUILDDIR=build
+endif
 
 BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer 
 #-lSDL_ttf
@@ -37,51 +44,52 @@ endif
 
 BASE_LIBS += -lphysfs
 
-$(BINARY): 	build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o
-	$(CPP) -O -o $(BINARY) build/main.o build/highscore.o build/SFont.o build/ReadKeyboard.o build/joypad.o build/listFiles.o build/replay.o build/common.o build/stats.o $(BASE_LIBS)
+$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/SFont.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o
+	@make -C CppSdl
+	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/SFont.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o $(BASE_LIBS)
 #-lphysfs
 
-build/main.o:	main.cpp mainVars.hpp common.h
-	$(CPP) $(BASE_CFLAGS) main.cpp -o build/main.o
+$(BUILDDIR)/main.o:	main.cpp mainVars.hpp common.h
+	$(CPP) $(BASE_CFLAGS) main.cpp -o $(BUILDDIR)/main.o
 
-build/blockgame.o:	BlockGame.hpp BlockGame.cpp
-	$(CPP) $(BASE_CFLAGS) BlockGame.cpp -o build/blockgame.o
+$(BUILDDIR)/blockgame.o:	BlockGame.hpp BlockGame.cpp
+	$(CPP) $(BASE_CFLAGS) BlockGame.cpp -o $(BUILDDIR)/blockgame.o
 
-build/highscore.o: highscore.h highscore.cpp
-	$(CPP) $(BASE_CFLAGS) highscore.cpp -o build/highscore.o
+$(BUILDDIR)/highscore.o: highscore.h highscore.cpp
+	$(CPP) $(BASE_CFLAGS) highscore.cpp -o $(BUILDDIR)/highscore.o
 
-build/SFont.o: SFont.h SFont.c
-	$(CC) $(BASE_CFLAGS) SFont.c -o build/SFont.o
+$(BUILDDIR)/SFont.o: SFont.h SFont.c
+	$(CC) $(BASE_CFLAGS) SFont.c -o $(BUILDDIR)/SFont.o
 
-build/ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
-	$(CPP) $(BASE_CFLAGS) ReadKeyboard.cpp -o build/ReadKeyboard.o
+$(BUILDDIR)/ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
+	$(CPP) $(BASE_CFLAGS) ReadKeyboard.cpp -o $(BUILDDIR)/ReadKeyboard.o
 
-build/joypad.o: joypad.h joypad.cpp
-	$(CPP) $(BASE_CFLAGS) joypad.cpp -o build/joypad.o
+$(BUILDDIR)/joypad.o: joypad.h joypad.cpp
+	$(CPP) $(BASE_CFLAGS) joypad.cpp -o $(BUILDDIR)/joypad.o
 
-build/listFiles.o: listFiles.h listFiles.cpp
-	$(CPP) $(BASE_CFLAGS) listFiles.cpp -o build/listFiles.o
+$(BUILDDIR)/listFiles.o: listFiles.h listFiles.cpp
+	$(CPP) $(BASE_CFLAGS) listFiles.cpp -o $(BUILDDIR)/listFiles.o
 
-build/replay.o: replay.h replay.cpp
-	$(CPP) $(BASE_CFLAGS) replay.cpp -o build/replay.o
+$(BUILDDIR)/replay.o: replay.h replay.cpp
+	$(CPP) $(BASE_CFLAGS) replay.cpp -o $(BUILDDIR)/replay.o
 
-build/stats.o: stats.h stats.cc
-	$(CPP) $(BASE_CFLAGS) stats.cc -o build/stats.o
+$(BUILDDIR)/stats.o: stats.h stats.cc
+	$(CPP) $(BASE_CFLAGS) stats.cc -o $(BUILDDIR)/stats.o
 
-build/common.o: common.h common.cc
-	$(CPP) $(BASE_CFLAGS) common.cc -o build/common.o
+$(BUILDDIR)/common.o: common.h common.cc
+	$(CPP) $(BASE_CFLAGS) common.cc -o $(BUILDDIR)/common.o
 
-#build/uploadReplay.o: uploadReplay.cc uploadReplay.h
-#	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o build/uploadReplay.o
+#$(BUILDDIR)/uploadReplay.o: uploadReplay.cc uploadReplay.h
+#	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o $(BUILDDIR)/uploadReplay.o
 
-#build/MenuSystem.o: MenuSystem.cc MenuSystem.h
-#	$(CPP) $(BASE_CFLAGS) MenuSystem.cc -o build/MenuSystem.o
+#$(BUILDDIR)/MenuSystem.o: MenuSystem.cc MenuSystem.h
+#	$(CPP) $(BASE_CFLAGS) MenuSystem.cc -o $(BUILDDIR)/MenuSystem.o
 
-#build/ttfont.o: ttfont.h ttfont.cc
-#	$(CPP) $(BASE_CFLAGS) ttfont.cc -o build/ttfont.o
+#$(BUILDDIR)/ttfont.o: ttfont.h ttfont.cc
+#	$(CPP) $(BASE_CFLAGS) ttfont.cc -o $(BUILDDIR)/ttfont.o
 
 
 run: $(BINARY)
 
 clean:
-	rm build/*o
+	rm $(BUILDDIR)/*o

@@ -1,6 +1,8 @@
 #CppSdl/Makefile
 
+ifndef CPP
 CPP=g++
+endif
 
 OUTDIR=../build
 
@@ -8,6 +10,8 @@ ODIR=$(OUTDIR)/
 
 BASE_CFLAGS=-c $(shell sdl-config --cflags)
 BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer 
+
+DEBUG=1
 
 #Compile with debug information or optimized.
 ifeq ($(DEBUG),1)

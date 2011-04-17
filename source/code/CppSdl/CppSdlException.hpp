@@ -27,7 +27,7 @@ public:
     virtual ~CppSdlException() throw();
     virtual const char* what() const throw();
     long GetErrorNumber();
-    long GetSubSystem();
+    Subsystem GetSubSystem();
 private:
     std::string _message;
     long _errorNumber;

@@ -18,8 +18,8 @@ CppSdlException::CppSdlException(Subsystem subsystem,long errorNumber, std::stri
 CppSdlException::CppSdlException(const CppSdlException& orig) {
 }
 
-//CppSdlException::~CppSdlException() {
-//}
+CppSdlException::~CppSdlException() throw() {
+}
 
 const char* CppSdlException::what() const throw() {
     return _message.c_str();
