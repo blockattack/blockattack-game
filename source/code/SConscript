@@ -12,7 +12,9 @@ joypad.cpp
 listFiles.cpp
 replay.cpp
 stats.cc
-common.cc""")
+common.cc
+CppSdl/CppSdlImageHolder.cpp
+CppSdl/CppSdlException.cpp""")
 
 # Modify Build Environment #
 env.ParseConfig('sdl-config --cflags --libs')
