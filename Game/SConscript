@@ -3,12 +3,11 @@
 #-------------#
 Import('*')
 
-env.Install ('$destdir/$sharedir/gfx/smileys/',[
-'blockattack.data'])
+env.Install ('$destdir/$sharedir/',['blockattack.data'])
 env.Alias('install',['$destdir/$sharedir'])
 
 env.Install ('$destdir/$sharedir/res/',[
-'res/testPuzzles',
-'res/puzzle.levels'])
+'puzzles/testPuzzles',
+'puzzles/puzzle.levels'])
 env.Alias('install', ['$destdir/$sharedir/res'])
 
