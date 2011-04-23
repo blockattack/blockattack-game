@@ -368,7 +368,6 @@ static int InitImages()
 {
     if (!((backgroundImage = IMG_Load2("gfx/background.png"))
             && (background = IMG_Load2("gfx/blackBackGround.png"))
-            && (bNewGame = IMG_Load2("gfx/bNewGame.png"))
             && (b1player = IMG_Load2("gfx/bOnePlayer.png"))
             && (b2players = IMG_Load2("gfx/bTwoPlayers.png"))
             && (bVsMode = IMG_Load2("gfx/bVsGame.png"))
@@ -496,6 +495,7 @@ static int InitImages()
         exit(1);
     }
     try{
+        bNewGame = IMG_Load3("gfx/bNewGame.png");
         mouse = IMG_Load3("gfx/mouse.png");
     } catch (exception e) {
         cout << e.what() << endl;
@@ -505,7 +505,6 @@ static int InitImages()
 
     //Prepare for fast blittering!
     CONVERT(background);
-    CONVERT(bNewGame);
     CONVERT(backgroundImage);
     CONVERT(b1player);
     CONVERT(b2players);
@@ -591,6 +590,7 @@ static int InitImages()
     CONVERTA(iGameOver);
 //    CONVERTA(mouse);
     mouse.OptimizeForBlit(true);
+    bNewGame.OptimizeForBlit(true);
     CONVERTA(stageBobble);
     CONVERTA(transCover);
     //Editor:
@@ -663,7 +663,7 @@ void UnloadImages()
     //Chrashes no more. Caused by an undocumented double free
     SDL_FreeSurface(backgroundImage);
     SDL_FreeSurface(background);
-    SDL_FreeSurface(bNewGame);
+    //SDL_FreeSurface(bNewGame);
     SDL_FreeSurface(b1player);
     SDL_FreeSurface(b2players);
     SDL_FreeSurface(bVsMode);
@@ -746,7 +746,7 @@ void UnloadImages()
     SDL_FreeSurface(transCover);
     //SDL_FreeSurface(mouse);
     mouse.MakeNull();
-    
+    bNewGame.MakeNull();
 }
 
 //Function to convert numbers to string
@@ -2504,7 +2504,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
         #endif
         {
             //Here we draw the menu
-            DrawIMG(bNewGame, screen, 0, 0);
+            bNewGame.PaintTo(screen,0,0);
             DrawIMG(bOptions, screen, buttonXsize,0);
             DrawIMG(bHighScore, screen, 2*buttonXsize,0);
             DrawIMG(bReplay,screen,3*buttonXsize,0);

@@ -50,7 +50,7 @@ static SDL_Surface *bVsMode;
 static SDL_Surface *bVsModeConfig; //Added in 1.4.0
 static SDL_Surface *bStageClear;
 static SDL_Surface *bPuzzle;
-static SDL_Surface *bNewGame;      //The New Game botton
+static CppSdl::CppSdlImageHolder bNewGame;      //The New Game botton
 static SDL_Surface *bEndless;      //Endless button (sub to new)
 static SDL_Surface *bTimeTrial;    //Time trial button (sub to new)
 static SDL_Surface *bOptions;      //The Options botton
