@@ -1,7 +1,7 @@
 [Project]
 FileName=BlockAttackWin32.dev
 Name=BlockAttackWin32
-UnitCount=20
+UnitCount=24
 Type=0
 Ver=1
 ObjFiles=
@@ -178,9 +178,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit23]
-FileName=editor\editorMain.hpp
+FileName=CppSdl\CppSdlImageHolder.cpp
 CompileCpp=1
-Folder=editor
+Folder=BlockAttackWin32
 Compile=1
 Link=1
 Priority=1000
@@ -188,9 +188,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit24]
-FileName=editor\editorMain.cpp
+FileName=CppSdl\CppSdlException.cpp
 CompileCpp=1
-Folder=editor
+Folder=BlockAttackWin32
 Compile=1
 Link=1
 Priority=1000
@@ -418,9 +418,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit22]
-FileName=editor\EditorInterface.cpp
+FileName=CppSdl\CppSdlException.hpp
 CompileCpp=1
-Folder=editor
+Folder=BlockAttackWin32
 Compile=1
 Link=1
 Priority=1000
@@ -459,6 +459,16 @@ BuildCmd=
 
 [Unit20]
 FileName=stats.cc
+CompileCpp=1
+Folder=BlockAttackWin32
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit21]
+FileName=CppSdl\CppSdlImageHolder.hpp
 CompileCpp=1
 Folder=BlockAttackWin32
 Compile=1
