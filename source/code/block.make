@@ -16,8 +16,7 @@ ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer 
-#-lSDL_ttf
+BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
 
 #For developement only 
 ifndef DEBUG
@@ -44,9 +43,9 @@ endif
 
 BASE_LIBS += -lphysfs
 
-$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/SFont.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o
+$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/nfont.o
 	@make -C CppSdl
-	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/SFont.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o $(BASE_LIBS)
+	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o  $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o  $(BUILDDIR)/nfont.o $(BASE_LIBS)
 #-lphysfs
 
 $(BUILDDIR)/main.o:	main.cpp mainVars.hpp common.h
@@ -58,8 +57,6 @@ $(BUILDDIR)/blockgame.o:	BlockGame.hpp BlockGame.cpp
 $(BUILDDIR)/highscore.o: highscore.h highscore.cpp
 	$(CPP) $(BASE_CFLAGS) highscore.cpp -o $(BUILDDIR)/highscore.o
 
-$(BUILDDIR)/SFont.o: SFont.h SFont.c
-	$(CC) $(BASE_CFLAGS) SFont.c -o $(BUILDDIR)/SFont.o
 
 $(BUILDDIR)/ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
 	$(CPP) $(BASE_CFLAGS) ReadKeyboard.cpp -o $(BUILDDIR)/ReadKeyboard.o
@@ -78,6 +75,9 @@ $(BUILDDIR)/stats.o: stats.h stats.cc
 
 $(BUILDDIR)/common.o: common.h common.cc
 	$(CPP) $(BASE_CFLAGS) common.cc -o $(BUILDDIR)/common.o
+
+$(BUILDDIR)/nfont.o: Libs/NFont.h Libs/NFont.cpp
+	$(CPP) $(BASE_CFLAGS) Libs/NFont.cpp -o $(BUILDDIR)/nfont.o
 
 #$(BUILDDIR)/uploadReplay.o: uploadReplay.cc uploadReplay.h
 #	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o $(BUILDDIR)/uploadReplay.o

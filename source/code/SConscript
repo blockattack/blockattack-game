@@ -6,7 +6,7 @@ Import('*')
 # Sources #
 src = Split("""main.cpp
 highscore.cpp
-SFont.c
+Libs/NFont.c
 ReadKeyboard.cpp
 joypad.cpp
 listFiles.cpp

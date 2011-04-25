@@ -4,5 +4,6 @@ cd Game
 zip -9r blockattack.data gfx -x \*svn*
 zip -9r blockattack.data music -x \*svn*
 zip -9r blockattack.data sound -x \*svn*
+zip -9r blockattack.data fonts -x \*svn*
 
 exit 0

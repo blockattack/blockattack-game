@@ -92,8 +92,8 @@ static SDL_Surface *counter[3];    //Counts down from 3
 static SDL_Surface *bricks[7];     //The bricks, saved in an array of pointers
 static SDL_Surface *crossover;     //Cross the bricks that will be cleared soon
 static SDL_Surface *balls[7];      //The balls (the small ones that jump around)
-static SDL_Surface *iBlueFont;      //Contains the blue font used
-static SDL_Surface *iSmallFont;	//Small font used for the chain text
+//static SDL_Surface *iBlueFont;      //Contains the blue font used
+//static SDL_Surface *iSmallFont;	//Small font used for the chain text
 static SDL_Surface *optionsBack;
 static SDL_Surface *changeButtonsBack;
 static SDL_Surface *dialogBox;
@@ -154,9 +154,12 @@ static CppSdl::CppSdlImageHolder mouse;
 static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
 
 
-static SFont_Font *fBlueFont;      //Stores the blue font (SFont)
-static SFont_Font *fSmallFont;		//Stores the small font (SFont)
+//static SFont_Font *fBlueFont;      //Stores the blue font (SFont)
+//static SFont_Font *fSmallFont;		//Stores the small font (SFont)
 //TTFont ttfont;           //Stores the TTF font (TTFSDL)
+static NFont nf_button_font;        //Font used for buttons!
+static NFont nf_standard_blue_font;      //Font used instead of the old blue SFont
+static NFont nf_standard_small_font;
 
 static Mix_Music *bgMusic;         //backgroundMusic
 static Mix_Music *highbeatMusic;   //Background music with higher beat

@@ -65,10 +65,13 @@ Copyright (C) 2008 Poul Sander
 #include <SDL_image.h>      //To load PNG images!
 #include <physfs.h>         //Abstract file system. To use containers
 #include "physfs_stream.hpp" //To use C++ style file streams
+#include "Libs/NFont.h"
 //#include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
 #include <vector>
 #include <SDL/SDL_timer.h>
+#include <SDL/SDL_video.h>
+#include <SDL/SDL_ttf.h>
 #include "CppSdl/CppSdlImageHolder.hpp"
 //#include "MenuSystem.h"
 
@@ -85,7 +88,7 @@ Copyright (C) 2008 Poul Sander
 #endif
 //enet things end
 
-#include "SFont.h"          //Used to write on screen
+//#include "SFont.h"          //Used to write on screen
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "joypad.h"         //Used for joypads
@@ -246,26 +249,60 @@ void loadTheme(string themeName)
     loaded = true;
 }
 
-/*TTF_Font * TTF_OpenFont2(char* path, int ptsize) {
 
-    char * tmp;
-    TTF_Font * ret=NULL;
-    tmp = (char*)malloc (sizeof(char)*(strlen(path)+strlen(sharedir)+2));
-    strcpy(tmp, sharedir);
-    strcat(tmp, "/");
-    strcat(tmp, path);
-#if DEBUG
-    printf("loading %s\n",tmp);
-#endif
+long NFont_OpenFont(NFont *target, string path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL) {
+    if (!PHYSFS_exists(path.c_str()))
+    {
+        cout << "File not in blockattack.data: " << path << endl;
+        return -1; //file doesn't exist
+    }
+
     if(!(TTF_WasInit()))
        TTF_Init();
-    if (!(ret = TTF_OpenFont(tmp, ptsize)))
-        ret = TTF_OpenFont(path, ptsize);
-    if(!ret)
-        cout << "failed to load font: " << TTF_GetError() << endl;
-    free(tmp);
-    return ret;
-}*/
+
+    PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
+
+    // Get the lenght of the file
+    unsigned int m_size = PHYSFS_fileLength(myfile);
+
+    // Get the file data.
+    char *m_data = new char[m_size];
+    int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
+
+    if (length_read != (int)m_size)
+    {
+            delete [] m_data;
+            m_data = 0;
+            PHYSFS_close(myfile);
+            cout << "Error. Curropt data file!" << endl;
+            return NULL;
+    }
+
+    PHYSFS_close(myfile);
+
+// And this is how you load from a memory buffer with SDL
+    SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+
+    //The above might fail an return null.
+    if(!rw)
+    {
+        delete [] m_data;
+        m_data = 0;
+        PHYSFS_close(myfile);
+        cout << "Error. Curropt data file!" << endl;
+        return -2;
+    }
+
+    TTF_Font *font;
+    font=TTF_OpenFontRW(rw, 1, ptsize);
+    TTF_SetFontStyle(font,style);
+
+    target->load(font,color);
+
+    TTF_CloseFont(font); //Once loaded we don't care anymore!
+
+    return 0;
+}
 
 
 Mix_Music * Mix_LoadMUS2(string path)
@@ -427,8 +464,8 @@ static int InitImages()
             && (iDraw = IMG_Load2((char*)"gfx/iDraw.png"))
             && (iLoser = IMG_Load2((char*)"gfx/iLoser.png"))
             && (iChainBack = IMG_Load2((char*)"gfx/chainFrame.png"))
-            && (iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png"))
-            && (iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png"))
+            //&& (iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png"))
+       //     && (iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png"))
             && (optionsBack = IMG_Load2((char*)"gfx/options.png"))
             && (bOn = IMG_Load2((char*)"gfx/bOn.png"))
             && (bOff = IMG_Load2((char*)"gfx/bOff.png"))
@@ -585,8 +622,8 @@ static int InitImages()
     CONVERTA(iDraw);
     CONVERTA(iLoser);
     CONVERTA(iChainBack);
-    CONVERTA(iBlueFont);
-    CONVERTA(iSmallFont);
+    //CONVERTA(iBlueFont);
+    //CONVERTA(iSmallFont);
     CONVERTA(iGameOver);
 //    CONVERTA(mouse);
     mouse.OptimizeForBlit(true);
@@ -612,13 +649,24 @@ static int InitImages()
     #endif
     
     //Here comes the fonts:
-    fBlueFont = SFont_InitFont(iBlueFont);
-    fSmallFont = SFont_InitFont(iSmallFont);
+    //fBlueFont = SFont_InitFont(iBlueFont);
+    //fSmallFont = SFont_InitFont(iSmallFont);
     
     //And the ttf font:
     /*TTF_Font *ttFont1 = TTF_OpenFont2((char*)"fonts/FreeSerif.ttf", 24);
     TTF_SetFontStyle(ttFont1,TTF_STYLE_BOLD);
     ttfont = TTFont(ttFont1);*/
+    SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
+    memset(&nf_button_color,0,sizeof(SDL_Color));
+    nf_button_color.b = 255; nf_button_color.g = 255; nf_button_color.r = 255;
+    nf_standard_blue_color.b = 255; nf_standard_blue_color.g = 0; nf_standard_blue_color.r = 0;
+    nf_standard_small_color.b = 0; nf_standard_small_color.g = 0; nf_standard_small_color.r = 200;
+    NFont_OpenFont(&nf_button_font,"fonts/FreeSerif.ttf",24,nf_button_color);
+    nf_button_font.setDest(screen);
+    NFont_OpenFont(&nf_standard_blue_font,"fonts/FreeSerif.ttf",30,nf_standard_blue_color);
+    nf_standard_blue_font.setDest(screen);
+    NFont_OpenFont(&nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
+    nf_standard_small_font.setDest(screen);
 
 //Loads the sound if sound present
     if (!NoSound)
@@ -644,8 +692,8 @@ void UnloadImages()
 {
     cout << "Unloading data..." << endl;
     //Fonts and Sounds needs to be freed
-    SFont_FreeFont(fBlueFont);
-    SFont_FreeFont(fSmallFont);
+    //SFont_FreeFont(fBlueFont);
+    //SFont_FreeFont(fSmallFont);
     if (!NoSound) //Only unload then it has been loaded!
     {
         Mix_HaltMusic();
@@ -816,6 +864,12 @@ void DrawIMG(SDL_Surface *img, SDL_Surface * target, int x, int y, int w, int h,
     dest2.w = w;
     dest2.h = h;
     SDL_BlitSurface(img, &dest2, target, &dest);
+}
+
+void NFont_Write(SDL_Surface *target,int x,int y,string text) {
+    nf_standard_blue_font.setDest(target);
+    nf_standard_blue_font.draw(x,y,text.c_str());
+    nf_standard_blue_font.setDest(screen);
 }
 
 //Menu
@@ -1204,7 +1258,6 @@ static textManeger theTextManeger;
 //Here comes the Block Game object
 #include "BlockGame.hpp"
 #include "BlockGame.cpp"
-#include "SFont.h"
 
 class BlockGameSdl : public BlockGame {
 public:
@@ -1466,6 +1519,7 @@ public:
     //Draws everything
     void DoPaintJob() {
         DrawIMG(backBoard, sBoard, 0, 0);
+        nf_standard_blue_font.setDest(sBoard); //reset to screen at the end of this funciton!
         #if NETWORK
         if ((!bReplaying)&&(!bNetworkPlayer))
         #else
@@ -1478,7 +1532,9 @@ public:
         if (puzzleMode&&(!bGameOver)) {
             //We need to write nr. of moves left!
             strHolder = "Moves left: " + itoa(MovesLeft);
-            SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
+            //NFont_Write(sBoard,   5, 5, strHolder.c_str());
+            nf_standard_blue_font.draw(5,5,strHolder.c_str());
+            
         }
         if(puzzleMode && stageButtonStatus == SBpuzzleMode)
         {
@@ -1493,7 +1549,8 @@ public:
             else
             {
                 strHolder = "Last puzzle";
-                SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
+                //NFont_Write(sBoard,   5, 5, strHolder.c_str());
+                nf_standard_blue_font.draw(5,5,strHolder.c_str());
             }
         }
         if(stageClear && stageButtonStatus == SBstageClear)
@@ -1509,14 +1566,16 @@ public:
             else
             {
                 strHolder = "Last stage";
-                SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
+                //NFont_Write(sBoard,   5, 5, strHolder.c_str());
+                nf_standard_blue_font.draw(5,5,strHolder.c_str());
             }
         }
 
 #if DEBUG
         if (AI_Enabled&&(!bGameOver)) {
             strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
-            SFont_Write(sBoard, fBlueFont, 5, 5, strHolder.c_str());
+            //NFont_Write(sBoard,   5, 5, strHolder.c_str());
+            nf_standard_blue_font.draw(5,5,strHolder.c_str());
         }
 #endif
         if (!bGameOver)DrawIMG(cursor[(ticks/600)%2],sBoard,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
@@ -1567,6 +1626,7 @@ public:
             else if (bDraw) DrawIMG(iDraw, sBoard, 0, 5*bsize);
             else
                 DrawIMG(iGameOver, sBoard, 0, 5*bsize);
+            nf_standard_blue_font.setDest(screen);
     }
 
 
@@ -1628,34 +1688,34 @@ int OpenControlsBox(int x, int y, int player)
         DrawIMG(background, screen, 0, 0);
         DrawIMG(changeButtonsBack,screen,x,y);
         if (player == 0)
-            SFont_Write(screen,fBlueFont,x+40,y+2,"Player 1 keys");
+            NFont_Write(screen, x+40,y+2,"Player 1 keys");
         else
-            SFont_Write(screen,fBlueFont,x+40,y+2,"Player 2 keys");
-        SFont_Write(screen,fBlueFont,x+6,y+50,"Up");
+            NFont_Write(screen, x+40,y+2,"Player 2 keys");
+        NFont_Write(screen, x+6,y+50,"Up");
         keyname = getKeyName(keySettings[player].up);
-        SFont_Write(screen,fBlueFont,x+200,y+50,keyname.c_str());
-        SFont_Write(screen,fBlueFont,x+6,y+100,"Down");
+        NFont_Write(screen, x+200,y+50,keyname.c_str());
+        NFont_Write(screen, x+6,y+100,"Down");
         keyname = getKeyName(keySettings[player].down);
-        SFont_Write(screen,fBlueFont,x+200,y+100,keyname.c_str());
-        SFont_Write(screen,fBlueFont,x+6,y+150,"Left");
+        NFont_Write(screen, x+200,y+100,keyname.c_str());
+        NFont_Write(screen, x+6,y+150,"Left");
         keyname = getKeyName(keySettings[player].left);
-        SFont_Write(screen,fBlueFont,x+200,y+150,keyname.c_str());
-        SFont_Write(screen,fBlueFont,x+6,y+200,"Right");
+        NFont_Write(screen, x+200,y+150,keyname.c_str());
+        NFont_Write(screen, x+6,y+200,"Right");
         keyname = getKeyName(keySettings[player].right);
-        SFont_Write(screen,fBlueFont,x+200,y+200,keyname.c_str());
-        SFont_Write(screen,fBlueFont,x+6,y+250,"Push");
+        NFont_Write(screen, x+200,y+200,keyname.c_str());
+        NFont_Write(screen, x+6,y+250,"Push");
         keyname = getKeyName(keySettings[player].push);
-        SFont_Write(screen,fBlueFont,x+200,y+250,keyname.c_str());
-        SFont_Write(screen,fBlueFont,x+6,y+300,"Change");
+        NFont_Write(screen, x+200,y+250,keyname.c_str());
+        NFont_Write(screen, x+6,y+300,"Change");
         keyname = getKeyName(keySettings[player].change);
-        SFont_Write(screen,fBlueFont,x+200,y+300,keyname.c_str());
+        NFont_Write(screen, x+200,y+300,keyname.c_str());
         //Ask for mouse play
-        SFont_Write(screen,fBlueFont,x+6,y+350,"Mouse play?");
+        NFont_Write(screen, x+6,y+350,"Mouse play?");
         DrawIMG(iLevelCheckBox,screen,x+220,y+350);
         if (((player==0)&&(mouseplay1))||((player==2)&&(mouseplay2)))
             DrawIMG(iLevelCheck,screen,x+220,y+350); //iLevelCheck witdh is 42
         //Ask for joypad play
-        SFont_Write(screen,fBlueFont,x+300,y+350,"Joypad?");
+        NFont_Write(screen, x+300,y+350,"Joypad?");
         DrawIMG(iLevelCheckBox,screen,x+460,y+350);
         if (((player==0)&&(joyplay1))||((player==2)&&(joyplay2)))
             DrawIMG(iLevelCheck,screen,x+460,y+350); //iLevelCheck witdh is 42
@@ -1831,12 +1891,12 @@ bool OpenDialogbox(int x, int y, char *name)
     while (!done)
     {
         DrawIMG(dialogBox,screen,x,y);
-        SFont_Write(screen,fBlueFont,x+40,y+72,rk.GetString());
+        NFont_Write(screen, x+40,y+72,rk.GetString());
         strHolder = rk.GetString();
         strHolder.erase((int)rk.CharsBeforeCursor());
 
         if (((SDL_GetTicks()/600)%2)==1)
-            SFont_Write(screen,fBlueFont,x+40+SFont_TextWidth(fBlueFont,strHolder.c_str()),y+69,"|");
+            NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( strHolder.c_str()),y+69,"|");
 
         SDL_Event event;
 
@@ -1895,8 +1955,8 @@ void DrawHighscores(int x, int y, bool endless)
 {
     MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
-    if (endless) SFont_Write(screen,fBlueFont,x+100,y+100,"Endless:");
-    else SFont_Write(screen,fBlueFont,x+100,y+100,"Time Trial:");
+    if (endless) nf_standard_blue_font.draw(x+100,y+100,"Endless:");
+    else nf_standard_blue_font.draw(x+100,y+100,"Time Trial:"); 
     for (int i =0;i<10;i++)
     {
         char playerScore[32];
@@ -1917,8 +1977,8 @@ void DrawHighscores(int x, int y, bool endless)
         {
             strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
         }
-        SFont_Write(screen,fBlueFont,x+420,y+150+i*35,playerScore);
-        SFont_Write(screen,fBlueFont,x+60,y+150+i*35,playerName);
+        nf_standard_blue_font.draw(x+420,y+150+i*35,playerScore);
+        nf_standard_blue_font.draw(x+60,y+150+i*35,playerName);
     }
 }
 
@@ -1928,62 +1988,62 @@ void DrawStats()
     DrawIMG(background,screen,0,0);
     int y = 5;
     const int y_spacing = 30;
-    SFont_Write(screen,fBlueFont,10,y,"Stats");
+    NFont_Write(screen, 10,y,"Stats");
     y+=y_spacing*2;
-    SFont_Write(screen,fBlueFont,10,y,"Chains");
+    NFont_Write(screen, 10,y,"Chains");
     for(int i=2;i<13;i++)
     {
         y+=y_spacing;
-        SFont_Write(screen,fBlueFont,10,y,(itoa(i)+"X").c_str());
+        NFont_Write(screen, 10,y,(itoa(i)+"X").c_str());
         string numberAsString = itoa(Stats::getInstance()->getNumberOf("chainX"+itoa(i)));
-        SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
+        NFont_Write(screen, 300,y,numberAsString.c_str());
     }
     y+=y_spacing*2;
-    SFont_Write(screen,fBlueFont,10,y,"Lines Pushed: ");
+    NFont_Write(screen, 10,y,"Lines Pushed: ");
     string numberAsString = itoa(Stats::getInstance()->getNumberOf("linesPushed"));
-    SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
+    NFont_Write(screen, 300,y,numberAsString.c_str());
 
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,10,y,"Puzzles solved: ");
+    NFont_Write(screen, 10,y,"Puzzles solved: ");
     numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
-    SFont_Write(screen,fBlueFont,300,y,numberAsString.c_str());
+    NFont_Write(screen, 300,y,numberAsString.c_str());
 
     y+=y_spacing*2;
-    SFont_Write(screen,fBlueFont,10,y,"Run time: ");
+    NFont_Write(screen, 10,y,"Run time: ");
     commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,10,y,((string)("Days: "+itoa(ct.days))).c_str());
+    NFont_Write(screen, 10,y,((string)("Days: "+itoa(ct.days))).c_str());
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,10,y,((string)("Hours: "+itoa(ct.hours))).c_str());
+    NFont_Write(screen, 10,y,((string)("Hours: "+itoa(ct.hours))).c_str());
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,10,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
+    NFont_Write(screen, 10,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,10,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+    NFont_Write(screen, 10,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
 
     y-=y_spacing*4; //Four rows back
     const int x_offset3 = xsize/3+10; //Ofset for three rows
-    SFont_Write(screen,fBlueFont,x_offset3,y,"Play time: ");
+    NFont_Write(screen, x_offset3,y,"Play time: ");
     ct = TimeHandler::getTime("playTime");
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Days: "+itoa(ct.days))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)("Days: "+itoa(ct.days))).c_str());
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Hours: "+itoa(ct.hours))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)("Hours: "+itoa(ct.hours))).c_str());
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
     y+=y_spacing;
-    SFont_Write(screen,fBlueFont,x_offset3,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
 
     const int x_offset = xsize/2+10;
     y = 5+y_spacing*2;
-    SFont_Write(screen,fBlueFont,x_offset,y,"VS CPU (win/loss)");
+    NFont_Write(screen, x_offset,y,"VS CPU (win/loss)");
     for(int i=0;i<7;i++)
     {
         y += y_spacing;
-        SFont_Write(screen,fBlueFont,x_offset,y,("AI "+itoa(i+1)).c_str());
+        NFont_Write(screen, x_offset,y,("AI "+itoa(i+1)).c_str());
         numberAsString = itoa(Stats::getInstance()->getNumberOf("defeatedAI"+itoa(i)));
         string numberAsString2 = itoa(Stats::getInstance()->getNumberOf("defeatedByAI"+itoa(i)));
         string toPrint = numberAsString + "/" + numberAsString2;
-        SFont_Write(screen,fBlueFont,x_offset+230,y,toPrint.c_str());
+        NFont_Write(screen, x_offset+230,y,toPrint.c_str());
     }
 }
 
@@ -2024,7 +2084,7 @@ void OpenScoresDisplay()
 
         //Draw page number
         string pageXofY = ((string)"Page ")+itoa(page+1)+((string)" of ")+itoa(numberOfPages);
-        SFont_Write(screen,fBlueFont,xsize/2-SFont_TextWidth(fBlueFont,pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
+        NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
         
         SDL_Delay(10);
         SDL_Event event;
@@ -2138,7 +2198,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
         DrawIMG(changeButtonsBack,screen,x,y);
         for (int i=0;i<nrOfFiles;i++)
         {
-            SFont_Write(screen,fBlueFont,x+10,y+10+36*i,lf.getFileName(i).c_str());
+            NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
         }
 
         SDL_Event event;
@@ -2235,7 +2295,7 @@ bool SelectThemeDialogbox(int x, int y, char *name)
         DrawIMG(changeButtonsBack,screen,x,y);
         for (int i=0;i<nrOfFiles;i++)
         {
-            SFont_Write(screen,fBlueFont,x+10,y+10+36*i,lf.getFileName(i).c_str());
+            NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
         }
 
         SDL_Event event;
@@ -2336,7 +2396,7 @@ bool OpenReplayDialogbox(int x, int y, char *name)
         DrawIMG(changeButtonsBack,screen,x,y);
         for (int i=0;i<nrOfFiles;i++)
         {
-            SFont_Write(screen,fBlueFont,x+10,y+10+36*i,lf.getFileName(i).c_str());
+            NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
         }
 
         SDL_Event event;
@@ -2443,10 +2503,10 @@ static void DrawBalls()
         if (theTextManeger.textUsed[i])
         {
             //cout << "Printing text: " << theTextManeger.textArray[i].getText() << endl;
-            int x = theTextManeger.textArray[i].getX()-SFont_TextWidth(fSmallFont,theTextManeger.textArray[i].getText())/2;
-            int y = theTextManeger.textArray[i].getY()-SFont_TextHeight(fSmallFont)/2;
+            int x = theTextManeger.textArray[i].getX()-12;
+            int y = theTextManeger.textArray[i].getY()-12;
             DrawIMG(iChainBack,screen,x,y);
-            SFont_Write(screen,fSmallFont,x+(25-SFont_TextWidth(fSmallFont,theTextManeger.textArray[i].getText()))/2,y+(25-SFont_TextHeight(fSmallFont))/2,theTextManeger.textArray[i].getText());
+            nf_standard_small_font.drawCenter(x+12,y+7,theTextManeger.textArray[i].getText());
         }
     } //for
 }    //DrawBalls
@@ -2466,8 +2526,8 @@ void UndrawBalls()
         }
         if (theTextManeger.oldTextUsed[i])
         {
-            int x = theTextManeger.oldTextArray[i].getX()-SFont_TextWidth(fSmallFont,theTextManeger.oldTextArray[i].getText())/2;
-            int y = theTextManeger.oldTextArray[i].getY()-SFont_TextHeight(fSmallFont)/2;
+            int x = theTextManeger.oldTextArray[i].getX()-12;
+            int y = theTextManeger.oldTextArray[i].getY()-12;
             DrawIMG(background,screen,x,y,25,25,x,y);
         }
     } //for
@@ -2519,15 +2579,15 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
     DrawIMG(theGame->sBoard,screen,theGame->GetTopX(),theGame->GetTopY());
     string strHolder;
     strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
-    SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
+    NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
     if (theGame->GetAIenabled())
-        SFont_Write(screen,fBlueFont,theGame->GetTopX()+10,theGame->GetTopY()-40,"CPU");
+        NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-40,"CPU");
     else
         if (editorMode)
-            SFont_Write(screen,fBlueFont,theGame->GetTopX()+10,theGame->GetTopY()-40,"Playing field");
+            NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-40,"Playing field");
         else
             if (!singlePuzzle)
-                SFont_Write(screen,fBlueFont,theGame->GetTopX()+10,theGame->GetTopY()-40,player1name);
+                NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-40,player1name);
     if (theGame->isTimeTrial())
     {
         int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
@@ -2549,7 +2609,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
             strHolder = itoa(minutes)+":"+itoa(seconds);
         else strHolder = itoa(minutes)+":0"+itoa(seconds);
         //if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-        SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
+        NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
     }
     else
     {
@@ -2561,13 +2621,13 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
             strHolder = itoa(minutes)+":"+itoa(seconds);
         else
             strHolder = itoa(minutes)+":0"+itoa(seconds);
-        SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
+        NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
     }
     strHolder = itoa(theGame->GetChains());
-    SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+200,strHolder.c_str());
+    NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+200,strHolder.c_str());
     //drawspeedLevel:
     strHolder = itoa(theGame->GetSpeedLevel());
-    SFont_Write(screen,fBlueFont,theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
+    NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
     if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY()))
     {
         oldBubleX = theGame->GetTopX()+280;
@@ -2588,55 +2648,55 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
             //Write a description:
             if(theGame->isTimeTrial())
             {
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "as possible in");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"2 minutes");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "as possible in");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"2 minutes");
             } else if(theGame->isStageClear())
             {
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "You must clear a");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "number of lines.");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"Speed is rapidly");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"increased.");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "You must clear a");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "number of lines.");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"Speed is rapidly");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"increased.");
             } else if(theGame->isPuzzleMode())
             {
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Clear the entire");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "board with a");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limited number of");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"moves.");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Clear the entire");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "board with a");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limited number of");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"moves.");
             } else
             {
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much as");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "possible. No time");
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limit.");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much as");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "possible. No time");
+                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limit.");
             }
 
             //Write the keys that are in use
             int y = theGame2->GetTopY()+400;
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y,"Movement keys:" );
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
+            NFont_Write(screen, theGame2->GetTopX()+7,y,"Movement keys:" );
+            NFont_Write(screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
+            NFont_Write(screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
+            NFont_Write(screen, theGame2->GetTopX()+7,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
             if(theGame->isPuzzleMode())
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+160,("Restart: "+getKeyName(keySettings[0].push) ).c_str() );
+                NFont_Write(screen, theGame2->GetTopX()+7,y+160,("Restart: "+getKeyName(keySettings[0].push) ).c_str() );
             else
-                SFont_Write(screen,fBlueFont,theGame2->GetTopX()+7,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
+                NFont_Write(screen, theGame2->GetTopX()+7,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
         }
         else
             DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
         strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
-        SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
+        NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
         if (theGame2->GetAIenabled())
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+10,theGame2->GetTopY()-40,"CPU");
+            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-40,"CPU");
         else
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+10,theGame2->GetTopY()-40,theGame2->name);
+            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-40,theGame2->name);
         if (theGame2->isTimeTrial())
         {
             int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();
@@ -2659,7 +2719,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
             else
                 strHolder = itoa(minutes)+":0"+itoa(seconds);
             //if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
+            NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
         }
         else
         {
@@ -2671,12 +2731,12 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
                 strHolder = itoa(minutes)+":"+itoa(seconds);
             else
                 strHolder = itoa(minutes)+":0"+itoa(seconds);
-            SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
+            NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
         }
         strHolder = itoa(theGame2->GetChains());
-        SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
+        NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
         strHolder = itoa(theGame2->GetSpeedLevel());
-        SFont_Write(screen,fBlueFont,theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
+        NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
     }
     //player2 finnish
 
@@ -2736,7 +2796,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
         Ticks = SDL_GetTicks();
     }
 
-    SFont_Write(screen,fBlueFont,800,4,FPS);
+    //NFont_Write(screen, 800,4,FPS);
+    nf_standard_blue_font.draw(800,4,FPS);
 #endif
 
     //SDL_Flip(screen); Update screen is now called outside DrawEvrything, bacause the mouse needs to be painted
@@ -2812,7 +2873,7 @@ int PuzzleLevelSelect()
 
         DrawIMG(background, screen, 0, 0);
         DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-        SFont_Write(screen,fBlueFont,xplace+12,yplace+2,"Select Puzzle");
+        NFont_Write(screen, xplace+12,yplace+2,"Select Puzzle");
         //Now drow the fields you click in (and a V if clicked):
         for (int i = 0; i < nrOfPuzzles;i++)
         {
@@ -2939,7 +3000,7 @@ int StageLevelSelect()
         //nowTime=SDL_GetTicks();
         DrawIMG(background, screen, 0, 0);
         DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-        SFont_Write(screen,fBlueFont,xplace+12,yplace+2,"Stage Clear Level Select");
+        NFont_Write(screen, xplace+12,yplace+2,"Stage Clear Level Select");
         for (int i = 0; i < nrOfStageLevels;i++)
         {
             DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
@@ -3005,13 +3066,13 @@ int StageLevelSelect()
                         if(stageTimes[overLevel]>0)
                             timeString = "Time used: "+itoa(stageTimes[overLevel]/1000/60)+" : "+itoa2((stageTimes[overLevel]/1000)%60);
                         
-                        SFont_Write(screen,fBlueFont,200,200,scoreString.c_str());
-                        SFont_Write(screen,fBlueFont,200,250,timeString.c_str());
+                        NFont_Write(screen, 200,200,scoreString.c_str());
+                        NFont_Write(screen, 200,250,timeString.c_str());
                         
                         overLevel;
                     }
             string totalString = "Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
-            SFont_Write(screen,fBlueFont,200,600,totalString.c_str());   
+            NFont_Write(screen, 200,600,totalString.c_str());
 
         //DrawIMG(mouse,screen,mousex,mousey);
         mouse.PaintTo(screen,mousex,mousey);
@@ -3034,13 +3095,13 @@ int startSingleVs()
 
     MakeBackground(xsize,ysize);
     DrawIMG(changeButtonsBack,background,xplace,yplace);
-    SFont_Write(background,fBlueFont,xplace+10,yplace+10,"1 : Very Easy");
-    SFont_Write(background,fBlueFont,xplace+10,yplace+40,"2 : Easy");
-    SFont_Write(background,fBlueFont,xplace+10,yplace+70,"3 : Below Normal");
-    SFont_Write(background,fBlueFont,xplace+10,yplace+100,"4 : Normal");
-    SFont_Write(background,fBlueFont,xplace+10,yplace+130,"5 : Above Normal");
-    SFont_Write(background,fBlueFont,xplace+10,yplace+160,"6 : Hard");
-    SFont_Write(background,fBlueFont,xplace+10,yplace+190,"7 : Hardest");
+    NFont_Write(background, xplace+10,yplace+10,"1 : Very Easy");
+    NFont_Write(background, xplace+10,yplace+40,"2 : Easy");
+    NFont_Write(background, xplace+10,yplace+70,"3 : Below Normal");
+    NFont_Write(background, xplace+10,yplace+100,"4 : Normal");
+    NFont_Write(background, xplace+10,yplace+130,"5 : Above Normal");
+    NFont_Write(background, xplace+10,yplace+160,"6 : Hard");
+    NFont_Write(background, xplace+10,yplace+190,"7 : Hardest");
     DrawIMG(background, screen, 0, 0);
     SDL_Flip(screen);
     do
@@ -3118,23 +3179,23 @@ void startVsMenu()
     //int nowTime=SDL_GetTicks();
 
     MakeBackground(xsize,ysize);
-    SFont_Write(background,fBlueFont,360,650,"Press ESC to accept");
+    NFont_Write(background, 360,650,"Press ESC to accept");
     DrawIMG(bBack,background,xsize/2-120/2,600);
     do
     {
         //nowTime=SDL_GetTicks();
         DrawIMG(background, screen, 0, 0);
         DrawIMG(changeButtonsBack,screen,xplace,yplace);
-        SFont_Write(screen,fBlueFont,xplace+50,yplace+20,"Player 1");
-        SFont_Write(screen,fBlueFont,xplace+300+50,yplace+20,"Player 2");
-        SFont_Write(screen,fBlueFont,xplace+50,yplace+70,"Speed:");
-        SFont_Write(screen,fBlueFont,xplace+50+300,yplace+70,"Speed:");
+        NFont_Write(screen, xplace+50,yplace+20,"Player 1");
+        NFont_Write(screen, xplace+300+50,yplace+20,"Player 2");
+        NFont_Write(screen, xplace+50,yplace+70,"Speed:");
+        NFont_Write(screen, xplace+50+300,yplace+70,"Speed:");
         for (int i=0; i<5;i++)
         {
             char levelS[2]; //level string;
             levelS[0]='1'+i;
             levelS[1]=0;
-            SFont_Write(screen,fBlueFont,xplace+50+i*40,yplace+110,levelS);
+            NFont_Write(screen, xplace+50+i*40,yplace+110,levelS);
             DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+150);
             if (player1Speed==i)
                 DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+150);
@@ -3144,27 +3205,27 @@ void startVsMenu()
             char levelS[2]; //level string;
             levelS[0]='1'+i;
             levelS[1]=0;
-            SFont_Write(screen,fBlueFont,xplace+300+50+i*40,yplace+110,levelS);
+            NFont_Write(screen, xplace+300+50+i*40,yplace+110,levelS);
             DrawIMG(iLevelCheckBox,screen,xplace+300+50+i*40,yplace+150);
             if (player2Speed==i)
                 DrawIMG(iLevelCheck,screen,xplace+300+50+i*40,yplace+150);
         }
-        SFont_Write(screen,fBlueFont,xplace+50,yplace+200,"AI: ");
+        NFont_Write(screen, xplace+50,yplace+200,"AI: ");
         DrawIMG(iLevelCheckBox,screen,xplace+50+70,yplace+200);
         if (player1AI)
             DrawIMG(iLevelCheck,screen,xplace+50+70,yplace+200);
-        SFont_Write(screen,fBlueFont,xplace+50,yplace+250,"TT Handicap: ");
-        SFont_Write(screen,fBlueFont,xplace+50+300,yplace+200,"AI: ");
+        NFont_Write(screen, xplace+50,yplace+250,"TT Handicap: ");
+        NFont_Write(screen, xplace+50+300,yplace+200,"AI: ");
         DrawIMG(iLevelCheckBox,screen,xplace+50+70+300,yplace+200);
         if (player2AI)
             DrawIMG(iLevelCheck,screen,xplace+50+70+300,yplace+200);
-        SFont_Write(screen,fBlueFont,xplace+50+300,yplace+250,"TT Handicap: ");
+        NFont_Write(screen, xplace+50+300,yplace+250,"TT Handicap: ");
         for (int i=0; i<5;i++)
         {
             char levelS[2]; //level string;
             levelS[0]='1'+i;
             levelS[1]=0;
-            SFont_Write(screen,fBlueFont,xplace+50+i*40,yplace+290,levelS);
+            NFont_Write(screen, xplace+50+i*40,yplace+290,levelS);
             DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+330);
             if (player1handicap==i)
                 DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+330);
@@ -3174,7 +3235,7 @@ void startVsMenu()
             char levelS[2]; //level string;
             levelS[0]='1'+i;
             levelS[1]=0;
-            SFont_Write(screen,fBlueFont,xplace+50+i*40+300,yplace+290,levelS);
+            NFont_Write(screen, xplace+50+i*40+300,yplace+290,levelS);
             DrawIMG(iLevelCheckBox,screen,xplace+50+i*40+300,yplace+330);
             if (player2handicap==i)
                 DrawIMG(iLevelCheck,screen,xplace+50+i*40+300,yplace+330);
