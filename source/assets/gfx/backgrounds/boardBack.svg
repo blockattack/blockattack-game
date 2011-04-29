@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -10,12 +11,12 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.47 r22583"
    width="500"
    height="800"
    version="1.0"
    sodipodi:docname="boardBack.svg"
-   inkscape:export-filename="/home/qubodup/sf_games/blockattack-1.3.2/Game/gfx/boardBackBack.png"
+   inkscape:export-filename="/home/poul/programmering/svn/blockattack/blockattack/trunk/Game/gfx/boardBackBack.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
@@ -27,6 +28,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -151,8 +153,8 @@
     </pattern>
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="653"
-     inkscape:window-width="1272"
+     inkscape:window-height="830"
+     inkscape:window-width="1566"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -165,10 +167,11 @@
      showgrid="false"
      inkscape:zoom="1"
      inkscape:cx="170.07811"
-     inkscape:cy="557.62437"
+     inkscape:cy="555.62437"
      inkscape:window-x="0"
      inkscape:window-y="320"
-     inkscape:current-layer="svg2">
+     inkscape:current-layer="svg2"
+     inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
        id="grid2384"
@@ -190,50 +193,6 @@
      d="M 41,22 C 36.568,22 33,25.568 33,30 L 33,689 C 33,693.432 34.568,695 39,695 L 379,695 C 383.432,695 387,691.432 387,687 L 387,356 L 465,356 C 469.432,356 473,352.432 473,348 L 473,151 C 473,146.568 469.432,143 465,143 L 387,143 L 387,30 C 387,25.568 383.432,22 379,22 L 41,22 z M 57,65 L 363,65 L 363,671 L 57,671 L 57,65 z"
      id="rect3274"
      sodipodi:nodetypes="cccccccccccccccccccc" />
-  <text
-     xml:space="preserve"
-     style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:103.99999619%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1;font-family:Penguin Attack;-inkscape-font-specification:Penguin Attack"
-     x="370"
-     y="170"
-     id="text3162"
-     sodipodi:linespacing="104%"><tspan
-       sodipodi:role="line"
-       id="tspan3164"
-       x="370"
-       y="170">Score:</tspan></text>
-  <text
-     sodipodi:linespacing="104%"
-     id="text3166"
-     y="220"
-     x="370"
-     style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:103.99999619%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1;font-family:Penguin Attack;-inkscape-font-specification:Penguin Attack"
-     xml:space="preserve"><tspan
-       y="220"
-       x="370"
-       id="tspan3168"
-       sodipodi:role="line">Time:</tspan></text>
-  <text
-     xml:space="preserve"
-     style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:103.99999619%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1;font-family:Penguin Attack;-inkscape-font-specification:Penguin Attack"
-     x="370"
-     y="265"
-     id="text3170"
-     sodipodi:linespacing="104%"><tspan
-       sodipodi:role="line"
-       id="tspan3172"
-       x="370"
-       y="265">Chain:</tspan></text>
-  <text
-     sodipodi:linespacing="104%"
-     id="text3174"
-     y="315"
-     x="370"
-     style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:103.99999619%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1;font-family:Penguin Attack;-inkscape-font-specification:Penguin Attack"
-     xml:space="preserve"><tspan
-       y="315"
-       x="370"
-       id="tspan3176"
-       sodipodi:role="line">Speed:</tspan></text>
   <rect
      style="stroke:none;fill:none"
      width="20"

@@ -464,8 +464,6 @@ static int InitImages()
             && (iDraw = IMG_Load2((char*)"gfx/iDraw.png"))
             && (iLoser = IMG_Load2((char*)"gfx/iLoser.png"))
             && (iChainBack = IMG_Load2((char*)"gfx/chainFrame.png"))
-            //&& (iBlueFont = IMG_Load2((char*)"gfx/24P_Arial_Blue.png"))
-       //     && (iSmallFont = IMG_Load2((char*)"gfx/14P_Arial_Angle_Red.png"))
             && (optionsBack = IMG_Load2((char*)"gfx/options.png"))
             && (bOn = IMG_Load2((char*)"gfx/bOn.png"))
             && (bOff = IMG_Load2((char*)"gfx/bOff.png"))
@@ -523,8 +521,6 @@ static int InitImages()
             && (bRetry = IMG_Load2((char*)"gfx/bRetry.png"))
             //&& (menuMarked = IMG_Load2((char*)"gfx/menu/marked.png"))
             //&& (menuUnmarked = IMG_Load2((char*)"gfx/menu/unmarked.png"))
-            //end new in 1.4.0
-            //&& (mouse = IMG_Load2((char*)"gfx/mouse.png"))
          ))
         //if there was a problem ie. "File not found"
     {
@@ -561,8 +557,6 @@ static int InitImages()
     CONVERTA(bSkip);
     CONVERTA(bRetry);
     CONVERTA(bNext);
-    //CONVERTA(menuMarked);
-    //CONVERTA(menuUnmarked);
 #if NETWORK
     CONVERTA(bNetwork);
     CONVERTA(bHost);
@@ -622,10 +616,7 @@ static int InitImages()
     CONVERTA(iDraw);
     CONVERTA(iLoser);
     CONVERTA(iChainBack);
-    //CONVERTA(iBlueFont);
-    //CONVERTA(iSmallFont);
     CONVERTA(iGameOver);
-//    CONVERTA(mouse);
     mouse.OptimizeForBlit(true);
     bNewGame.OptimizeForBlit(true);
     CONVERTA(stageBobble);
@@ -648,14 +639,6 @@ static int InitImages()
     CONVERTA(bTestPuzzle);
     #endif
     
-    //Here comes the fonts:
-    //fBlueFont = SFont_InitFont(iBlueFont);
-    //fSmallFont = SFont_InitFont(iSmallFont);
-    
-    //And the ttf font:
-    /*TTF_Font *ttFont1 = TTF_OpenFont2((char*)"fonts/FreeSerif.ttf", 24);
-    TTF_SetFontStyle(ttFont1,TTF_STYLE_BOLD);
-    ttfont = TTFont(ttFont1);*/
     SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
     memset(&nf_button_color,0,sizeof(SDL_Color));
     nf_button_color.b = 255; nf_button_color.g = 255; nf_button_color.r = 255;
@@ -667,7 +650,14 @@ static int InitImages()
     nf_standard_blue_font.setDest(screen);
     NFont_OpenFont(&nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
     nf_standard_small_font.setDest(screen);
+    NFont_OpenFont(&nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color);
+    nf_scoreboard_font.setDest(boardBackBack);
+    nf_scoreboard_font.draw(370,148,"Score:");
+    nf_scoreboard_font.draw(370,197,"Time:");
+    nf_scoreboard_font.draw(370,246,"Chain:");
+    nf_scoreboard_font.draw(370,295,"Speed:");
 
+    
 //Loads the sound if sound present
     if (!NoSound)
     {
@@ -691,9 +681,6 @@ static int InitImages()
 void UnloadImages()
 {
     cout << "Unloading data..." << endl;
-    //Fonts and Sounds needs to be freed
-    //SFont_FreeFont(fBlueFont);
-    //SFont_FreeFont(fSmallFont);
     if (!NoSound) //Only unload then it has been loaded!
     {
         Mix_HaltMusic();
@@ -758,8 +745,6 @@ void UnloadImages()
     SDL_FreeSurface(iDraw);
     SDL_FreeSurface(iLoser);
     SDL_FreeSurface(iChainBack);
-    //SDL_FreeSurface(iBlueFont); //Segfault
-    //SDL_FreeSurface(iSmallFont); //Segfault
     SDL_FreeSurface(optionsBack);
     SDL_FreeSurface(bOn);
     SDL_FreeSurface(bOff);
@@ -792,7 +777,6 @@ void UnloadImages()
     SDL_FreeSurface(smiley[2]);
     SDL_FreeSurface(smiley[3]);
     SDL_FreeSurface(transCover);
-    //SDL_FreeSurface(mouse);
     mouse.MakeNull();
     bNewGame.MakeNull();
 }
@@ -1532,7 +1516,6 @@ public:
         if (puzzleMode&&(!bGameOver)) {
             //We need to write nr. of moves left!
             strHolder = "Moves left: " + itoa(MovesLeft);
-            //NFont_Write(sBoard,   5, 5, strHolder.c_str());
             nf_standard_blue_font.draw(5,5,strHolder.c_str());
             
         }
@@ -1549,7 +1532,6 @@ public:
             else
             {
                 strHolder = "Last puzzle";
-                //NFont_Write(sBoard,   5, 5, strHolder.c_str());
                 nf_standard_blue_font.draw(5,5,strHolder.c_str());
             }
         }
@@ -1566,7 +1548,6 @@ public:
             else
             {
                 strHolder = "Last stage";
-                //NFont_Write(sBoard,   5, 5, strHolder.c_str());
                 nf_standard_blue_font.draw(5,5,strHolder.c_str());
             }
         }
@@ -1891,12 +1872,12 @@ bool OpenDialogbox(int x, int y, char *name)
     while (!done)
     {
         DrawIMG(dialogBox,screen,x,y);
-        NFont_Write(screen, x+40,y+72,rk.GetString());
+        NFont_Write(screen, x+40,y+76,rk.GetString());
         strHolder = rk.GetString();
         strHolder.erase((int)rk.CharsBeforeCursor());
 
         if (((SDL_GetTicks()/600)%2)==1)
-            NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( strHolder.c_str()),y+69,"|");
+            NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( strHolder.c_str()),y+76,"|");
 
         SDL_Event event;
 
@@ -2581,13 +2562,13 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
     strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
     NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
     if (theGame->GetAIenabled())
-        NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-40,"CPU");
+        NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,"CPU");
     else
         if (editorMode)
-            NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-40,"Playing field");
+            NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,"Playing field");
         else
             if (!singlePuzzle)
-                NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-40,player1name);
+                NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,player1name);
     if (theGame->isTimeTrial())
     {
         int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
@@ -2694,9 +2675,9 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
         strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
         NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
         if (theGame2->GetAIenabled())
-            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-40,"CPU");
+            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,"CPU");
         else
-            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-40,theGame2->name);
+            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
         if (theGame2->isTimeTrial())
         {
             int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();

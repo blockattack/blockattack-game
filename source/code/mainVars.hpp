@@ -158,6 +158,7 @@ static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
 //static SFont_Font *fSmallFont;		//Stores the small font (SFont)
 //TTFont ttfont;           //Stores the TTF font (TTFSDL)
 static NFont nf_button_font;        //Font used for buttons!
+static NFont nf_scoreboard_font;
 static NFont nf_standard_blue_font;      //Font used instead of the old blue SFont
 static NFont nf_standard_small_font;
 
