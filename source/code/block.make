@@ -43,9 +43,9 @@ endif
 
 BASE_LIBS += -lphysfs
 
-$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/nfont.o
+$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o
 	@make -C CppSdl
-	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o  $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o  $(BUILDDIR)/nfont.o $(BASE_LIBS)
+	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o  $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o  $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o $(BASE_LIBS)
 #-lphysfs
 
 $(BUILDDIR)/main.o:	main.cpp mainVars.hpp common.h
@@ -82,8 +82,8 @@ $(BUILDDIR)/nfont.o: Libs/NFont.h Libs/NFont.cpp
 #$(BUILDDIR)/uploadReplay.o: uploadReplay.cc uploadReplay.h
 #	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o $(BUILDDIR)/uploadReplay.o
 
-#$(BUILDDIR)/MenuSystem.o: MenuSystem.cc MenuSystem.h
-#	$(CPP) $(BASE_CFLAGS) MenuSystem.cc -o $(BUILDDIR)/MenuSystem.o
+$(BUILDDIR)/MenuSystem.o: MenuSystem.cc MenuSystem.h
+	$(CPP) $(BASE_CFLAGS) MenuSystem.cc -o $(BUILDDIR)/MenuSystem.o
 
 #$(BUILDDIR)/ttfont.o: ttfont.h ttfont.cc
 #	$(CPP) $(BASE_CFLAGS) ttfont.cc -o $(BUILDDIR)/ttfont.o

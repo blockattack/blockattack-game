@@ -24,10 +24,13 @@ Copyright (C) 2008 Poul Sander
     http://blockattack.sf.net
 */
 
+#include <SDL/SDL_events.h>
+
 #include "MenuSystem.h"
 #include "common.h"
+#include "CppSdl/CppSdlImageHolder.hpp"
 
-extern SDL_Surface *mouse;
+extern CppSdl::CppSdlImageHolder mouse;
 extern SDL_Surface *backgroundImage;
 extern bool highPriority;
 int mousex;
@@ -42,40 +45,37 @@ inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
     SDL_BlitSurface(img, NULL, target, &dest);
 }
 
-SDL_Surface* ButtonGfx::marked;
-SDL_Surface* ButtonGfx::unmarked;
+CppSdl::CppSdlImageHolder ButtonGfx::_marked;
+CppSdl::CppSdlImageHolder ButtonGfx::_unmarked;
 int ButtonGfx::xsize;
 int ButtonGfx::ysize;
-TTFont* ButtonGfx::ttf;
+NFont ButtonGfx::thefont;
 
-void ButtonGfx::setSurfaces(SDL_Surface **marked,SDL_Surface **unmarked)
+void ButtonGfx::setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked)
 {
-    ButtonGfx::marked = *marked;
-    ButtonGfx::unmarked = *unmarked;
-    xsize=(*marked)->w;
-    ysize=(*marked)->h;
+    ButtonGfx::_marked = marked;
+    ButtonGfx::_unmarked = unmarked;
+    xsize=(marked).GetWidth();
+    ysize=(marked).GetHeight();
+    cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
 }
 
 Button::Button()
 {
     label = "";
     marked = false;
-    surfaceMarked = SDL_ConvertSurface(ButtonGfx::marked, ButtonGfx::marked->format, SDL_SWSURFACE);
-    surfaceUnmarked = SDL_ConvertSurface(ButtonGfx::unmarked, ButtonGfx::unmarked->format, SDL_SWSURFACE);
+    action = NULL;
 }
 
 Button::~Button()
 {
-    SDL_FreeSurface(surfaceMarked);
-    SDL_FreeSurface(surfaceUnmarked);
 }
 
 Button::Button(const Button& b)
 {
     label = b.label;
     marked = b.marked;
-    surfaceMarked = SDL_ConvertSurface(ButtonGfx::marked, ButtonGfx::marked->format, SDL_SWSURFACE);
-    surfaceUnmarked = SDL_ConvertSurface(ButtonGfx::unmarked, ButtonGfx::unmarked->format, SDL_SWSURFACE);
+    action = b.action;
 }
 
 void Button::setLabel(string text)
@@ -98,21 +98,26 @@ bool Button::isClicked(int x,int y)
 
 void Button::doAction()
 {
-    action();
+    if(action)
+        action();
+    else
+        cout << "Warning: button \"" << label << "\" has no action assigned!";
 }
 
-void Button::drawTo(SDL_Surface *surface)
+void Button::drawTo(SDL_Surface **surface)
 {
     #if DEBUG
-    cout << "Painting button: " << label << endl;
+    //cout << "Painting button: " << label << " at: " << x << "," << y << endl;
     #endif
     if (marked)
-        DrawIMG(surfaceMarked,surface,x,y);
+        ButtonGfx::_marked.PaintTo(*surface,x,y);
     else
-        DrawIMG(surfaceUnmarked,surface,x,y);
+        ButtonGfx::_unmarked.PaintTo(*surface,x,y);
     //int stringx = x + (ButtonGfx::xsize)/2 - ButtonGfx::ttf->getTextWidth(label)/2; 
     //int stringy = y + (ButtonGfx::ysize)/2 - ButtonGfx::ttf->getTextHeight()/2;
     //ButtonGfx::ttf->writeText(label,surface,stringx,stringy);
+    ButtonGfx::thefont.setDest(*surface);
+    ButtonGfx::thefont.drawCenter(x+ButtonGfx::xsize/2,y+ButtonGfx::ysize/2-ButtonGfx::thefont.getHeight(label.c_str())/2,label.c_str());
 }
 
 void Menu::drawSelf()
@@ -120,9 +125,9 @@ void Menu::drawSelf()
     DrawIMG(backgroundImage,screen,0,0);
     vector<Button>::iterator it;
     for(it = buttons.begin();it < buttons.end(); it++)
-        (*it).drawTo(screen);
-    exit.drawTo(screen);
-    DrawIMG(mouse,screen,mousex,mousey);
+        (*it).drawTo(&screen);
+    exit.drawTo(&screen);
+    mouse.PaintTo(screen,mousex,mousey);
 }
 
 void Menu::performClick(int x,int y)
@@ -147,7 +152,7 @@ void Menu::placeButtons()
     {
         (*it).x = X;
         (*it).y = nextY;
-        nextY += 50;
+        nextY += ButtonGfx::ysize+10;
     }
     exit.x = X;
     exit.y = nextY;
@@ -215,11 +220,23 @@ void Menu::run()
                     if(marked>buttons.size())
                         marked = 0; 
                 }
+
+                if(event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
+                    if(marked < buttons.size())
+                        buttons.at(marked).doAction();
+                    if(marked == buttons.size())
+                        running = false;
+                }
             }
             
-            SDL_GetMouseState(&mousex,&mousey);
 
         }
+
+        for(int i=0;i<buttons.size();i++) {
+            buttons.at(i).marked = (i == marked);
+        }
+        exit.marked = (marked == buttons.size());
+            SDL_GetMouseState(&mousex,&mousey);
         
         drawSelf();
         SDL_Flip(screen);

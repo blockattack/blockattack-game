@@ -41,7 +41,7 @@ char sharedir[] = SHAREDIR;
 
 //All graphic in the game (as pointers):
 static SDL_Surface *background;    //Stores background
-static SDL_Surface *backgroundImage; //Stores the background image
+SDL_Surface *backgroundImage; //Stores the background image
 static int backgroundImageW, backgroundImageH; //size of background image
 static SDL_Surface *backBoard;     //Stores the background to the board
 static SDL_Surface *b1player;
@@ -144,11 +144,11 @@ static SDL_Surface *bSkip;
 static SDL_Surface *bRetry;
 static SDL_Surface *bNext;
 
-//SDL_Surface *menuMarked;
-//SDL_Surface *menuUnmarked;
+CppSdl::CppSdlImageHolder menuMarked;
+CppSdl::CppSdlImageHolder menuUnmarked;
 //end new in 1.4.0
 //static SDL_Surface *mouse;				//The mouse cursor
-static CppSdl::CppSdlImageHolder mouse;
+CppSdl::CppSdlImageHolder mouse;
 
 
 static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
@@ -198,7 +198,7 @@ static bool bFullscreen;			//true if game is running fullscreen
 static bool puzzleLoaded;          //true if the puzzle levels have been loaded
 static bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
 static bool standardBackground;
-static bool highPriority;
+bool highPriority;
 
 static bool editorMode = false;
 static bool editorModeTest = false;
@@ -310,7 +310,7 @@ static control keySettings[3];	//array to hold the controls (default and two cus
 
 //The following struct holds variables relevant to selecting menu items with 
 //keyboard/joypad.
-struct KeyMenu_t
+/*struct KeyMenu_t
 {
     unsigned long canBeActivatedTime; //Time that the KeyMenu can be activated by pressing a button
     bool activated; //The keymenu is activated
@@ -320,7 +320,7 @@ struct KeyMenu_t
     bool menumap[KEYMENU_MAXWITH][KEYMENU_MAXDEPTH];
 };
 
-static KeyMenu_t keymenu;
+static KeyMenu_t keymenu;*/
 
 enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
 

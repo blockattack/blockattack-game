@@ -37,7 +37,8 @@ Copyright (C) 2008 Poul Sander
 #include <string>
 #include "SDL.h"
 #include <vector>
-#include "ttfont.h"
+#include "Libs/NFont.h"
+#include "CppSdl/CppSdlImageHolder.hpp"
 
 using namespace std;
 
@@ -45,16 +46,15 @@ using namespace std;
 class ButtonGfx {
     public:
         //Holds the graphic for a button that is selected
-        static SDL_Surface *marked;
+        static CppSdl::CppSdlImageHolder _marked;
         //Holds the graphic for a button that is not selected
-        static SDL_Surface *unmarked;
+        static CppSdl::CppSdlImageHolder _unmarked;
         //The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
         static int xsize;
         static int ysize;
         //A TTFont used for writing the label on the buttons
-        static TTFont *ttf;
-        //Yes I use pointer-to-pointer and yes it is inheriently insecure
-        static void setSurfaces(SDL_Surface **marked,SDL_Surface **unmarked);
+        static NFont thefont;
+        static void setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked);
 };
 
 //A button
@@ -62,8 +62,6 @@ class Button {
     private:
         //The label. This is written on the button
         string label;
-        SDL_Surface* surfaceMarked;
-        SDL_Surface* surfaceUnmarked;
         //Pointer to a callback function.
         void (*action)();
         
@@ -82,11 +80,11 @@ class Button {
         //Set the text to write on the button
         void setLabel(string text);
         //Set the action to run
-        void setAction(void (*action2run)());        
+        void setAction(void (*action2run)(void));
         
         bool isClicked(int x,int y); //Returns true if (x,y) is within the borders of the button
         void doAction(); //Run the callback function
-        void drawTo(SDL_Surface *surface); //Draws to screen
+        void drawTo(SDL_Surface **surface); //Draws to screen
 };
 
 class Menu {
