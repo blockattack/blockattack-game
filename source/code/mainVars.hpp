@@ -77,7 +77,7 @@ static SDL_Surface *bHighScore;    //The High Score botton
 static SDL_Surface *bExit;         //The Exit botton
 static SDL_Surface *blackLine;		//The seperator in stage clear
 static SDL_Surface *stageBobble;	//The bobble instage clear
-static SDL_Surface *screen;        //The whole screen;
+SDL_Surface *screen;        //The whole screen;
 static SDL_Surface *iGameOver;     //The gameOver image
 static SDL_Surface *iWinner;		//the "winner" image
 static SDL_Surface *iDraw;			//the "draw" image
@@ -158,7 +158,7 @@ static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
 //static SFont_Font *fSmallFont;		//Stores the small font (SFont)
 //TTFont ttfont;           //Stores the TTF font (TTFSDL)
 static NFont nf_button_font;        //Font used for buttons!
-static NFont nf_scoreboard_font;
+NFont nf_scoreboard_font;
 static NFont nf_standard_blue_font;      //Font used instead of the old blue SFont
 static NFont nf_standard_small_font;
 
@@ -190,11 +190,11 @@ static bool bScreenLocked;			//Don't take input or allow any mouse interaction! 
 static bool showDialog;
 static bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline
 //prevents crash on systems without a soundcard
-static bool MusicEnabled;			//true if background music is enabled
-static bool SoundEnabled;			//true if sound effects is enabled
+bool MusicEnabled;			//true if background music is enabled
+bool SoundEnabled;			//true if sound effects is enabled
 static bool bNearDeath;                        //Play music faster or louder while tru
 static bool bNearDeathPrev;                    //Near death status last time checked.
-static bool bFullscreen;			//true if game is running fullscreen
+bool bFullscreen;			//true if game is running fullscreen
 static bool puzzleLoaded;          //true if the puzzle levels have been loaded
 static bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
 static bool standardBackground;
@@ -246,8 +246,8 @@ static int ysize = 768;
 static int bsize = 50;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
-static char player1name[30];
-static char player2name[30];
+char player1name[30];
+char player2name[30];
 
 //paths
 static string stageClearSavePath;

@@ -63,7 +63,7 @@ class Button {
         //The label. This is written on the button
         string label;
         //Pointer to a callback function.
-        void (*action)();
+        void (*action)(Button *b);
         
     public:
         //Is the button marked?
@@ -80,12 +80,13 @@ class Button {
         //Set the text to write on the button
         void setLabel(string text);
         //Set the action to run
-        void setAction(void (*action2run)(void));
+        void setAction(void (*action2run)(Button*));
         
         bool isClicked(int x,int y); //Returns true if (x,y) is within the borders of the button
-        void doAction(); //Run the callback function
+        virtual void doAction(); //Run the callback function
         void drawTo(SDL_Surface **surface); //Draws to screen
 };
+
 
 class Menu {
     private:

@@ -25,7 +25,7 @@ Copyright (C) 2008 Poul Sander
 */
 
 #include "common.h"
-
+#include "global.hpp"
 
 #include <string.h>
 
@@ -856,55 +856,17 @@ void NFont_Write(SDL_Surface *target,int x,int y,string text) {
     nf_standard_blue_font.setDest(screen);
 }
 
-//Menu
-void PrintHi()
-{
-    cout << "Hi" <<endl;
+void ResetFullscreen(){
+#if defined(WIN32)
+                        if (bFullscreen) screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
+                        else screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
+                        DrawIMG(background, screen, 0, 0);
+#else
+                        SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
+#endif
+                        SDL_ShowCursor(SDL_DISABLE);
 }
 
-void InitMenues()
-{
-    ButtonGfx::setSurfaces(menuMarked,menuUnmarked);
-    ButtonGfx::thefont = nf_scoreboard_font;
-}
-
-void runGame(int gametype);
-
-void runSinglePlayerEndless() {
-    runGame(0);
-}
-
-void runSinglePlayerTimeTrial() {
-    runGame(1);
-}
-
-void runSinglePlayerPuzzle() {
-    runGame(3);
-}
-
-void runSinglePlayerVs() {
-    runGame(4);
-}
-
-void MainMenu()
-{
-    InitMenues();
-    Menu m(&screen,true);
-    Button bHi,bTimetrial1, bPuzzle, bVs1;
-    bHi.setLabel("Single player - endless");
-    bHi.setAction(runSinglePlayerEndless);
-    bTimetrial1.setLabel("Single player - time trial");
-    bTimetrial1.setAction(runSinglePlayerTimeTrial);
-    bPuzzle.setLabel("Single player - puzzle mode");
-    bPuzzle.setAction(runSinglePlayerPuzzle);
-    bVs1.setLabel("Single player - vs");
-    bVs1.setAction(runSinglePlayerVs);
-    m.addButton(bHi);
-    m.addButton(bTimetrial1);
-    m.addButton(bPuzzle);
-    m.addButton(bVs1);
-    m.run();
-}
 
 //The small things that are faaling when you clear something
 class aBall
@@ -4728,14 +4690,7 @@ int main(int argc, char *argv[])
                     {
                         //Fullscreen
                         bFullscreen = !bFullscreen;
-#if defined(WIN32)
-                        if (bFullscreen) screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
-                        else screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
-                        DrawIMG(background, screen, 0, 0);
-#else
-                        SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
-#endif
-                        SDL_ShowCursor(SDL_DISABLE);
+                        ResetFullscreen();
                     }
 
                     if ((showOptions) && (mousex>330) && (mousex<470) && (mousey>535) && (mousey<585))

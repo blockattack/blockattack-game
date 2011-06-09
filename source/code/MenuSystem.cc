@@ -83,7 +83,7 @@ void Button::setLabel(string text)
     label = text;
 }
 
-void Button::setAction(void (*action2run)())
+void Button::setAction(void (*action2run)(Button*))
 {
     action = action2run;
 }
@@ -99,7 +99,7 @@ bool Button::isClicked(int x,int y)
 void Button::doAction()
 {
     if(action)
-        action();
+        action(this);
     else
         cout << "Warning: button \"" << label << "\" has no action assigned!";
 }
