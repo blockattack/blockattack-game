@@ -90,7 +90,7 @@ class Button {
 
 class Menu {
     private:
-        vector<Button> buttons; //Vector holder the buttons
+        vector<Button*> buttons; //Vector holder the buttons
         Button exit; //The exit button is special since it does not have a callback function
         bool isSubmenu; //True if the menu is a submenu
         int marked; //The index of the marked button (for keyboard up/down)
@@ -108,7 +108,7 @@ class Menu {
         Menu(SDL_Surface **screen);
         
         //Add a button to the menu
-        void addButton(Button b);
+        void addButton(Button *b);
         
         //Run the menu
         void run();

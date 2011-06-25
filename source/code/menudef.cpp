@@ -85,14 +85,49 @@ public:
 
 long ChangeKeysMenu::player;
 
+void ChangeKeysMenu::ChangeDownKey(Button* b) {
+    
+}
+
+void ChangeKeysMenu::ChangeLeftKey(Button* b) {
+    
+}
+
+void ChangeKeysMenu::ChangePushKey(Button* b) {
+    
+}
+
+void ChangeKeysMenu::ChangeRightKey(Button* b) {
+    
+}
+
+void ChangeKeysMenu::ChangeSwitchKey(Button* b) {
+    
+}
+
+void ChangeKeysMenu::ChangeUpKey(Button* b) {
+    
+}
+
 static void ChangeKeysMenu(long playernumber) {
     ChangeKeysMenu::player = playernumber;
+    Menu km(&screen,false);
     Button bLeft, bRight, bUp, bDown, bPush, bSwitch, bJoypad, bMouse;
     bLeft.setLabel("Left : ");
+    bLeft.setAction(ChangeKeysMenu::ChangeLeftKey);
     bRight.setLabel("Right : ");
+    bRight.setAction(ChangeKeysMenu::ChangeRightKey);
     bUp.setLabel("Up : ");
+    bUp.setAction(ChangeKeysMenu::ChangeUpKey);
     bDown.setLabel("Down : ");
+    bDown.setAction(ChangeKeysMenu::ChangeDownKey);
+    km.addButton(&bLeft);
+    km.addButton(&bRight);
+    km.addButton(&bUp);
+    km.addButton(&bDown);
+    km.run();
 }
+
 
 void ConfigureMenu(Button *b) {
     Menu cm(&screen,false);
@@ -107,11 +142,11 @@ void ConfigureMenu(Button *b) {
     bPlayer1Name.setLabel("Change player 1's name");
     bPlayer2Name.setAction(buttonActionPlayer2Name);
     bPlayer2Name.setLabel("Change player 2's name");
-    cm.addButton(bMusic);
-    cm.addButton(bSound);
-    cm.addButton(buttonFullscreen);
-    cm.addButton(bPlayer1Name);
-    cm.addButton(bPlayer2Name);
+    cm.addButton(&bMusic);
+    cm.addButton(&bSound);
+    cm.addButton(&buttonFullscreen);
+    cm.addButton(&bPlayer1Name);
+    cm.addButton(&bPlayer2Name);
     cm.run();
 }
 
@@ -132,11 +167,11 @@ void MainMenu()
     bConfigure.setAction(ConfigureMenu);
     bHighscore.setLabel("Highscores");
     bHighscore.setAction(buttonActionHighscores);
-    m.addButton(bHi);
-    m.addButton(bTimetrial1);
-    m.addButton(bPuzzle);
-    m.addButton(bVs1);
-    m.addButton(bConfigure);
-    m.addButton(bHighscore);
+    m.addButton(&bHi);
+    m.addButton(&bTimetrial1);
+    m.addButton(&bPuzzle);
+    m.addButton(&bVs1);
+    m.addButton(&bConfigure);
+    m.addButton(&bHighscore);
     m.run();
 }

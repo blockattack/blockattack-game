@@ -123,21 +123,21 @@ void Button::drawTo(SDL_Surface **surface)
 void Menu::drawSelf()
 {
     DrawIMG(backgroundImage,screen,0,0);
-    vector<Button>::iterator it;
+    vector<Button*>::iterator it;
     for(it = buttons.begin();it < buttons.end(); it++)
-        (*it).drawTo(&screen);
+        (*it)->drawTo(&screen);
     exit.drawTo(&screen);
     mouse.PaintTo(screen,mousex,mousey);
 }
 
 void Menu::performClick(int x,int y)
 {
-    vector<Button>::iterator it;
+    vector<Button*>::iterator it;
     for(it = buttons.begin();it < buttons.end(); it++)
     {
-        Button b = (*it);
-        if(b.isClicked(x,y))
-            b.doAction();
+        Button *b = (*it);
+        if(b->isClicked(x,y))
+            b->doAction();
     }
     if(exit.isClicked(x,y))
         running = false;
@@ -147,28 +147,28 @@ void Menu::placeButtons()
 {
     int nextY = 50;
     const int X = 50;
-    vector<Button>::iterator it;
+    vector<Button*>::iterator it;
     for(it = buttons.begin();it < buttons.end(); it++)
     {
-        (*it).x = X;
-        (*it).y = nextY;
+        (*it)->x = X;
+        (*it)->y = nextY;
         nextY += ButtonGfx::ysize+10;
     }
     exit.x = X;
     exit.y = nextY;
 }
 
-void Menu::addButton(Button b)
+void Menu::addButton(Button *b)
 {
     buttons.push_back(b);
-    b.marked = false;
+    b->marked = false;
     placeButtons();
 }
 
 Menu::Menu(SDL_Surface **screen)
 {
     this->screen = *screen; 
-    buttons = vector<Button>(10);
+    buttons = vector<Button*>(10);
     isSubmenu = true;
     exit.setLabel("Back");
 }
@@ -176,7 +176,7 @@ Menu::Menu(SDL_Surface **screen)
 Menu::Menu(SDL_Surface **screen,bool submenu)
 {
     this->screen = *screen;
-    buttons = vector<Button>(0);
+    buttons = vector<Button*>(0);
     isSubmenu = submenu;
     if(isSubmenu)
         exit.setLabel("Back");
@@ -223,7 +223,7 @@ void Menu::run()
 
                 if(event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
                     if(marked < buttons.size())
-                        buttons.at(marked).doAction();
+                        buttons.at(marked)->doAction();
                     if(marked == buttons.size())
                         running = false;
                 }
@@ -233,7 +233,7 @@ void Menu::run()
         }
 
         for(int i=0;i<buttons.size();i++) {
-            buttons.at(i).marked = (i == marked);
+            buttons.at(i)->marked = (i == marked);
         }
         exit.marked = (marked == buttons.size());
             SDL_GetMouseState(&mousex,&mousey);
