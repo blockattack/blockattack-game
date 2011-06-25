@@ -16,12 +16,6 @@ Copyright (C) 2008 Poul Sander
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    Poul Sander
-    R�vehjvej 36, V. 1111
-    2800 Kgs. Lyngby
-    DENMARK
-    blockattack@poulsander.com
-    http://blockattack.sf.net
 */
 
 #include <SDL/SDL_events.h>

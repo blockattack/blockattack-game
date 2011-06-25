@@ -16,12 +16,6 @@ Copyright (C) 2008 Poul Sander
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    Poul Sander
-    R�vehjvej 36, V. 1111
-    2800 Kgs. Lyngby
-    DENMARK
-    blockattack@poulsander.com
-    http://blockattack.sf.net
 */
 
 #include "common.h"
@@ -275,7 +269,7 @@ long NFont_OpenFont(NFont *target, string path,int ptsize, SDL_Color color, int 
             m_data = 0;
             PHYSFS_close(myfile);
             cout << "Error. Curropt data file!" << endl;
-            return NULL;
+            return -3;
     }
 
     PHYSFS_close(myfile);
@@ -1638,7 +1632,7 @@ void writeScreenShot()
 }
 
 //Function to return the name of a key, to be displayed...
-string getKeyName(SDLKey key)
+static string getKeyName(SDLKey key)
 {
     string keyname(SDL_GetKeyName(key));
     return keyname;

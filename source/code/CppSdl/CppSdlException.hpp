@@ -22,6 +22,12 @@ namespace CppSdl {
 class CppSdlException : std::exception{
 public:
     //CppSdlException();
+    /**
+     * Constructor for making a fully CppSdl compliant expection
+     * @param subsystem Can be: OTHER,IMAGE,TILE,SPRITE,LAYER,SCREEN
+     * @param errorNumber 1=Data error, 2=Invalid, 3=Missingfile, 4=null pointer
+     * @param msg Human readable error message.
+     */
     CppSdlException(Subsystem subsystem, long errorNumber, std::string msg);
     CppSdlException(const CppSdlException& orig);
     virtual ~CppSdlException() throw();

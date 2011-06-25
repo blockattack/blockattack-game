@@ -1,3 +1,25 @@
+/*
+menudef.cpp
+Copyright (C) 2011 Poul Sander
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Poul Sander
+    blockattack@poulsander.com
+*/
+
 #include "global.hpp"
 #include <iostream>
 #include <stdlib.h>
@@ -12,8 +34,47 @@ void PrintHi()
     cout << "Hi" <<endl;
 }
 
+//Stores the controls
+struct control
+{
+    SDLKey up;
+    SDLKey down;
+    SDLKey left;
+    SDLKey right;
+    SDLKey change;
+    SDLKey push;
+};
+
 bool OpenDialogbox(int x, int y, char *name);
 void OpenScoresDisplay();
+extern control keySettings[3];
+
+//Function to return the name of a key, to be displayed...
+static string getKeyName(SDLKey key)
+{
+    string keyname(SDL_GetKeyName(key));
+    cout << key << " translated to " << keyname << endl;
+    return keyname;
+}
+
+class Button_changekey : public Button {
+private:
+   SDLKey *m_key2change; 
+   string m_keyname;
+public:
+    Button_changekey(SDLKey *key, string keyname);
+    void doAction();
+};
+
+Button_changekey::Button_changekey(SDLKey* key, string keyname) {
+    m_key2change = key;
+    m_keyname = keyname;
+    setLabel(m_keyname+" : "+getKeyName(*m_key2change));
+}
+
+void Button_changekey::doAction() {
+    setLabel(m_keyname+" : "+getKeyName(*m_key2change));
+}
 
 void InitMenues()
 {
@@ -69,69 +130,35 @@ void buttonActionHighscores(Button *b) {
     OpenScoresDisplay();
 }
 
-class ChangeKeysMenu {
-public:
-    static long player;
-    static void CreateKeysMenu(long playernumber);
-    static void ChangeLeftKey(Button *b);
-    static void ChangeRightKey(Button *b);
-    static void ChangeUpKey(Button *b);
-    static void ChangeDownKey(Button *b);
-    static void ChangePushKey(Button *b);
-    static void ChangeSwitchKey(Button *b);
-    static void ChangeJoypadStatus(Button *b);
-    static void ChangeMouseStatus(Button *b);
-};
-
-long ChangeKeysMenu::player;
-
-void ChangeKeysMenu::ChangeDownKey(Button* b) {
-    
-}
-
-void ChangeKeysMenu::ChangeLeftKey(Button* b) {
-    
-}
-
-void ChangeKeysMenu::ChangePushKey(Button* b) {
-    
-}
-
-void ChangeKeysMenu::ChangeRightKey(Button* b) {
-    
-}
-
-void ChangeKeysMenu::ChangeSwitchKey(Button* b) {
-    
-}
-
-void ChangeKeysMenu::ChangeUpKey(Button* b) {
-    
-}
-
 static void ChangeKeysMenu(long playernumber) {
-    ChangeKeysMenu::player = playernumber;
     Menu km(&screen,false);
-    Button bLeft, bRight, bUp, bDown, bPush, bSwitch, bJoypad, bMouse;
-    bLeft.setLabel("Left : ");
-    bLeft.setAction(ChangeKeysMenu::ChangeLeftKey);
-    bRight.setLabel("Right : ");
-    bRight.setAction(ChangeKeysMenu::ChangeRightKey);
-    bUp.setLabel("Up : ");
-    bUp.setAction(ChangeKeysMenu::ChangeUpKey);
-    bDown.setLabel("Down : ");
-    bDown.setAction(ChangeKeysMenu::ChangeDownKey);
+    Button_changekey bLeft(&keySettings[playernumber].left,"Left");
+    Button_changekey bRight(&keySettings[playernumber].right,"Right");
+    Button_changekey bUp(&keySettings[playernumber].up,"Up");
+    Button_changekey bDown(&keySettings[playernumber].down,"Down");
+    Button_changekey bPush(&keySettings[playernumber].push,"Push");
+    Button_changekey bSwitch(&keySettings[playernumber].change,"Change");
     km.addButton(&bLeft);
     km.addButton(&bRight);
     km.addButton(&bUp);
     km.addButton(&bDown);
+    km.addButton(&bPush);
+    km.addButton(&bSwitch);
     km.run();
 }
 
+static void ChangeKeysMenu1(Button *b) {
+    ChangeKeysMenu(0);
+}
+
+static void ChangeKeysMenu2(Button *b) {
+    ChangeKeysMenu(2);
+}
 
 void ConfigureMenu(Button *b) {
     Menu cm(&screen,false);
     Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
+    Button bPlayer1Keys, bPlayer2Keys;
     bMusic.setLabel(MusicEnabled? "Music: On" : "Music: Off");
     bMusic.setAction(buttonActionMusic);
     bSound.setLabel(SoundEnabled? "Music: On" : "Music: Off");
@@ -142,11 +169,17 @@ void ConfigureMenu(Button *b) {
     bPlayer1Name.setLabel("Change player 1's name");
     bPlayer2Name.setAction(buttonActionPlayer2Name);
     bPlayer2Name.setLabel("Change player 2's name");
+    bPlayer1Keys.setAction(ChangeKeysMenu1);
+    bPlayer1Keys.setLabel("Change player 1's keys");
+    bPlayer2Keys.setAction(ChangeKeysMenu2);
+    bPlayer2Keys.setLabel("Change player 2's keys");
     cm.addButton(&bMusic);
     cm.addButton(&bSound);
     cm.addButton(&buttonFullscreen);
     cm.addButton(&bPlayer1Name);
     cm.addButton(&bPlayer2Name);
+    cm.addButton(&bPlayer1Keys);
+    cm.addButton(&bPlayer2Keys);
     cm.run();
 }
 

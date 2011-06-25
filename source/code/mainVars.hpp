@@ -16,11 +16,6 @@ Copyright (C) 2007 Poul Sander
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    Poul Sander
-    R�veh�jvej 36, V. 1111
-    2800 Kgs. Lyngby
-    DENMARK
-    blockattack@poulsander.com
 */
 
 //Make sure it is only included once
@@ -303,7 +298,7 @@ struct control
     SDLKey push;
 };
 
-static control keySettings[3];	//array to hold the controls (default and two custom)
+control keySettings[3];	//array to hold the controls (default and two custom)
 
 #define KEYMENU_MAXWITH 4
 #define KEYMENU_MAXDEPTH 7
