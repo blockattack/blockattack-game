@@ -4596,7 +4596,7 @@ int main(int argc, char *argv[])
                                                                                                         //cout << "Replay->Save clicked" << endl;
                                                                                                         char buf[30];
                                                                                                         for (int i=0;i<29;i++)buf[i]=' ';
-                                                                                                        buf[30]=0;
+                                                                                                        buf[29]=0;
                                                                                                         OpenDialogbox(200,100,buf);
                                                                                                         for (int i=28;buf[i]==' ';i--)
                                                                                                             buf[i]=0;
@@ -4622,7 +4622,7 @@ int main(int argc, char *argv[])
 
                                                                                                             char buf[30];
                                                                                                             for (int i=0;i<29;i++)buf[i]=' ';
-                                                                                                            buf[30]=0;
+                                                                                                            buf[29]=0;
                                                                                                             if (OpenReplayDialogbox(50,100,buf))
                                                                                                             {
                                                                                                                 //cout << "Good way" << endl;
