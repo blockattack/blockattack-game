@@ -59,16 +59,25 @@ struct commonTime{
     unsigned int seconds;
 };
 
-string itoa(int num);
+string itoa(int num) __attribute__((const));
 
-string getPathToSaveFiles();
+string getPathToSaveFiles() __attribute__((pure));
 
 /**
  * str2int parses a string and returns an int with the value of the string.
  * if the string is not an int then 0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-int str2int(string str2parse);
+int str2int(string str2parse) __attribute__((const));
+
+string double2str(double num) __attribute__((const));
+
+/**
+ * str2double parses a string and returns a double with the value of the string.
+ * if the string is not a double then 0.0 is returned instead of throing an error
+ * in that way this function will always return a useable value.
+ */
+double str2double(string str2parse) __attribute__((const));
 
 #ifdef WIN32
 string getMyDocumentsPath();
@@ -102,6 +111,9 @@ private:
     static Config *instance;
     
     void load();
+    
+    /* tells if the user has requested a shutdown */
+    long shuttingDown;
 protected:
     
     Config();
@@ -148,23 +160,45 @@ public:
      */
     void setInt(string varName,int content);
     
-    /*setValue(varName,content)
-     *Sets the config variable with key "varName" to the value of "content"
+    /**
+     * Sets a config variable to a given (double) value
+     * @param varName Name of the variable to set 
+     * @param content Value to give the variable
      */
     void setValue(string varName,double content);
     
-    /*exists(varName)
-     *returns true if the key varName exists. This is used the first time 1.4.0
-     *starts so that it can see that it has to import configs from an earlier 
-     *version.
+    /**
+     * returns true if the key varName exists. This is used the first time 1.4.0
+     * starts so that it can see that it has to import configs from an earlier 
+     * version.
+     * @param varName Name of the variable
+     * @return true if the varaible exists
      */
-    bool exists(string varName);
+    bool exists(string varName) const;
     
     /*setDefault(varName,value)
      *if the variable "varName" does not exist it will be created with value "value"
      *if varName exists then this will have no effect
      */
+    /**
+     * Set default value for a variable. If the variable "varName" does not exist it will be created with value "value"
+     * if varName exists then this will have no effect
+     * @param varName Name of the variable
+     * @param content The default value
+     */
     void setDefault(string varName, string content);
+    
+    /**
+     * Should be set if the user has requested the program to shutdown.
+     * @param shuttingDown value of shutdown command. 5 = default = shutdown but allow saving
+     */
+    void setShuttingDown(long shuttingDown = 5);
+    
+    /**
+     * tells if the user wants to shutdown. This can be used if the exit button is pressed deaply in the program.
+     * @return 
+     */
+    long isShuttingDown() const;
 };
 
 #endif	/* _COMMON_H */

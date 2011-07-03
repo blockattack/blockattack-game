@@ -121,6 +121,7 @@ void Menu::drawSelf()
     for(it = buttons.begin();it < buttons.end(); it++)
         (*it)->drawTo(&screen);
     exit.drawTo(&screen);
+    ButtonGfx::thefont.draw(50,50,title.c_str());
     mouse.PaintTo(screen,mousex,mousey);
 }
 
@@ -139,7 +140,7 @@ void Menu::performClick(int x,int y)
 
 void Menu::placeButtons()
 {
-    int nextY = 50;
+    int nextY = 100;
     const int X = 50;
     vector<Button*>::iterator it;
     for(it = buttons.begin();it < buttons.end(); it++)
@@ -178,10 +179,24 @@ Menu::Menu(SDL_Surface **screen,bool submenu)
         exit.setLabel("Exit");
 }
 
+Menu::Menu(SDL_Surface** screen, string title, bool submenu) {
+    this->screen = *screen;
+    buttons = vector<Button*>(0);
+    isSubmenu = submenu;
+    this->title = title;
+    if(isSubmenu)
+        exit.setLabel("Back");
+    else
+        exit.setLabel("Exit");
+}
+
 void Menu::run()
 {
     running = true;
-    while(running)
+    bool bMouseUp = false;
+    long oldmousex = mousex;
+    long oldmousey = mousey;
+    while(running && !Config::getInstance()->isShuttingDown())
     {
         if (!(highPriority)) SDL_Delay(10);
 
@@ -191,6 +206,7 @@ void Menu::run()
         while ( SDL_PollEvent(&event) )
         {
             if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                 running = false;
             }
 
@@ -230,7 +246,39 @@ void Menu::run()
             buttons.at(i)->marked = (i == marked);
         }
         exit.marked = (marked == buttons.size());
-            SDL_GetMouseState(&mousex,&mousey);
+        Uint8 buttonState = SDL_GetMouseState(&mousex,&mousey);
+        // If the mouse button is released, make bMouseUp equal true
+        if ( (buttonState&SDL_BUTTON(1))==0)
+        {
+            bMouseUp=true;
+        }
+        
+        if(abs(mousex-oldmousex)>5 || abs(mousey-oldmousey)>5) {
+            for(int i=0;i< buttons.size();++i) {
+                if(buttons.at(i)->isClicked(mousex,mousey)) {
+                    marked = i;
+                }
+            }
+            if(exit.isClicked(mousex,mousey)) {
+                marked = buttons.size();
+            }
+            oldmousex = mousex;
+            oldmousey = mousey;
+        }
+        
+        //mouse clicked
+        if(buttonState&SDL_BUTTON(1)==SDL_BUTTON(1) && bMouseUp) 
+        {
+            bMouseUp = false;
+            for(int i=0;i< buttons.size();++i) {
+                if(buttons.at(i)->isClicked(mousex,mousey)) {
+                    buttons.at(i)->doAction();
+                }
+            }
+            if(exit.isClicked(mousex,mousey)) {
+                running = false;
+            }
+        }
         
         drawSelf();
         SDL_Flip(screen);

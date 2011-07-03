@@ -1647,7 +1647,7 @@ int OpenControlsBox(int x, int y, int player)
     bool done =false;
     string keyname;
     MakeBackground(xsize,ysize);
-    while (!done)
+    while (!done && !Config::getInstance()->isShuttingDown())
     {
         SDL_Delay(10);
         DrawIMG(background, screen, 0, 0);
@@ -1691,6 +1691,7 @@ int OpenControlsBox(int x, int y, int player)
         while (SDL_PollEvent(&event))
         {
             if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                 done = true;
             }
 
@@ -1853,7 +1854,7 @@ bool OpenDialogbox(int x, int y, char *name)
     string strHolder;
     MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
-    while (!done)
+    while (!done && !Config::getInstance()->isShuttingDown())
     {
         DrawIMG(dialogBox,screen,x,y);
         NFont_Write(screen, x+40,y+76,rk.GetString());
@@ -1868,6 +1869,7 @@ bool OpenDialogbox(int x, int y, char *name)
         while ( SDL_PollEvent(&event) )
         {
             if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                 done = true;
                 accept = false;
             }
@@ -2025,7 +2027,7 @@ void OpenScoresDisplay()
     const int backY = ysize-buttonYsize-20;
     const int nextX = xsize-buttonXsize-20;
     const int nextY = backY;
-    while (!done)
+    while (!done && !Config::getInstance()->isShuttingDown())
     {
         switch(page)
         {
@@ -2061,6 +2063,7 @@ void OpenScoresDisplay()
 
 
             if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                 done = true;
             }
 
@@ -2156,7 +2159,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
     DrawIMG(background,screen,0,0);
     DrawIMG(bForward,background,x+460,y+420);
     DrawIMG(bBack,background,x+20,y+420);
-    while (!done)
+    while (!done && !Config::getInstance()->isShuttingDown())
     {
         DrawIMG(background,screen,0,0);
         const int nrOfFiles = 10;
@@ -2171,6 +2174,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
         while ( SDL_PollEvent(&event) )
         {
             if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                 done = true;
             }
 
@@ -2253,7 +2257,7 @@ bool SelectThemeDialogbox(int x, int y, char *name)
     DrawIMG(background,screen,0,0);
     DrawIMG(bForward,background,x+460,y+420);
     DrawIMG(bBack,background,x+20,y+420);
-    while (!done)
+    while (!done && !Config::getInstance()->isShuttingDown())
     {
         DrawIMG(background,screen,0,0);
         const int nrOfFiles = 10;
@@ -2268,6 +2272,7 @@ bool SelectThemeDialogbox(int x, int y, char *name)
         while ( SDL_PollEvent(&event) )
         {
             if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                 done = true;
             }
 
@@ -2354,7 +2359,7 @@ bool OpenReplayDialogbox(int x, int y, char *name)
     DrawIMG(background,screen,0,0);
     DrawIMG(bForward,background,x+460,y+420);
     DrawIMG(bBack,background,x+20,y+420);
-    while (!done)
+    while (!done && !Config::getInstance()->isShuttingDown())
     {
         DrawIMG(background,screen,0,0);
         const int nrOfFiles = 10;
@@ -2369,6 +2374,7 @@ bool OpenReplayDialogbox(int x, int y, char *name)
         while ( SDL_PollEvent(&event) )
         {
             if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                 done = true;
                 return false;
             }
@@ -2434,23 +2440,6 @@ bool OpenReplayDialogbox(int x, int y, char *name)
         SDL_Flip(screen); //Update screen
     }
 }
-
-
-//draws options:
-void DrawOptions(int x, int y)
-{
-    if (MusicEnabled) DrawIMG(bOn,optionsBack,400,buttonXsize);
-    else DrawIMG(bOff,optionsBack,400,buttonXsize);
-    if (SoundEnabled) DrawIMG(bOn,optionsBack,400,170);
-    else DrawIMG(bOff,optionsBack,400,170);
-    if (bFullscreen) DrawIMG(bOn,optionsBack,400,220);
-    else DrawIMG(bOff,optionsBack,400,220);
-    DrawIMG(bChange,optionsBack,230,435);
-    DrawIMG(bChange,optionsBack,410,435);
-    DrawIMG(bChange,optionsBack,230,500);
-    DrawIMG(bChange,optionsBack,410,500);
-    DrawIMG(optionsBack,screen,x,y);
-}  //drawOptions
 
 //Draws the balls and explosions
 static void DrawBalls()
@@ -2521,7 +2510,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
     else
         DrawIMG(background,screen,0,0);
     //draw bottons (should be moves and drawn directly to background once)
-    if (!editorMode)
+    /*if (!editorMode)
         #if NETWORK
         if (!networkActive) //We don't show the menu while running server or connected to a server
         #else
@@ -2539,7 +2528,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
             DrawIMG(bBack, screen, 0, 0); //Display a disconnect button
         }
     if (!editorMode)
-        DrawIMG(bExit, screen, xsize-120,ysize-120);
+        DrawIMG(bExit, screen, xsize-120,ysize-120);*/
     //DrawIMG(boardBackBack,screen,theGame->GetTopX()-60,theGame->GetTopY()-68);
     DrawIMG(theGame->sBoard,screen,theGame->GetTopX(),theGame->GetTopY());
     string strHolder;
@@ -2705,49 +2694,6 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
     }
     //player2 finnish
 
-    if (bNewGameOpen)
-    {
-        DrawIMG(b1player,screen,0,40);
-        DrawIMG(b2players,screen,0,80);
-#if NETWORK
-        DrawIMG(bNetwork,screen,0,buttonXsize);
-#endif
-        if (b1playerOpen)
-        {
-            DrawIMG(bEndless,screen,buttonXsize,40);
-            DrawIMG(bTimeTrial,screen,buttonXsize,80);
-            DrawIMG(bStageClear,screen,buttonXsize,buttonXsize);
-            DrawIMG(bPuzzle,screen,buttonXsize,160);
-            DrawIMG(bVsMode,screen,buttonXsize,200);
-        }
-        else
-            if (b2playersOpen)
-            {
-                DrawIMG(bTimeTrial,screen,buttonXsize,80);
-                DrawIMG(bVsMode,screen,buttonXsize,120);
-            }
-#if NETWORK
-            else
-                if (bNetworkOpen)
-                {
-                    DrawIMG(bHost,screen,buttonXsize,120);
-                    DrawIMG(bConnect,screen,buttonXsize,160);
-                }
-#endif
-    }
-    if (bOptionsOpen)
-    {
-        DrawIMG(bConfigure,screen,buttonXsize,40);
-        DrawIMG(bSelectPuzzle,screen,buttonXsize,80);
-        DrawIMG(bVsModeConfig,screen,buttonXsize,120);
-        DrawIMG(bTheme,screen,buttonXsize,160);
-    }
-    if (bReplayOpen)
-    {
-        DrawIMG(bSave,screen,360,40);
-        DrawIMG(bLoad,screen,360,80);
-    }
-    if (showOptions) DrawOptions(100,100);
 
     DrawBalls();
 
@@ -3125,7 +3071,7 @@ int startSingleVs()
         //DrawIMG(mouse,screen,mousex,mousey);
         mouse.PaintTo(screen,mousex,mousey);
         SDL_Flip(screen); //draws it all to the screen
-    }while (!done);
+    }while (!done && !Config::getInstance()->isShuttingDown());
 
 
     return 3; //Returns normal
@@ -3268,7 +3214,7 @@ void startVsMenu()
         SDL_Flip(screen); //draws it all to the screen
         SDL_Delay(10);
 
-    } while (!done);
+    } while (!done && !Config::getInstance()->isShuttingDown());
     DrawIMG(background, screen, 0, 0);
 }
 
@@ -3805,1082 +3751,7 @@ int main(int argc, char *argv[])
     DrawEverything(xsize,ysize,&theGame,&theGame2);
     SDL_Flip(screen);
     //game loop
-    int done = 0;
-    cout << "Starting game loop" << endl;
-    while (done == 0)
-    {
-        if (!(highPriority)) SDL_Delay(10);
-
-        if ((standardBackground)&&(!editorMode))
-        {
-            MakeBackground(xsize,ysize,&theGame,&theGame2);
-            DrawIMG(background, screen, 0, 0);
-        }
-
-        if ((standardBackground)&&(editorMode))
-        {
-            DrawIMG(backgroundImage, screen, 0, 0);
-            MakeBackground(xsize,ysize,&theGame);
-            DrawIMG(background, screen, 0, 0);
-        }
-
-        //updates the balls and explosions:
-        theBallManeger.update();
-        theExplosionManeger.update();
-        theTextManeger.update();
-
-#if NETWORK
-        if (nt.isConnected())
-        {
-            nt.updateNetwork();
-            networkActive = true;
-            if (!nt.isConnectedToPeer())
-                DrawIMG(background, screen, 0, 0);
-        }
-        else
-            networkActive = false;
-        if (nt.isConnectedToPeer())
-        {
-            networkPlay=true;
-            if (!weWhereConnected) //We have just connected
-            {
-                theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
-                theGame.putStartBlocks(nt.theSeed);
-                theGame2.playNetwork(xsize-500,100,SDL_GetTicks());
-                nt.theGameHasStarted();
-                DrawIMG(background, screen, 0, 0);
-            }
-            weWhereConnected = true;
-        }
-        else
-        {
-            networkPlay=false;
-            weWhereConnected = false;
-        }
-#endif
-
-        if (!bScreenLocked)
-        {
-            SDL_Event event;
-
-            while ( SDL_PollEvent(&event) )
-            {
-                if ( event.type == SDL_QUIT )  {
-                    done = 1;
-                }
-
-                if ( event.type == SDL_KEYDOWN )
-                {
-                    if ( event.key.keysym.sym == SDLK_ESCAPE )
-                    {
-                            if (showOptions)
-                            {
-                                showOptions = false;
-                            }
-                            else
-                                done=1;
-                        DrawIMG(background, screen, 0, 0);
-
-                    }
-                    if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled()))
-                    {
-                        //player1:
-                        if ( event.key.keysym.sym == keySettings[player1keys].up ) {
-                            theGame.MoveCursor('N');
-                            repeatingN[0]=true;
-                            timeHeldP1N=SDL_GetTicks();
-                            timesRepeatedP1N=0;
-                        }
-                        if ( event.key.keysym.sym == keySettings[player1keys].down ) {
-                            theGame.MoveCursor('S');
-                            repeatingS[0]=true;
-                            timeHeldP1S=SDL_GetTicks();
-                            timesRepeatedP1S=0;
-                        }
-                        if ( (event.key.keysym.sym == keySettings[player1keys].left) && (showGame) ) {
-                            theGame.MoveCursor('W');
-                            repeatingW[0]=true;
-                            timeHeldP1W=SDL_GetTicks();
-                            timesRepeatedP1W=0;
-                        }
-                        if ( (event.key.keysym.sym == keySettings[player1keys].right) && (showGame) ) {
-                            theGame.MoveCursor('E');
-                            repeatingE[0]=true;
-                            timeHeldP1E=SDL_GetTicks();
-                            timesRepeatedP1E=0;
-                        }
-                        if ( event.key.keysym.sym == keySettings[player1keys].push ) {
-                            theGame.PushLine();
-                        }
-                        if ( event.key.keysym.sym == keySettings[player1keys].change ) {
-                            theGame.SwitchAtCursor();
-                        }
-                    }
-                    if (!editorMode && !theGame2.GetAIenabled())
-                    {
-                        //player2:
-                        if ( event.key.keysym.sym == keySettings[player2keys].up ) {
-                            theGame2.MoveCursor('N');
-                            repeatingN[1]=true;
-                            timeHeldP2N=SDL_GetTicks();
-                            timesRepeatedP2N=0;
-                        }
-                        if ( event.key.keysym.sym == keySettings[player2keys].down ) {
-                            theGame2.MoveCursor('S');
-                            repeatingS[1]=true;
-                            timeHeldP2S=SDL_GetTicks();
-                            timesRepeatedP2S=0;
-                        }
-                        if ( (event.key.keysym.sym == keySettings[player2keys].left) && (showGame) ) {
-                            theGame2.MoveCursor('W');
-                            repeatingW[1]=true;
-                            timeHeldP2W=SDL_GetTicks();
-                            timesRepeatedP2W=0;
-                        }
-                        if ( (event.key.keysym.sym == keySettings[player2keys].right) && (showGame) ) {
-                            theGame2.MoveCursor('E');
-                            repeatingE[1]=true;
-                            timeHeldP2E=SDL_GetTicks();
-                            timesRepeatedP2E=0;
-                        }
-                        if ( event.key.keysym.sym == keySettings[player2keys].push ) {
-                            theGame2.PushLine();
-                        }
-                        if ( event.key.keysym.sym == keySettings[player2keys].change ) {
-                            theGame2.SwitchAtCursor();
-                        }
-                    }
-                    //common:
-                    if ((!singlePuzzle)&&(!editorMode))
-                    {
-                        if ( event.key.keysym.sym == SDLK_F2 ) {
-                            #if NETWORK
-                            if ((!showOptions)&&(!networkActive)){
-                            #else
-                            if ((!showOptions)){
-                            #endif
-                                StartSinglePlayerEndless();
-                            }}
-                        if ( event.key.keysym.sym == SDLK_F3 ) {
-                            #if NETWORK
-                            if ((!showOptions)&&(!networkActive)){
-                            #else
-                            if ((!showOptions)){    
-                            #endif
-                                StartSinglePlayerTimeTrial();
-                            }}
-                        if ( event.key.keysym.sym == SDLK_F5 )
-                        {
-                            #if NETWORK
-                            if ((!showOptions)&&(!networkActive))
-                            #else
-                            if ((!showOptions))    
-                            #endif
-                            {
-                                int myLevel = StageLevelSelect();
-                                theGame.NewStageGame(myLevel,50,100,SDL_GetTicks());
-                                MakeBackground(xsize,ysize,&theGame,&theGame2);
-                                DrawIMG(background, screen, 0, 0);
-                                closeAllMenus();
-                                twoPlayers =false;
-                                theGame2.SetGameOver();
-                                showGame = true;
-                                vsMode = false;
-                                strcpy(theGame.name, player1name);
-                                strcpy(theGame2.name, player2name);
-                            }
-                        }
-                        if ( event.key.keysym.sym == SDLK_F6 )
-                        {
-                            #if NETWORK
-                            if ((!showOptions)&&(!networkActive))
-                            #else
-                            if ((!showOptions))    
-                            #endif
-                            {
-                                StartTwoPlayerVs();
-                            }
-                        }
-                        if ( event.key.keysym.sym == SDLK_F4 )
-                        {
-                            #if NETWORK
-                            if ((!showOptions)&&(!networkActive))
-                            #else
-                            if ((!showOptions))    
-                            #endif
-                            {
-                                StarTwoPlayerTimeTrial();
-                            }
-                        }
-                        if ( event.key.keysym.sym == SDLK_F7 )
-                        {
-                            #if NETWORK
-                            if ((!showOptions)&&(!networkActive))
-                            #else
-                            if ((!showOptions))    
-                            #endif
-                            {
-                                int myLevel = PuzzleLevelSelect();
-                                theGame.NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
-                                MakeBackground(xsize,ysize,&theGame,&theGame2);
-                                DrawIMG(background, screen, 0, 0);
-                                closeAllMenus();
-                                twoPlayers = false;
-                                theGame2.SetGameOver();
-                                showGame = true;
-                                vsMode = true;
-                                strcpy(theGame.name, player1name);
-                                strcpy(theGame2.name, player2name);
-                            }
-                        }
-                        if ( event.key.keysym.sym == SDLK_F8 )
-                        {
-                        }
-                        if ( event.key.keysym.sym == SDLK_F9 ) {
-                            writeScreenShot();
-                        }
-                        if ( event.key.keysym.sym == SDLK_F11 ) {
-                            /*This is the test place, place function to test here*/
-
-                            //theGame.CreateGreyGarbage();
-                            //char mitNavn[30];
-                            //SelectThemeDialogbox(300,400,mitNavn);
-                           MainMenu();
-                            //OpenScoresDisplay();
-                        } //F11
-                    }
-                    if ( event.key.keysym.sym == SDLK_F12 ) {
-                        done=1;
-                    }
-                }
-            } //while event PollEvent - read keys
-
-            /**********************************************************************
-            **************************** Repeating start **************************
-            **********************************************************************/
-
-            keys = SDL_GetKeyState(NULL);
-//Also the joysticks:
-//Repeating not implemented
-
-//Player 1 start
-            if (!(keys[keySettings[player1keys].up]))
-                repeatingN[0]=false;
-            while ((repeatingN[0])&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat))
-            {
-                theGame.MoveCursor('N');
-                timesRepeatedP1N++;
-            }
-
-            if (!(keys[keySettings[player1keys].down]))
-                repeatingS[0]=false;
-            while ((repeatingS[0])&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat))
-            {
-                theGame.MoveCursor('S');
-                timesRepeatedP1S++;
-            }
-
-            if (!(keys[keySettings[player1keys].left]))
-                repeatingW[0]=false;
-            while ((repeatingW[0])&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat))
-            {
-                timesRepeatedP1W++;
-                theGame.MoveCursor('W');
-            }
-
-            if (!(keys[keySettings[player1keys].right]))
-                repeatingE[0]=false;
-            while ((repeatingE[0])&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat))
-            {
-                timesRepeatedP1E++;
-                theGame.MoveCursor('E');
-            }
-
-//Player 1 end
-
-//Player 2 start
-            if (!(keys[keySettings[player2keys].up]))
-                repeatingN[1]=false;
-            while ((repeatingN[1])&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat))
-            {
-                theGame2.MoveCursor('N');
-                timesRepeatedP2N++;
-            }
-
-            if (!(keys[keySettings[player2keys].down]))
-                repeatingS[1]=false;
-            while ((repeatingS[1])&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat))
-            {
-                theGame2.MoveCursor('S');
-                timesRepeatedP2S++;
-            }
-
-            if (!(keys[keySettings[player2keys].left]))
-                repeatingW[1]=false;
-            while ((repeatingW[1])&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat))
-            {
-                theGame2.MoveCursor('W');
-                timesRepeatedP2W++;
-            }
-
-            if (!(keys[keySettings[player2keys].right]))
-                repeatingE[1]=false;
-            while ((repeatingE[1])&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat))
-            {
-                theGame2.MoveCursor('E');
-                timesRepeatedP2E++;
-            }
-
-//Player 2 end
-
-            /**********************************************************************
-            **************************** Repeating end ****************************
-            **********************************************************************/
-
-            /**********************************************************************
-            ***************************** Joypad start ****************************
-            **********************************************************************/
-
-            //Gameplay
-            if (joyplay1||joyplay2)
-            {
-                if (joypad1.working && !theGame.GetAIenabled())
-                    if (joyplay1)
-                    {
-                        joypad1.update();
-                        if (joypad1.up)
-                        {
-                            theGame.MoveCursor('N');
-                            repeatingN[0]=true;
-                            timeHeldP1N=SDL_GetTicks();
-                            timesRepeatedP1N=0;
-                        }
-                        if (joypad1.down)
-                        {
-                            theGame.MoveCursor('S');
-                            repeatingS[0]=true;
-                            timeHeldP1S=SDL_GetTicks();
-                            timesRepeatedP1S=0;
-                        }
-                        if (joypad1.left)
-                        {
-                            theGame.MoveCursor('W');
-                            repeatingW[0]=true;
-                            timeHeldP1W=SDL_GetTicks();
-                            timesRepeatedP1W=0;
-                        }
-                        if (joypad1.right)
-                        {
-                            theGame.MoveCursor('E');
-                            repeatingE[0]=true;
-                            timeHeldP1E=SDL_GetTicks();
-                            timesRepeatedP1E=0;
-                        }
-                        if (joypad1.but1)
-                            theGame.SwitchAtCursor();
-                        if (joypad1.but2)
-                            theGame.PushLine();
-                    }
-                    else
-                    {
-                        joypad1.update();
-                        if (joypad1.up)
-                        {
-                            theGame2.MoveCursor('N');
-                            repeatingN[1]=true;
-                            timeHeldP2N=SDL_GetTicks();
-                            timesRepeatedP2N=0;
-                        }
-                        if (joypad1.down)
-                        {
-                            theGame2.MoveCursor('S');
-                            repeatingS[1]=true;
-                            timeHeldP2S=SDL_GetTicks();
-                            timesRepeatedP2S=0;
-                        }
-                        if (joypad1.left)
-                        {
-                            theGame2.MoveCursor('W');
-                            repeatingW[1]=true;
-                            timeHeldP2W=SDL_GetTicks();
-                            timesRepeatedP2W=0;
-                        }
-                        if (joypad1.right)
-                        {
-                            theGame2.MoveCursor('E');
-                            repeatingE[1]=true;
-                            timeHeldP2E=SDL_GetTicks();
-                            timesRepeatedP2E=0;
-                        }
-                        if (joypad1.but1)
-                            theGame2.SwitchAtCursor();
-                        if (joypad1.but2)
-                            theGame2.PushLine();
-                    }
-                if (joypad2.working && !theGame2.GetAIenabled())
-                    if (!joyplay2)
-                    {
-                        joypad2.update();
-                        if (joypad2.up)
-                        {
-                            theGame.MoveCursor('N');
-                            repeatingN[0]=true;
-                            timeHeldP1N=SDL_GetTicks();
-                            timesRepeatedP1N=0;
-                        }
-                        if (joypad2.down)
-                        {
-                            theGame.MoveCursor('S');
-                            repeatingS[0]=true;
-                            timeHeldP1S=SDL_GetTicks();
-                            timesRepeatedP1S=0;
-                        }
-                        if (joypad2.left)
-                        {
-                            theGame.MoveCursor('W');
-                            repeatingW[0]=true;
-                            timeHeldP1W=SDL_GetTicks();
-                            timesRepeatedP1W=0;
-                        }
-                        if (joypad2.right)
-                        {
-                            theGame.MoveCursor('E');
-                            repeatingE[0]=true;
-                            timeHeldP1E=SDL_GetTicks();
-                            timesRepeatedP1E=0;
-                        }
-                        if (joypad2.but1)
-                            theGame.SwitchAtCursor();
-                        if (joypad2.but2)
-                            theGame.PushLine();
-                    }
-                    else
-                    {
-                        joypad2.update();
-                        if (joypad2.up)
-                        {
-                            theGame2.MoveCursor('N');
-                            repeatingN[1]=true;
-                            timeHeldP2N=SDL_GetTicks();
-                            timesRepeatedP2N=0;
-                        }
-                        if (joypad2.down)
-                        {
-                            theGame2.MoveCursor('S');
-                            repeatingS[1]=true;
-                            timeHeldP2S=SDL_GetTicks();
-                            timesRepeatedP2S=0;
-                        }
-                        if (joypad2.left)
-                        {
-                            theGame2.MoveCursor('W');
-                            repeatingW[1]=true;
-                            timeHeldP2W=SDL_GetTicks();
-                            timesRepeatedP2W=0;
-                        }
-                        if (joypad2.right)
-                        {
-                            theGame2.MoveCursor('E');
-                            repeatingE[1]=true;
-                            timeHeldP2E=SDL_GetTicks();
-                            timesRepeatedP2E=0;
-                        }
-                        if (joypad2.but1)
-                            theGame2.SwitchAtCursor();
-                        if (joypad2.but2)
-                            theGame2.PushLine();
-                    }
-            }
-
-            /**********************************************************************
-            ***************************** Joypad end ******************************
-            **********************************************************************/
-
-
-            keys = SDL_GetKeyState(NULL);
-
-            SDL_GetMouseState(&mousex,&mousey);
-
-            /********************************************************************
-            **************** Here comes mouse play ******************************
-            ********************************************************************/
-
-            if ((mouseplay1)&&((!editorMode)&&(!theGame.GetAIenabled())||(editorModeTest))) //player 1
-                if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
-                {
-                    int yLine, xLine;
-                    yLine = ((100+600)-(mousey-100+theGame.GetPixels()))/50;
-                    xLine = (mousex-50+25)/50;
-                    yLine-=2;
-                    xLine-=1;
-                    if ((yLine>10)&&(theGame.GetTowerHeight()<12))
-                        yLine=10;
-                    if (((theGame.GetPixels()==50)||(theGame.GetPixels()==0)) && (yLine>11))
-                        yLine=11;
-                    if (yLine<0)
-                        yLine=0;
-                    if (xLine<0)
-                        xLine=0;
-                    if (xLine>4)
-                        xLine=4;
-                    theGame.MoveCursorTo(xLine,yLine);
-                }
-
-            if ((mouseplay2)&&(!editorMode)&&(!theGame2.GetAIenabled())) //player 2
-                if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
-                {
-                    int yLine, xLine;
-                    yLine = ((100+600)-(mousey-100+theGame2.GetPixels()))/50;
-                    xLine = (mousex-(xsize-500)+25)/50;
-                    yLine-=2;
-                    xLine-=1;
-                    if ((yLine>10)&&(theGame2.GetTowerHeight()<12))
-                        yLine=10;
-                    if (((theGame2.GetPixels()==50)||(theGame2.GetPixels()==0)) && (yLine>11))
-                        yLine=11;
-                    if (yLine<0)
-                        yLine=0;
-                    if (xLine<0)
-                        xLine=0;
-                    if (xLine>4)
-                        xLine=4;
-                    theGame2.MoveCursorTo(xLine,yLine);
-                }
-
-            /********************************************************************
-            **************** Here ends mouse play *******************************
-            ********************************************************************/
-
-            // If the mouse button is released, make bMouseUp equal true
-            if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
-            {
-                bMouseUp=true;
-            }
-
-            // If the mouse button 2 is released, make bMouseUp2 equal true
-            if ((SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))!=SDL_BUTTON(3))
-            {
-                bMouseUp2=true;
-            }
-
-            if ((!singlePuzzle)&&(!editorMode))
-            {
-                //read mouse events
-                if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
-                {
-                    bMouseUp = false;
-                    DrawIMG(background, screen, 0, 0);
-                    #if NETWORK
-                    //Nothing
-                    #else
-                    bool networkActive=false;
-                    #endif
-                    if ((0<mousex) && (mousex<buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive) )
-                    {
-                        //New game clicked
-                        bool state = (!bNewGameOpen);
-                        closeAllMenus();
-                        bNewGameOpen = state; //theGame.NewGame(50,100);
-                        showOptions = false;
-                    }
-                    else
-#if NETWORK
-                        if ((0<mousex) && (mousex<buttonXsize) && (0<mousey) && (mousey<40) &&(networkActive))
-                        {
-                            //Disconnect clicked!
-                            cout << "Disconnect clicked!" << endl;
-                            nt.ntDisconnect();
-                        }
-                        else
-#endif
-                            if ((0<mousex) && (mousex<buttonXsize) && (40<mousey) && (mousey<80) && (bNewGameOpen) &&(!networkActive))
-                            {
-                                //1player
-                                b1playerOpen = (!b1playerOpen);
-                                b2playersOpen = false;
-#if NETWORK
-                                bNetworkOpen = false;
-#endif
-                            }
-                            else
-                                if ((0<mousex) && (mousex<buttonXsize) && (80<mousey) && (mousey<120) && (bNewGameOpen) &&(!networkActive))
-                                {
-                                    //2player
-                                    b2playersOpen = (!b2playersOpen);
-                                    b1playerOpen = false;
-#if NETWORK
-                                    bNetworkOpen = false;
-#endif
-                                }
-#if NETWORK
-                                else
-                                    if ((0<mousex) && (mousex<buttonXsize) && (120<mousey) && (mousey<160) && (bNewGameOpen) &&(!networkActive))
-                                    {
-                                        //Network
-                                        b1playerOpen = false;
-                                        b2playersOpen = false;
-                                        bNetworkOpen = (!bNetworkOpen);
-                                    }
-#endif
-                                    else
-                                        if ((buttonXsize<mousex) && (mousex<240) && (40<mousey) && (mousey<80) && (b1playerOpen) &&(!networkActive))
-                                        {
-                                            StartSinglePlayerEndless();
-                                        }
-                                        else
-                                            if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b1playerOpen) &&(!networkActive) )
-                                            {
-                                                StartSinglePlayerTimeTrial();
-                                            }
-                                            else
-                                                if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b1playerOpen)&&(!networkActive) )
-                                                {
-                                                    //1 player - stage clear
-                                                    bNewGameOpen = false;
-                                                    b1playerOpen = false;
-                                                    int myLevel = StageLevelSelect();
-                                                    theGame.NewStageGame(myLevel,50,100,SDL_GetTicks());
-                                                    MakeBackground(xsize,ysize,&theGame,&theGame2);
-                                                    DrawIMG(background, screen, 0, 0);
-                                                    twoPlayers =false;
-                                                    theGame2.SetGameOver();
-                                                    showGame = true;
-                                                    vsMode = false;
-                                                    strcpy(theGame.name, player1name);
-                                                    strcpy(theGame2.name, player2name);
-                                                }
-                                                else
-                                                    if ((buttonXsize<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (b1playerOpen))
-                                                    {
-                                                        //1 player - puzzle
-                                                        bNewGameOpen = false;
-                                                        b1playerOpen = false;
-                                                        int myLevel = PuzzleLevelSelect();
-                                                        theGame.NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
-                                                        MakeBackground(xsize,ysize,&theGame,&theGame2);
-                                                        DrawIMG(background, screen, 0, 0);
-                                                        twoPlayers =false;
-                                                        theGame2.SetGameOver();
-                                                        showGame = true;
-                                                        vsMode = false;
-                                                        strcpy(theGame.name, player1name);
-                                                        strcpy(theGame2.name, player2name);
-                                                    }
-                                                    else
-                                                        if ((buttonXsize<mousex) && (mousex<240) && (200<mousey) && (mousey<240) && (b1playerOpen))
-                                                        {
-                                                            //1 player - Vs mode
-                                                            bNewGameOpen = false;
-                                                            b1playerOpen = false;
-                                                            int theAIlevel = startSingleVs();
-                                                            theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
-                                                            theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
-                                                            MakeBackground(xsize,ysize,&theGame,&theGame2);
-                                                            DrawIMG(background, screen, 0, 0);
-                                                            twoPlayers = true; //Single player, but AI plays
-                                                            showGame = true;
-                                                            vsMode = true;
-                                                            theGame2.setAIlevel((Uint8)theAIlevel);
-                                                            int theTime = time(0);
-                                                            theGame.putStartBlocks(theTime);
-                                                            theGame2.putStartBlocks(theTime);
-                                                            strcpy(theGame.name, player1name);
-                                                            strcpy(theGame2.name, player2name);
-                                                        }
-                                                        else
-                                                            if ((buttonXsize<mousex) && (mousex<240) && (80<mousey) && (mousey<120) && (b2playersOpen))
-                                                            {
-                                                                StarTwoPlayerTimeTrial();
-                                                            }
-                                                            else
-                                                                if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (b2playersOpen))
-                                                                {
-                                                                    StartTwoPlayerVs();
-                                                                }
-#if NETWORK
-                                                                else
-                                                                    if ((buttonXsize<mousex) && (mousex<240) && (120<mousey) && (mousey<160) && (bNetworkOpen))
-                                                                    {
-                                                                        //Host
-                                                                        cout << "Host" << endl;
-                                                                        closeAllMenus();
-                                                                        theGame.SetGameOver();
-                                                                        theGame2.SetGameOver();
-                                                                        nt.startServer();
-                                                                    }
-                                                                    else
-                                                                        if ((buttonXsize<mousex) && (mousex<240) && (160<mousey) && (mousey<200) && (bNetworkOpen))
-                                                                        {
-                                                                            //Connect
-                                                                            cout << "Connect" << endl;
-                                                                            closeAllMenus();
-                                                                            theGame.SetGameOver();
-                                                                            theGame2.SetGameOver();
-                                                                            if (OpenDialogbox(200,100,serverAddress))
-                                                                            {
-                                                                                char buf[30];
-                                                                                memcpy(buf,serverAddress,30);
-                                                                                nt.connectToServer(strtok(buf," "));
-                                                                            }
-                                                                            while ( SDL_PollEvent(&event) ); //If the user have pressed ESC or the like
-                                                                        }
-#endif
-                                                                        else
-                                                                            if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive))
-                                                                            {
-                                                                                //options button clicked
-                                                                                if (bOptionsOpen)
-                                                                                {
-                                                                                    closeAllMenus();
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    closeAllMenus();
-                                                                                    bOptionsOpen = true;
-                                                                                    DrawIMG(background, screen, 0, 0);
-                                                                                }
-                                                                            }
-                                                                            else
-                                                                                if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (40<mousey) && (mousey<80) && (bOptionsOpen) )
-                                                                                {
-                                                                                    //Configure button clicked
-                                                                                    closeAllMenus();
-                                                                                    if (!showOptions) {
-                                                                                        showOptions = true;
-                                                                                    }
-                                                                                    else showOptions = false;
-                                                                                    DrawIMG(background, screen, 0, 0);
-                                                                                }
-                                                                                else
-                                                                                    if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (80<mousey) && (mousey<120) && (bOptionsOpen) )
-                                                                                    {
-                                                                                        //Configure button clicked
-                                                                                        closeAllMenus();
-                                                                                        changePuzzleLevels();
-                                                                                    }
-                                                                                    else
-                                                                                        if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (120<mousey) && (mousey<160) && (bOptionsOpen) )
-                                                                                        {
-                                                                                            //vsMode button clicked
-                                                                                            closeAllMenus();
-                                                                                            startVsMenu();
-                                                                                        }
-                                                                                        else
-                                                                                        if ((buttonXsize<mousex) && (mousex<2*buttonXsize) && (160<mousey) && (mousey<200) && (bOptionsOpen) )
-                                                                                        {
-                                                                                            //selectThemClicked
-                                                                                            closeAllMenus();
-                                                                                            char temp[30];
-                                                                                            SelectThemeDialogbox(200,100,temp);
-                                                                                        }
-                                                                                        else
-                                                                                            if ((buttonXsize*2<mousex) && (mousex<3*buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive))
-                                                                                            {
-                                                                                                //highscore button clicked
-                                                                                                OpenScoresDisplay();
-
-                                                                                            }
-                                                                                            else
-                                                                                                if ((360<mousex) && (mousex<4*buttonXsize) && (0<mousey) && (mousey<40) &&(!networkActive))
-                                                                                                {
-                                                                                                    //Replay clicked!
-                                                                                                    bool state = (!bReplayOpen);
-                                                                                                    closeAllMenus();
-                                                                                                    bReplayOpen = state; //theGame.NewGame(50,100);
-                                                                                                    showOptions = false;
-                                                                                                }
-                                                                                                else
-                                                                                                    if ((360<mousex) && (mousex<4*buttonXsize) && (40<mousey) && (mousey<80) &&(bReplayOpen))
-                                                                                                    {
-                                                                                                        //Replay->Save clicked!
-                                                                                                        //cout << "Replay->Save clicked" << endl;
-                                                                                                        char buf[30];
-                                                                                                        for (int i=0;i<29;i++)buf[i]=' ';
-                                                                                                        buf[29]=0;
-                                                                                                        OpenDialogbox(200,100,buf);
-                                                                                                        for (int i=28;buf[i]==' ';i--)
-                                                                                                            buf[i]=0;
-#ifdef __unix__
-                                                                                                        string saveHere = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/replays/"+(string)buf;
-#elif WIN32
-                                                                                                        string saveHere = home+(string)"/My Games/blockattack/replays/"+(string)buf;
-#else
-                                                                                                        string saveHere = (string)"./replays"+(string)buf;
-#endif
-                                                                                                        if (lastNrOfPlayers<2)
-                                                                                                            theGame.theReplay.saveReplay(saveHere);
-                                                                                                        else
-                                                                                                            theGame.theReplay.saveReplay(saveHere,theGame2.theReplay);
-
-                                                                                                        closeAllMenus();
-                                                                                                    }
-                                                                                                    else
-                                                                                                        if ((360<mousex) && (mousex<4*buttonXsize) && (80<mousey) && (mousey<120)&&(bReplayOpen))
-                                                                                                        {
-                                                                                                            //Replay->Load clicked!
-                                                                                                            //cout << "Replay->Load clicked" << endl;
-
-                                                                                                            char buf[30];
-                                                                                                            for (int i=0;i<29;i++)buf[i]=' ';
-                                                                                                            buf[29]=0;
-                                                                                                            if (OpenReplayDialogbox(50,100,buf))
-                                                                                                            {
-                                                                                                                //cout << "Good way" << endl;
-                                                                                                                for (int i=28;buf[i]==' ';i--)
-                                                                                                                    buf[i]=0;
-#ifdef __unix__
-                                                                                                                string loadThis = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/replays/"+(string)buf;
-#elif WIN32
-                                                                                                                string loadThis = home+(string)"/My Games/blockattack/replays/"+(string)buf;
-#else
-                                                                                                                string loadThis = (string)"./replays/"+(string)buf;
-#endif
-                                                                                                                ifstream replayFileIn;
-                                                                                                                replayFileIn.open(loadThis.c_str(),ios::binary);
-                                                                                                                bool play2 = false;
-                                                                                                                if (replayFileIn)
-                                                                                                                {
-                                                                                                                    Uint8 version = 0;
-                                                                                                                    replayFileIn.read(reinterpret_cast<char*>(&version),sizeof(Uint8));                                                                                                                  replayFileIn.close();
-                                                                                                                    Replay r1;
-                                                                                                                    if(r1.loadReplay(loadThis))
-                                                                                                                    {
-                                                                                                                        Replay r2;
-                                                                                                                        play2 = r2.loadReplay2(loadThis);
-                                                                                                                        theGame.playReplay(50,100,SDL_GetTicks()); //Fejlen sker her
-                                                                                                                        theGame.theReplay = r1;
-                                                                                                                        if (play2)
-                                                                                                                        {
-                                                                                                                            theGame2.playReplay(xsize-500,100,SDL_GetTicks());
-                                                                                                                            theGame2.theReplay = r2;
-                                                                                                                        }
-                                                                                                                        else
-                                                                                                                            theGame2.SetGameOver();
-                                                                                                                        cout << "Replay should have been read" << endl;
-                                                                                                                    }
-                                                                                                                    else
-                                                                                                                        cout << "Failed to read replay" << endl;
-                                                                                                                }
-                                                                                                            }
-                                                                                                            closeAllMenus();
-                                                                                                        }
-                                                                                                        else
-                                                                                                            if ((xsize-120<mousex) && (xsize-20>mousex) && (ysize-buttonXsize<mousey) && (ysize-20>mousey))
-                                                                                                            {
-                                                                                                                //Exit clicked
-                                                                                                                done=1;
-                                                                                                            }
-                                                                                                            else
-                                                                                                                if ((showOptions) && (mousex>500) && (mousex<560) && (mousey>220) && (mousey<260))
-                                                                                                                {
-                                                                                                                    MusicEnabled = !MusicEnabled;
-                                                                                                                    if (!MusicEnabled) Mix_FadeOutMusic(500);
-                                                                                                                }
-                    if ((showOptions) && (mousex>500) && (mousex<560) && (mousey>270) && (mousey<310))
-                    {
-                        SoundEnabled = !SoundEnabled;
-                    }
-                    if ((showOptions) && (mousex>500) && (mousex<560) && (mousey>320) && (mousey<360))
-                    {
-                        //Fullscreen
-                        bFullscreen = !bFullscreen;
-                        ResetFullscreen();
-                    }
-
-                    if ((showOptions) && (mousex>330) && (mousex<470) && (mousey>535) && (mousey<585))
-                    {
-                        //change name
-                        bScreenLocked = true;
-                        showDialog = true;
-                        strcpy(theGame.name, player1name);
-                        if (OpenDialogbox(200,100,player1name))
-                            strcpy(theGame.name, player1name);
-                        else
-                            strcpy(player1name,theGame.name);
-                        bScreenLocked = false;
-                        showDialog = false;
-                        MakeBackground(xsize,ysize,&theGame,&theGame2);
-                        DrawIMG(background, screen, 0, 0);
-                    }
-                    if ((showOptions) && (mousex>330) && (mousex<470) && (mousey>600) && (mousey<640))
-                    {
-                        //change name
-                        bScreenLocked = true;
-                        showDialog = true;
-                        strcpy(theGame2.name, player2name);
-                        if (OpenDialogbox(200,100,player2name))
-                            strcpy(theGame2.name, player2name);
-                        else
-                            strcpy(player2name,theGame2.name);
-                        bScreenLocked = false;
-                        showDialog = false;
-                        MakeBackground(xsize,ysize,&theGame,&theGame2);
-                        DrawIMG(background, screen, 0, 0);
-                    }
-                    if ((showOptions) && (mousex>510) && (mousex<630) && (mousey>535) && (mousey<585))
-                    {
-                        //changeControls
-                        OpenControlsBox(200,100,0);
-                        MakeBackground(xsize,ysize,&theGame,&theGame2);
-                        DrawIMG(background, screen, 0, 0);
-                    }
-                    if ((showOptions) && (mousex>510) && (mousex<630) && (mousey>600) && (mousey<640))
-                    {
-                        //changeControls
-                        OpenControlsBox(200,100,2);
-                        MakeBackground(xsize,ysize,&theGame,&theGame2);
-                        DrawIMG(background, screen, 0, 0);
-                    }
-
-                    /********************************************************************
-                    **************** Here comes mouse play ******************************
-                    ********************************************************************/
-                    if ((!showOptions))
-                    {
-                        if (mouseplay1 && !theGame.GetAIenabled()) //player 1
-                            if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
-                            {
-                                theGame.SwitchAtCursor();
-                            }
-                        if (mouseplay2 && !theGame2.GetAIenabled()) //player 2
-                            if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
-                            {
-                                theGame2.SwitchAtCursor();
-                            }
-                    }
-                    /********************************************************************
-                    **************** Here ends mouse play *******************************
-                    ********************************************************************/
-
-                    if(stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
-                            &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
-                            &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize))
-                    {
-                        //Clicked the next button after a stage clear or puzzle
-                        theGame.nextLevel(SDL_GetTicks());
-                    }
-                    if(stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
-                            &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
-                            &&(mousey > theGame.GetTopY()+cordRetryButton.y)&&(mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize))
-                    {
-                        //Clicked the retry button
-                        theGame.retryLevel(SDL_GetTicks());
-                    }
-                        
-                    
-                    //cout << "Mouse x: " << mousex << ", mouse y: " << mousey << endl;
-                }
-
-                //Mouse button 2:
-                if ((SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(3))==SDL_BUTTON(3) && bMouseUp2)
-                {
-                    bMouseUp2=false; //The button is pressed
-                    /********************************************************************
-                    **************** Here comes mouse play ******************************
-                    ********************************************************************/
-                    if (!showOptions)
-                    {
-                        if (mouseplay1 && !theGame.GetAIenabled()) //player 1
-                            if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
-                            {
-                                theGame.PushLine();
-                            }
-                        if (mouseplay2 && !theGame2.GetAIenabled()) //player 2
-                            if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
-                            {
-                                theGame2.PushLine();
-                            }
-                    }
-                    /********************************************************************
-                    **************** Here ends mouse play *******************************
-                    ********************************************************************/
-                }
-            } //if !singlePuzzle
-            else
-            {
-
-            }
-        } //if !bScreenBocked;
-
-
-        //Sees if music is stopped and if music is enabled
-        if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled)&&(!bNearDeath))
-        {
-            // then starts playing it.
-            Mix_VolumeMusic(MIX_MAX_VOLUME);
-            Mix_PlayMusic(bgMusic, -1); //music loop
-        }
-
-        if(bNearDeath!=bNearDeathPrev)
-        {
-            if(bNearDeath)
-            {
-                if(!NoSound &&(MusicEnabled)) {
-                    Mix_VolumeMusic(MIX_MAX_VOLUME);
-                    Mix_PlayMusic(highbeatMusic, 1);
-                }
-            }
-            else
-            {
-                if(!NoSound &&(MusicEnabled)) {
-                    Mix_VolumeMusic(MIX_MAX_VOLUME);
-                    Mix_PlayMusic(bgMusic, -1);
-                }
-            }
-        }
-
-        bNearDeathPrev = bNearDeath;
-
-
-        //set bNearDeath to false theGame*.Update() will change to true as needed
-        bNearDeath = false;
-        //Updates the objects
-        theGame.Update(SDL_GetTicks());
-        theGame2.Update(SDL_GetTicks());
-
-//see if anyone has won (two players only)
-        #if NETWORK
-        if (!networkPlay)
-        #endif
-            if (twoPlayers)
-            {
-                lastNrOfPlayers = 2;
-                if ((theGame.isGameOver()) && (theGame2.isGameOver()))
-                {
-                    if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap())
-                        theGame.setPlayerWon();
-                    else
-                        if (theGame.GetScore()+theGame.GetHandicap()<theGame2.GetScore()+theGame2.GetHandicap())
-                            theGame2.setPlayerWon();
-                        else {
-                            theGame.setDraw();
-                            theGame2.setDraw();
-                        }
-                    twoPlayers = false;
-                }
-                if ((theGame.isGameOver()) && (!theGame2.isGameOver()))
-                {
-                    theGame2.setPlayerWon();
-                    twoPlayers = false;
-                }
-                if ((!theGame.isGameOver()) && (theGame2.isGameOver()))
-                {
-                    theGame.setPlayerWon();
-                    twoPlayers = false;
-                }
-            }
-
-        //Once evrything has been checked, update graphics
-        DrawEverything(xsize,ysize,&theGame,&theGame2);
-        SDL_GetMouseState(&mousex,&mousey);
-        //Remember mouse placement
-        oldMousex = mousex;
-        oldMousey = mousey;
-        //Draw the mouse:
-        //DrawIMG(mouse,screen,mousex,mousey);
-        mouse.PaintTo(screen,mousex,mousey);
-        SDL_Flip(screen);
-    } //game loop
+    MainMenu();
 
 
 
@@ -5124,6 +3995,7 @@ void runGame(int gametype) {
             while ( SDL_PollEvent(&event) )
             {
                 if ( event.type == SDL_QUIT )  {
+                Config::getInstance()->setShuttingDown(5);
                     done = 1;
                 }
 

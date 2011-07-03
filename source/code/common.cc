@@ -190,6 +190,7 @@ Config::Config()
 {
     configMap.clear();
     load();
+    shuttingDown = 0; // Not shutting down
 }
 
 void Config::load()
@@ -246,7 +247,7 @@ void Config::save()
     outFile.close();
 }
 
-bool Config::exists(string varName)
+bool Config::exists(string varName) const
 {
     //Using that find returns an iterator to the end of the map if not found
     return configMap.find(varName) != configMap.end();
@@ -257,6 +258,14 @@ void Config::setDefault(string varName,string content)
     if(exists(varName))
         return; //Already exists do not change
     setString(varName,content);
+}
+
+void Config::setShuttingDown(long shuttingDown) {
+    this->shuttingDown = shuttingDown;
+}
+
+long Config::isShuttingDown() const {
+    return shuttingDown;
 }
 
 void Config::setString(string varName, string content)

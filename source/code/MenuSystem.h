@@ -86,6 +86,7 @@ class Menu {
         int marked; //The index of the marked button (for keyboard up/down)
         bool running; //The menu is running. The menu will terminate then this is false
         SDL_Surface *screen; //Pointer to the screen to draw to
+        string title;
 //        SDL_Surface *background; //Pointer to the background image
         
         void drawSelf();        //Private function to draw the screen
@@ -96,12 +97,24 @@ class Menu {
         //SubMenu is true by default
         Menu(SDL_Surface **screen,bool isSubmenu);
         Menu(SDL_Surface **screen);
+        Menu(SDL_Surface **screen, string title, bool isSubmenu);
         
         //Add a button to the menu
         void addButton(Button *b);
         
         //Run the menu
         void run();
+};
+
+class FileMenu {
+private:
+    string pm_path;
+    string pm_fileending;
+    bool pm_hidden_files;
+public:
+    FileMenu(string path,string fileending,bool hidden_files = false);
+    
+    string getFile(SDL_Surface **screen);
 };
 
 #endif	/* _MENUSYSTEM_H */

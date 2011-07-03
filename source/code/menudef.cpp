@@ -73,6 +73,21 @@ Button_changekey::Button_changekey(SDLKey* key, string keyname) {
 }
 
 void Button_changekey::doAction() {
+    SDL_Event event;
+
+    bool finnish = false;
+    while (!finnish) {
+        SDL_Delay(10);
+        while ( SDL_PollEvent(&event) )
+        {
+            if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.sym != SDLK_ESCAPE)
+                    *m_key2change = event.key.keysym.sym;
+                finnish = true;
+            }
+        }
+    }
     setLabel(m_keyname+" : "+getKeyName(*m_key2change));
 }
 
@@ -131,7 +146,7 @@ void buttonActionHighscores(Button *b) {
 }
 
 static void ChangeKeysMenu(long playernumber) {
-    Menu km(&screen,false);
+    Menu km(&screen,"Change key bindings",true);
     Button_changekey bLeft(&keySettings[playernumber].left,"Left");
     Button_changekey bRight(&keySettings[playernumber].right,"Right");
     Button_changekey bUp(&keySettings[playernumber].up,"Up");
@@ -156,7 +171,7 @@ static void ChangeKeysMenu2(Button *b) {
 }
 
 void ConfigureMenu(Button *b) {
-    Menu cm(&screen,false);
+    Menu cm(&screen,"Configuration",true);
     Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
     Button bPlayer1Keys, bPlayer2Keys;
     bMusic.setLabel(MusicEnabled? "Music: On" : "Music: Off");
@@ -186,7 +201,7 @@ void ConfigureMenu(Button *b) {
 void MainMenu()
 {
     InitMenues();
-    Menu m(&screen,true);
+    Menu m(&screen,"Block Attack - Rise of the blocks",false);
     Button bHi,bTimetrial1, bPuzzle, bVs1, bConfigure,bHighscore;
     bHi.setLabel("Single player - endless");
     bHi.setAction(runSinglePlayerEndless);
