@@ -458,10 +458,10 @@ static int InitImages()
             && (iDraw = IMG_Load2((char*)"gfx/iDraw.png"))
             && (iLoser = IMG_Load2((char*)"gfx/iLoser.png"))
             && (iChainBack = IMG_Load2((char*)"gfx/chainFrame.png"))
-            && (optionsBack = IMG_Load2((char*)"gfx/options.png"))
+//            && (optionsBack = IMG_Load2((char*)"gfx/options.png"))
             && (bOn = IMG_Load2((char*)"gfx/bOn.png"))
             && (bOff = IMG_Load2((char*)"gfx/bOff.png"))
-            && (bChange = IMG_Load2((char*)"gfx/bChange.png"))
+//            && (bChange = IMG_Load2((char*)"gfx/bChange.png"))
             && (b1024 = IMG_Load2((char*)"gfx/b1024.png"))
             && (dialogBox = IMG_Load2((char*)"gfx/dialogbox.png"))
 //	&& (fileDialogBox = IMG_Load2("gfx/fileDialogbox.png"))
@@ -566,11 +566,11 @@ static int InitImages()
     CONVERTA(counter[0]);
     CONVERTA(counter[1]);
     CONVERTA(counter[2]);
-    CONVERTA(optionsBack);
+//    CONVERTA(optionsBack);
 //    CONVERT(bExit);
     CONVERT(bOn);
     CONVERT(bOff);
-    CONVERT(bChange);
+//    CONVERT(bChange);
     CONVERT(b1024);
     CONVERTA(dialogBox);
 //	CONVERTA(fileDialogBox);
@@ -739,10 +739,10 @@ void UnloadImages()
     SDL_FreeSurface(iDraw);
     SDL_FreeSurface(iLoser);
     SDL_FreeSurface(iChainBack);
-    SDL_FreeSurface(optionsBack);
+//    SDL_FreeSurface(optionsBack);
     SDL_FreeSurface(bOn);
     SDL_FreeSurface(bOff);
-    SDL_FreeSurface(bChange);
+//    SDL_FreeSurface(bChange);
     SDL_FreeSurface(b1024);
     SDL_FreeSurface(dialogBox);
     //SDL_FreeSurface(fileDialogBox);
@@ -1640,7 +1640,7 @@ static string getKeyName(SDLKey key)
 
 void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2);
 
-int OpenControlsBox(int x, int y, int player)
+/*int OpenControlsBox(int x, int y, int player)
 {
     int mousex, mousey;
     Uint8 *keys;
@@ -1838,7 +1838,7 @@ int OpenControlsBox(int x, int y, int player)
     }	//while !done
     DrawIMG(background, screen, 0, 0);
     return 0;
-}
+}**/
 
 
 //Dialogbox

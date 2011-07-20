@@ -89,13 +89,13 @@ static SDL_Surface *crossover;     //Cross the bricks that will be cleared soon
 static SDL_Surface *balls[7];      //The balls (the small ones that jump around)
 //static SDL_Surface *iBlueFont;      //Contains the blue font used
 //static SDL_Surface *iSmallFont;	//Small font used for the chain text
-static SDL_Surface *optionsBack;
+//static SDL_Surface *optionsBack;
 static SDL_Surface *changeButtonsBack;
 static SDL_Surface *dialogBox;
 //SDL_Surface *fileDialogBox;  //Manual entering of filename, new in 1.1.1, obsolute in 1.1.2
 static SDL_Surface *bOn;
 static SDL_Surface *bOff;
-static SDL_Surface *bChange;
+//static SDL_Surface *bChange;
 static SDL_Surface *b1024;
 static SDL_Surface *iLevelCheck;		//To the level select screen
 static SDL_Surface *iLevelCheckBox;
