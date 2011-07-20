@@ -39,15 +39,15 @@ static SDL_Surface *background;    //Stores background
 SDL_Surface *backgroundImage; //Stores the background image
 static int backgroundImageW, backgroundImageH; //size of background image
 static SDL_Surface *backBoard;     //Stores the background to the board
-static SDL_Surface *b1player;
-static SDL_Surface *b2players;
-static SDL_Surface *bVsMode;
-static SDL_Surface *bVsModeConfig; //Added in 1.4.0
-static SDL_Surface *bStageClear;
-static SDL_Surface *bPuzzle;
+//static SDL_Surface *b1player;
+//static SDL_Surface *b2players;
+//static SDL_Surface *bVsMode;
+//static SDL_Surface *bVsModeConfig; //Added in 1.4.0
+//static SDL_Surface *bStageClear;
+//static SDL_Surface *bPuzzle;
 static CppSdl::CppSdlImageHolder bNewGame;      //The New Game botton
-static SDL_Surface *bEndless;      //Endless button (sub to new)
-static SDL_Surface *bTimeTrial;    //Time trial button (sub to new)
+//static SDL_Surface *bEndless;      //Endless button (sub to new)
+//static SDL_Surface *bTimeTrial;    //Time trial button (sub to new)
 static SDL_Surface *bOptions;      //The Options botton
 //new in 1.1.1
 static SDL_Surface *bConfigure;    //The configure button
@@ -59,17 +59,17 @@ static SDL_Surface *bForward;      //The "forward" button
 static SDL_Surface *iChainBack;
 //new in 1.1.2 end (nota that iSmallFont has also been added)
 //new in 1.2.0
-static SDL_Surface *bReplay;
-static SDL_Surface *bSave;
-static SDL_Surface *bLoad;
+//static SDL_Surface *bReplay;
+//static SDL_Surface *bSave;
+//static SDL_Surface *bLoad;
 #if NETWORK
-static SDL_Surface *bNetwork;
-static SDL_Surface *bConnect;
-static SDL_Surface *bHost;
+//static SDL_Surface *bNetwork;
+//static SDL_Surface *bConnect;
+//static SDL_Surface *bHost;
 #endif
 //new in 1.2.0 end
 static SDL_Surface *bHighScore;    //The High Score botton
-static SDL_Surface *bExit;         //The Exit botton
+//static SDL_Surface *bExit;         //The Exit botton
 static SDL_Surface *blackLine;		//The seperator in stage clear
 static SDL_Surface *stageBobble;	//The bobble instage clear
 SDL_Surface *screen;        //The whole screen;

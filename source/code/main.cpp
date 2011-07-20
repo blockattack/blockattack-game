@@ -399,29 +399,29 @@ static int InitImages()
 {
     if (!((backgroundImage = IMG_Load2("gfx/background.png"))
             && (background = IMG_Load2("gfx/blackBackGround.png"))
-            && (b1player = IMG_Load2("gfx/bOnePlayer.png"))
-            && (b2players = IMG_Load2("gfx/bTwoPlayers.png"))
-            && (bVsMode = IMG_Load2("gfx/bVsGame.png"))
-            && (bVsModeConfig = IMG_Load2("gfx/bVsGameConfig.png"))
-            && (bPuzzle = IMG_Load2((char*)"gfx/bPuzzle.png"))
-            && (bStageClear = IMG_Load2((char*)"gfx/bStageClear.png"))
-            && (bTimeTrial = IMG_Load2((char*)"gfx/bTimeTrial.png"))
-            && (bEndless = IMG_Load2((char*)"gfx/bEndless.png"))
+//            && (b1player = IMG_Load2("gfx/bOnePlayer.png"))
+//            && (b2players = IMG_Load2("gfx/bTwoPlayers.png"))
+//            && (bVsMode = IMG_Load2("gfx/bVsGame.png"))
+//            && (bVsModeConfig = IMG_Load2("gfx/bVsGameConfig.png"))
+//            && (bPuzzle = IMG_Load2((char*)"gfx/bPuzzle.png"))
+//            && (bStageClear = IMG_Load2((char*)"gfx/bStageClear.png"))
+//            && (bTimeTrial = IMG_Load2((char*)"gfx/bTimeTrial.png"))
+            //&& (bEndless = IMG_Load2((char*)"gfx/bEndless.png"))
             && (bOptions = IMG_Load2((char*)"gfx/bOptions.png"))
             && (bConfigure = IMG_Load2((char*)"gfx/bConfigure.png"))
             && (bSelectPuzzle = IMG_Load2((char*)"gfx/bSelectPuzzle.png"))
             && (bHighScore = IMG_Load2((char*)"gfx/bHighScore.png"))
-            && (bExit = IMG_Load2((char*)"gfx/bExit.png"))
+//            && (bExit = IMG_Load2((char*)"gfx/bExit.png"))
             && (bBack = IMG_Load2((char*)"gfx/bBack.png"))
             && (bForward = IMG_Load2((char*)"gfx/bForward.png"))
-            && (bReplay = IMG_Load2((char*)"gfx/bReplays.png"))
-            && (bSave = IMG_Load2((char*)"gfx/bSave.png"))
-            && (bLoad = IMG_Load2((char*)"gfx/bLoad.png"))
-#if NETWORK
+//            && (bReplay = IMG_Load2((char*)"gfx/bReplays.png"))
+//            && (bSave = IMG_Load2((char*)"gfx/bSave.png"))
+//            && (bLoad = IMG_Load2((char*)"gfx/bLoad.png"))
+/*#if NETWORK
             && (bNetwork = IMG_Load2((char*)"gfx/bNetwork.png"))
             && (bHost = IMG_Load2((char*)"gfx/bHost.png"))
             && (bConnect = IMG_Load2((char*)"gfx/bConnect.png"))
-#endif
+#endif*/
             && (blackLine = IMG_Load2((char*)"gfx/blackLine.png"))
             && (stageBobble = IMG_Load2((char*)"gfx/iStageClearLimit.png"))
             && (bricks[0] = IMG_Load2((char*)"gfx/bricks/blue.png"))
@@ -533,29 +533,29 @@ static int InitImages()
     //Prepare for fast blittering!
     CONVERT(background);
     CONVERT(backgroundImage);
-    CONVERT(b1player);
-    CONVERT(b2players);
-    CONVERT(bVsMode);
-    CONVERT(bVsModeConfig);
-    CONVERT(bPuzzle);
-    CONVERT(bStageClear);
-    CONVERT(bTimeTrial);
-    CONVERT(bEndless);
+//    CONVERT(b1player);
+//    CONVERT(b2players);
+//    CONVERT(bVsMode);
+//    CONVERT(bVsModeConfig);
+//    CONVERT(bPuzzle);
+//    CONVERT(bStageClear);
+//    CONVERT(bTimeTrial);
+    //CONVERT(bEndless);
     CONVERT(bOptions);
     CONVERTA(bConfigure);
     CONVERTA(bSelectPuzzle);
-    CONVERTA(bReplay);
-    CONVERTA(bSave);
-    CONVERTA(bLoad);
+//    CONVERTA(bReplay);
+//    CONVERTA(bSave);
+//    CONVERTA(bLoad);
     CONVERTA(bTheme);
     CONVERTA(bSkip);
     CONVERTA(bRetry);
     CONVERTA(bNext);
-#if NETWORK
+/*#if NETWORK
     CONVERTA(bNetwork);
     CONVERTA(bHost);
     CONVERTA(bConnect);
-#endif
+#endif*/
     CONVERT(bHighScore);
     CONVERTA(boardBackBack);
     CONVERT(backBoard);
@@ -567,7 +567,7 @@ static int InitImages()
     CONVERTA(counter[1]);
     CONVERTA(counter[2]);
     CONVERTA(optionsBack);
-    CONVERT(bExit);
+//    CONVERT(bExit);
     CONVERT(bOn);
     CONVERT(bOff);
     CONVERT(bChange);
@@ -693,27 +693,27 @@ void UnloadImages()
     SDL_FreeSurface(backgroundImage);
     SDL_FreeSurface(background);
     //SDL_FreeSurface(bNewGame);
-    SDL_FreeSurface(b1player);
-    SDL_FreeSurface(b2players);
-    SDL_FreeSurface(bVsMode);
-    SDL_FreeSurface(bVsModeConfig);
-    SDL_FreeSurface(bPuzzle);
-    SDL_FreeSurface(bStageClear);
-    SDL_FreeSurface(bTimeTrial);
-    SDL_FreeSurface(bEndless);
+//    SDL_FreeSurface(b1player);
+//    SDL_FreeSurface(b2players);
+//    SDL_FreeSurface(bVsMode);
+//    SDL_FreeSurface(bVsModeConfig);
+//    SDL_FreeSurface(bPuzzle);
+//    SDL_FreeSurface(bStageClear);
+//    SDL_FreeSurface(bTimeTrial);
+    //SDL_FreeSurface(bEndless);
     SDL_FreeSurface(bOptions);
     SDL_FreeSurface(bConfigure);
     SDL_FreeSurface(bSelectPuzzle);
     SDL_FreeSurface(bHighScore);
-    SDL_FreeSurface(bReplay);
-    SDL_FreeSurface(bSave);
-    SDL_FreeSurface(bLoad);
-    #if NETWORK
+//    SDL_FreeSurface(bReplay);
+//    SDL_FreeSurface(bSave);
+//    SDL_FreeSurface(bLoad);
+/*    #if NETWORK
     SDL_FreeSurface(bNetwork);
     SDL_FreeSurface(bHost);
     SDL_FreeSurface(bConnect);
     #endif
-    SDL_FreeSurface(bExit);
+    SDL_FreeSurface(bExit);*/
     SDL_FreeSurface(blackLine);
     SDL_FreeSurface(stageBobble);
     SDL_FreeSurface(bricks[0]);
@@ -3903,41 +3903,48 @@ void runGame(int gametype) {
     int done = 0;
     cout << "Starting game loop" << endl;
 
-    switch(gametype) {
-        case 1:
-            StartSinglePlayerTimeTrial();
-            break;
-        case 3:
-            StartSinglePlayerPuzzle();
-            break;
-        case 4:
-        {
-            //1 player - Vs mode
-            bNewGameOpen = false;
-            b1playerOpen = false;
-            int theAIlevel = startSingleVs();
-            theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
-            theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
-            MakeBackground(xsize,ysize,&theGame,&theGame2);
-            DrawIMG(background, screen, 0, 0);
-            twoPlayers = true; //Single player, but AI plays
-            showGame = true;
-            vsMode = true;
-            theGame2.setAIlevel((Uint8)theAIlevel);
-            int theTime = time(0);
-            theGame.putStartBlocks(theTime);
-            theGame2.putStartBlocks(theTime);
-            strcpy(theGame.name, player1name);
-            strcpy(theGame2.name, player2name);
-        }
-            break;
-        case 0:
-        default:
-            StartSinglePlayerEndless();
-            break;
-    };
+    
+    bool mustsetupgame = true;
+    
     while (done == 0)
     {
+        if(mustsetupgame) {
+            switch(gametype) {
+                case 1:
+                    StartSinglePlayerTimeTrial();
+                    break;
+                case 3:
+                    StartSinglePlayerPuzzle();
+                    break;
+                case 4:
+                {
+                    //1 player - Vs mode
+                    bNewGameOpen = false;
+                    b1playerOpen = false;
+                    int theAIlevel = startSingleVs();
+                    theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
+                    theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
+                    MakeBackground(xsize,ysize,&theGame,&theGame2);
+                    DrawIMG(background, screen, 0, 0);
+                    twoPlayers = true; //Single player, but AI plays
+                    showGame = true;
+                    vsMode = true;
+                    theGame2.setAIlevel((Uint8)theAIlevel);
+                    int theTime = time(0);
+                    theGame.putStartBlocks(theTime);
+                    theGame2.putStartBlocks(theTime);
+                    strcpy(theGame.name, player1name);
+                    strcpy(theGame2.name, player2name);
+                }
+                    break;
+                case 0:
+                default:
+                    StartSinglePlayerEndless();
+                    break;
+            };
+            mustsetupgame = false;
+        }
+        
         if (!(highPriority)) SDL_Delay(10);
 
         if ((standardBackground)&&(!editorMode))
@@ -4084,13 +4091,16 @@ void runGame(int gametype) {
                     if ((!singlePuzzle)&&(!editorMode))
                     {
                         if ( event.key.keysym.sym == SDLK_F2 ) {
-                            #if NETWORK
+                            /*#if NETWORK
                             if ((!showOptions)&&(!networkActive)){
                             #else
                             if ((!showOptions)){
                             #endif
                                 StartSinglePlayerEndless();
-                            }}
+                            }
+                             */
+                            mustsetupgame = true;
+                        }
                         if ( event.key.keysym.sym == SDLK_F3 ) {
                             #if NETWORK
                             if ((!showOptions)&&(!networkActive)){
