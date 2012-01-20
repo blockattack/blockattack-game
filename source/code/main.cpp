@@ -74,7 +74,13 @@ Copyright (C) 2008 Poul Sander
 #define SHAREDIR "."
 #endif
 
+#ifndef LOCALEDIR
+#define LOCALEDIR SHAREDIR"/locale"
+#endif
 
+#ifndef PACKAGE
+#define PACKAGE "blockattack_roftb"
+#endif
 
 //enet things
 #if NETWORK
@@ -646,10 +652,10 @@ static int InitImages()
     nf_standard_small_font.setDest(screen);
     NFont_OpenFont(&nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color);
     nf_scoreboard_font.setDest(boardBackBack);
-    nf_scoreboard_font.draw(370,148,"Score:");
-    nf_scoreboard_font.draw(370,197,"Time:");
-    nf_scoreboard_font.draw(370,246,"Chain:");
-    nf_scoreboard_font.draw(370,295,"Speed:");
+    nf_scoreboard_font.draw(370,148,_("Score:") );
+    nf_scoreboard_font.draw(370,197,_("Time:") );
+    nf_scoreboard_font.draw(370,246,_("Chain:") );
+    nf_scoreboard_font.draw(370,295,_("Speed:") );
 
     
 //Loads the sound if sound present
@@ -1922,8 +1928,8 @@ void DrawHighscores(int x, int y, bool endless)
 {
     MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
-    if (endless) nf_standard_blue_font.draw(x+100,y+100,"Endless:");
-    else nf_standard_blue_font.draw(x+100,y+100,"Time Trial:"); 
+    if (endless) nf_standard_blue_font.draw(x+100,y+100,_("Endless:") );
+    else nf_standard_blue_font.draw(x+100,y+100,_("Time Trial:") ); 
     for (int i =0;i<10;i++)
     {
         char playerScore[32];
@@ -1955,9 +1961,9 @@ void DrawStats()
     DrawIMG(background,screen,0,0);
     int y = 5;
     const int y_spacing = 30;
-    NFont_Write(screen, 10,y,"Stats");
+    NFont_Write(screen, 10,y,_("Stats") );
     y+=y_spacing*2;
-    NFont_Write(screen, 10,y,"Chains");
+    NFont_Write(screen, 10,y,_("Chains") );
     for(int i=2;i<13;i++)
     {
         y+=y_spacing;
@@ -1966,43 +1972,43 @@ void DrawStats()
         NFont_Write(screen, 300,y,numberAsString.c_str());
     }
     y+=y_spacing*2;
-    NFont_Write(screen, 10,y,"Lines Pushed: ");
+    NFont_Write(screen, 10,y,_("Lines Pushed: ") );
     string numberAsString = itoa(Stats::getInstance()->getNumberOf("linesPushed"));
     NFont_Write(screen, 300,y,numberAsString.c_str());
 
     y+=y_spacing;
-    NFont_Write(screen, 10,y,"Puzzles solved: ");
+    NFont_Write(screen, 10,y, _("Puzzles solved: ") );
     numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
     NFont_Write(screen, 300,y,numberAsString.c_str());
 
     y+=y_spacing*2;
-    NFont_Write(screen, 10,y,"Run time: ");
+    NFont_Write(screen, 10,y, _("Run time: ") );
     commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
     y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Days: "+itoa(ct.days))).c_str());
+    NFont_Write(screen, 10,y,((string)( _("Days: ")+itoa(ct.days))).c_str());
     y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Hours: "+itoa(ct.hours))).c_str());
+    NFont_Write(screen, 10,y,((string)( _("Hours: ")+itoa(ct.hours))).c_str());
     y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
+    NFont_Write(screen, 10,y,((string)( _("Minutes: ")+itoa(ct.minutes))).c_str());
     y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+    NFont_Write(screen, 10,y,((string)( _("Seconds: ")+itoa(ct.seconds))).c_str());
 
     y-=y_spacing*4; //Four rows back
     const int x_offset3 = xsize/3+10; //Ofset for three rows
-    NFont_Write(screen, x_offset3,y,"Play time: ");
+    NFont_Write(screen, x_offset3,y, _("Play time: ") );
     ct = TimeHandler::getTime("playTime");
     y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Days: "+itoa(ct.days))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)( _("Days: ")+itoa(ct.days))).c_str());
     y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Hours: "+itoa(ct.hours))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)( _("Hours: ")+itoa(ct.hours))).c_str());
     y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)( _("Minutes: ")+itoa(ct.minutes))).c_str());
     y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+    NFont_Write(screen, x_offset3,y,((string)( _("Seconds: ")+itoa(ct.seconds))).c_str());
 
     const int x_offset = xsize/2+10;
     y = 5+y_spacing*2;
-    NFont_Write(screen, x_offset,y,"VS CPU (win/loss)");
+    NFont_Write(screen, x_offset,y, _("VS CPU (win/loss)") );
     for(int i=0;i<7;i++)
     {
         y += y_spacing;
@@ -2050,7 +2056,7 @@ void OpenScoresDisplay()
         DrawIMG(bNext,screen,nextX,nextY);
 
         //Draw page number
-        string pageXofY = ((string)"Page ")+itoa(page+1)+((string)" of ")+itoa(numberOfPages);
+        string pageXofY = (format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str(); 
         NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
         
         SDL_Delay(10);
@@ -2535,10 +2541,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
     strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
     NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
     if (theGame->GetAIenabled())
-        NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,"CPU");
+        NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("AI") );
     else
         if (editorMode)
-            NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,"Playing field");
+            NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("Playing field") );
         else
             if (!singlePuzzle)
                 NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,player1name);
@@ -2634,21 +2640,21 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 
             //Write the keys that are in use
             int y = theGame2->GetTopY()+400;
-            NFont_Write(screen, theGame2->GetTopX()+7,y,"Movement keys:" );
+            NFont_Write(screen, theGame2->GetTopX()+7,y,_("Movement keys:") );
             NFont_Write(screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
             NFont_Write(screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
-            NFont_Write(screen, theGame2->GetTopX()+7,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
+            NFont_Write(screen, theGame2->GetTopX()+7,y+120,( _("Switch: ")+getKeyName(keySettings[0].change) ).c_str() );
             if(theGame->isPuzzleMode())
-                NFont_Write(screen, theGame2->GetTopX()+7,y+160,("Restart: "+getKeyName(keySettings[0].push) ).c_str() );
+                NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Restart: ")+getKeyName(keySettings[0].push) ).c_str() );
             else
-                NFont_Write(screen, theGame2->GetTopX()+7,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
+                NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
         }
         else
             DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
         strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
         NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
         if (theGame2->GetAIenabled())
-            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,"CPU");
+            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,_("AI") );
         else
             NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
         if (theGame2->isTimeTrial())
@@ -2784,7 +2790,7 @@ int PuzzleLevelSelect()
 
         DrawIMG(background, screen, 0, 0);
         DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-        NFont_Write(screen, xplace+12,yplace+2,"Select Puzzle");
+        NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
         //Now drow the fields you click in (and a V if clicked):
         for (int i = 0; i < nrOfPuzzles;i++)
         {
@@ -2911,7 +2917,7 @@ int StageLevelSelect()
         //nowTime=SDL_GetTicks();
         DrawIMG(background, screen, 0, 0);
         DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-        NFont_Write(screen, xplace+12,yplace+2,"Stage Clear Level Select");
+        NFont_Write(screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
         for (int i = 0; i < nrOfStageLevels;i++)
         {
             DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
@@ -2969,20 +2975,20 @@ int StageLevelSelect()
                     if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
                     {
                         overLevel +=j;
-                        string scoreString = "Best score: 0";
-                        string timeString = "Time used: -- : --";
+                        string scoreString = _("Best score: 0");
+                        string timeString = _("Time used: -- : --");
                         
                         if(stageScores.at(overLevel)>0)
-                            scoreString = "Best score: "+itoa(stageScores[overLevel]);
+                            scoreString = _("Best score: ")+itoa(stageScores[overLevel]);
                         if(stageTimes[overLevel]>0)
-                            timeString = "Time used: "+itoa(stageTimes[overLevel]/1000/60)+" : "+itoa2((stageTimes[overLevel]/1000)%60);
+                            timeString = _("Time used: ")+itoa(stageTimes[overLevel]/1000/60)+" : "+itoa2((stageTimes[overLevel]/1000)%60);
                         
                         NFont_Write(screen, 200,200,scoreString.c_str());
                         NFont_Write(screen, 200,250,timeString.c_str());
                         
                         overLevel;
                     }
-            string totalString = "Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
+            string totalString = (format("Total score: %1% in %2%:%3%")%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
             NFont_Write(screen, 200,600,totalString.c_str());
 
         //DrawIMG(mouse,screen,mousex,mousey);
@@ -3006,13 +3012,13 @@ int startSingleVs()
 
     MakeBackground(xsize,ysize);
     DrawIMG(changeButtonsBack,background,xplace,yplace);
-    NFont_Write(background, xplace+10,yplace+10,"1 : Very Easy");
-    NFont_Write(background, xplace+10,yplace+40,"2 : Easy");
-    NFont_Write(background, xplace+10,yplace+70,"3 : Below Normal");
-    NFont_Write(background, xplace+10,yplace+100,"4 : Normal");
-    NFont_Write(background, xplace+10,yplace+130,"5 : Above Normal");
-    NFont_Write(background, xplace+10,yplace+160,"6 : Hard");
-    NFont_Write(background, xplace+10,yplace+190,"7 : Hardest");
+    NFont_Write(background, xplace+10,yplace+10,_("1 : Very Easy") );
+    NFont_Write(background, xplace+10,yplace+40,_("2 : Easy") );
+    NFont_Write(background, xplace+10,yplace+70,_("3 : Below Normal") );
+    NFont_Write(background, xplace+10,yplace+100,_("4 : Normal") );
+    NFont_Write(background, xplace+10,yplace+130,_("5 : Above Normal") );
+    NFont_Write(background, xplace+10,yplace+160,_("6 : Hard") );
+    NFont_Write(background, xplace+10,yplace+190,_("7 : Hardest") );
     DrawIMG(background, screen, 0, 0);
     SDL_Flip(screen);
     do
@@ -3090,7 +3096,7 @@ void startVsMenu()
     //int nowTime=SDL_GetTicks();
 
     MakeBackground(xsize,ysize);
-    NFont_Write(background, 360,650,"Press ESC to accept");
+    NFont_Write(background, 360,650, _("Press ESC to accept") );
     DrawIMG(bBack,background,xsize/2-120/2,600);
     do
     {
@@ -3369,6 +3375,9 @@ int main(int argc, char *argv[])
     bFullscreen = false;
     //Set default Config variables:
     Config::getInstance()->setDefault("themename","default");
+    setlocale (LC_ALL, "");
+   bindtextdomain (PACKAGE, LOCALEDIR);
+   textdomain (PACKAGE);
     if (argc > 1)
     {
         int argumentNr = 1;
@@ -3385,13 +3394,13 @@ int main(int argc, char *argv[])
             char selectTheme[] = "-theme";
             if (!(strncmp(argv[argumentNr],helpString,6)))
             {
-                cout << "Block Attack Help" << endl << "--help Display this message" <<
-                endl << "-priority  Starts game in high priority" << endl <<
-                "-forceredraw  Redraw the whole screen every frame, prevents garbage" << endl <<
-                "-forcepartdraw  Only draw what is changed, sometimes cause garbage" << endl <<
-                "-nosound  No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)" << endl <<
-                "-theme <THEMENAME>  Changes to the theme <THEMENAME> on startup" << endl <<
-                "-editor  Starts the build-in editor (not yet integrated)" << endl;
+                cout << "Block Attack Help" << endl << "--help  " << _("Displays this message") <<
+                endl << "-priority  " << _("Starts game in high priority") << endl <<
+                "-forceredraw  " << _("Redraw the whole screen every frame, prevents garbage") << endl <<
+                "-forcepartdraw  " << _("Only draw what is changed, sometimes cause garbage") << endl <<
+                "-nosound  " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl <<
+                "-theme <" << _("THEMENAME") << ">  " << _("Changes to the theme <THEMENAME> on startup") << endl <<
+                "-editor  " << _("Starts the build-in editor (not yet integrated)") << endl;
 #ifdef WIN32
                 system("Pause");
 #endif
@@ -3789,8 +3798,9 @@ int main(int argc, char *argv[])
     //int hours, mins, secs,
     commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
-    cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
-
+    //cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
+    cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << endl;
+    
     ct = TimeHandler::addTime("totalTime",ct);
 
     cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;

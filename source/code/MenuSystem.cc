@@ -165,7 +165,7 @@ Menu::Menu(SDL_Surface **screen)
     this->screen = *screen; 
     buttons = vector<Button*>(10);
     isSubmenu = true;
-    exit.setLabel("Back");
+    exit.setLabel( _("Back") );
 }
 
 Menu::Menu(SDL_Surface **screen,bool submenu)
@@ -174,9 +174,9 @@ Menu::Menu(SDL_Surface **screen,bool submenu)
     buttons = vector<Button*>(0);
     isSubmenu = submenu;
     if(isSubmenu)
-        exit.setLabel("Back");
+        exit.setLabel( _("Back") );
     else
-        exit.setLabel("Exit");
+        exit.setLabel( _("Exit") );
 }
 
 Menu::Menu(SDL_Surface** screen, string title, bool submenu) {
@@ -185,9 +185,9 @@ Menu::Menu(SDL_Surface** screen, string title, bool submenu) {
     isSubmenu = submenu;
     this->title = title;
     if(isSubmenu)
-        exit.setLabel("Back");
+        exit.setLabel(_("Back") );
     else
-        exit.setLabel("Exit");
+        exit.setLabel(_("Exit") );
 }
 
 void Menu::run()

@@ -45,12 +45,17 @@ Copyright (C) 2008 Poul Sander
 #include <fstream>
 #include <map>
 #include <stdlib.h>
+#include <libintl.h>
+#include <boost/format.hpp>
 #ifdef WIN32
 #include "windows.h"
 #include "shlobj.h"
 #endif
 
+#define _(String) gettext (String)
+
 using namespace std;
+using boost::format;
 
 struct commonTime{
     unsigned int days;
@@ -62,6 +67,7 @@ struct commonTime{
 string itoa(int num) __attribute__((const));
 
 string getPathToSaveFiles() __attribute__((pure));
+
 
 /**
  * str2int parses a string and returns an int with the value of the string.

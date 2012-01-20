@@ -25,6 +25,7 @@ Copyright (C) 2011 Poul Sander
 #include <stdlib.h>
 #include "menu/MenuItem.hpp"
 #include "MenuSystem.h"
+#include "common.h"
 
 using namespace std;
 
@@ -122,12 +123,12 @@ void buttonActionMusic(Button* b) {
 
 void buttonActionSound(Button* b) {
     SoundEnabled = !SoundEnabled;
-    b->setLabel(SoundEnabled? "Music: On" : "Music: Off");
+    b->setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
 }
 
 void buttonActionFullscreen(Button* b) {
     bFullscreen = !bFullscreen;
-    b->setLabel(bFullscreen? "Fullscreen: On" : "Fullscreen: Off");
+    b->setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
     ResetFullscreen();
 }
 
@@ -146,13 +147,13 @@ void buttonActionHighscores(Button *b) {
 }
 
 static void ChangeKeysMenu(long playernumber) {
-    Menu km(&screen,"Change key bindings",true);
-    Button_changekey bLeft(&keySettings[playernumber].left,"Left");
-    Button_changekey bRight(&keySettings[playernumber].right,"Right");
-    Button_changekey bUp(&keySettings[playernumber].up,"Up");
-    Button_changekey bDown(&keySettings[playernumber].down,"Down");
-    Button_changekey bPush(&keySettings[playernumber].push,"Push");
-    Button_changekey bSwitch(&keySettings[playernumber].change,"Change");
+    Menu km(&screen,_("Change key bindings"),true);
+    Button_changekey bLeft(&keySettings[playernumber].left,_("Left") );
+    Button_changekey bRight(&keySettings[playernumber].right,_("Right") );
+    Button_changekey bUp(&keySettings[playernumber].up,_("Up") );
+    Button_changekey bDown(&keySettings[playernumber].down,_("Down") );
+    Button_changekey bPush(&keySettings[playernumber].push,_("Push") );
+    Button_changekey bSwitch(&keySettings[playernumber].change,_("Change") );
     km.addButton(&bLeft);
     km.addButton(&bRight);
     km.addButton(&bUp);
@@ -171,23 +172,23 @@ static void ChangeKeysMenu2(Button *b) {
 }
 
 void ConfigureMenu(Button *b) {
-    Menu cm(&screen,"Configuration",true);
+    Menu cm(&screen,_("Configuration"),true);
     Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
     Button bPlayer1Keys, bPlayer2Keys;
-    bMusic.setLabel(MusicEnabled? "Music: On" : "Music: Off");
+    bMusic.setLabel(MusicEnabled? _("Music: On") : _("Music: Off") );
     bMusic.setAction(buttonActionMusic);
-    bSound.setLabel(SoundEnabled? "Music: On" : "Music: Off");
+    bSound.setLabel(SoundEnabled? _("Music: On") : _("Music: Off") );
     bSound.setAction(buttonActionSound);
-    buttonFullscreen.setLabel(bFullscreen? "Fullscreen: On" : "Fullscreen: Off");
+    buttonFullscreen.setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
     buttonFullscreen.setAction(buttonActionFullscreen);
     bPlayer1Name.setAction(buttonActionPlayer1Name);
-    bPlayer1Name.setLabel("Change player 1's name");
+    bPlayer1Name.setLabel(_("Change player 1's name") );
     bPlayer2Name.setAction(buttonActionPlayer2Name);
-    bPlayer2Name.setLabel("Change player 2's name");
+    bPlayer2Name.setLabel(_("Change player 2's name") );
     bPlayer1Keys.setAction(ChangeKeysMenu1);
-    bPlayer1Keys.setLabel("Change player 1's keys");
+    bPlayer1Keys.setLabel(_("Change player 1's keys") );
     bPlayer2Keys.setAction(ChangeKeysMenu2);
-    bPlayer2Keys.setLabel("Change player 2's keys");
+    bPlayer2Keys.setLabel(_("Change player 2's keys") );
     cm.addButton(&bMusic);
     cm.addButton(&bSound);
     cm.addButton(&buttonFullscreen);
@@ -201,19 +202,19 @@ void ConfigureMenu(Button *b) {
 void MainMenu()
 {
     InitMenues();
-    Menu m(&screen,"Block Attack - Rise of the blocks",false);
+    Menu m(&screen,_("Block Attack - Rise of the blocks"),false);
     Button bHi,bTimetrial1, bPuzzle, bVs1, bConfigure,bHighscore;
-    bHi.setLabel("Single player - endless");
+    bHi.setLabel(_("Single player - endless") );
     bHi.setAction(runSinglePlayerEndless);
-    bTimetrial1.setLabel("Single player - time trial");
+    bTimetrial1.setLabel(_("Single player - time trial") );
     bTimetrial1.setAction(runSinglePlayerTimeTrial);
-    bPuzzle.setLabel("Single player - puzzle mode");
+    bPuzzle.setLabel(_("Single player - puzzle mode") );
     bPuzzle.setAction(runSinglePlayerPuzzle);
-    bVs1.setLabel("Single player - vs");
+    bVs1.setLabel(_("Single player - vs") );
     bVs1.setAction(runSinglePlayerVs);
-    bConfigure.setLabel("Configure");
+    bConfigure.setLabel(_("Configure") );
     bConfigure.setAction(ConfigureMenu);
-    bHighscore.setLabel("Highscores");
+    bHighscore.setLabel(_("Highscores") );
     bHighscore.setAction(buttonActionHighscores);
     m.addButton(&bHi);
     m.addButton(&bTimetrial1);
