@@ -6,9 +6,9 @@ ifndef CC
 CC=gcc
 endif
 
-ifndef CPP
+#ifndef CPP
 CPP=g++
-endif
+#endif
 
 BASE_CFLAGS=-c $(shell sdl-config --cflags)
 
@@ -43,8 +43,7 @@ endif
 
 BASE_LIBS += -lphysfs
 
-$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o $(BUILDDIR)/menudef.o
-	@make -C CppSdl
+$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o $(BUILDDIR)/menudef.o
 	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o  $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o  $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o $(BUILDDIR)/menudef.o $(BASE_LIBS)
 #-lphysfs
 
@@ -90,6 +89,12 @@ $(BUILDDIR)/MenuSystem.o: MenuSystem.cc MenuSystem.h
 
 #$(BUILDDIR)/ttfont.o: ttfont.h ttfont.cc
 #	$(CPP) $(BASE_CFLAGS) ttfont.cc -o $(BUILDDIR)/ttfont.o
+
+$(BUILDDIR)/CppSdlImageHolder.o: CppSdlImageHolder.hpp CppSdlImageHolder.cpp
+	$(CPP) $(BASE_CFLAGS) -o $(BUILDDIR)/CppSdlImageHolder.o CppSdlImageHolder.cpp
+
+$(BUILDDIR)/CppSdlException.o: CppSdlException.hpp CppSdlException.cpp
+	$(CPP) $(BASE_CFLAGS) -o $(BUILDDIR)/CppSdlException.o CppSdlException.cpp
 
 
 run: $(BINARY)

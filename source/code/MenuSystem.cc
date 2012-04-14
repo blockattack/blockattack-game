@@ -22,7 +22,7 @@ Copyright (C) 2008 Poul Sander
 
 #include "MenuSystem.h"
 #include "common.h"
-#include "CppSdl/CppSdlImageHolder.hpp"
+#include "CppSdlImageHolder.hpp"
 
 extern CppSdl::CppSdlImageHolder mouse;
 extern SDL_Surface *backgroundImage;

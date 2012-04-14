@@ -28,7 +28,7 @@ Copyright (C) 2008 Poul Sander
 #include "SDL.h"
 #include <vector>
 #include "Libs/NFont.h"
-#include "CppSdl/CppSdlImageHolder.hpp"
+#include "CppSdlImageHolder.hpp"
 
 using namespace std;
 

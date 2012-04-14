@@ -66,7 +66,7 @@ Copyright (C) 2008 Poul Sander
 #include <SDL/SDL_timer.h>
 #include <SDL/SDL_video.h>
 #include <SDL/SDL_ttf.h>
-#include "CppSdl/CppSdlImageHolder.hpp"
+#include "CppSdlImageHolder.hpp"
 #include "MenuSystem.h"
 
 //if SHAREDIR is not used we look in current directory

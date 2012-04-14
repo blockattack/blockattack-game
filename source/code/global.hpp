@@ -8,7 +8,7 @@
 #ifndef _GLOBAL_HPP
 #define	_GLOBAL_HPP
 
-#include "CppSdl/CppSdlImageHolder.hpp"
+#include "CppSdlImageHolder.hpp"
 #include "Libs/NFont.h"
 
 void MainMenu();
