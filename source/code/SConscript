@@ -6,20 +6,22 @@ Import('*')
 # Sources #
 src = Split("""main.cpp
 highscore.cpp
-Libs/NFont.c
+Libs/NFont.cpp
 ReadKeyboard.cpp
 joypad.cpp
 listFiles.cpp
 replay.cpp
 stats.cc
 common.cc
-CppSdl/CppSdlImageHolder.cpp
-CppSdl/CppSdlException.cpp""")
+MenuSystem.cc
+menudef.cpp
+CppSdlImageHolder.cpp
+CppSdlException.cpp""")
 
 # Modify Build Environment #
 env.ParseConfig('sdl-config --cflags --libs')
 env.Append(CPPDEFINES = [('SHAREDIR', '\\"$sharedir\\"')])
-env.Append(LIBS = ['SDL', 'enet','SDL_image','SDL_mixer','physfs'])
+env.Append(LIBS = ['SDL', 'enet','SDL_image','SDL_mixer','SDL_ttf','physfs'])
 env.Append(LIBPATH = ['/usr/lib'])
 
 # Compile Executable #

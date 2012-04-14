@@ -4018,7 +4018,7 @@ void runGame(int gametype) {
 
                 if ( event.type == SDL_KEYDOWN )
                 {
-                    if ( event.key.keysym.sym == SDLK_ESCAPE )
+                    if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) )
                     {
                             if (showOptions)
                             {
