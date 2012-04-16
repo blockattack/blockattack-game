@@ -3,6 +3,8 @@
 #EXECUTEPATH=/usr/local/bin
 #INST=/games/blockattack
 
+-include Makefile.local
+
 standard:
 	@echo "Now compiling..."
 	export CC=gcc

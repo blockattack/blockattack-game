@@ -473,6 +473,7 @@ static int InitImages()
 //	&& (fileDialogBox = IMG_Load2("gfx/fileDialogbox.png"))
             && (iLevelCheck = IMG_Load2((char*)"gfx/iLevelCheck.png"))
             && (iLevelCheckBox = IMG_Load2((char*)"gfx/iLevelCheckBox.png"))
+            && (iLevelCheckBoxMarked = IMG_Load2((char*)"gfx/iLevelCheckBoxMarked.png"))
             && (iCheckBoxArea = IMG_Load2((char*)"gfx/iCheckBoxArea.png"))
             && (boardBackBack = IMG_Load2((char*)"gfx/boardBackBack.png"))
             && (changeButtonsBack = IMG_Load2((char*)"gfx/changeButtonsBack.png"))
@@ -582,6 +583,7 @@ static int InitImages()
 //	CONVERTA(fileDialogBox);
     CONVERTA(iLevelCheck);
     CONVERT(iLevelCheckBox);
+    CONVERT(iLevelCheckBoxMarked);
     CONVERTA(iCheckBoxArea);
     for (int i = 0;i<4;i++)
     {
@@ -754,6 +756,7 @@ void UnloadImages()
     //SDL_FreeSurface(fileDialogBox);
     SDL_FreeSurface(iLevelCheck);
     SDL_FreeSurface(iLevelCheckBox);
+    SDL_FreeSurface(iLevelCheckBoxMarked);
     SDL_FreeSurface(iCheckBoxArea);
     SDL_FreeSurface(boardBackBack);
     SDL_FreeSurface(changeButtonsBack);
@@ -2758,6 +2761,7 @@ int PuzzleLevelSelect()
     int levelNr, mousex, mousey;
     bool levelSelected = false;
     bool tempBool;
+	int selected = 0;
 
     //Loads the levels, if they havn't been loaded:
     LoadPuzzleStages();
@@ -2795,6 +2799,7 @@ int PuzzleLevelSelect()
         for (int i = 0; i < nrOfPuzzles;i++)
         {
             DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+	if(i==selected) DrawIMG(iLevelCheckBoxMarked,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
             if (puzzleCleared[i]==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
         }
 
@@ -2806,6 +2811,12 @@ int PuzzleLevelSelect()
                     levelNr = -1;
                     levelSelected = true;
                 }
+		if ( event.key.keysym.sym == SDLK_RIGHT ) {
+			++selected;
+			if(selected >= nrOfPuzzles)
+				selected = 0;
+			cout << "Selected: "<< selected << endl;
+		}
             }
 
         keys = SDL_GetKeyState(NULL);
