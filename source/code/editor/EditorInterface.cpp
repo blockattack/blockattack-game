@@ -1,31 +1,28 @@
 /*
-Block Attack - Rise of the Blocks, SDL game, besed on Nintendo's Tetris Attack
-Copyright (C) 2007 Poul Sander
+===========================================================================
+blockattack - Block Attack - Rise of the Blocks
+Copyright (C) 2005-2012 Poul Sander
 
-    This program is free software; you can redistribute it and/or modify        
-    it under the terms of the GNU General Public License as published by        
-    the Free Software Foundation; either version 2 of the License, or           
-    (at your option) any later version.                                         
-                                                                                
-    This program is distributed in the hope that it will be useful,       
-    but WITHOUT ANY WARRANTY; without even the implied warranty of              
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               
-    GNU General Public License for more details.                
-                                                                               
-    You should have received a copy of the GNU General Public License           
-    along with this program; if not, write to the Free Software                 
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA   
-                                                                                
-    Poul Sander
-    Raevehjvej 36, V. 1111                                                    
-    2800 Kgs. Lyngby
-    DENMARK
-    blockattack@poulsander.com 
-    http://blockattack.sf.net     
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/
+
+Source information and contacts persons can be found at
+http://blockattack.sf.net
+===========================================================================
 */
 
 /*
-TODO: The way we test for 
+TODO: The way we test for
 
 */
 
@@ -33,43 +30,43 @@ TODO: The way we test for
 
 EditorInterface::EditorInterface()
 {
-    boardActive = -1;
-    saved = true;
-    fileSaved = true;
-    bh.isNull = true;
+	boardActive = -1;
+	saved = true;
+	fileSaved = true;
+	bh.isNull = true;
 }
 
 void EditorInterface::getModel(int nr)
 {
-    tb = bh.getModel(nr);
-    saved = true;
-    boardActive = nr;
+	tb = bh.getModel(nr);
+	saved = true;
+	boardActive = nr;
 }
 
 bool EditorInterface::exists()
 {
-    if(bh.isNull)
-        return false;
-    else
-        return true;
+	if(bh.isNull)
+		return false;
+	else
+		return true;
 }
 
 void EditorInterface::selectColor(int color)
 {
-    colorSelected = color;
+	colorSelected = color;
 }
 
 int EditorInterface::getSelectedColor()
 {
-    return colorSelected;
+	return colorSelected;
 }
 
 void EditorInterface::drawOnModel(int x, int y)
 {
-    if(boardActive!=-1)
+	if(boardActive!=-1)
 	{
 		if(colorSelected<7)  //Ordinary thing
-		tb.setBrick(x,y,colorSelected);
+			tb.setBrick(x,y,colorSelected);
 		if(colorSelected==7)
 			tb.moveUp(x,y);
 		if(colorSelected==8)
@@ -81,7 +78,7 @@ void EditorInterface::drawOnModel(int x, int y)
 void EditorInterface::moveLeft()
 {
 	if(boardActive!=-1)
-    	tb.moveLeft();
+		tb.moveLeft();
 	saved = false;
 }
 
@@ -91,7 +88,7 @@ void EditorInterface::moveRight()
 		tb.moveRight();
 	saved = false;
 }
-	
+
 void EditorInterface::deleteBoard()
 {
 	if(boardActive!=-1)
@@ -102,7 +99,7 @@ void EditorInterface::deleteBoard()
 		fileSaved = false;
 	}
 }
-	
+
 void EditorInterface::moveBoardBack()
 {
 	if(boardActive!=-1)
@@ -111,7 +108,7 @@ void EditorInterface::moveBoardBack()
 			boardActive--;
 	}
 }
-	
+
 void EditorInterface::moveBoardForward()
 {
 	if(boardActive!=-1)
@@ -120,7 +117,7 @@ void EditorInterface::moveBoardForward()
 			boardActive++;
 	}
 }
-	
+
 void EditorInterface::saveBoard()
 {
 	if(boardActive!=-1)
@@ -130,19 +127,19 @@ void EditorInterface::saveBoard()
 		fileSaved = false;
 	}
 }
-	
+
 bool EditorInterface::saveFile(string filename)
 {
 	if((!bh.isNull)&&(filename!=""))
 	{
-		fileName = filename; 
+		fileName = filename;
 		bh.saveBoards(filename);
 		fileSaved = true;
 		return true;
 	}
 	return false;
 }
-	
+
 bool EditorInterface::saveFile()
 {
 	if((!bh.isNull)&&(fileName!=""))
@@ -153,7 +150,7 @@ bool EditorInterface::saveFile()
 	}
 	return false;
 }
-	
+
 void EditorInterface::openFile(string filename)
 {
 	fileName = filename;
@@ -162,30 +159,30 @@ void EditorInterface::openFile(string filename)
 	saved = true;
 	fileSaved = true;
 }
-	
+
 void EditorInterface::newFile()
 {
 	fileName = "";
 	bh = BoardHolder();
 	TheBoard tb2;
-    tb.isNull = true; // = null; What here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	tb.isNull = true; // = null; What here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	boardActive = -1;
 	saved = true;
 	fileSaved = false;
 }
-	
+
 int EditorInterface::getColor(int x, int y)
 {
 	if(boardActive==-1)
 		return -1;
 	return tb.getBrick(x,y);
 }
-	
+
 int EditorInterface::getActiveBoardNr()
 {
 	return boardActive;
 }
-	
+
 int EditorInterface::getNumberOfMoves()
 {
 	if(!tb.isNull)
@@ -194,7 +191,7 @@ int EditorInterface::getNumberOfMoves()
 	}
 	return 0;
 }
-	
+
 bool EditorInterface::newBoard()
 {
 	if(!bh.isNull)
@@ -205,7 +202,7 @@ bool EditorInterface::newBoard()
 	else
 		return false;
 }
-	
+
 int EditorInterface::getNumberOfBoards()
 {
 	if(!bh.isNull)
@@ -213,7 +210,7 @@ int EditorInterface::getNumberOfBoards()
 	else
 		return 0;
 }
-	
+
 void EditorInterface::setNumberOfMoves(int moves)
 {
 	if(!tb.isNull)
@@ -222,12 +219,12 @@ void EditorInterface::setNumberOfMoves(int moves)
 		tb.setNumberOfMoves(moves);
 	}
 }
-	
+
 bool EditorInterface::isSaved()
 {
 	return saved;
 }
-	
+
 bool EditorInterface::fileIsSaved()
 {
 	return fileSaved;

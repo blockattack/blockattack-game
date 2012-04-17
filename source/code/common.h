@@ -1,27 +1,24 @@
 /*
-Block Attack - Rise of the Blocks, SDL game, besed on Nintendo's Tetris Attack
-Copyright (C) 2008 Poul Sander
+===========================================================================
+blockattack - Block Attack - Rise of the Blocks
+Copyright (C) 2005-2012 Poul Sander
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/
 
-    Poul Sander
-    R�vehjvej 36, V. 1111
-    2800 Kgs. Lyngby
-    DENMARK
-    blockattack@poulsander.com
-    http://blockattack.sf.net
+Source information and contacts persons can be found at
+http://blockattack.sf.net
+===========================================================================
 */
 
 /*
@@ -57,11 +54,12 @@ Copyright (C) 2008 Poul Sander
 using namespace std;
 using boost::format;
 
-struct commonTime{
-    unsigned int days;
-    unsigned int hours;
-    unsigned int minutes;
-    unsigned int seconds;
+struct commonTime
+{
+	unsigned int days;
+	unsigned int hours;
+	unsigned int minutes;
+	unsigned int seconds;
 };
 
 string itoa(int num) __attribute__((const));
@@ -93,11 +91,11 @@ class TimeHandler
 {
 public:
 	static commonTime ms2ct(unsigned int milliseconds);
-	
+
 	static commonTime getTime(string name);
-	
+
 	static commonTime peekTime(string name, commonTime toAdd);
-	
+
 	static commonTime addTime(string name, commonTime toAdd);
 };
 
@@ -111,100 +109,100 @@ public:
  */
 class Config
 {
-private: 
-    map<string,string> configMap;
+private:
+	map<string,string> configMap;
 
-    static Config *instance;
-    
-    void load();
-    
-    /* tells if the user has requested a shutdown */
-    long shuttingDown;
+	static Config *instance;
+
+	void load();
+
+	/* tells if the user has requested a shutdown */
+	long shuttingDown;
 protected:
-    
-    Config();
-    
-    
+
+	Config();
+
+
 public:
-    /*Config is a singleton.
-     *It is accessed like this:
-     *Config::getInstance()->method2call(paramters);
-     */
-    static Config* getInstance();
-    
-    /*save()
-     *forces the config to be written to disk. This will also happened if the
-     *program terminates normally.
-     */
-    void save();
-    
-    /*getString(varName)
-     *Looks in the config file and returns the string that matches the key "varName"
-     *Returns an empty string if varName does not exist.
-     */
-    string getString(string varName);
-    
-    /*getInt(varName)
-     *Looks in the config file and returns the int that matches the key "varName"
-     *Returns "0" if varName does not exist or cannot be parsed.
-     */
-    int getInt(string varName);
-    
-    /*getValue(varName)
-     *Looks in the config file and returns the double that matches the key "varName"
-     *Returns "0.0" if varName does not exist or cannot be parsed.
-     */
-    double getValue(string varName);
-    
-    /*setString(varName,content)
-     *Sets the config variable with key "varName" to the value of "content"
-     */
-    void setString(string varName,string content);
-    
-    /*setInt(varName,content)
-     *Sets the config variable with key "varName" to the value of "content"
-     */
-    void setInt(string varName,int content);
-    
-    /**
-     * Sets a config variable to a given (double) value
-     * @param varName Name of the variable to set 
-     * @param content Value to give the variable
-     */
-    void setValue(string varName,double content);
-    
-    /**
-     * returns true if the key varName exists. This is used the first time 1.4.0
-     * starts so that it can see that it has to import configs from an earlier 
-     * version.
-     * @param varName Name of the variable
-     * @return true if the varaible exists
-     */
-    bool exists(string varName) const;
-    
-    /*setDefault(varName,value)
-     *if the variable "varName" does not exist it will be created with value "value"
-     *if varName exists then this will have no effect
-     */
-    /**
-     * Set default value for a variable. If the variable "varName" does not exist it will be created with value "value"
-     * if varName exists then this will have no effect
-     * @param varName Name of the variable
-     * @param content The default value
-     */
-    void setDefault(string varName, string content);
-    
-    /**
-     * Should be set if the user has requested the program to shutdown.
-     * @param shuttingDown value of shutdown command. 5 = default = shutdown but allow saving
-     */
-    void setShuttingDown(long shuttingDown = 5);
-    
-    /**
-     * tells if the user wants to shutdown. This can be used if the exit button is pressed deaply in the program.
-     * @return 
-     */
-    long isShuttingDown() const;
+	/*Config is a singleton.
+	 *It is accessed like this:
+	 *Config::getInstance()->method2call(paramters);
+	 */
+	static Config* getInstance();
+
+	/*save()
+	 *forces the config to be written to disk. This will also happened if the
+	 *program terminates normally.
+	 */
+	void save();
+
+	/*getString(varName)
+	 *Looks in the config file and returns the string that matches the key "varName"
+	 *Returns an empty string if varName does not exist.
+	 */
+	string getString(string varName);
+
+	/*getInt(varName)
+	 *Looks in the config file and returns the int that matches the key "varName"
+	 *Returns "0" if varName does not exist or cannot be parsed.
+	 */
+	int getInt(string varName);
+
+	/*getValue(varName)
+	 *Looks in the config file and returns the double that matches the key "varName"
+	 *Returns "0.0" if varName does not exist or cannot be parsed.
+	 */
+	double getValue(string varName);
+
+	/*setString(varName,content)
+	 *Sets the config variable with key "varName" to the value of "content"
+	 */
+	void setString(string varName,string content);
+
+	/*setInt(varName,content)
+	 *Sets the config variable with key "varName" to the value of "content"
+	 */
+	void setInt(string varName,int content);
+
+	/**
+	 * Sets a config variable to a given (double) value
+	 * @param varName Name of the variable to set
+	 * @param content Value to give the variable
+	 */
+	void setValue(string varName,double content);
+
+	/**
+	 * returns true if the key varName exists. This is used the first time 1.4.0
+	 * starts so that it can see that it has to import configs from an earlier
+	 * version.
+	 * @param varName Name of the variable
+	 * @return true if the varaible exists
+	 */
+	bool exists(string varName) const;
+
+	/*setDefault(varName,value)
+	 *if the variable "varName" does not exist it will be created with value "value"
+	 *if varName exists then this will have no effect
+	 */
+	/**
+	 * Set default value for a variable. If the variable "varName" does not exist it will be created with value "value"
+	 * if varName exists then this will have no effect
+	 * @param varName Name of the variable
+	 * @param content The default value
+	 */
+	void setDefault(string varName, string content);
+
+	/**
+	 * Should be set if the user has requested the program to shutdown.
+	 * @param shuttingDown value of shutdown command. 5 = default = shutdown but allow saving
+	 */
+	void setShuttingDown(long shuttingDown = 5);
+
+	/**
+	 * tells if the user wants to shutdown. This can be used if the exit button is pressed deaply in the program.
+	 * @return
+	 */
+	long isShuttingDown() const;
 };
 
 #endif	/* _COMMON_H */
