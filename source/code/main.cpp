@@ -2758,7 +2758,7 @@ int PuzzleLevelSelect()
     const int xplace = 200;
     const int yplace = 300;
     Uint8 *keys;
-    int levelNr, mousex, mousey;
+    int levelNr, mousex, mousey, oldmousex, oldmousey;
     bool levelSelected = false;
     bool tempBool;
 	int selected = 0;
@@ -2811,10 +2811,32 @@ int PuzzleLevelSelect()
                     levelNr = -1;
                     levelSelected = true;
                 }
+				if ( event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
+                    levelNr = selected;
+                    levelSelected = true;
+                }
 		if ( event.key.keysym.sym == SDLK_RIGHT ) {
 			++selected;
 			if(selected >= nrOfPuzzles)
 				selected = 0;
+			cout << "Selected: "<< selected << endl;
+		}
+		if ( event.key.keysym.sym == SDLK_LEFT ) {
+			--selected;
+			if(selected < 0)
+				selected = nrOfPuzzles;
+			cout << "Selected: "<< selected << endl;
+		}
+		if ( event.key.keysym.sym == SDLK_DOWN ) {
+			selected+=10;
+			if(selected >= nrOfPuzzles)
+				selected-=10;
+			cout << "Selected: "<< selected << endl;
+		}
+		if ( event.key.keysym.sym == SDLK_UP ) {
+			selected-=10;
+			if(selected < 0)
+				selected+=10;
 			cout << "Selected: "<< selected << endl;
 		}
             }
@@ -2822,6 +2844,22 @@ int PuzzleLevelSelect()
         keys = SDL_GetKeyState(NULL);
 
         SDL_GetMouseState(&mousex,&mousey);
+		if(mousex != oldmousex || mousey != oldmousey) {
+			int tmpSelected = -1;
+			int j;
+			for (j = 0; (j<nrOfPuzzles/10)||((j<nrOfPuzzles/10+1)&&(nrOfPuzzles%10 != 0)); j++)
+                if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92))
+                    tmpSelected = j*10;
+			if (tmpSelected != -1)
+                for (int k = 0; ((k<nrOfStageLevels%(j*10))&&(k<10)); k++)
+                    if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42))
+                    {
+                        tmpSelected +=k;
+                        selected = tmpSelected;
+                    }
+		}
+		oldmousey = mousey;
+		oldmousex= mousex;
 
         // If the mouse button is released, make bMouseUp equal true
         if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
@@ -3482,7 +3520,7 @@ int main(int argc, char *argv[])
     bool weWhereConnected = false;
 
     //Things used for repeating keystrokes:
-    bool repeatingS[2] = {false,false};
+    /*bool repeatingS[2] = {false,false};
     bool repeatingW[2] = {false,false};
     bool repeatingN[2] = {false,false};
     bool repeatingE[2] = {false,false};
@@ -3503,7 +3541,7 @@ int main(int argc, char *argv[])
     unsigned long timesRepeatedP2N = 0;
     unsigned long timesRepeatedP2S = 0;
     unsigned long timesRepeatedP2E = 0;
-    unsigned long timesRepeatedP2W = 0;
+    unsigned long timesRepeatedP2W = 0;*/
 
     theBallManeger = ballManeger();
     theExplosionManeger = explosionManeger();
