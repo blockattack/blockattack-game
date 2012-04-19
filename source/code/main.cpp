@@ -2823,7 +2823,7 @@ static void MakeBackground(int xsize, int ysize, BlockGame *theGame)
 
 
 //The function that allows the player to choose PuzzleLevel
-int PuzzleLevelSelect()
+int PuzzleLevelSelect(int Type)
 {
 	const int xplace = 200;
 	const int yplace = 300;
@@ -2831,30 +2831,87 @@ int PuzzleLevelSelect()
 	int levelNr, mousex, mousey, oldmousex, oldmousey;
 	bool levelSelected = false;
 	bool tempBool;
+	int nrOfLevels;
+	Uint32 tempUInt32;
+	Uint32 totalScore = 0;
+	Uint32 totalTime = 0;
 	int selected = 0;
 
 	//Loads the levels, if they havn't been loaded:
-	LoadPuzzleStages();
+	if(Type == 0)
+		LoadPuzzleStages();
 
 	//Keeps track of background;
 	int nowTime=SDL_GetTicks();
 
-	ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
 	MakeBackground(xsize,ysize);
-	if (puzzleFile)
-	{
-		for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
+	if(Type == 0) {
+		ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
+		if (puzzleFile)
 		{
-			puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
-			puzzleCleared[i] = tempBool;
+			for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
+			{
+				puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
+				puzzleCleared[i] = tempBool;
+			}
+			puzzleFile.close();
 		}
-		puzzleFile.close();
+		else
+		{
+			tempBool = false;
+			for (int i=0; i<nrOfPuzzles; i++)
+				puzzleCleared[i] = tempBool;
+		}
+		nrOfLevels = nrOfPuzzles;
 	}
-	else
-	{
-		tempBool = false;
-		for (int i=0; i<nrOfPuzzles; i++)
-			puzzleCleared[i] = tempBool;
+	if(Type == 1) {
+		ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
+		if (stageFile)
+		{
+			for (int i = 0; i<nrOfStageLevels; i++)
+			{
+				stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
+				stageCleared[i]=tempBool;
+			}
+			if(!stageFile.eof())
+			{
+				for(int i=0; i<nrOfStageLevels; i++)
+				{
+					tempUInt32 = 0;
+					if(!stageFile.eof())
+						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
+					stageScores[i]=tempUInt32;
+					totalScore+=tempUInt32;
+				}
+				for(int i=0; i<nrOfStageLevels; i++)
+				{
+					tempUInt32 = 0;
+					if(!stageFile.eof())
+						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
+					stageTimes[i]=tempUInt32;
+					totalTime += tempUInt32;
+				}
+			}
+			else
+			{
+				for(int i=0; i<nrOfStageLevels; i++)
+				{
+					stageScores[i]=0;
+					stageTimes[i]=0;
+				}
+			}
+			stageFile.close();
+		}
+		else
+		{
+			for (int i=0; i<nrOfStageLevels; i++)
+			{
+				stageCleared[i]= false;
+				stageScores[i]=0;
+				stageTimes[i]=0;
+			}
+		}
+		nrOfLevels = nrOfStageLevels;
 	}
 
 	do
@@ -2864,13 +2921,17 @@ int PuzzleLevelSelect()
 
 		DrawIMG(background, screen, 0, 0);
 		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-		NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
+		if(Type == 0)
+			NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
+		if(Type == 1)
+			NFont_Write(screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
 		//Now drow the fields you click in (and a V if clicked):
-		for (int i = 0; i < nrOfPuzzles; i++)
+		for (int i = 0; i < nrOfLevels; i++)
 		{
 			DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			if(i==selected) DrawIMG(iLevelCheckBoxMarked,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-			if (puzzleCleared[i]==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			if (Type == 0 && puzzleCleared.at(i)==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			if (Type == 1 && stageCleared.at(i)==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 		}
 
 		SDL_Event event;
@@ -2890,30 +2951,26 @@ int PuzzleLevelSelect()
 				if ( event.key.keysym.sym == SDLK_RIGHT )
 				{
 					++selected;
-					if(selected >= nrOfPuzzles)
+					if(selected >= nrOfLevels)
 						selected = 0;
-					cout << "Selected: "<< selected << endl;
 				}
 				if ( event.key.keysym.sym == SDLK_LEFT )
 				{
 					--selected;
 					if(selected < 0)
-						selected = nrOfPuzzles;
-					cout << "Selected: "<< selected << endl;
+						selected = nrOfLevels-1;
 				}
 				if ( event.key.keysym.sym == SDLK_DOWN )
 				{
 					selected+=10;
-					if(selected >= nrOfPuzzles)
+					if(selected >= nrOfLevels)
 						selected-=10;
-					cout << "Selected: "<< selected << endl;
 				}
 				if ( event.key.keysym.sym == SDLK_UP )
 				{
 					selected-=10;
 					if(selected < 0)
 						selected+=10;
-					cout << "Selected: "<< selected << endl;
 				}
 			}
 
@@ -2924,7 +2981,7 @@ int PuzzleLevelSelect()
 		{
 			int tmpSelected = -1;
 			int j;
-			for (j = 0; (j<nrOfPuzzles/10)||((j<nrOfPuzzles/10+1)&&(nrOfPuzzles%10 != 0)); j++)
+			for (j = 0; (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)); j++)
 				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92))
 					tmpSelected = j*10;
 			if (tmpSelected != -1)
@@ -2950,7 +3007,7 @@ int PuzzleLevelSelect()
 
 			int levelClicked = -1;
 			int i;
-			for (i = 0; (i<nrOfPuzzles/10)||((i<nrOfPuzzles/10+1)&&(nrOfPuzzles%10 != 0)); i++)
+			for (i = 0; (i<nrOfLevels/10)||((i<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)); i++)
 				if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
 					levelClicked = i*10;
 			i++;
@@ -2962,6 +3019,22 @@ int PuzzleLevelSelect()
 						levelSelected = true;
 						levelNr = levelClicked;
 					}
+		}
+		
+		if(Type == 1)
+		{
+			string scoreString = _("Best score: 0");
+			string timeString = _("Time used: -- : --");
+
+			if(stageScores.at(selected)>0)
+				scoreString = _("Best score: ")+itoa(stageScores.at(selected));
+			if(stageTimes.at(selected)>0)
+				timeString = _("Time used: ")+itoa(stageTimes.at(selected)/1000/60)+" : "+itoa2((stageTimes.at(selected)/1000)%60);
+
+			NFont_Write(screen, 200,200,scoreString.c_str());
+			NFont_Write(screen, 200,250,timeString.c_str());
+			string totalString = (format("Total score: %1% in %2%:%3%")%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
+			NFont_Write(screen, 200,600,totalString.c_str());
 		}
 
 		//DrawIMG(mouse,screen,mousex,mousey);
@@ -2975,7 +3048,7 @@ int PuzzleLevelSelect()
 }
 
 //The function that allows the player to choose Level number
-int StageLevelSelect()
+/*int StageLevelSelect()
 {
 	const int xplace = 200;
 	const int yplace = 300;
@@ -3127,7 +3200,7 @@ int StageLevelSelect()
 	while (!levelSelected);
 	DrawIMG(background, screen, 0, 0);
 	return levelNr;
-}
+}*/
 
 //Ask user for what AI level he will compete agains, return the number. Number must be 0..AIlevels
 /*int startSingleVs()
@@ -3430,7 +3503,7 @@ void StartSinglePlayerTimeTrial()
 
 int StartSinglePlayerPuzzle(int level)
 {
-	int myLevel = PuzzleLevelSelect();
+	int myLevel = PuzzleLevelSelect(0);
 	if(myLevel == -1)
 		return 1;
 	player1->NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
@@ -4052,6 +4125,23 @@ int runGame(int gametype, int level)
 			case 1:
 				StartSinglePlayerTimeTrial();
 				break;
+			case 2:
+			{
+				int myLevel = PuzzleLevelSelect(1);
+				if(myLevel == -1)
+					return 1;
+				theGame.NewStageGame(myLevel,50,100,SDL_GetTicks());
+				MakeBackground(xsize,ysize,&theGame,&theGame2);
+				DrawIMG(background, screen, 0, 0);
+				closeAllMenus();
+				twoPlayers =false;
+				theGame2.SetGameOver();
+				showGame = true;
+				vsMode = false;
+				strcpy(theGame.name, player1name);
+				strcpy(theGame2.name, player2name);
+			}
+			break;
 			case 3:
 				if(StartSinglePlayerPuzzle(level))
 					return 1;
@@ -4278,7 +4368,7 @@ int runGame(int gametype, int level)
 							if ((!showOptions))
 #endif
 							{
-								int myLevel = StageLevelSelect();
+								int myLevel = PuzzleLevelSelect(1);
 								theGame.NewStageGame(myLevel,50,100,SDL_GetTicks());
 								MakeBackground(xsize,ysize,&theGame,&theGame2);
 								DrawIMG(background, screen, 0, 0);
@@ -4321,7 +4411,7 @@ int runGame(int gametype, int level)
 							if ((!showOptions))
 #endif
 							{
-								int myLevel = PuzzleLevelSelect();
+								int myLevel = PuzzleLevelSelect(0);
 								theGame.NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
 								MakeBackground(xsize,ysize,&theGame,&theGame2);
 								DrawIMG(background, screen, 0, 0);

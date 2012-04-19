@@ -114,6 +114,11 @@ void runSinglePlayerTimeTrial(Button* b)
 	runGame(1,0);
 }
 
+void runStageClear(Button* b)
+{
+	runGame(2,0);
+}
+
 void runSinglePlayerPuzzle(Button* b)
 {
 	runGame(3,0);
@@ -263,11 +268,13 @@ void MainMenu()
 {
 	InitMenues();
 	Menu m(&screen,_("Block Attack - Rise of the blocks"),false);
-	Button bHi,bTimetrial1, bPuzzle, bVs1, bConfigure,bHighscore;
+	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bConfigure,bHighscore;
 	bHi.setLabel(_("Single player - endless") );
 	bHi.setAction(runSinglePlayerEndless);
 	bTimetrial1.setLabel(_("Single player - time trial") );
 	bTimetrial1.setAction(runSinglePlayerTimeTrial);
+	bStageClear.setLabel(_("Single player - stage clear") );
+	bStageClear.setAction(runStageClear);
 	bPuzzle.setLabel(_("Single player - puzzle mode") );
 	bPuzzle.setAction(runSinglePlayerPuzzle);
 	bVs1.setLabel(_("Single player - vs") );
@@ -278,6 +285,7 @@ void MainMenu()
 	bHighscore.setAction(buttonActionHighscores);
 	m.addButton(&bHi);
 	m.addButton(&bTimetrial1);
+	m.addButton(&bStageClear);
 	m.addButton(&bPuzzle);
 	m.addButton(&bVs1);
 	m.addButton(&bConfigure);
