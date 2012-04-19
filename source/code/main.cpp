@@ -2785,7 +2785,6 @@ int PuzzleLevelSelect(int Type)
 			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++)
 				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92))
 					tmpSelected = j*10;
-			cout << j << endl;
 			if (tmpSelected != -1)
 				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++)
 					if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42))

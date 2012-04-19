@@ -200,7 +200,7 @@ void ConfigureMenu(Button *b)
 	Button bPlayer1Keys, bPlayer2Keys;
 	bMusic.setLabel(MusicEnabled? _("Music: On") : _("Music: Off") );
 	bMusic.setAction(buttonActionMusic);
-	bSound.setLabel(SoundEnabled? _("Music: On") : _("Music: Off") );
+	bSound.setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
 	bSound.setAction(buttonActionSound);
 	buttonFullscreen.setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
 	buttonFullscreen.setAction(buttonActionFullscreen);
