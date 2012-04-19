@@ -62,6 +62,7 @@ Button::Button()
 	label = "";
 	marked = false;
 	action = NULL;
+	popOnRun = false;
 }
 
 Button::~Button()
@@ -73,6 +74,7 @@ Button::Button(const Button& b)
 	label = b.label;
 	marked = b.marked;
 	action = b.action;
+	popOnRun = false;
 }
 
 void Button::setLabel(string text)
@@ -117,6 +119,16 @@ void Button::drawTo(SDL_Surface **surface)
 	ButtonGfx::thefont.drawCenter(x+ButtonGfx::xsize/2,y+ButtonGfx::ysize/2-ButtonGfx::thefont.getHeight(label.c_str())/2,label.c_str());
 }
 
+void Button::setPopOnRun(bool popOnRun)
+{
+	this->popOnRun = popOnRun;
+}
+
+bool Button::isPopOnRun() const
+{
+	return popOnRun;
+}
+
 void Menu::drawSelf()
 {
 	DrawIMG(backgroundImage,screen,0,0);
@@ -136,6 +148,8 @@ void Menu::performClick(int x,int y)
 		Button *b = (*it);
 		if(b->isClicked(x,y))
 			b->doAction();
+		if(b->isPopOnRun())
+			running = false;
 	}
 	if(exit.isClicked(x,y))
 		running = false;
@@ -238,8 +252,11 @@ void Menu::run()
 
 				if(event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER )
 				{
-					if(marked < buttons.size())
+					if(marked < buttons.size()) {
 						buttons.at(marked)->doAction();
+						if(buttons.at(marked)->isPopOnRun())
+							running = false;
+					}
 					if(marked == buttons.size())
 						running = false;
 				}
@@ -286,6 +303,9 @@ void Menu::run()
 				if(buttons.at(i)->isClicked(mousex,mousey))
 				{
 					buttons.at(i)->doAction();
+					if(buttons.at(i)->isPopOnRun())
+						running = false;
+					mousex = 0;
 				}
 			}
 			if(exit.isClicked(mousex,mousey))

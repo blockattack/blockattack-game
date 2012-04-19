@@ -102,26 +102,26 @@ void InitMenues()
 	ButtonGfx::thefont = nf_scoreboard_font;
 }
 
-void runGame(int gametype);
+void runGame(int gametype,int level);
 
 void runSinglePlayerEndless(Button* b)
 {
-	runGame(0);
+	runGame(0,0);
 }
 
 void runSinglePlayerTimeTrial(Button* b)
 {
-	runGame(1);
+	runGame(1,0);
 }
 
 void runSinglePlayerPuzzle(Button* b)
 {
-	runGame(3);
+	runGame(3,0);
 }
 
 void runSinglePlayerVs(Button* b)
 {
-	runGame(4);
+	runGame(4,b->iGeneric1);
 }
 
 void buttonActionMusic(Button* b)
@@ -217,6 +217,48 @@ void ConfigureMenu(Button *b)
 	cm.run();
 }
 
+void SinglePlayerVsMenu(Button *b) 
+{
+	Menu spvs(&screen,_("Single player VS"),true);
+	Button d1,d2,d3,d4,d5,d6,d7;
+	d1.setAction(runSinglePlayerVs);
+	d2.setAction(runSinglePlayerVs);
+	d3.setAction(runSinglePlayerVs);
+	d4.setAction(runSinglePlayerVs);
+	d5.setAction(runSinglePlayerVs);
+	d6.setAction(runSinglePlayerVs);
+	d7.setAction(runSinglePlayerVs);
+	d1.setPopOnRun(true);
+	d2.setPopOnRun(true);
+	d3.setPopOnRun(true);
+	d4.setPopOnRun(true);
+	d5.setPopOnRun(true);
+	d6.setPopOnRun(true);
+	d7.setPopOnRun(true);
+	d1.iGeneric1 = 1;
+	d2.iGeneric1 = 2;
+	d3.iGeneric1 = 3;
+	d4.iGeneric1 = 4;
+	d5.iGeneric1 = 5;
+	d6.iGeneric1 = 6;
+	d7.iGeneric1 = 7;
+	d1.setLabel(_("Very easy"));
+	d2.setLabel(_("Easy"));
+	d3.setLabel(_("Below normal"));
+	d4.setLabel(_("Normal"));
+	d5.setLabel(_("Above normal"));
+	d6.setLabel(_("Hard"));
+	d7.setLabel(_("Hardest"));
+	spvs.addButton(&d1);
+	spvs.addButton(&d2);
+	spvs.addButton(&d3);
+	spvs.addButton(&d4);
+	spvs.addButton(&d5);
+	spvs.addButton(&d6);
+	spvs.addButton(&d7);
+	spvs.run();
+}
+
 void MainMenu()
 {
 	InitMenues();
@@ -229,7 +271,7 @@ void MainMenu()
 	bPuzzle.setLabel(_("Single player - puzzle mode") );
 	bPuzzle.setAction(runSinglePlayerPuzzle);
 	bVs1.setLabel(_("Single player - vs") );
-	bVs1.setAction(runSinglePlayerVs);
+	bVs1.setAction(SinglePlayerVsMenu);
 	bConfigure.setLabel(_("Configure") );
 	bConfigure.setAction(ConfigureMenu);
 	bHighscore.setLabel(_("Highscores") );

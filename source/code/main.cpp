@@ -3130,7 +3130,7 @@ int StageLevelSelect()
 }
 
 //Ask user for what AI level he will compete agains, return the number. Number must be 0..AIlevels
-int startSingleVs()
+/*int startSingleVs()
 {
 	//Where to place the windows
 	const int xplace = 200;
@@ -3219,7 +3219,7 @@ int startSingleVs()
 
 
 	return 3; //Returns normal
-}
+}*/
 
 //The function that allows the player to choose Level number
 void startVsMenu()
@@ -3428,9 +3428,11 @@ void StartSinglePlayerTimeTrial()
 	strcpy(player2->name, player2name);
 }
 
-void StartSinglePlayerPuzzle()
+int StartSinglePlayerPuzzle(int level)
 {
 	int myLevel = PuzzleLevelSelect();
+	if(myLevel == -1)
+		return 1;
 	player1->NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
 	MakeBackground(xsize,ysize,player1,player2);
 	DrawIMG(background, screen, 0, 0);
@@ -3441,6 +3443,7 @@ void StartSinglePlayerPuzzle()
 	//vsMode = true;
 	strcpy(player1->name, player1name);
 	strcpy(player2->name, player2name);
+	return 0;
 }
 
 
@@ -3616,30 +3619,6 @@ int main(int argc, char *argv[])
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool weWhereConnected = false;
-
-	//Things used for repeating keystrokes:
-	/*bool repeatingS[2] = {false,false};
-	bool repeatingW[2] = {false,false};
-	bool repeatingN[2] = {false,false};
-	bool repeatingE[2] = {false,false};
-	const int startRepeat = 200;
-	const int repeatDelay = 100;    //Repeating
-	unsigned long timeHeldP1N = 0;
-	unsigned long timeHeldP1S = 0;
-	unsigned long timeHeldP1E = 0;
-	unsigned long timeHeldP1W = 0;
-	unsigned long timeHeldP2N = 0;
-	unsigned long timeHeldP2S = 0;
-	unsigned long timeHeldP2E = 0;
-	unsigned long timeHeldP2W = 0;
-	unsigned long timesRepeatedP1N = 0;
-	unsigned long timesRepeatedP1S = 0;
-	unsigned long timesRepeatedP1E = 0;
-	unsigned long timesRepeatedP1W = 0;
-	unsigned long timesRepeatedP2N = 0;
-	unsigned long timesRepeatedP2S = 0;
-	unsigned long timesRepeatedP2E = 0;
-	unsigned long timesRepeatedP2W = 0;*/
 
 	theBallManeger = ballManeger();
 	theExplosionManeger = explosionManeger();
@@ -3966,7 +3945,7 @@ int main(int argc, char *argv[])
 }
 
 
-void runGame(int gametype)
+int runGame(int gametype, int level)
 {
 	Uint8 *keys;
 	int mousex, mousey;   //Mouse coordinates
@@ -4054,9 +4033,9 @@ void runGame(int gametype)
 		MakeBackground(xsize,ysize,&theGame,&theGame2);
 	else
 		MakeBackground(xsize,ysize,&theGame);
-	DrawIMG(background, screen, 0, 0);
+	/*DrawIMG(background, screen, 0, 0);
 	DrawEverything(xsize,ysize,&theGame,&theGame2);
-	SDL_Flip(screen);
+	SDL_Flip(screen);*/
 	//game loop
 	int done = 0;
 	cout << "Starting game loop" << endl;
@@ -4074,14 +4053,15 @@ void runGame(int gametype)
 				StartSinglePlayerTimeTrial();
 				break;
 			case 3:
-				StartSinglePlayerPuzzle();
+				if(StartSinglePlayerPuzzle(level))
+					return 1;
 				break;
 			case 4:
 			{
 				//1 player - Vs mode
 				bNewGameOpen = false;
 				b1playerOpen = false;
-				int theAIlevel = startSingleVs();
+				int theAIlevel = level; //startSingleVs();
 				theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
 				theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
 				MakeBackground(xsize,ysize,&theGame,&theGame2);
@@ -4103,6 +4083,9 @@ void runGame(int gametype)
 				break;
 			};
 			mustsetupgame = false;
+			DrawIMG(background, screen, 0, 0);
+			DrawEverything(xsize,ysize,&theGame,&theGame2);
+			SDL_Flip(screen);
 		}
 
 		if (!(highPriority)) SDL_Delay(10);
