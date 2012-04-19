@@ -286,3 +286,11 @@ bool Replay::loadReplay2(string filename)
 	}
 
 }
+
+void Replay::addAction(int tick, string action) {
+	cout << tick << " " << action << endl;
+	Action a;
+	a.time = tick;
+	a.action = action;
+	actions.push_back(a);
+}

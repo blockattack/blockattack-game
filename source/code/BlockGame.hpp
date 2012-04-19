@@ -295,6 +295,8 @@ private:
 
 private:
 
+	void ActionPerformed(string action);
+	
 	//Updates evrything, if not called nothing happends
 	void Update();
 public:

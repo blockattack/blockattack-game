@@ -47,7 +47,7 @@ $(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/ReadKeyboard.
 	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o  $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o  $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o $(BUILDDIR)/menudef.o $(BASE_LIBS)
 #-lphysfs
 
-$(BUILDDIR)/main.o:	main.cpp mainVars.hpp common.h
+$(BUILDDIR)/main.o:	main.cpp mainVars.hpp common.h BlockGame.hpp BlockGame.cpp
 	$(CPP) $(BASE_CFLAGS) main.cpp -o $(BUILDDIR)/main.o
 
 $(BUILDDIR)/blockgame.o:	BlockGame.hpp BlockGame.cpp

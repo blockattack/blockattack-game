@@ -113,6 +113,9 @@ BlockGame::~BlockGame()
 
 void BlockGame::setGameSpeed(Uint8 globalSpeedLevel)
 {
+	format f("GAMESPEED %1%");
+	f % globalSpeedLevel;
+	ActionPerformed(f.str());
 	switch (globalSpeedLevel)
 	{
 	case 0:
@@ -138,6 +141,9 @@ void BlockGame::setGameSpeed(Uint8 globalSpeedLevel)
 
 void BlockGame::setHandicap(Uint8 globalHandicap)
 {
+	format f("HANDICAP %1%");
+	f % globalHandicap;
+	ActionPerformed(f.str());
 	handicap=1000*((Uint32)globalHandicap);
 }
 
@@ -251,6 +257,9 @@ int BlockGame::GetCursorY()
 
 void BlockGame::MoveCursorTo(int x, int y)
 {
+	format f("MC2 %1% %2%");
+	f % x % y;
+	ActionPerformed(f.str());
 	cursorx = x;
 	cursory = y;
 }
@@ -348,11 +357,13 @@ void BlockGame::NewGame(int tx, int ty, unsigned int ticks)
 	lastAImove = ticks+3000;
 	showGame = true;
 	theReplay = Replay();
+	ActionPerformed("NEW");
 }	//NewGame
 
 void BlockGame::NewTimeTrialGame(int x,int y, unsigned int ticks)
 {
 	NewGame(x,y,ticks);
+	ActionPerformed("NEWTT");
 	timetrial = true;
 	putStartBlocks();
 }
@@ -439,6 +450,7 @@ void BlockGame::nextLevel(unsigned int ticks)
 void BlockGame::NewVsGame(int tx, int ty, BlockGame *target,unsigned int ticks)
 {
 	NewGame(tx, ty,ticks);
+	ActionPerformed("NEWVS");
 	vsMode = true;
 	putStartBlocks();
 	garbageTarget = target;
@@ -492,6 +504,7 @@ void BlockGame::playNetwork(int tx, int ty,unsigned int ticks)
 //Prints "winner" and ends game
 void BlockGame::setPlayerWon()
 {
+	ActionPerformed("WON");
 	if (!bGameOver)
 	{
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
@@ -535,6 +548,7 @@ void BlockGame::setDisconnect()
 //Prints "draw" and ends the game
 void BlockGame::setDraw()
 {
+	ActionPerformed("DRAW");
 	bGameOver = true;
 	if(!AI_Enabled && !bReplaying)
 	{
@@ -728,6 +742,9 @@ void BlockGame::putStartBlocks()
 
 void BlockGame::putStartBlocks(Uint32 n)
 {
+	format f("STARTBLOCKS %1%");
+	f % n;
+	ActionPerformed(f.str());
 	for (int i=0; i<7; i++)
 		for (int j=0; j<30; j++)
 		{
@@ -890,6 +907,9 @@ void BlockGame::ReduceStuff()
 //Creates garbage using a given wide and height
 bool BlockGame::CreateGarbage(int wide, int height)
 {
+	format f("CG %1% %2%");
+	f % wide % height;
+	ActionPerformed(f.str());
 #if NETWORK
 	if (bNetworkPlayer)
 	{
@@ -933,6 +953,7 @@ bool BlockGame::CreateGarbage(int wide, int height)
 //Creates garbage using a given wide and height
 bool BlockGame::CreateGreyGarbage()
 {
+	ActionPerformed("GG");
 #if NETWORK
 	if (bNetworkPlayer)
 	{
@@ -1352,6 +1373,7 @@ void BlockGame::ClearBlocks()
 //prints "Game Over" and ends game
 void BlockGame::SetGameOver()
 {
+	ActionPerformed("GAMEOVER");
 	if (!bGameOver)
 	{
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
@@ -1452,6 +1474,9 @@ void BlockGame::FallDown()
 //Moves the cursor, receaves N,S,E or W as a char an moves as desired
 void BlockGame::MoveCursor(char way)
 {
+	format f("MC %1%");
+	f % way;
+	ActionPerformed(f.str());
 	if (!bGameOver)       //If game over nothing happends
 	{
 		if ((way == 'N') && ((cursory<10)||(TowerHeight>12) ||(((pixels==bsize)||(pixels==0)) && (cursory<11))))
@@ -1480,6 +1505,7 @@ void BlockGame::SwitchAtCursor()
 //Generates a new line and moves the field one block up (restart puzzle mode)
 void BlockGame::PushLine()
 {
+	ActionPerformed("PL");
 	//If not game over, not high tower and not puzzle mode
 	if ((!bGameOver) && TowerHeight<13 && (!puzzleMode) && (gameStartedAt<ticks)&&(chain==0))
 	{
@@ -2007,6 +2033,7 @@ void BlockGame::Update()
 {
 	Uint32 tempUInt32;
 	Uint32 nowTime = ticks; //We remember the time, so it doesn't change during this call
+	ActionPerformed("U");
 	if (bReplaying)
 	{
 		setBoard(theReplay.getFrameSec((Uint32)(nowTime-gameStartedAt)));
@@ -2209,8 +2236,17 @@ void BlockGame::Update()
 
 void BlockGame::Update(int newtick)
 {
-	ticks = newtick;
-	Update();
+	if(newtick > ticks+50) 
+	{
+		ticks = newtick;
+		Update();
+	}
+}
+
+void BlockGame::ActionPerformed(string action) {
+	if(bGameOver)
+		return;
+	theReplay.addAction(ticks,action);
 }
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// BlockAttack class end ////////////////////////////////

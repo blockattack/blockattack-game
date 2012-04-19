@@ -55,12 +55,19 @@ struct boardPackage //92 bytes
 	Uint8 result; //0=none,1=gameOver,2=winner,4=draw
 };
 
+struct Action
+{
+	Uint32 time;
+	string action;
+};
+
 class Replay
 {
 private:
 //Our replay is stored in an array of TOTALFRAMES length
 	//boardPackage bps[TOTALFRAMES];
 	vector<boardPackage> bps;
+	vector<Action> actions;
 //The final package is not set to any specific time
 	boardPackage finalPack;
 //We store number of frames, so we know how long to read the array
@@ -85,6 +92,9 @@ public:
 	boardPackage getFinalFrame(); //Gets the last frame, that must remain
 	int getFinalStatus();	//Return the result: winner, looser, draw or gameOver
 	bool isFinnished(Uint32); //Returns true if we are done
+	
+	//New replay type 1.5.0+:
+	void addAction(int tick, string action);
 
 //Ok, I'll ignore this for some time, and just save to file, if however, we ever use a dynamic saving structure, we are fucked
 	bool saveReplay(string);	//Saves a replay
