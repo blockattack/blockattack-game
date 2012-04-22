@@ -43,6 +43,7 @@ Replay::Replay(const Replay& r)
 	isLoaded = r.isLoaded;
 	theResult = r.theResult;
 	strncpy(name,r.name,sizeof(name));
+	actions = r.actions;
 }
 
 Uint32 Replay::getNumberOfFrames()
@@ -115,28 +116,17 @@ int Replay::getFinalStatus()
 
 bool Replay::saveReplay(string filename)
 {
-	//Saving as fileversion 3
-	cout << "Saving as version 3 save file" << endl;
+	//Saving as fileversion 4
+	cout << "Saving as version 4 save file" << endl;
 	ofstream saveFile;
 	saveFile.open(filename.c_str(),ios::binary|ios::trunc);
 	if (saveFile)
 	{
-		Uint32 version = 3;
-		boardPackage bp;
-		saveFile.write(reinterpret_cast<char*>(&version),sizeof(Uint32)); //Fileversion
-		Uint8 nrOfReplays = 1;
-		saveFile.write(reinterpret_cast<char*>(&nrOfReplays),sizeof(Uint8)); //nrOfReplaysIn File
-		saveFile.write(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32)); //Nr of frames in file
-		for (int i=0; i<nrOfFrames && i<bps.size(); i++)
-		{
-			//Writing frames
-			bp = bps.at(i);
-			saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
-
+		saveFile << "0 PLAYER 1\n";
+		saveFile << "0 NAME " << name << "\n";
+		for(int i = 0;i < actions.size(); ++i) {
+			saveFile << actions.at(i).time << " " << actions.at(i).action << "\n";
 		}
-		saveFile.write(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
-		saveFile.write(reinterpret_cast<char*>(&theResult),sizeof(theResult));
-		saveFile.write(reinterpret_cast<char*>(&name),sizeof(name));
 		saveFile.close();
 		return true;
 	}
@@ -154,7 +144,7 @@ bool Replay::saveReplay(string filename,Replay p2)
 	saveFile.open(filename.c_str(),ios::binary|ios::trunc);
 	if (saveFile)
 	{
-		Uint32 version = 3;
+		Uint32 version = 4;
 		boardPackage bp;
 		saveFile.write(reinterpret_cast<char*>(&version),sizeof(Uint32)); //Fileversion
 		Uint8 nrOfReplays = 2;
