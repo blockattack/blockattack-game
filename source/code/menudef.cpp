@@ -129,6 +129,16 @@ void runSinglePlayerVs(Button* b)
 	runGame(4,b->iGeneric1);
 }
 
+void runTwoPlayerTimeTrial(Button* b) 
+{
+	runGame(10,0);
+}
+
+void runTwoPlayerVs(Button* b) 
+{
+	runGame(11,0);
+}
+
 void buttonActionMusic(Button* b)
 {
 	MusicEnabled = !MusicEnabled;
@@ -264,11 +274,34 @@ void SinglePlayerVsMenu(Button *b)
 	spvs.run();
 }
 
+void NetworkMenu(Button *b) 
+{
+	Menu nm(&screen,_("Network"),true);
+}
+
+void MultiplayerMenu(Button *b) 
+{
+	Menu mm(&screen,_("Multiplayer"),true);
+	Button bTT, bVs, bNet;
+	bTT.setLabel(_("Two player - time trial"));
+	bTT.setAction(runTwoPlayerTimeTrial);
+	bVs.setLabel(_("Two player - vs"));
+	bVs.setAction(runTwoPlayerVs);
+	bNet.setLabel(_("Network/Internet game"));
+	bNet.setAction(NetworkMenu);
+	mm.addButton(&bTT);
+	mm.addButton(&bVs);
+#if NETWORK
+	mm.addButton(&bNet);
+#endif
+	mm.run();
+}
+
 void MainMenu()
 {
 	InitMenues();
 	Menu m(&screen,_("Block Attack - Rise of the blocks"),false);
-	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bConfigure,bHighscore;
+	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bMulti, bConfigure,bHighscore;
 	bHi.setLabel(_("Single player - endless") );
 	bHi.setAction(runSinglePlayerEndless);
 	bTimetrial1.setLabel(_("Single player - time trial") );
@@ -279,6 +312,8 @@ void MainMenu()
 	bPuzzle.setAction(runSinglePlayerPuzzle);
 	bVs1.setLabel(_("Single player - vs") );
 	bVs1.setAction(SinglePlayerVsMenu);
+	bMulti.setLabel(_("Multi player") );
+	bMulti.setAction(MultiplayerMenu);
 	bConfigure.setLabel(_("Configure") );
 	bConfigure.setAction(ConfigureMenu);
 	bHighscore.setLabel(_("Highscores") );
@@ -288,6 +323,7 @@ void MainMenu()
 	m.addButton(&bStageClear);
 	m.addButton(&bPuzzle);
 	m.addButton(&bVs1);
+	m.addButton(&bMulti);
 	m.addButton(&bConfigure);
 	m.addButton(&bHighscore);
 	m.run();

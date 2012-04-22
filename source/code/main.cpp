@@ -3722,6 +3722,12 @@ int runGame(int gametype, int level)
 				strcpy(theGame2.name, player2name);
 			}
 			break;
+			case 10:
+				StarTwoPlayerTimeTrial();
+				break;
+			case 11:
+				StartTwoPlayerVs();
+				break;
 			case 0:
 			default:
 				StartSinglePlayerEndless();
