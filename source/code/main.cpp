@@ -3431,6 +3431,7 @@ int main(int argc, char *argv[])
 	}
 
 #if NETWORK
+	Config::getInstance()->setDefault("portv4","42200");
 	strcpy(serverAddress, "192.168.0.2                 \0");
 	if(configSettings->exists("address0"))
 	{

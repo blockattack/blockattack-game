@@ -170,6 +170,32 @@ void buttonActionPlayer2Name(Button *b)
 		return; //must save if true
 }
 
+void buttonActionPortChange(Button *b)
+{
+	char port[30];
+	snprintf(port,sizeof(port),"%i",Config::getInstance()->getInt("portv4") );
+	if (OpenDialogbox(200,100,port) && atoi(port)) 
+	{
+		Config::getInstance()->setInt("portv4",atoi(port));
+		format f(_("Port: %1%") );
+		f % port;
+		b->setLabel(f.str());
+	}
+}
+
+void buttonActionIpChange(Button *b)
+{
+	char ip[30];
+	snprintf(ip,sizeof(ip),"%s",Config::getInstance()->getString("address0").c_str() );
+	if (OpenDialogbox(200,100,ip)) 
+	{
+		Config::getInstance()->setString("address0",ip);
+		format f(_("Address: %1%") );
+		f % ip;
+		b->setLabel(f.str());
+	}
+}
+
 void buttonActionHighscores(Button *b)
 {
 	OpenScoresDisplay();
@@ -277,6 +303,19 @@ void SinglePlayerVsMenu(Button *b)
 void NetworkMenu(Button *b) 
 {
 	Menu nm(&screen,_("Network"),true);
+	Button bPort, bIp, bHost, bJoin;
+	format fi(_("Address: %1%") );
+	fi % Config::getInstance()->getString("address0");
+	bIp.setLabel(fi.str());
+	bIp.setAction(buttonActionIpChange);
+	format fp(_("Port: %1%") );
+	fp % Config::getInstance()->getString("portv4");
+	bPort.setLabel(fp.str());
+	bPort.setAction(buttonActionPortChange);
+	nm.addButton(&bIp);
+	nm.addButton(&bPort);
+	nm.run();
+	
 }
 
 void MultiplayerMenu(Button *b) 

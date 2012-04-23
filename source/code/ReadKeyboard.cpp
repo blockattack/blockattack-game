@@ -46,7 +46,7 @@ ReadKeyboard::ReadKeyboard(char *oldName)
 	maxLength = 16;
 	position = 0;
 	strcpy(textstring,"                              ");
-	strcpy(textstring,oldName);
+	strncpy(textstring,oldName,strlen(oldName));
 	char charecter = textstring[maxLength+1];
 	int i = maxLength+1;
 	while ((charecter == ' ') && (i>0))
