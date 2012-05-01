@@ -137,6 +137,7 @@ public:
 	char name[30];
 	Replay theReplay;   //Stores the replay
 
+public:
 	//Constructor
 	BlockGame();
 
@@ -172,22 +173,6 @@ public:
 	int GetCursorY();
 	void MoveCursorTo(int x, int y);
 	bool GetIsWinner();
-private:
-#if NETWORK
-#define garbageStackSize 10
-	Uint8 garbageStack[garbageStackSize][3]; //A garbage stack with space for 10 garbage blocks. 0=x,1=y,2=type
-	int garbageStackUsed;
-
-	void emptyGarbageStack();
-	bool pushGarbage(Uint8 width, Uint8 height, Uint8 type);
-public:
-	bool popGarbage(Uint8 *width, Uint8 *height, Uint8 *type);
-private:
-
-#endif
-
-
-public:
 	//Instead of creating new object new game is called, to prevent memory leaks
 	void NewGame(int tx, int ty, unsigned int ticks);
 	void NewTimeTrialGame(int x,int y, unsigned int ticks);
@@ -202,12 +187,24 @@ public:
 	void NewVsGame(int tx, int ty, BlockGame *target,unsigned int ticks);
 	//Starts new Vs Game (two Player)
 	void NewVsGame(int tx, int ty, BlockGame *target, bool AI,unsigned int ticks);
-private:
-	//Go in Demonstration mode, no movement
-	void Demonstration(bool toggle);
-public:
 	//We want to play the replay (must have been loaded beforehand)
 	void playReplay(int tx, int ty, unsigned int ticks);
+	void putStartBlocks(Uint32 n);
+	//Creates garbage using a given wide and height
+	bool CreateGarbage(int wide, int height);
+	//Creates garbage using a given wide and height
+	bool CreateGreyGarbage();
+	//prints "Game Over" and ends game
+	void SetGameOver();
+	bool GetAIenabled();
+	//Moves the cursor, receaves N,S,E or W as a char an moves as desired
+	void MoveCursor(char way);
+	//switches the two blocks at the cursor position, unless game over
+	void SwitchAtCursor();
+	//Generates a new line and moves the field one block up (restart puzzle mode)
+	void PushLine();
+	void Update(int newtick);
+	void PerformAction(int tick, int action, string param);
 #if NETWORK
 	//network play
 	void playNetwork(int tx, int ty,unsigned int ticks);
@@ -227,6 +224,20 @@ public:
 	//Takes a package and sets the board like it
 	void setBoard(boardPackage bp);
 private:
+#if NETWORK
+#define garbageStackSize 10
+	Uint8 garbageStack[garbageStackSize][3]; //A garbage stack with space for 10 garbage blocks. 0=x,1=y,2=type
+	int garbageStackUsed;
+
+	void emptyGarbageStack();
+	bool pushGarbage(Uint8 width, Uint8 height, Uint8 type);
+public:
+	bool popGarbage(Uint8 *width, Uint8 *height, Uint8 *type);
+private:
+
+#endif
+	//Go in Demonstration mode, no movement
+	void Demonstration(bool toggle);
 	//Test if LineNr is an empty line, returns false otherwise.
 	bool LineEmpty(int lineNr);
 	//Test if the entire board is empty (used for Puzzles)
@@ -234,17 +245,8 @@ private:
 	//Anything that the user can't move? In that case Game Over cannot occur
 	bool hasStaticContent();
 	void putStartBlocks();
-public:
-	void putStartBlocks(Uint32 n);
-private:
 	//decreases hang for all hanging blocks and wait for waiting blocks
 	void ReduceStuff();
-public:
-	//Creates garbage using a given wide and height
-	bool CreateGarbage(int wide, int height);
-	//Creates garbage using a given wide and height
-	bool CreateGreyGarbage();
-private:
 	//Clears garbage, must take one the lower left corner!
 	int GarbageClearer(int x, int y, int number, bool aLineToClear, int chain);
 	//Marks garbage that must be cleared
@@ -252,25 +254,12 @@ private:
 	int FirstGarbageMarker(int x, int y);
 	//Clear Blocks if 3 or more is alligned (naive implemented)
 	void ClearBlocks();
-public:
-	//prints "Game Over" and ends game
-	void SetGameOver();
-	bool GetAIenabled();
-private:
 	//Moves all peaces a spot down if possible
 	int FallBlock(int x, int y, int number);
 	//Makes all Garbage fall one spot
 	void GarbageFall();
 	//Makes the blocks fall (it doesn't test time, this must be done before hand)
 	void FallDown();
-public:
-	//Moves the cursor, receaves N,S,E or W as a char an moves as desired
-	void MoveCursor(char way);
-	//switches the two blocks at the cursor position, unless game over
-	void SwitchAtCursor();
-	//Generates a new line and moves the field one block up (restart puzzle mode)
-	void PushLine();
-private:
 	//Pushes a single pixel, so it appears to scrool
 	void PushPixels();
 	//See how high the tower is, saved in integer TowerHeight
@@ -311,16 +300,11 @@ private:
 ///////////////////////////// AI ends here! //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-private:
-
 	void ActionPerformed(int action, string param);
 	
 	//Updates evrything, if not called nothing happends
 	void Update();
 	void UpdateInternal(int newtick);
-public:
-	void Update(int newtick);
-	void PerformAction(int tick, int action, string param);
 };
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// BlockAttack class end ////////////////////////////////
