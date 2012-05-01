@@ -23,6 +23,7 @@ http://blockattack.sf.net
 
 
 #include "BlockGame.hpp"
+#include<boost/lexical_cast.hpp>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -113,9 +114,9 @@ BlockGame::~BlockGame()
 
 void BlockGame::setGameSpeed(Uint8 globalSpeedLevel)
 {
-	format f("GAMESPEED %1%");
+	format f("%1%");
 	f % globalSpeedLevel;
-	ActionPerformed(f.str());
+	ActionPerformed(ACTION_GAMESPEED,f.str());
 	switch (globalSpeedLevel)
 	{
 	case 0:
@@ -141,9 +142,9 @@ void BlockGame::setGameSpeed(Uint8 globalSpeedLevel)
 
 void BlockGame::setHandicap(Uint8 globalHandicap)
 {
-	format f("HANDICAP %1%");
+	format f("%1%");
 	f % globalHandicap;
-	ActionPerformed(f.str());
+	ActionPerformed(ACTION_HANDICAP, f.str());
 	handicap=1000*((Uint32)globalHandicap);
 }
 
@@ -257,9 +258,9 @@ int BlockGame::GetCursorY()
 
 void BlockGame::MoveCursorTo(int x, int y)
 {
-	format f("MC2 %1% %2%");
+	format f("%1% %2%");
 	f % x % y;
-	ActionPerformed(f.str());
+	ActionPerformed(ACTION_MOVECURSORTO,f.str());
 	cursorx = x;
 	cursory = y;
 }
@@ -357,13 +358,13 @@ void BlockGame::NewGame(int tx, int ty, unsigned int ticks)
 	lastAImove = ticks+3000;
 	showGame = true;
 	theReplay = Replay();
-	ActionPerformed("NEW");
+	ActionPerformed(ACTION_NEW,"");
 }	//NewGame
 
 void BlockGame::NewTimeTrialGame(int x,int y, unsigned int ticks)
 {
 	NewGame(x,y,ticks);
-	ActionPerformed("NEWTT");
+	ActionPerformed(ACTION_NEWTT,"");
 	timetrial = true;
 	putStartBlocks();
 }
@@ -450,7 +451,7 @@ void BlockGame::nextLevel(unsigned int ticks)
 void BlockGame::NewVsGame(int tx, int ty, BlockGame *target,unsigned int ticks)
 {
 	NewGame(tx, ty,ticks);
-	ActionPerformed("NEWVS");
+	ActionPerformed(ACTION_NEWVS,"");
 	vsMode = true;
 	putStartBlocks();
 	garbageTarget = target;
@@ -504,7 +505,7 @@ void BlockGame::playNetwork(int tx, int ty,unsigned int ticks)
 //Prints "winner" and ends game
 void BlockGame::setPlayerWon()
 {
-	ActionPerformed("WON");
+	ActionPerformed(ACTION_WIN,"");
 	if (!bGameOver)
 	{
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
@@ -548,7 +549,7 @@ void BlockGame::setDisconnect()
 //Prints "draw" and ends the game
 void BlockGame::setDraw()
 {
-	ActionPerformed("DRAW");
+	ActionPerformed(ACTION_DRAW, "");
 	bGameOver = true;
 	if(!AI_Enabled && !bReplaying)
 	{
@@ -742,9 +743,9 @@ void BlockGame::putStartBlocks()
 
 void BlockGame::putStartBlocks(Uint32 n)
 {
-	format f("STARTBLOCKS %1%");
+	format f("%1%");
 	f % n;
-	ActionPerformed(f.str());
+	ActionPerformed(ACTION_STARTBLOCKS ,f.str());
 	for (int i=0; i<7; i++)
 		for (int j=0; j<30; j++)
 		{
@@ -907,9 +908,9 @@ void BlockGame::ReduceStuff()
 //Creates garbage using a given wide and height
 bool BlockGame::CreateGarbage(int wide, int height)
 {
-	format f("CG %1% %2%");
+	format f("%1% %2%");
 	f % wide % height;
-	ActionPerformed(f.str());
+	ActionPerformed(ACTION_CREATEGARBAGE,f.str());
 #if NETWORK
 	if (bNetworkPlayer)
 	{
@@ -953,7 +954,7 @@ bool BlockGame::CreateGarbage(int wide, int height)
 //Creates garbage using a given wide and height
 bool BlockGame::CreateGreyGarbage()
 {
-	ActionPerformed("GG");
+	ActionPerformed(ACTION_CREATEGRAYGARBAGE,"");
 #if NETWORK
 	if (bNetworkPlayer)
 	{
@@ -1373,7 +1374,7 @@ void BlockGame::ClearBlocks()
 //prints "Game Over" and ends game
 void BlockGame::SetGameOver()
 {
-	ActionPerformed("GAMEOVER");
+	ActionPerformed(ACTION_GAMEOVER ,"");
 	if (!bGameOver)
 	{
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
@@ -1388,7 +1389,7 @@ void BlockGame::SetGameOver()
 	}
 	else
 	{
-		strncpy(theReplay.name,name,30);
+		theReplay.setName(name);
 	}
 	theReplay.setFinalFrame(getPackage(), 0);
 	bGameOver = true;
@@ -1474,9 +1475,9 @@ void BlockGame::FallDown()
 //Moves the cursor, receaves N,S,E or W as a char an moves as desired
 void BlockGame::MoveCursor(char way)
 {
-	format f("MC %1%");
+	format f("%1%");
 	f % way;
-	ActionPerformed(f.str());
+	ActionPerformed(ACTION_MOVECURSOR,f.str());
 	if (!bGameOver)       //If game over nothing happends
 	{
 		if ((way == 'N') && ((cursory<10)||(TowerHeight>12) ||(((pixels==bsize)||(pixels==0)) && (cursory<11))))
@@ -1493,6 +1494,7 @@ void BlockGame::MoveCursor(char way)
 //switches the two blocks at the cursor position, unless game over
 void BlockGame::SwitchAtCursor()
 {
+	ActionPerformed(ACTION_SWITCH,"");
 	if ((board[cursorx][cursory+1]<7) && (board[cursorx+1][cursory+1]<7) && (!bGameOver) && ((!puzzleMode)||(MovesLeft>0)) && (gameStartedAt<ticks))
 	{
 		int temp = board[cursorx][cursory+1];
@@ -1505,7 +1507,7 @@ void BlockGame::SwitchAtCursor()
 //Generates a new line and moves the field one block up (restart puzzle mode)
 void BlockGame::PushLine()
 {
-	ActionPerformed("PL");
+	ActionPerformed(ACTION_PUSH,"");
 	//If not game over, not high tower and not puzzle mode
 	if ((!bGameOver) && TowerHeight<13 && (!puzzleMode) && (gameStartedAt<ticks)&&(chain==0))
 	{
@@ -2033,11 +2035,11 @@ void BlockGame::Update()
 {
 	Uint32 tempUInt32;
 	Uint32 nowTime = ticks; //We remember the time, so it doesn't change during this call
-	ActionPerformed("U");
+	ActionPerformed(ACTION_UPDATE, "");
 	if (bReplaying)
 	{
 		setBoard(theReplay.getFrameSec((Uint32)(nowTime-gameStartedAt)));
-		strncpy(name,theReplay.name,30);
+		strncpy(name,theReplay.getName().c_str(),30);
 		if (theReplay.isFinnished((Uint32)(nowTime-gameStartedAt)))
 			switch (theReplay.getFinalStatus())
 			{
@@ -2234,19 +2236,91 @@ void BlockGame::Update()
 	}
 }
 
-void BlockGame::Update(int newtick)
+void BlockGame::UpdateInternal(int newtick)
 {
-	if(newtick > ticks+50) 
+	while(newtick > ticks+50) 
 	{
-		ticks = newtick;
+		ticks+=50;
 		Update();
 	}
 }
 
-void BlockGame::ActionPerformed(string action) {
+void BlockGame::Update(int newtick)
+{
+	
+	UpdateInternal(newtick);
+}
+
+void BlockGame::ActionPerformed(int action, string param) 
+{
 	if(bGameOver)
 		return;
-	theReplay.addAction(ticks,action);
+	theReplay.addAction(ticks-gameStartedAt,action,param);
+}
+
+void BlockGame::PerformAction(int tick, int action, string param) 
+{
+	UpdateInternal(tick);
+	switch(action) 
+	{
+	case ACTION_UPDATE:
+		break;
+	case ACTION_MOVECURSOR:
+		MoveCursor(param.at(0));
+		break;
+	case ACTION_MOVECURSORTO:
+	{
+		stringstream ss(param);
+		int p1,p2;
+		ss >> p1 >> p2;
+		MoveCursorTo(p1,p2);
+	}
+		break;
+	case ACTION_SWITCH:
+		SwitchAtCursor();
+		break;
+	case ACTION_PUSH:
+		PushLine();
+		break;
+	case ACTION_CREATEGARBAGE:
+	{
+		stringstream ss(param);
+		int p1,p2;
+		ss >> p1 >> p2;
+		CreateGarbage(p1,p2);
+	}
+		break;
+	case ACTION_CREATEGRAYGARBAGE:
+		CreateGreyGarbage();
+		break;
+	case ACTION_GAMEOVER:
+		SetGameOver();
+		break;
+	case ACTION_WIN:
+		setPlayerWon();
+		break;
+	case ACTION_DRAW:
+		setDraw();
+		break;
+	case ACTION_GAMESPEED:
+		setGameSpeed(boost::lexical_cast<short>(param));
+		break;
+	case ACTION_HANDICAP:
+		setHandicap(boost::lexical_cast<short>(param));
+		break;
+	case ACTION_NEW:
+	case ACTION_NEWTT:
+	case ACTION_NEWVS:
+		break;
+	case ACTION_STARTBLOCKS:
+		putStartBlocks(boost::lexical_cast<int>(param));
+		break;
+	case ACTION_NOP:
+		break;
+	default:
+		cerr << "Unknown action: " << action << " " << param << endl;
+		break;
+	};
 }
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// BlockAttack class end ////////////////////////////////

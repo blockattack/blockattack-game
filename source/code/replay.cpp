@@ -42,7 +42,7 @@ Replay::Replay(const Replay& r)
 	nrOfFrames = r.nrOfFrames;
 	isLoaded = r.isLoaded;
 	theResult = r.theResult;
-	strncpy(name,r.name,sizeof(name));
+	name = r.name;
 	actions = r.actions;
 }
 
@@ -122,10 +122,10 @@ bool Replay::saveReplay(string filename)
 	saveFile.open(filename.c_str(),ios::binary|ios::trunc);
 	if (saveFile)
 	{
-		saveFile << "0 PLAYER 1\n";
-		saveFile << "0 NAME " << name << "\n";
+		saveFile << "0 16 PLAYER 1\n";
+		saveFile << "0 16 NAME " << name << "\n";
 		for(int i = 0;i < actions.size(); ++i) {
-			saveFile << actions.at(i).time << " " << actions.at(i).action << "\n";
+			saveFile << actions.at(i).time << " " << actions.at(i).action << " " << actions.at(i).param << "\n";
 		}
 		saveFile.close();
 		return true;
@@ -182,34 +182,38 @@ bool Replay::saveReplay(string filename,Replay p2)
 bool Replay::loadReplay(string filename)
 {
 	isLoaded = true;
+	actions.clear();
 	ifstream loadFile;
 	loadFile.open(filename.c_str(),ios::binary);
 	if (loadFile)
 	{
-		Uint32 version;
-		loadFile.read(reinterpret_cast<char*>(&version),sizeof(Uint32));
-		switch (version)
-		{
-		case 3:
-			cout << "Loading a version 3 save game" << endl;
-			Uint8 nrOfPlayers;
-			boardPackage bp;
-			loadFile.read(reinterpret_cast<char*>(&nrOfPlayers),sizeof(Uint8));
-			loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
-			bps.clear();
-			for (int i=0; (i<nrOfFrames); i++)
+		while(!loadFile.eof()) {
+			Uint32 time;
+			Uint8 action;
+			string restOfLine;
+			loadFile >> time >> action;
+			if(action == 16)
 			{
-				loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
-				bps.push_back(bp);
+				string command;
+				loadFile >> command;
+				if(command == "NAME")
+					getline(loadFile,name,'\n');
+				if(command == "PLAYER") {
+					getline(loadFile,restOfLine,'\n');
+					if(restOfLine != "1")
+						break;
+				}
+			} else
+			{
+				getline(loadFile,restOfLine,'\n');
+				Action a;
+				a.time = time;
+				a.action = action;
+				a.param = restOfLine;
+				actions.push_back(a);
 			}
-			loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
-			loadFile.read(reinterpret_cast<char*>(&theResult),sizeof(theResult));
-			loadFile.read(reinterpret_cast<char*>(&name),sizeof(name));
-			break;
-		default:
-			cout << "Unknown version" << endl;
-			return false;
-		};
+			
+		}
 		loadFile.close();
 		cout << "Loaded 1 player" << endl;
 	}
@@ -277,10 +281,21 @@ bool Replay::loadReplay2(string filename)
 
 }
 
-void Replay::addAction(int tick, string action) {
-	cout << tick << " " << action << endl;
+void Replay::setName(string name)
+{
+	this->name = name;
+}
+
+string Replay::getName() const
+{
+	return name;
+}
+
+void Replay::addAction(int tick, int action, string param) {
+	cout << tick << " " << action << " " << param << endl;
 	Action a;
 	a.time = tick;
 	a.action = action;
+	a.param = param;
 	actions.push_back(a);
 }

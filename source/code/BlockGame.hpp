@@ -43,6 +43,24 @@ http://blockattack.sf.net
 #define CHAINPLACE 10000000
 #define NUMBEROFCHAINS 100
 
+#define ACTION_UPDATE 0
+#define ACTION_MOVECURSOR 1
+#define ACTION_MOVECURSORTO 2
+#define ACTION_SWITCH 3
+#define ACTION_PUSH 4
+#define ACTION_CREATEGARBAGE 5
+#define ACTION_CREATEGRAYGARBAGE 6
+#define ACTION_GAMEOVER 7
+#define ACTION_WIN 8
+#define ACTION_DRAW 9
+#define ACTION_GAMESPEED 10
+#define ACTION_HANDICAP 11
+#define ACTION_NEW 12
+#define ACTION_NEWTT 13
+#define ACTION_NEWVS 14
+#define ACTION_STARTBLOCKS 15
+#define ACTION_NOP 16
+
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
@@ -295,12 +313,14 @@ private:
 
 private:
 
-	void ActionPerformed(string action);
+	void ActionPerformed(int action, string param);
 	
 	//Updates evrything, if not called nothing happends
 	void Update();
+	void UpdateInternal(int newtick);
 public:
 	void Update(int newtick);
+	void PerformAction(int tick, int action, string param);
 };
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// BlockAttack class end ////////////////////////////////

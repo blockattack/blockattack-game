@@ -58,7 +58,8 @@ struct boardPackage //92 bytes
 struct Action
 {
 	Uint32 time;
-	string action;
+	int action;
+	string param;
 };
 
 class Replay
@@ -76,12 +77,12 @@ private:
 	enum { gameOver=0, winner, looser, draw } theResult;
 //If we are loaded from a file, then we are read only
 	bool isLoaded;
-
+//Store player name
+	string name;
 
 public:
 
-	//Store player name
-	char name[30];
+	
 
 	Replay(); //Constructor
 	Replay(const Replay& r); //Copy constructor
@@ -93,14 +94,16 @@ public:
 	int getFinalStatus();	//Return the result: winner, looser, draw or gameOver
 	bool isFinnished(Uint32); //Returns true if we are done
 	
-	//New replay type 1.5.0+:
-	void addAction(int tick, string action);
+	//New replay type 2.0.0+:
+	void addAction(int tick, int action, string param);
 
 //Ok, I'll ignore this for some time, and just save to file, if however, we ever use a dynamic saving structure, we are fucked
 	bool saveReplay(string);	//Saves a replay
 	bool saveReplay(string,Replay p2); //saves a replay, plus another replay given as a parameter
 	bool loadReplay(string); //laods a replay
-	bool loadReplay2(string); //loads the second part of the replay file, if it exists, returns false otherwise
+	bool loadReplay2(string);
+    void setName(string name);
+    string getName() const; //loads the second part of the replay file, if it exists, returns false otherwise
 
 
 };
