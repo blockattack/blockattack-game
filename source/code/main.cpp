@@ -866,6 +866,7 @@ void DrawIMG(SDL_Surface *img, SDL_Surface * target, int x, int y, int w, int h,
 	SDL_BlitSurface(img, &dest2, target, &dest);
 }
 
+
 void NFont_Write(SDL_Surface *target,int x,int y,string text)
 {
 	nf_standard_blue_font.setDest(target);
@@ -1544,14 +1545,8 @@ public:
 	{
 		DrawIMG(backBoard, sBoard, 0, 0);
 		nf_standard_blue_font.setDest(sBoard); //reset to screen at the end of this funciton!
-#if NETWORK
-		if ((!bReplaying)&&(!bNetworkPlayer))
-#else
-		if (!bReplaying)
-#endif
-			PaintBricks();
-		else
-			SimplePaintBricks();
+
+		PaintBricks();
 		if (stageClear) DrawIMG(blackLine, sBoard, 0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
 		if (puzzleMode&&(!bGameOver))
 		{
@@ -2481,35 +2476,29 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 			{
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "as possible in");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"2 minutes");
+				string infostring = _("Score as much as \npossible in 2 minutes");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
 			}
 			else if(theGame->isStageClear())
 			{
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "You must clear a");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "number of lines.");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"Speed is rapidly");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"increased.");
+				string infostring = _("You must clear a \nnumber of lines.\nSpeed is rapidly \nincreased.");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
 			}
 			else if(theGame->isPuzzleMode())
 			{
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Clear the entire");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "board with a");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limited number of");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"moves.");
+				string infostring = _("Clear the entire board \nwith a limited number \nof moves.");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
 			}
 			else
 			{
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much as");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "possible. No time");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limit.");
+				string infostring = _("Score as much as \npossible. No time limit.");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
 			}
 
 			//Write the keys that are in use
