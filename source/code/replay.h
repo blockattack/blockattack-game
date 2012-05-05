@@ -30,8 +30,6 @@ able to give a realistic replay
 #ifndef REPLAY_H
 #define REPLAY_H 1
 
-//constants - 3000 is 5 minutes
-#define FRAMESPERSEC 10
 
 #include "SDL.h"
 #include <stdlib.h>
@@ -57,7 +55,7 @@ struct boardPackage //92 bytes
 
 struct Action
 {
-	Uint32 time;
+	Sint32 time;
 	int action;
 	string param;
 };
@@ -65,16 +63,7 @@ struct Action
 class Replay
 {
 private:
-//Our replay is stored in an array of TOTALFRAMES length
-	//boardPackage bps[TOTALFRAMES];
-	vector<boardPackage> bps;
 	vector<Action> actions;
-//The final package is not set to any specific time
-	boardPackage finalPack;
-//We store number of frames, so we know how long to read the array
-	Uint32 nrOfFrames;
-//An enumerator, so we know how it ends! (should be removed then boardPackage is the 92 byte version)
-	enum { gameOver=0, winner, looser, draw } theResult;
 //If we are loaded from a file, then we are read only
 	bool isLoaded;
 //Store player name
@@ -86,13 +75,6 @@ public:
 
 	Replay(); //Constructor
 	Replay(const Replay& r); //Copy constructor
-	Uint32 getNumberOfFrames(); //Returns number of frames
-	void setFrameSecTo(Uint32,boardPackage); //Sets frame at a given time to the package
-	void setFinalFrame(boardPackage,int); //Sets the final package
-	boardPackage getFrameSec(Uint32);  //Gets a frame to a time
-	boardPackage getFinalFrame(); //Gets the last frame, that must remain
-	int getFinalStatus();	//Return the result: winner, looser, draw or gameOver
-	bool isFinnished(Uint32); //Returns true if we are done
 	
 	//New replay type 2.0.0+:
 	void addAction(int tick, int action, string param);
@@ -103,9 +85,8 @@ public:
 	bool loadReplay(string); //laods a replay
 	bool loadReplay2(string);
     void setName(string name);
-    string getName() const; //loads the second part of the replay file, if it exists, returns false otherwise
-
-
+    string getName() const;
+    vector<Action> getActions() const; //loads the second part of the replay file, if it exists, returns false otherwise
 };
 
 #endif

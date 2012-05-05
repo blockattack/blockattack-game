@@ -31,86 +31,20 @@ Handles replay
 
 Replay::Replay()
 {
-	nrOfFrames=0;
 	isLoaded = false;
+	actions.clear();
 }
 
 Replay::Replay(const Replay& r)
 {
-	bps = r.bps;
-	finalPack = r.finalPack;
-	nrOfFrames = r.nrOfFrames;
 	isLoaded = r.isLoaded;
-	theResult = r.theResult;
 	name = r.name;
 	actions = r.actions;
 }
 
-Uint32 Replay::getNumberOfFrames()
-{
-	return nrOfFrames;
-}
 
-void Replay::setFrameSecTo(Uint32 miliseconds, boardPackage bp)
-{
-	if (isLoaded)
-		return;
-	int framesToSet = (miliseconds*FRAMESPERSEC)/1000;
-	for (int i=nrOfFrames; i<framesToSet; i++)
-	{
-		bps.push_back(bp);
-	}
-	nrOfFrames=framesToSet;
-}
 
-void Replay::setFinalFrame(boardPackage bp,int theStatus)
-{
-	if (isLoaded)
-		return;
-	finalPack = bp;
-	switch (theStatus)
-	{
-	case 1:
-		theResult = winner;
-		break;
-	case 2:
-		theResult = looser;
-		break;
-	case 3:
-		theResult = draw;
-		break;
-	default:
-		theResult = gameOver;
-	};
 
-}
-
-//Returns the frame to the current time, if time too high the final frame is returned
-boardPackage Replay::getFrameSec(Uint32 miliseconds)
-{
-	int frameToGet = (miliseconds*FRAMESPERSEC)/1000;
-	if (!(frameToGet<nrOfFrames))
-		return getFinalFrame();
-	return bps.at(frameToGet);
-}
-
-bool Replay::isFinnished(Uint32 miliseconds)
-{
-	int frameToGet = (miliseconds*FRAMESPERSEC)/1000;
-	if (!(frameToGet<nrOfFrames))
-		return true;
-	return false;
-}
-
-boardPackage Replay::getFinalFrame()
-{
-	return finalPack;
-}
-
-int Replay::getFinalStatus()
-{
-	return theResult;
-}
 
 
 
@@ -148,28 +82,7 @@ bool Replay::saveReplay(string filename,Replay p2)
 		boardPackage bp;
 		saveFile.write(reinterpret_cast<char*>(&version),sizeof(Uint32)); //Fileversion
 		Uint8 nrOfReplays = 2;
-		saveFile.write(reinterpret_cast<char*>(&nrOfReplays),sizeof(Uint8)); //nrOfReplaysIn File
-		saveFile.write(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32)); //Nr of frames in file
-		for (int i=0; i<nrOfFrames && i<bps.size(); i++)
-		{
-			//Writing frames
-			bp = bps.at(i);
-			saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
-		}
-		saveFile.write(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
-		saveFile.write(reinterpret_cast<char*>(&theResult),sizeof(theResult));
-		saveFile.write(reinterpret_cast<char*>(&name),sizeof(name));
-		///Player 2 starts here!!!!!!!!!!!!!!!!!!!!!!
-		saveFile.write(reinterpret_cast<char*>(&p2.nrOfFrames),sizeof(Uint32)); //Nr of frames in file
-		for (int i=0; (i<p2.nrOfFrames)&& i<p2.bps.size(); i++)
-		{
-			//Writing frames
-			bp = p2.bps.at(i);
-			saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
-		}
-		saveFile.write(reinterpret_cast<char*>(&p2.finalPack),sizeof(finalPack));
-		saveFile.write(reinterpret_cast<char*>(&p2.theResult),sizeof(theResult));
-		saveFile.write(reinterpret_cast<char*>(&p2.name),sizeof(name));
+		
 		saveFile.close();
 		return true;
 	}
@@ -184,12 +97,12 @@ bool Replay::loadReplay(string filename)
 	isLoaded = true;
 	actions.clear();
 	ifstream loadFile;
-	loadFile.open(filename.c_str(),ios::binary);
+	loadFile.open(filename.c_str());
 	if (loadFile)
 	{
 		while(!loadFile.eof()) {
-			Uint32 time;
-			Uint8 action;
+			Sint32 time;
+			Uint32 action;
 			string restOfLine;
 			loadFile >> time >> action;
 			if(action == 16)
@@ -200,7 +113,7 @@ bool Replay::loadReplay(string filename)
 					getline(loadFile,name,'\n');
 				if(command == "PLAYER") {
 					getline(loadFile,restOfLine,'\n');
-					if(restOfLine != "1")
+					if(restOfLine != " 1")
 						break;
 				}
 			} else
@@ -215,7 +128,7 @@ bool Replay::loadReplay(string filename)
 			
 		}
 		loadFile.close();
-		cout << "Loaded 1 player" << endl;
+		cout << "Loaded 1 player, actions.size="<< actions.size() << endl;
 	}
 	else
 	{
@@ -247,25 +160,7 @@ bool Replay::loadReplay2(string filename)
 				return false;
 			}
 			cout << "loading player 2" << endl;
-			loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
-			for (int i=0; (i<nrOfFrames); i++)
-			{
-				loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
-				//bps.push_back(bp); We have already read player 1 with another function
-			}
-			loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
-			loadFile.read(reinterpret_cast<char*>(&theResult),sizeof(theResult));
-			loadFile.read(reinterpret_cast<char*>(&name),sizeof(name));
-			loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
-			bps.reserve(nrOfFrames);
-			for (int i=0; (i<nrOfFrames); i++)
-			{
-				loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
-				bps.push_back(bp);
-			}
-			loadFile.read(reinterpret_cast<char*>(&finalPack),sizeof(finalPack));
-			loadFile.read(reinterpret_cast<char*>(&theResult),sizeof(theResult));
-			loadFile.read(reinterpret_cast<char*>(&name),sizeof(name));
+			
 			break;
 		default:
 			cout << "Unknown version: " << version << endl;
@@ -291,7 +186,12 @@ string Replay::getName() const
 	return name;
 }
 
-void Replay::addAction(int tick, int action, string param) {
+vector<Action> Replay::getActions() const {
+	return actions;
+}
+
+void Replay::addAction(int tick, int action, string param) 
+{
 	cout << tick << " " << action << " " << param << endl;
 	Action a;
 	a.time = tick;

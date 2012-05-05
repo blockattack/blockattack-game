@@ -186,12 +186,12 @@ int BlockGame::GetTopY()
 	return topy;
 }
 
-unsigned int BlockGame::GetGameStartedAt()
+Sint32 BlockGame::GetGameStartedAt()
 {
 	return gameStartedAt;
 }
 
-unsigned int BlockGame::GetGameEndedAt()
+Sint32 BlockGame::GetGameEndedAt()
 {
 	return gameEndedAfter;
 }
@@ -478,11 +478,18 @@ void BlockGame::Demonstration(bool toggle)
 	baseSpeed = 0;
 }
 //We want to play the replay (must have been loaded beforehand)
-void BlockGame::playReplay(int tx, int ty, unsigned int ticks)
+void BlockGame::playReplay(int tx, int ty, unsigned int ticks, Replay r)
 {
+	if(r.getActions().size()==0) 
+	{
+		cout << "Empty replay data" << endl;
+		return;
+	}
 	NewGame(tx, ty,ticks);
-	gameStartedAt = ticks;
+	gameStartedAt = ticks+3000;
+	replayIndex = 0;
 	bReplaying = true; //We are playing, no calculations
+	theReplay = r;
 #if NETWORK
 	bNetworkPlayer = false; //Take input from replay file
 #endif
@@ -514,7 +521,6 @@ void BlockGame::setPlayerWon()
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
 	}
-	theReplay.setFinalFrame(getPackage(), 1);
 	bGameOver = true;
 	hasWonTheGame = true;
 	showGame = false;
@@ -555,7 +561,6 @@ void BlockGame::setDraw()
 	{
 		TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 	}
-	theReplay.setFinalFrame(getPackage(), 3);
 	hasWonTheGame = false;
 	bDraw = true;
 	showGame = false;
@@ -746,6 +751,7 @@ void BlockGame::putStartBlocks(Uint32 n)
 	format f("%1%");
 	f % n;
 	ActionPerformed(ACTION_STARTBLOCKS ,f.str());
+	cout << n << ":" << f.str() << endl;
 	for (int i=0; i<7; i++)
 		for (int j=0; j<30; j++)
 		{
@@ -1391,7 +1397,6 @@ void BlockGame::SetGameOver()
 	{
 		theReplay.setName(name);
 	}
-	theReplay.setFinalFrame(getPackage(), 0);
 	bGameOver = true;
 	showGame = false;
 	if(stageClear)
@@ -1504,10 +1509,15 @@ void BlockGame::SwitchAtCursor()
 	if ((puzzleMode)&&(gameStartedAt<ticks)&&(MovesLeft>0)) MovesLeft--;
 }
 
-//Generates a new line and moves the field one block up (restart puzzle mode)
 void BlockGame::PushLine()
 {
 	ActionPerformed(ACTION_PUSH,"");
+	PushLineInternal();
+}
+
+//Generates a new line and moves the field one block up (restart puzzle mode)
+void BlockGame::PushLineInternal()
+{
 	//If not game over, not high tower and not puzzle mode
 	if ((!bGameOver) && TowerHeight<13 && (!puzzleMode) && (gameStartedAt<ticks)&&(chain==0))
 	{
@@ -1532,7 +1542,8 @@ void BlockGame::PushLine()
 				board[j][0] = rand2() % 6;
 		}
 		score+=1;
-		MoveCursor('N');
+		if(!bReplaying)
+			MoveCursor('N'); //Workaround for this being done registred too
 		if (vsMode)
 		{
 			if (rand2()%6==1)
@@ -1589,7 +1600,7 @@ void BlockGame::PushPixels()
 		pixels++;
 	}
 	else
-		PushLine();
+		PushLineInternal();
 	if (pixels>bsize)
 		pixels=0;
 }
@@ -2036,38 +2047,8 @@ void BlockGame::Update()
 	Uint32 tempUInt32;
 	Uint32 nowTime = ticks; //We remember the time, so it doesn't change during this call
 	ActionPerformed(ACTION_UPDATE, "");
-	if (bReplaying)
+
 	{
-		setBoard(theReplay.getFrameSec((Uint32)(nowTime-gameStartedAt)));
-		strncpy(name,theReplay.getName().c_str(),30);
-		if (theReplay.isFinnished((Uint32)(nowTime-gameStartedAt)))
-			switch (theReplay.getFinalStatus())
-			{
-			case 1: //Winner
-				bGameOver = true;
-				hasWonTheGame = true;
-				break;
-			case 2: //Looser
-			case 4: //GameOver
-				bGameOver = true;
-				break;
-			case 3: //draw
-				bGameOver =true;
-				bDraw = true;
-				break;
-			default:
-				bGameOver = true;
-				//Nothing
-				break;
-			};
-	}
-#if NETWORK
-	if ((!bReplaying)&&(!bNetworkPlayer))
-	{
-#else
-	if (!bReplaying)
-	{
-#endif
 		FindTowerHeight();
 		if ((linesCleared-TowerHeight>stageClearLimit) && (stageClear) && (!bGameOver))
 		{
@@ -2229,11 +2210,6 @@ void BlockGame::Update()
 			}
 		}
 	}
-	if ((!bGameOver)&&(!bReplaying)&&(nowTime>gameStartedAt))
-	{
-		//cout << nowTime << " bigger than " << gameStartedAt << endl;
-		theReplay.setFrameSecTo(nowTime-gameStartedAt, getPackage());
-	}
 }
 
 void BlockGame::UpdateInternal(int newtick)
@@ -2247,30 +2223,49 @@ void BlockGame::UpdateInternal(int newtick)
 
 void BlockGame::Update(int newtick)
 {
-	
-	UpdateInternal(newtick);
+	if(bReplaying)
+	{
+		/*cout << "Testing " << replayIndex << "<" << theReplay.getActions().size()
+			<< " && " << theReplay.getActions().at(replayIndex).time << "<=" <<
+			newtick-gameStartedAt << endl;*/
+		while(replayIndex < theReplay.getActions().size() && 
+			theReplay.getActions().at(replayIndex).time <= newtick-gameStartedAt)
+		{
+			Action a = theReplay.getActions().at(replayIndex);
+			PerformAction(a.time+gameStartedAt,a.action,a.param);
+			++replayIndex;
+		}
+			
+	}
+	else
+	{
+		UpdateInternal(newtick);
+	}
 }
 
 void BlockGame::ActionPerformed(int action, string param) 
 {
-	if(bGameOver)
+	if(bGameOver || bReplaying)
 		return;
 	theReplay.addAction(ticks-gameStartedAt,action,param);
 }
 
 void BlockGame::PerformAction(int tick, int action, string param) 
 {
-	UpdateInternal(tick);
+	stringstream ss(param);
+	int p1,p2;
+	Uint32 p3;
 	switch(action) 
 	{
 	case ACTION_UPDATE:
+		UpdateInternal(tick);
 		break;
 	case ACTION_MOVECURSOR:
-		MoveCursor(param.at(0));
+		MoveCursor(param.at(1));
 		break;
 	case ACTION_MOVECURSORTO:
 	{
-		stringstream ss(param);
+		
 		int p1,p2;
 		ss >> p1 >> p2;
 		MoveCursorTo(p1,p2);
@@ -2284,8 +2279,6 @@ void BlockGame::PerformAction(int tick, int action, string param)
 		break;
 	case ACTION_CREATEGARBAGE:
 	{
-		stringstream ss(param);
-		int p1,p2;
 		ss >> p1 >> p2;
 		CreateGarbage(p1,p2);
 	}
@@ -2303,17 +2296,20 @@ void BlockGame::PerformAction(int tick, int action, string param)
 		setDraw();
 		break;
 	case ACTION_GAMESPEED:
-		setGameSpeed(boost::lexical_cast<short>(param));
+		ss >> p1;
+		setGameSpeed(p1);
 		break;
 	case ACTION_HANDICAP:
-		setHandicap(boost::lexical_cast<short>(param));
+		ss >> p1;
+		setHandicap(p1);
 		break;
 	case ACTION_NEW:
 	case ACTION_NEWTT:
 	case ACTION_NEWVS:
 		break;
 	case ACTION_STARTBLOCKS:
-		putStartBlocks(boost::lexical_cast<int>(param));
+		ss >> p3;
+		putStartBlocks(p3);
 		break;
 	case ACTION_NOP:
 		break;

@@ -98,8 +98,9 @@ protected:
 	bool bDisconnected; //The player has disconnected
 #endif
 	unsigned int ticks;
-	Uint32 gameStartedAt;
-	Uint32 gameEndedAfter;		//How long did the game last?
+	Sint32 gameStartedAt;
+	Sint32 gameEndedAfter;		//How long did the game last?
+	int replayIndex;
 	int linesCleared;
 	int TowerHeight;
 	BlockGame *garbageTarget;
@@ -157,8 +158,8 @@ public:
 	bool isGameOver();
 	int GetTopX();
 	int GetTopY();
-	unsigned int GetGameStartedAt();
-	unsigned int GetGameEndedAt();
+	Sint32 GetGameStartedAt();
+	Sint32 GetGameEndedAt();
 	bool isTimeTrial();
 	bool isStageClear();
 	bool isVsMode();
@@ -188,7 +189,7 @@ public:
 	//Starts new Vs Game (two Player)
 	void NewVsGame(int tx, int ty, BlockGame *target, bool AI,unsigned int ticks);
 	//We want to play the replay (must have been loaded beforehand)
-	void playReplay(int tx, int ty, unsigned int ticks);
+	void playReplay(int tx, int ty, unsigned int ticks, Replay r);
 	void putStartBlocks(Uint32 n);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
@@ -301,7 +302,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 
 	void ActionPerformed(int action, string param);
-	
+	void PushLineInternal();
 	//Updates evrything, if not called nothing happends
 	void Update();
 	void UpdateInternal(int newtick);

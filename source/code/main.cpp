@@ -3109,6 +3109,13 @@ void StartTwoPlayerVs()
 	strcpy(player2->name, player2name);
 }
 
+void StartReplay(string filename)
+{
+	Replay r1;
+	r1.loadReplay(filename);
+	player1->playReplay(50,100,SDL_GetTicks(),r1);
+}
+
 #if NETWORK
 #include "NetworkThing.hpp"
 //#include "MenuSystem.h"
@@ -3907,6 +3914,8 @@ int runGame(int gametype, int level)
 						{
 							/*This is the test place, place function to test here*/
 
+							StartReplay("/home/poul/.gamesaves/blockattack/bestTT");
+							
 							//theGame.CreateGreyGarbage();
 							//char mitNavn[30];
 							//SelectThemeDialogbox(300,400,mitNavn);
