@@ -26,6 +26,8 @@ http://blockattack.sf.net
 #include<boost/lexical_cast.hpp>
 
 
+static stringstream ss; //Used for internal formatting
+
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
@@ -2252,7 +2254,9 @@ void BlockGame::ActionPerformed(int action, string param)
 
 void BlockGame::PerformAction(int tick, int action, string param) 
 {
-	stringstream ss(param);
+	ss.str(std::string());
+	ss.clear();
+	ss << param;
 	int p1,p2;
 	Uint32 p3;
 	switch(action) 

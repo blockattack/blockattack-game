@@ -24,17 +24,21 @@ http://blockattack.sf.net
 #include "common.h"
 #include <sstream>
 
+static stringstream converter;
+
 //Function to convert numbers to string
 string itoa(int num)
 {
-	stringstream converter;
+	converter.str(std::string());
+	converter.clear();
 	converter << num;
 	return converter.str();
 }
 
 string double2str(double num)
 {
-	stringstream converter;
+	converter.str(std::string());
+	converter.clear();
 	converter << num;
 	return converter.str();
 }
@@ -48,7 +52,8 @@ double str2double(string str2parse)
 {
 	try
 	{
-		stringstream converter(str2parse);
+		converter.clear();
+		converter.str(str2parse);
 		double val = 0.0;
 		converter >> val;
 		return val;
@@ -68,7 +73,8 @@ int str2int(string str2parse)
 {
 	try
 	{
-		stringstream converter(str2parse);
+		converter.clear();
+		converter.str(str2parse);
 		int val = 0;
 		converter >> val;
 		return val;

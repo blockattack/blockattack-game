@@ -805,10 +805,14 @@ void UnloadImages()
     return converter.str();
 }*/
 
+
+static stringstream converter;
+
 //Function to convert numbers to string (2 diget)
 static string itoa2(int num)
 {
-	stringstream converter;
+	converter.str(std::string());
+	converter.clear();
 	if(num<10)
 		converter << "0";
 	converter << num;
