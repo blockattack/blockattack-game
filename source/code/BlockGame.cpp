@@ -2216,7 +2216,7 @@ void BlockGame::Update()
 
 void BlockGame::UpdateInternal(int newtick)
 {
-	while(newtick > ticks+50) 
+	while(newtick >= ticks+50) 
 	{
 		ticks+=50;
 		Update();
@@ -2308,7 +2308,10 @@ void BlockGame::PerformAction(int tick, int action, string param)
 		setHandicap(p1);
 		break;
 	case ACTION_NEW:
+		break;
 	case ACTION_NEWTT:
+		timetrial = true;
+		break;
 	case ACTION_NEWVS:
 		break;
 	case ACTION_STARTBLOCKS:
