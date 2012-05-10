@@ -122,7 +122,10 @@ bool Replay::loadReplay(string filename)
 				Action a;
 				a.time = time;
 				a.action = action;
-				a.param = restOfLine;
+				if(restOfLine.length()>1)
+					a.param = restOfLine.substr(1);
+				else
+					a.param = "";
 				actions.push_back(a);
 			}
 			

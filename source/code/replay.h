@@ -56,7 +56,7 @@ struct boardPackage //92 bytes
 struct Action
 {
 	Sint32 time;
-	int action;
+	Sint32 action;
 	string param;
 };
 

@@ -338,16 +338,16 @@ public:
 							enet_peer_send (peer, 3, answerPacket);
 						}
 					}
-					else if (event.packet->dataLength==sizeof("version3")) //We have recieved aversion number
+					else if (event.packet->dataLength==sizeof("version4")) //We have recieved aversion number
 					{
-						if (0!=strcmp((const char*)event.packet->data,"version3"))
+						if (0!=strcmp((const char*)event.packet->data,"version4"))
 						{
-							cout << "Incompatible version: " << event.packet->data << "!=" << "version3" << endl;
+							cout << "Incompatible version: " << event.packet->data << "!=" << "version4" << endl;
 							ntDisconnect();
 						}
 						if (weAreAClient) //We will send our version number
 						{
-							ENetPacket * answerPacket = enet_packet_create("version3",sizeof("version3"),ENET_PACKET_FLAG_RELIABLE);
+							ENetPacket * answerPacket = enet_packet_create("version4",sizeof("version4"),ENET_PACKET_FLAG_RELIABLE);
 							enet_peer_send (peer, 3, answerPacket);
 						}
 					}

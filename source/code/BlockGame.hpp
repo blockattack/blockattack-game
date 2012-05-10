@@ -100,7 +100,8 @@ protected:
 	unsigned int ticks;
 	Sint32 gameStartedAt;
 	Sint32 gameEndedAfter;		//How long did the game last?
-	int replayIndex;
+	int replayIndex; //Used during replay to remeber how many replay actions we have performed.
+	int actionIndex; //Used during network to remeber how many actions we have sent.
 	int linesCleared;
 	int TowerHeight;
 	BlockGame *garbageTarget;
@@ -301,6 +302,14 @@ private:
 ///////////////////////////// AI ends here! //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * 
+     * @param tick Tick of the action
+     * @param action The action
+     * @param param Params.
+     * @return 1 if an action was selected 
+     */
+	int GotAction(int &tick,int &action,string &param);
 	void ActionPerformed(int action, string param);
 	void PushLineInternal();
 	//Updates evrything, if not called nothing happends

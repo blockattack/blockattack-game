@@ -347,6 +347,7 @@ void BlockGame::NewGame(int tx, int ty, unsigned int ticks)
 	pushedPixelAt = gameStartedAt;
 	nextGarbageNumber = 10;
 	handicap=0;
+	actionIndex = 0;
 	for (int i=0; i<7; i++)
 		for (int j=0; j<30; j++)
 		{
@@ -2252,6 +2253,19 @@ void BlockGame::ActionPerformed(int action, string param)
 	theReplay.addAction(ticks-gameStartedAt,action,param);
 }
 
+int BlockGame::GotAction(Sint32 &tick,int &action,string &param) 
+{
+	if(actionIndex < theReplay.getActions().size()) {
+		Action a = theReplay.getActions().at(replayIndex);
+		tick = a.time;
+		action = a.action;
+		param = a.param;
+		++actionIndex;
+		return 1;
+	}
+	return 0;
+}
+
 void BlockGame::PerformAction(int tick, int action, string param) 
 {
 	ss.str(std::string());
@@ -2265,7 +2279,7 @@ void BlockGame::PerformAction(int tick, int action, string param)
 		UpdateInternal(tick);
 		break;
 	case ACTION_MOVECURSOR:
-		MoveCursor(param.at(1));
+		MoveCursor(param.at(0));
 		break;
 	case ACTION_MOVECURSORTO:
 	{
