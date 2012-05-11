@@ -207,6 +207,14 @@ public:
 	void PushLine();
 	void Update(int newtick);
 	void PerformAction(int tick, int action, string param);
+	/**
+	 * 
+     * @param tick Tick of the action
+     * @param action The action
+     * @param param Params.
+     * @return 1 if an action was selected 
+     */
+	int GotAction(int &tick,int &action,string &param);
 #if NETWORK
 	//network play
 	void playNetwork(int tx, int ty,unsigned int ticks);
@@ -302,14 +310,6 @@ private:
 ///////////////////////////// AI ends here! //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-	/**
-	 * 
-     * @param tick Tick of the action
-     * @param action The action
-     * @param param Params.
-     * @return 1 if an action was selected 
-     */
-	int GotAction(int &tick,int &action,string &param);
 	void ActionPerformed(int action, string param);
 	void PushLineInternal();
 	//Updates evrything, if not called nothing happends

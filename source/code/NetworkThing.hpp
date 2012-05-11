@@ -21,6 +21,9 @@ http://blockattack.sf.net
 ===========================================================================
 */
 
+#include "BlockGame.hpp"
+
+
 #if NETWORK
 
 //The network interface
@@ -212,16 +215,33 @@ public:
 		if (weAreConnected)
 		{
 			//cout << "Creating package" << endl;
-			boardPackage boardpack = bgHome->getPackage();
-			ENetPacket * packet = enet_packet_create (&boardpack,
-								  sizeof(boardPackage),
-								  0);
-			//Now lets send the package
-			if (weAreAServer)
-				enet_host_broadcast (server, 0, packet);
-			else if (weAreAClient)
-				enet_peer_send (peer, 0, packet);
-			//cout << "Package sent" << endl;
+			Sint32 tick;
+			Sint32 action;
+			Sint32 paramsize;
+			string param;
+			while(bgHome->GotAction(tick,action,param)) 
+			{
+				paramsize = param.length();
+				char *tmpPacket = (char*)malloc(sizeof(Sint32)*3+param.length()+1);
+				if(!tmpPacket) {
+					cerr << "Failed to alloc memoroy" << endl;
+					exit(-3);
+				}
+				memcpy(tmpPacket,&tick,sizeof(Sint32));
+				memcpy(tmpPacket+sizeof(Sint32),&action,sizeof(Sint32));
+				memcpy(tmpPacket+sizeof(Sint32)*2,&paramsize,sizeof(Sint32));
+				memcpy(tmpPacket+sizeof(Sint32)*3,param.c_str(),paramsize+1);
+				ENetPacket * packet = enet_packet_create (tmpPacket,
+									sizeof(Sint32)*3+param.length()+1,
+									ENET_PACKET_FLAG_RELIABLE);
+				//Now lets send the package
+				if (weAreAServer)
+					enet_host_broadcast (server, 0, packet);
+				else if (weAreAClient)
+					enet_peer_send (peer, 0, packet);
+				//cout << "Package sent" << endl;
+				free(tmpPacket);
+			}
 
 			//See if we are game over and in that case notify the other player
 			if ((gameHasStarted)&&(bgHome->isGameOver()))
@@ -293,10 +313,17 @@ public:
 				//cout << "Package recieved" << endl;
 				if (event.channelID==0) //Unreliable (only boardPacks)
 				{
-					boardPackage bpack;
+					Sint32 tick;
+					Sint32 action;
+					string param;
+					memcpy(&tick,event.packet->data,sizeof(Sint32));
+					memcpy(&action,event.packet->data+sizeof(Sint32),sizeof(Sint32));
+					param = (const char*) (event.packet->data+sizeof(Sint32)*3);
+					//boardPackage bpack;
 					//cout << "Package size: "<< event.packet->dataLength << " should be: " << sizeof(boardPackage) << endl;
-					memcpy(&bpack,(const char*)event.packet->data,sizeof(boardPackage));
-					bgAway->setBoard(bpack);
+					//memcpy(&bpack,(const char*)event.packet->data,sizeof(boardPackage));
+					//bgAway->setBoard(bpack);
+					bgAway->PerformAction(tick,action,param);
 				}
 				if (event.channelID==1) //reliable (used for GameOver notifications only!)
 				{
