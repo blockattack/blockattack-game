@@ -319,10 +319,6 @@ public:
 					memcpy(&tick,event.packet->data,sizeof(Sint32));
 					memcpy(&action,event.packet->data+sizeof(Sint32),sizeof(Sint32));
 					param = (const char*) (event.packet->data+sizeof(Sint32)*3);
-					//boardPackage bpack;
-					//cout << "Package size: "<< event.packet->dataLength << " should be: " << sizeof(boardPackage) << endl;
-					//memcpy(&bpack,(const char*)event.packet->data,sizeof(boardPackage));
-					//bgAway->setBoard(bpack);
 					bgAway->PerformAction(tick,action,param);
 				}
 				if (event.channelID==1) //reliable (used for GameOver notifications only!)

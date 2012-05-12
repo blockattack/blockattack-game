@@ -3020,6 +3020,12 @@ void changePuzzleLevels()
 
 }
 
+#if NETWORK
+#include "NetworkThing.hpp"
+//#include "MenuSystem.h"
+	NetworkThing nt;
+#endif
+
 static BlockGameSdl *player1;
 static BlockGameSdl *player2;
 
@@ -3120,10 +3126,20 @@ void StartReplay(string filename)
 	player1->playReplay(50,100,SDL_GetTicks(),r1);
 }
 
-#if NETWORK
-#include "NetworkThing.hpp"
-//#include "MenuSystem.h"
-#endif
+void StartHostServer()
+{
+	player1->SetGameOver();
+	player2->SetGameOver();
+	nt.startServer();
+}
+
+void StartJoinServer()
+{
+	player1->SetGameOver();
+	player2->SetGameOver();
+	nt.connectToServer(Config::getInstance()->getString("address0"));
+}
+
 
 //The main function, quite big... too big
 int main(int argc, char *argv[])
@@ -3495,7 +3511,7 @@ int main(int argc, char *argv[])
 
 
 #if NETWORK
-	NetworkThing nt = NetworkThing();
+	//NetworkThing nt = NetworkThing();
 	nt.setBGpointers(&theGame,&theGame2);
 #endif
 
@@ -3646,7 +3662,7 @@ int runGame(int gametype, int level)
 
 
 #if NETWORK
-	NetworkThing nt = NetworkThing();
+	//NetworkThing nt = NetworkThing();
 	nt.setBGpointers(&theGame,&theGame2);
 #endif
 
@@ -3728,6 +3744,12 @@ int runGame(int gametype, int level)
 				break;
 			case 11:
 				StartTwoPlayerVs();
+				break;
+			case 12:
+				StartHostServer();
+				break;
+			case 13:
+				StartJoinServer();
 				break;
 			case 0:
 			default:

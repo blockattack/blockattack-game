@@ -39,20 +39,6 @@ able to give a realistic replay
 
 using namespace std;
 
-//board_package, stores a board can be used for network play and replay
-struct boardPackage //92 bytes
-{
-	Uint32 time; //game time
-	Uint8 brick[6][13];
-	Uint8 pixels; //pixels pushed
-	Uint8 cursorX; //Cursor coordinate
-	Uint8 cursorY; // -||-
-	Uint32 score;
-	Uint8 speed;
-	Uint8 chain;
-	Uint8 result; //0=none,1=gameOver,2=winner,4=draw
-};
-
 struct Action
 {
 	Sint32 time;

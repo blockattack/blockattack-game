@@ -79,7 +79,6 @@ bool Replay::saveReplay(string filename,Replay p2)
 	if (saveFile)
 	{
 		Uint32 version = 4;
-		boardPackage bp;
 		saveFile.write(reinterpret_cast<char*>(&version),sizeof(Uint32)); //Fileversion
 		Uint8 nrOfReplays = 2;
 		
@@ -154,7 +153,6 @@ bool Replay::loadReplay2(string filename)
 		{
 		case 3:
 			Uint8 nrOfPlayers;
-			boardPackage bp;
 			loadFile.read(reinterpret_cast<char*>(&nrOfPlayers),sizeof(Uint8));
 			if (nrOfPlayers<2)
 			{

@@ -30,7 +30,7 @@ Copyright (C) 2011 Poul Sander
 using namespace std;
 
 //Menu
-void PrintHi()
+static void PrintHi(Button* b)
 {
 	cout << "Hi" <<endl;
 }
@@ -68,6 +68,7 @@ public:
 	void doAction();
 };
 
+
 Button_changekey::Button_changekey(SDLKey* key, string keyname)
 {
 	m_key2change = key;
@@ -104,73 +105,83 @@ void InitMenues()
 
 void runGame(int gametype,int level);
 
-void runSinglePlayerEndless(Button* b)
+static void runSinglePlayerEndless(Button* b)
 {
 	runGame(0,0);
 }
 
-void runSinglePlayerTimeTrial(Button* b)
+static void runSinglePlayerTimeTrial(Button* b)
 {
 	runGame(1,0);
 }
 
-void runStageClear(Button* b)
+static void runStageClear(Button* b)
 {
 	runGame(2,0);
 }
 
-void runSinglePlayerPuzzle(Button* b)
+static void runSinglePlayerPuzzle(Button* b)
 {
 	runGame(3,0);
 }
 
-void runSinglePlayerVs(Button* b)
+static void runSinglePlayerVs(Button* b)
 {
 	runGame(4,b->iGeneric1);
 }
 
-void runTwoPlayerTimeTrial(Button* b) 
+static void runTwoPlayerTimeTrial(Button* b) 
 {
 	runGame(10,0);
 }
 
-void runTwoPlayerVs(Button* b) 
+static void runTwoPlayerVs(Button* b) 
 {
 	runGame(11,0);
 }
 
-void buttonActionMusic(Button* b)
+static void runHostGame(Button* b) 
+{
+	runGame(12,0);
+}
+
+static void runJoinGame(Button* b) 
+{
+	runGame(13,0);
+}
+
+static void buttonActionMusic(Button* b)
 {
 	MusicEnabled = !MusicEnabled;
 	b->setLabel(MusicEnabled? "Music: On" : "Music: Off");
 }
 
-void buttonActionSound(Button* b)
+static void buttonActionSound(Button* b)
 {
 	SoundEnabled = !SoundEnabled;
 	b->setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
 }
 
-void buttonActionFullscreen(Button* b)
+static void buttonActionFullscreen(Button* b)
 {
 	bFullscreen = !bFullscreen;
 	b->setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
 	ResetFullscreen();
 }
 
-void buttonActionPlayer1Name(Button *b)
+static void buttonActionPlayer1Name(Button *b)
 {
 	if (OpenDialogbox(200,100,player1name))
 		return; //must save if true
 }
 
-void buttonActionPlayer2Name(Button *b)
+static void buttonActionPlayer2Name(Button *b)
 {
 	if (OpenDialogbox(200,100,player2name))
 		return; //must save if true
 }
 
-void buttonActionPortChange(Button *b)
+static void buttonActionPortChange(Button *b)
 {
 	char port[30];
 	snprintf(port,sizeof(port),"%i",Config::getInstance()->getInt("portv4") );
@@ -183,7 +194,7 @@ void buttonActionPortChange(Button *b)
 	}
 }
 
-void buttonActionIpChange(Button *b)
+static void buttonActionIpChange(Button *b)
 {
 	char ip[30];
 	snprintf(ip,sizeof(ip),"%s",Config::getInstance()->getString("address0").c_str() );
@@ -196,7 +207,7 @@ void buttonActionIpChange(Button *b)
 	}
 }
 
-void buttonActionHighscores(Button *b)
+static void buttonActionHighscores(Button *b)
 {
 	OpenScoresDisplay();
 }
@@ -229,7 +240,7 @@ static void ChangeKeysMenu2(Button *b)
 	ChangeKeysMenu(2);
 }
 
-void ConfigureMenu(Button *b)
+static void ConfigureMenu(Button *b)
 {
 	Menu cm(&screen,_("Configuration"),true);
 	Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
@@ -258,7 +269,7 @@ void ConfigureMenu(Button *b)
 	cm.run();
 }
 
-void SinglePlayerVsMenu(Button *b) 
+static void SinglePlayerVsMenu(Button *b) 
 {
 	Menu spvs(&screen,_("Single player VS"),true);
 	Button d1,d2,d3,d4,d5,d6,d7;
@@ -300,10 +311,14 @@ void SinglePlayerVsMenu(Button *b)
 	spvs.run();
 }
 
-void NetworkMenu(Button *b) 
+static void NetworkMenu(Button *b) 
 {
 	Menu nm(&screen,_("Network"),true);
 	Button bPort, bIp, bHost, bJoin;
+	bHost.setLabel(_("Host game"));
+	bHost.setAction(runHostGame);
+	bJoin.setLabel(_("Join game"));
+	bJoin.setAction(runJoinGame);
 	format fi(_("Address: %1%") );
 	fi % Config::getInstance()->getString("address0");
 	bIp.setLabel(fi.str());
@@ -312,13 +327,15 @@ void NetworkMenu(Button *b)
 	fp % Config::getInstance()->getString("portv4");
 	bPort.setLabel(fp.str());
 	bPort.setAction(buttonActionPortChange);
+	nm.addButton(&bHost);
+	nm.addButton(&bJoin);
 	nm.addButton(&bIp);
 	nm.addButton(&bPort);
 	nm.run();
 	
 }
 
-void MultiplayerMenu(Button *b) 
+static void MultiplayerMenu(Button *b) 
 {
 	Menu mm(&screen,_("Multiplayer"),true);
 	Button bTT, bVs, bNet;

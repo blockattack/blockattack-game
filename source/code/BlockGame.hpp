@@ -229,10 +229,6 @@ public:
 #endif
 	//Prints "draw" and ends the game
 	void setDraw();
-	//Function to get a boardpackage
-	boardPackage getPackage();
-	//Takes a package and sets the board like it
-	void setBoard(boardPackage bp);
 private:
 #if NETWORK
 #define garbageStackSize 10
