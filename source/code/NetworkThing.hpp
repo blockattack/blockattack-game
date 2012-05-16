@@ -131,7 +131,7 @@ public:
 
 			address.host = ENET_HOST_ANY;
 			/* Bind the server to port SERVERPORT. */
-			address.port = SERVERPORT;
+			address.port = Config::getInstance()->getInt("portv4");
 
 			server = enet_host_create (& address /* the address to bind the server host to */,
 									   1      /* allow up to 1 clients and/or outgoing connections */,
@@ -160,7 +160,7 @@ public:
 		ENetEvent event;
 
 		enet_address_set_host (& address, server.c_str());
-		address.port = SERVERPORT;
+		address.port = Config::getInstance()->getInt("portv4");
 
 		ntDisconnect();
 		client = enet_host_create (NULL /* create a client host */,
@@ -193,7 +193,7 @@ public:
 			}
 			else
 			{
-				cout << "Server didn't answer in time" << endl;
+				cout << "Server " << server.c_str() << ":" << address.port << " didn't answer in time" << endl;
 			}
 		}
 	}
@@ -294,7 +294,7 @@ public:
 					ENetPacket * namePacket = enet_packet_create(bgHome->name,sizeof(char[30]),ENET_PACKET_FLAG_RELIABLE);
 					//if(weAreAServer)
 					enet_host_broadcast (server, 3, namePacket);
-					ENetPacket * answerPacket = enet_packet_create("version3",sizeof("version3"),ENET_PACKET_FLAG_RELIABLE);
+					ENetPacket * answerPacket = enet_packet_create("version4",sizeof("version4"),ENET_PACKET_FLAG_RELIABLE);
 					enet_host_broadcast (server, 3, answerPacket);
 					theSeed = time(0)/4;
 					bgHome->putStartBlocks(theSeed);

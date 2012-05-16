@@ -3029,7 +3029,7 @@ void changePuzzleLevels()
 static BlockGameSdl *player1;
 static BlockGameSdl *player2;
 
-void StartSinglePlayerEndless()
+static void StartSinglePlayerEndless()
 {
 	//1 player - endless
 	player1->NewGame(50,100,SDL_GetTicks());
@@ -3043,7 +3043,7 @@ void StartSinglePlayerEndless()
 	strcpy(player2->name, player2name);
 }
 
-void StartSinglePlayerTimeTrial()
+static void StartSinglePlayerTimeTrial()
 {
 	player1->NewTimeTrialGame(50,100,SDL_GetTicks());
 	closeAllMenus();
@@ -3055,7 +3055,7 @@ void StartSinglePlayerTimeTrial()
 	strcpy(player2->name, player2name);
 }
 
-int StartSinglePlayerPuzzle(int level)
+static int StartSinglePlayerPuzzle(int level)
 {
 	int myLevel = PuzzleLevelSelect(0);
 	if(myLevel == -1)
@@ -3074,7 +3074,7 @@ int StartSinglePlayerPuzzle(int level)
 }
 
 
-void StarTwoPlayerTimeTrial()
+static void StarTwoPlayerTimeTrial()
 {
 	player1->NewTimeTrialGame(50,100,SDL_GetTicks());
 	player2->NewTimeTrialGame(xsize-500,100,SDL_GetTicks());
@@ -3095,7 +3095,7 @@ void StarTwoPlayerTimeTrial()
 	strcpy(player2->name, player2name);
 }
 
-void StartTwoPlayerVs()
+static void StartTwoPlayerVs()
 {
 	//2 player - VsMode
 	player1->NewVsGame(50,100,player2,SDL_GetTicks());
@@ -3119,25 +3119,26 @@ void StartTwoPlayerVs()
 	strcpy(player2->name, player2name);
 }
 
-void StartReplay(string filename)
+static void StartReplay(string filename)
 {
 	Replay r1;
 	r1.loadReplay(filename);
 	player1->playReplay(50,100,SDL_GetTicks(),r1);
 }
 
-void StartHostServer()
+static void StartHostServer()
 {
 	player1->SetGameOver();
 	player2->SetGameOver();
 	nt.startServer();
 }
 
-void StartJoinServer()
+static void StartJoinServer()
 {
 	player1->SetGameOver();
 	player2->SetGameOver();
-	nt.connectToServer(Config::getInstance()->getString("address0"));
+	string server = Config::getInstance()->getString("address0");
+	nt.connectToServer(server.substr(0,server.find(" ")));
 }
 
 

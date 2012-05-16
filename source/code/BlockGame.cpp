@@ -2097,7 +2097,7 @@ void BlockGame::Update(int newtick)
 		/*cout << "Testing " << replayIndex << "<" << theReplay.getActions().size()
 			<< " && " << theReplay.getActions().at(replayIndex).time << "<=" <<
 			newtick-gameStartedAt << endl;*/
-		while(replayIndex < theReplay.getActions().size() && 
+		while(replayIndex >= 0 && replayIndex < theReplay.getActions().size() && 
 			theReplay.getActions().at(replayIndex).time <= newtick-gameStartedAt)
 		{
 			Action a = theReplay.getActions().at(replayIndex);
@@ -2122,7 +2122,7 @@ void BlockGame::ActionPerformed(int action, string param)
 int BlockGame::GotAction(Sint32 &tick,int &action,string &param) 
 {
 	if(actionIndex < theReplay.getActions().size()) {
-		Action a = theReplay.getActions().at(replayIndex);
+		Action a = theReplay.getActions().at(actionIndex);
 		tick = a.time;
 		action = a.action;
 		param = a.param;
