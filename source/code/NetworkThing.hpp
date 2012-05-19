@@ -221,6 +221,8 @@ public:
 			string param;
 			while(bgHome->GotAction(tick,action,param)) 
 			{
+				if(action == ACTION_NEW || action == ACTION_NEWTT || action == ACTION_NEWVS)
+					continue; //Do not send start messages
 				paramsize = param.length();
 				char *tmpPacket = (char*)malloc(sizeof(Sint32)*3+param.length()+1);
 				if(!tmpPacket) {
@@ -297,6 +299,8 @@ public:
 					ENetPacket * answerPacket = enet_packet_create("version4",sizeof("version4"),ENET_PACKET_FLAG_RELIABLE);
 					enet_host_broadcast (server, 3, answerPacket);
 					theSeed = time(0)/4;
+					bgHome->NewVsGame(50,100,bgAway,SDL_GetTicks());
+					bgAway->NewVsGame(xsize-500,100,bgHome,SDL_GetTicks());
 					bgHome->putStartBlocks(theSeed);
 					ENetPacket * timePacket = enet_packet_create(&theSeed,sizeof(theSeed),ENET_PACKET_FLAG_RELIABLE);
 					enet_host_broadcast (server, 3, timePacket);

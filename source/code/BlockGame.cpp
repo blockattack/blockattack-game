@@ -2092,6 +2092,8 @@ void BlockGame::UpdateInternal(int newtick)
 
 void BlockGame::Update(int newtick)
 {
+	if(bNetworkPlayer)
+		return;
 	if(bReplaying)
 	{
 		/*cout << "Testing " << replayIndex << "<" << theReplay.getActions().size()

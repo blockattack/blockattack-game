@@ -521,9 +521,9 @@ static int InitImages()
 			//end new in 1.3.2
 			//new in 1.4.0
 			&& (bTheme = IMG_Load2((char*)"gfx/bTheme.png"))
-			&& (bSkip = IMG_Load2((char*)"gfx/bSkip.png"))
-			&& (bNext = IMG_Load2((char*)"gfx/bNext.png"))
-			&& (bRetry = IMG_Load2((char*)"gfx/bRetry.png"))
+			&& (bSkip = IMG_Load2((char*)"gfx/bBlank.png"))
+			&& (bNext = IMG_Load2((char*)"gfx/bBlank.png"))
+			&& (bRetry = IMG_Load2((char*)"gfx/bBlank.png"))
 		 ))
 		//if there was a problem ie. "File not found"
 	{
@@ -671,6 +671,13 @@ static int InitImages()
 	nf_scoreboard_font.draw(370,197,_("Time:") );
 	nf_scoreboard_font.draw(370,246,_("Chain:") );
 	nf_scoreboard_font.draw(370,295,_("Speed:") );
+	nf_button_font.setDest(bRetry);
+	nf_button_font.drawCenter(60,10,_("Retry"));
+	nf_button_font.setDest(bNext);
+	nf_button_font.drawCenter(60,10,_("Next"));
+	nf_button_font.setDest(bSkip);
+	nf_button_font.drawCenter(60,10,_("Skip"));
+	nf_button_font.setDest(screen);
 
 
 //Loads the sound if sound present
