@@ -422,7 +422,7 @@ static int InitImages()
 			&& (bSelectPuzzle = IMG_Load2((char*)"gfx/bSelectPuzzle.png"))
 			&& (bHighScore = IMG_Load2((char*)"gfx/bHighScore.png"))
 //            && (bExit = IMG_Load2((char*)"gfx/bExit.png"))
-			&& (bBack = IMG_Load2((char*)"gfx/bBack.png"))
+			&& (bBack = IMG_Load2((char*)"gfx/bBlank.png"))
 			&& (bForward = IMG_Load2((char*)"gfx/bForward.png"))
 //            && (bReplay = IMG_Load2((char*)"gfx/bReplays.png"))
 //            && (bSave = IMG_Load2((char*)"gfx/bSave.png"))
@@ -520,7 +520,6 @@ static int InitImages()
 #endif
 			//end new in 1.3.2
 			//new in 1.4.0
-			&& (bTheme = IMG_Load2((char*)"gfx/bTheme.png"))
 			&& (bSkip = IMG_Load2((char*)"gfx/bBlank.png"))
 			&& (bNext = IMG_Load2((char*)"gfx/bBlank.png"))
 			&& (bRetry = IMG_Load2((char*)"gfx/bBlank.png"))
@@ -561,7 +560,6 @@ static int InitImages()
 //    CONVERTA(bReplay);
 //    CONVERTA(bSave);
 //    CONVERTA(bLoad);
-	CONVERTA(bTheme);
 	CONVERTA(bSkip);
 	CONVERTA(bRetry);
 	CONVERTA(bNext);
@@ -677,7 +675,9 @@ static int InitImages()
 	nf_button_font.drawCenter(60,10,_("Next"));
 	nf_button_font.setDest(bSkip);
 	nf_button_font.drawCenter(60,10,_("Skip"));
-	nf_button_font.setDest(screen);
+        nf_button_font.setDest(bBack);
+        nf_button_font.drawCenter(60,10,_("Back"));	
+        nf_button_font.setDest(screen);
 
 
 //Loads the sound if sound present

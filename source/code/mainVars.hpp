@@ -138,7 +138,6 @@ static SDL_Surface *bSavePuzzle;
 static SDL_Surface *bSaveToFile;
 static SDL_Surface *bTestPuzzle;
 #endif
-static SDL_Surface *bTheme;
 static SDL_Surface *bSkip;
 static SDL_Surface *bRetry;
 static SDL_Surface *bNext;
