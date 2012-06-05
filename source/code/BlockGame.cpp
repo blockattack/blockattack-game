@@ -1963,11 +1963,6 @@ void BlockGame::Update()
 			stop+=1000;
 		}
 
-		if ((TowerHeight>12)&&(!puzzleMode)&&(!bGameOver))
-		{
-			bNearDeath = true;
-		}
-
 		while (nowTime>nrStops*40+gameStartedAt) //Increase stops, till we reach nowTime
 		{
 			if (stop>0)
@@ -2079,6 +2074,13 @@ void BlockGame::Update()
 			}
 		}
 	}
+}
+
+bool BlockGame::IsNearDeath() {
+    if ((TowerHeight>12)&&(!puzzleMode)&&(!bGameOver))
+        return true;
+    else
+        return false;
 }
 
 void BlockGame::UpdateInternal(int newtick)

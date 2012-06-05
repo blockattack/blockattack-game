@@ -3613,6 +3613,7 @@ int runGame(int gametype, int level)
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool weWhereConnected = false;
+	bool bNearDeath;                        //Play music faster or louder while tru
 
 	//Things used for repeating keystrokes:
 	bool repeatingS[2] = {false,false};
@@ -4384,7 +4385,7 @@ int runGame(int gametype, int level)
 
 
 		//set bNearDeath to false theGame*.Update() will change to true as needed
-		bNearDeath = false;
+		bNearDeath = theGame.IsNearDeath() || theGame2.IsNearDeath();
 		//Updates the objects
 		theGame.Update(SDL_GetTicks());
 		theGame2.Update(SDL_GetTicks());

@@ -190,7 +190,6 @@ static bool NoSound;				//if true, absolutely no sound will be played, can be se
 //prevents crash on systems without a soundcard
 bool MusicEnabled;			//true if background music is enabled
 bool SoundEnabled;			//true if sound effects is enabled
-static bool bNearDeath;                        //Play music faster or louder while tru
 static bool bNearDeathPrev;                    //Near death status last time checked.
 bool bFullscreen;			//true if game is running fullscreen
 static bool puzzleLoaded;          //true if the puzzle levels have been loaded

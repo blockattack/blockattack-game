@@ -199,6 +199,7 @@ public:
 	//prints "Game Over" and ends game
 	void SetGameOver();
 	bool GetAIenabled();
+	bool IsNearDeath();
 	//Moves the cursor, receaves N,S,E or W as a char an moves as desired
 	void MoveCursor(char way);
 	//switches the two blocks at the cursor position, unless game over
