@@ -3128,9 +3128,11 @@ static void StartTwoPlayerVs()
 
 static void StartReplay(string filename)
 {
-	Replay r1;
+	Replay r1,r2;
 	r1.loadReplay(filename);
 	player1->playReplay(50,100,SDL_GetTicks(),r1);
+	r2.loadReplay2(filename);
+	player2->playReplay(xsize-500,100,SDL_GetTicks(),r2);
 }
 
 static void StartHostServer()
@@ -3941,9 +3943,22 @@ int runGame(int gametype, int level)
 							 */
 							mustsetupgame = true;
 						}
+						if ( event.key.keysym.sym == SDLK_F10 ) {
+							StartReplay("/home/poul/.gamesaves/blockattack/quicksave");
+						}
 						if ( event.key.keysym.sym == SDLK_F9 )
 						{
 							writeScreenShot();
+						}
+						if ( event.key.keysym.sym == SDLK_F5 )
+						{
+							if(theGame.isGameOver() && theGame2.isGameOver()) {
+								string filename = "/home/poul/.gamesaves/blockattack/quicksave";
+								if(!twoPlayers)
+									theGame.theReplay.saveReplay(filename);
+								else
+									theGame.theReplay.saveReplay(filename,theGame2.theReplay);
+							}
 						}
 						if ( event.key.keysym.sym == SDLK_F11 )
 						{
@@ -4408,17 +4423,17 @@ int runGame(int gametype, int level)
 						theGame.setDraw();
 						theGame2.setDraw();
 					}
-					twoPlayers = false;
+					//twoPlayers = false;
 				}
 				if ((theGame.isGameOver()) && (!theGame2.isGameOver()))
 				{
 					theGame2.setPlayerWon();
-					twoPlayers = false;
+					//twoPlayers = false;
 				}
 				if ((!theGame.isGameOver()) && (theGame2.isGameOver()))
 				{
 					theGame.setPlayerWon();
-					twoPlayers = false;
+					//twoPlayers = false;
 				}
 			}
 

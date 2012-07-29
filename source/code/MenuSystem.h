@@ -38,16 +38,18 @@ class ButtonGfx
 {
 public:
 	//Holds the graphic for a button that is selected
-	static CppSdl::CppSdlImageHolder _marked;
+	CppSdl::CppSdlImageHolder _marked;
 	//Holds the graphic for a button that is not selected
-	static CppSdl::CppSdlImageHolder _unmarked;
+	CppSdl::CppSdlImageHolder _unmarked;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
-	static int xsize;
-	static int ysize;
+	int xsize;
+	int ysize;
 	//A TTFont used for writing the label on the buttons
-	static NFont thefont;
-	static void setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked);
+	NFont thefont;
+	void setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked);
 };
+
+extern ButtonGfx standardButton;
 
 //A button
 class Button
@@ -60,6 +62,8 @@ private:
 	
 	//If true the menu should also be closed then the button is clicked
 	bool popOnRun;
+	
+	ButtonGfx *gfx;
 
 public:
 	//Is the button marked?
@@ -82,7 +86,9 @@ public:
 	virtual void doAction(); //Run the callback function
 	void drawTo(SDL_Surface **surface);
     void setPopOnRun(bool popOnRun);
-    bool isPopOnRun() const; //Draws to screen
+    bool isPopOnRun() const;
+    void setGfx(ButtonGfx* gfx); //Draws to screen
+	int getHeight();
 	
 	//May hold any other information the callback might need
 	int iGeneric1;

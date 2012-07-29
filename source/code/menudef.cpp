@@ -99,8 +99,8 @@ void Button_changekey::doAction()
 
 void InitMenues()
 {
-	ButtonGfx::setSurfaces(menuMarked,menuUnmarked);
-	ButtonGfx::thefont = nf_scoreboard_font;
+	standardButton.setSurfaces(menuMarked,menuUnmarked);
+	standardButton.thefont = nf_scoreboard_font;
 }
 
 void runGame(int gametype,int level);

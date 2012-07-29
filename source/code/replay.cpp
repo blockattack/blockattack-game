@@ -72,16 +72,22 @@ bool Replay::saveReplay(string filename)
 
 bool Replay::saveReplay(string filename,Replay p2)
 {
-	//Saving as fileversion 3
-	cout << "Saving as version 3 save file (2 players)" << endl;
+	//Saving as fileversion 4
+	cout << "Saving as version 4 save file (2 players)" << endl;
 	ofstream saveFile;
 	saveFile.open(filename.c_str(),ios::binary|ios::trunc);
 	if (saveFile)
 	{
-		Uint32 version = 4;
-		saveFile.write(reinterpret_cast<char*>(&version),sizeof(Uint32)); //Fileversion
-		Uint8 nrOfReplays = 2;
-		
+		saveFile << "0 16 PLAYER 1\n";
+		saveFile << "0 16 NAME " << name << "\n";
+		for(int i = 0;i < actions.size(); ++i) {
+			saveFile << actions.at(i).time << " " << actions.at(i).action << " " << actions.at(i).param << "\n";
+		}
+		saveFile << "0 16 PLAYER 2\n";
+		saveFile << "0 16 NAME " << name << "\n";
+		for(int i = 0;i < p2.getActions().size(); ++i) {
+			saveFile << p2.getActions().at(i).time << " " << p2.getActions().at(i).action << " " << p2.getActions().at(i).param << "\n";
+		}
 		saveFile.close();
 		return true;
 	}
@@ -143,31 +149,46 @@ bool Replay::loadReplay(string filename)
 bool Replay::loadReplay2(string filename)
 {
 	isLoaded = true;
+	bool player2started = false; //set to true once the player two part is reached
+	actions.clear();
 	ifstream loadFile;
-	loadFile.open(filename.c_str(),ios::binary);
+	loadFile.open(filename.c_str());
 	if (loadFile)
 	{
-		Uint32 version;
-		loadFile.read(reinterpret_cast<char*>(&version),sizeof(Uint32));
-		switch (version)
-		{
-		case 3:
-			Uint8 nrOfPlayers;
-			loadFile.read(reinterpret_cast<char*>(&nrOfPlayers),sizeof(Uint8));
-			if (nrOfPlayers<2)
+		while(!loadFile.eof()) {
+			Sint32 time;
+			Uint32 action;
+			string restOfLine;
+			loadFile >> time >> action;
+			if(action == 16)
 			{
-				loadFile.close();
-				cout << "Only one player in replay" << endl;
-				return false;
+				string command;
+				loadFile >> command;
+				if(command == "NAME")
+					getline(loadFile,name,'\n');
+				if(command == "PLAYER") {
+					getline(loadFile,restOfLine,'\n');
+					if(restOfLine == " 2")
+						player2started = true;
+				}
+			} else
+			{
+				getline(loadFile,restOfLine,'\n');
+				if(!player2started)
+					continue;
+				Action a;
+				a.time = time;
+				a.action = action;
+				if(restOfLine.length()>1)
+					a.param = restOfLine.substr(1);
+				else
+					a.param = "";
+				actions.push_back(a);
 			}
-			cout << "loading player 2" << endl;
 			
-			break;
-		default:
-			cout << "Unknown version: " << version << endl;
-			return false;
-		};
+		}
 		loadFile.close();
+		cout << "Loaded 2 player, actions.size="<< actions.size() << endl;
 	}
 	else
 	{

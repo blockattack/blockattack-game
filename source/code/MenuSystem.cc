@@ -42,11 +42,13 @@ inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
 	SDL_BlitSurface(img, NULL, target, &dest);
 }
 
-CppSdl::CppSdlImageHolder ButtonGfx::_marked;
+/*CppSdl::CppSdlImageHolder ButtonGfx::_marked;
 CppSdl::CppSdlImageHolder ButtonGfx::_unmarked;
 int ButtonGfx::xsize;
 int ButtonGfx::ysize;
-NFont ButtonGfx::thefont;
+NFont ButtonGfx::thefont;*/
+
+ButtonGfx standardButton;
 
 void ButtonGfx::setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked)
 {
@@ -59,6 +61,7 @@ void ButtonGfx::setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImage
 
 Button::Button()
 {
+	gfx = &standardButton;
 	label = "";
 	marked = false;
 	action = NULL;
@@ -71,6 +74,7 @@ Button::~Button()
 
 Button::Button(const Button& b)
 {
+	gfx = b.gfx;
 	label = b.label;
 	marked = b.marked;
 	action = b.action;
@@ -89,7 +93,7 @@ void Button::setAction(void (*action2run)(Button*))
 
 bool Button::isClicked(int x,int y)
 {
-	if ( x >= this->x && y >= this->y && x<= this->x+ButtonGfx::xsize && y <= this->y + ButtonGfx::ysize)
+	if ( x >= this->x && y >= this->y && x<= this->x+gfx->xsize && y <= this->y + gfx->ysize)
 		return true;
 	else
 		return false;
@@ -109,14 +113,14 @@ void Button::drawTo(SDL_Surface **surface)
 	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
 #endif
 	if (marked)
-		ButtonGfx::_marked.PaintTo(*surface,x,y);
+		gfx->_marked.PaintTo(*surface,x,y);
 	else
-		ButtonGfx::_unmarked.PaintTo(*surface,x,y);
+		gfx->_unmarked.PaintTo(*surface,x,y);
 	//int stringx = x + (ButtonGfx::xsize)/2 - ButtonGfx::ttf->getTextWidth(label)/2;
 	//int stringy = y + (ButtonGfx::ysize)/2 - ButtonGfx::ttf->getTextHeight()/2;
 	//ButtonGfx::ttf->writeText(label,surface,stringx,stringy);
-	ButtonGfx::thefont.setDest(*surface);
-	ButtonGfx::thefont.drawCenter(x+ButtonGfx::xsize/2,y+ButtonGfx::ysize/2-ButtonGfx::thefont.getHeight(label.c_str())/2,label.c_str());
+	gfx->thefont.setDest(*surface);
+	gfx->thefont.drawCenter(x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont.getHeight(label.c_str())/2,label.c_str());
 }
 
 void Button::setPopOnRun(bool popOnRun)
@@ -129,6 +133,15 @@ bool Button::isPopOnRun() const
 	return popOnRun;
 }
 
+void Button::setGfx(ButtonGfx* gfx)
+{
+	this->gfx = gfx;
+}
+
+int Button::getHeight() {
+	return this->gfx->ysize;
+}
+
 void Menu::drawSelf()
 {
 	DrawIMG(backgroundImage,screen,0,0);
@@ -136,7 +149,7 @@ void Menu::drawSelf()
 	for(it = buttons.begin(); it < buttons.end(); it++)
 		(*it)->drawTo(&screen);
 	exit.drawTo(&screen);
-	ButtonGfx::thefont.draw(50,50,title.c_str());
+	standardButton.thefont.draw(50,50,title.c_str());
 	mouse.PaintTo(screen,mousex,mousey);
 }
 
@@ -164,7 +177,7 @@ void Menu::placeButtons()
 	{
 		(*it)->x = X;
 		(*it)->y = nextY;
-		nextY += ButtonGfx::ysize+10;
+		nextY += (*it)->getHeight()+10;
 	}
 	exit.x = X;
 	exit.y = nextY;
