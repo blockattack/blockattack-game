@@ -2606,110 +2606,107 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
         oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
         DrawIMG(stageBobble,screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
     }
-    //player1 finnish, player2 start
-    //DrawIMG(boardBackBack,screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
-    if (!editorMode)
-    {
-        /*
-         *If single player mode (and not VS)
-         */
-        if(!twoPlayers && !theGame->isGameOver())
-        {
-            //Blank player2's board:
-            DrawIMG(backBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
-            //Write a description:
-            if(theGame->isTimeTrial())
-            {
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "as possible in");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"2 minutes");
-            } else if(theGame->isStageClear())
-            {
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "You must clear a");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "number of lines.");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"Speed is rapidly");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"increased.");
-            } else if(theGame->isPuzzleMode())
-            {
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Clear the entire");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "board with a");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limited number of");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*3,"moves.");
-            } else
-            {
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,     "Score as much as");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28,  "possible. No time");
-                NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32+28*2,"limit.");
-            }
+	//player1 finnish, player2 start
+	//DrawIMG(boardBackBack,screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
+	if (!editorMode)
+	{
+		/*
+		 *If single player mode (and not VS)
+		 */
+		if(!twoPlayers && !theGame->isGameOver())
+		{
+			//Blank player2's board:
+			DrawIMG(backBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
+			//Write a description:
+			if(theGame->isTimeTrial())
+			{
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				string infostring = _("Score as much as \npossible in 2 minutes");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
+			}
+			else if(theGame->isStageClear())
+			{
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				string infostring = _("You must clear a \nnumber of lines.\nSpeed is rapidly \nincreased.");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
+			}
+			else if(theGame->isPuzzleMode())
+			{
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				string infostring = _("Clear the entire board \nwith a limited number \nof moves.");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
+			}
+			else
+			{
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				string infostring = _("Score as much as \npossible. No time limit.");
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
+			}
 
-            //Write the keys that are in use
-            int y = theGame2->GetTopY()+400;
-            NFont_Write(screen, theGame2->GetTopX()+7,y,"Movement keys:" );
-            NFont_Write(screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
-            NFont_Write(screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
-            NFont_Write(screen, theGame2->GetTopX()+7,y+120,("Switch: "+getKeyName(keySettings[0].change) ).c_str() );
-            if(theGame->isPuzzleMode())
-                NFont_Write(screen, theGame2->GetTopX()+7,y+160,("Restart: "+getKeyName(keySettings[0].push) ).c_str() );
-            else
-                NFont_Write(screen, theGame2->GetTopX()+7,y+160,("Push line: "+getKeyName(keySettings[0].push) ).c_str() );
-        }
-        else
-            DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
-        strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
-        NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
-        if (theGame2->GetAIenabled())
-            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,"CPU");
-        else
-            NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
-        if (theGame2->isTimeTrial())
-        {
-            int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();
-            int minutes;
-            int seconds;
-            if (tid>=0)
-            {
-                minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
-                seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
-            }
-            else
-            {
-                minutes = ((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
-                seconds = (((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
-            }
-            if (theGame2->isGameOver()) minutes=0;
-            if (theGame2->isGameOver()) seconds=0;
-            if (seconds>9)
-                strHolder = itoa(minutes)+":"+itoa(seconds);
-            else
-                strHolder = itoa(minutes)+":0"+itoa(seconds);
-            //if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-            NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
-        }
-        else
-        {
-            int minutes = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt()))/60/1000;
-            int seconds = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())%(60*1000))/1000;
-            if (theGame2->isGameOver()) minutes=(theGame2->GetGameEndedAt()/1000/60)%100;
-            if (theGame2->isGameOver()) seconds=(theGame2->GetGameEndedAt()/1000)%60;
-            if (seconds>9)
-                strHolder = itoa(minutes)+":"+itoa(seconds);
-            else
-                strHolder = itoa(minutes)+":0"+itoa(seconds);
-            NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
-        }
-        strHolder = itoa(theGame2->GetChains());
-        NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
-        strHolder = itoa(theGame2->GetSpeedLevel());
-        NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
-    }
+			//Write the keys that are in use
+			int y = theGame2->GetTopY()+400;
+			NFont_Write(screen, theGame2->GetTopX()+7,y,_("Movement keys:") );
+			NFont_Write(screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
+			NFont_Write(screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
+			NFont_Write(screen, theGame2->GetTopX()+7,y+120,( _("Switch: ")+getKeyName(keySettings[0].change) ).c_str() );
+			if(theGame->isPuzzleMode())
+				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Restart: ")+getKeyName(keySettings[0].push) ).c_str() );
+			else
+				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
+		}
+		else
+			DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
+		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
+		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
+		if (theGame2->GetAIenabled())
+			NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,_("AI") );
+		else
+			NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
+		if (theGame2->isTimeTrial())
+		{
+			int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();
+			int minutes;
+			int seconds;
+			if (tid>=0)
+			{
+				minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
+				seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
+			}
+			else
+			{
+				minutes = ((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
+				seconds = (((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
+			}
+			if (theGame2->isGameOver()) minutes=0;
+			if (theGame2->isGameOver()) seconds=0;
+			if (seconds>9)
+				strHolder = itoa(minutes)+":"+itoa(seconds);
+			else
+				strHolder = itoa(minutes)+":0"+itoa(seconds);
+			//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
+			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
+		}
+		else
+		{
+			int minutes = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt()))/60/1000;
+			int seconds = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())%(60*1000))/1000;
+			if (theGame2->isGameOver()) minutes=(theGame2->GetGameEndedAt()/1000/60)%100;
+			if (theGame2->isGameOver()) seconds=(theGame2->GetGameEndedAt()/1000)%60;
+			if (seconds>9)
+				strHolder = itoa(minutes)+":"+itoa(seconds);
+			else
+				strHolder = itoa(minutes)+":0"+itoa(seconds);
+			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
+		}
+		strHolder = itoa(theGame2->GetChains());
+		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
+		strHolder = itoa(theGame2->GetSpeedLevel());
+		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
+	}
     //player2 finnish
 
     if (bNewGameOpen)
