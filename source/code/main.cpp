@@ -305,15 +305,15 @@ long NFont_OpenFont(NFont *target, string path,int ptsize, SDL_Color color, int 
 }
 
 
-Mix_Music * Mix_LoadMUS2(string path)
+Mix_Music * Mix_LoadMUS2(const char *path)
 {
-    if (!PHYSFS_exists(path.c_str()))
+    if (!PHYSFS_exists(path))
     {
         cerr << "Warning: File not in blockattack.data: " << path << endl;
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
+    PHYSFS_file* myfile = PHYSFS_openRead(path);
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -473,6 +473,7 @@ static int InitImages()
 //	&& (fileDialogBox = IMG_Load2("gfx/fileDialogbox.png"))
             && (iLevelCheck = IMG_Load2("gfx/iLevelCheck.png"))
             && (iLevelCheckBox = IMG_Load2("gfx/iLevelCheckBox.png"))
+			&& (iLevelCheckBoxMarked = IMG_Load2("gfx/iLevelCheckBoxMarked.png"))
             && (iCheckBoxArea = IMG_Load2("gfx/iCheckBoxArea.png"))
             && (boardBackBack = IMG_Load2("gfx/boardBackBack.png"))
             && (changeButtonsBack = IMG_Load2("gfx/changeButtonsBack.png"))
@@ -2802,256 +2803,241 @@ static void MakeBackground(int xsize, int ysize, BlockGame *theGame)
     standardBackground = false;
 }
 
+//The function that allows the player to choose PuzzleLevel
+int PuzzleLevelSelect(int Type)
+{
+	const int xplace = 200;
+	const int yplace = 300;
+	Uint8 *keys;
+	int levelNr, mousex, mousey, oldmousex, oldmousey;
+	bool levelSelected = false;
+	bool tempBool;
+	int nrOfLevels;
+	Uint32 tempUInt32;
+	Uint32 totalScore = 0;
+	Uint32 totalTime = 0;
+	int selected = 0;
+
+	//Loads the levels, if they havn't been loaded:
+	if(Type == 0)
+		LoadPuzzleStages();
+
+	//Keeps track of background;
+	int nowTime=SDL_GetTicks();
+
+	MakeBackground(xsize,ysize);
+	if(Type == 0) {
+		ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
+		if (puzzleFile)
+		{
+			for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
+			{
+				puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
+				puzzleCleared[i] = tempBool;
+			}
+			puzzleFile.close();
+		}
+		else
+		{
+			tempBool = false;
+			for (int i=0; i<nrOfPuzzles; i++)
+				puzzleCleared[i] = tempBool;
+		}
+		nrOfLevels = nrOfPuzzles;
+	}
+	if(Type == 1) {
+		ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
+		if (stageFile)
+		{
+			for (int i = 0; i<nrOfStageLevels; i++)
+			{
+				stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
+				stageCleared[i]=tempBool;
+			}
+			if(!stageFile.eof())
+			{
+				for(int i=0; i<nrOfStageLevels; i++)
+				{
+					tempUInt32 = 0;
+					if(!stageFile.eof())
+						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
+					stageScores[i]=tempUInt32;
+					totalScore+=tempUInt32;
+				}
+				for(int i=0; i<nrOfStageLevels; i++)
+				{
+					tempUInt32 = 0;
+					if(!stageFile.eof())
+						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
+					stageTimes[i]=tempUInt32;
+					totalTime += tempUInt32;
+				}
+			}
+			else
+			{
+				for(int i=0; i<nrOfStageLevels; i++)
+				{
+					stageScores[i]=0;
+					stageTimes[i]=0;
+				}
+			}
+			stageFile.close();
+		}
+		else
+		{
+			for (int i=0; i<nrOfStageLevels; i++)
+			{
+				stageCleared[i]= false;
+				stageScores[i]=0;
+				stageTimes[i]=0;
+			}
+		}
+		nrOfLevels = nrOfStageLevels;
+	}
+
+	do
+	{
+		nowTime=SDL_GetTicks();
+
+
+		DrawIMG(background, screen, 0, 0);
+		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
+		if(Type == 0)
+			NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
+		if(Type == 1)
+			NFont_Write(screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
+		//Now drow the fields you click in (and a V if clicked):
+		for (int i = 0; i < nrOfLevels; i++)
+		{
+			DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			if(i==selected) DrawIMG(iLevelCheckBoxMarked,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			if (Type == 0 && puzzleCleared.at(i)==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			if (Type == 1 && stageCleared.at(i)==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+		}
+
+		SDL_Event event;
+		while ( SDL_PollEvent(&event) )
+			if ( event.type == SDL_KEYDOWN )
+			{
+				if ( event.key.keysym.sym == SDLK_ESCAPE )
+				{
+					levelNr = -1;
+					levelSelected = true;
+				}
+				if ( event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER )
+				{
+					levelNr = selected;
+					levelSelected = true;
+				}
+				if ( event.key.keysym.sym == SDLK_RIGHT )
+				{
+					++selected;
+					if(selected >= nrOfLevels)
+						selected = 0;
+				}
+				if ( event.key.keysym.sym == SDLK_LEFT )
+				{
+					--selected;
+					if(selected < 0)
+						selected = nrOfLevels-1;
+				}
+				if ( event.key.keysym.sym == SDLK_DOWN )
+				{
+					selected+=10;
+					if(selected >= nrOfLevels)
+						selected-=10;
+				}
+				if ( event.key.keysym.sym == SDLK_UP )
+				{
+					selected-=10;
+					if(selected < 0)
+						selected+=10;
+				}
+			}
+
+		keys = SDL_GetKeyState(NULL);
+
+		SDL_GetMouseState(&mousex,&mousey);
+		if(mousex != oldmousex || mousey != oldmousey)
+		{
+			int tmpSelected = -1;
+			int j;
+			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++)
+				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92))
+					tmpSelected = j*10;
+			if (tmpSelected != -1)
+				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++)
+					if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42))
+					{
+						tmpSelected +=k;
+						selected = tmpSelected;
+					}
+		}
+		oldmousey = mousey;
+		oldmousex= mousex;
+
+		// If the mouse button is released, make bMouseUp equal true
+		if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
+		{
+			bMouseUp=true;
+		}
+
+		if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
+		{
+			bMouseUp = false;
+
+			int levelClicked = -1;
+			int i;
+			for (i = 0; (i<nrOfLevels/10)||((i<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)); i++)
+				if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
+					levelClicked = i*10;
+			i++;
+			if (levelClicked != -1)
+				for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
+					if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
+					{
+						levelClicked +=j;
+						levelSelected = true;
+						levelNr = levelClicked;
+					}
+		}
+		
+		if(Type == 1)
+		{
+			string scoreString = _("Best score: 0");
+			string timeString = _("Time used: -- : --");
+
+			if(stageScores.at(selected)>0)
+				scoreString = _("Best score: ")+itoa(stageScores.at(selected));
+			if(stageTimes.at(selected)>0)
+				timeString = _("Time used: ")+itoa(stageTimes.at(selected)/1000/60)+" : "+itoa2((stageTimes.at(selected)/1000)%60);
+
+			NFont_Write(screen, 200,200,scoreString.c_str());
+			NFont_Write(screen, 200,250,timeString.c_str());
+			string totalString = (format("Total score: %1% in %2%:%3%")%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
+			NFont_Write(screen, 200,600,totalString.c_str());
+		}
+
+		//DrawIMG(mouse,screen,mousex,mousey);
+		mouse.PaintTo(screen,mousex,mousey);
+		SDL_Flip(screen); //draws it all to the screen
+
+	}
+	while (!levelSelected);
+	DrawIMG(background, screen, 0, 0);
+	return levelNr;
+}
 
 //The function that allows the player to choose PuzzleLevel
 int PuzzleLevelSelect()
 {
-    const int xplace = 200;
-    const int yplace = 300;
-    Uint8 *keys;
-    int levelNr, mousex, mousey;
-    bool levelSelected = false;
-    bool tempBool;
-
-    //Loads the levels, if they havn't been loaded:
-    LoadPuzzleStages();
-
-    //Keeps track of background;
-    int nowTime=SDL_GetTicks();
-
-    ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
-    MakeBackground(xsize,ysize);
-    if (puzzleFile)
-    {
-        for (int i=0;(i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
-        {
-            puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
-            puzzleCleared[i] = tempBool;
-        }
-        puzzleFile.close();
-    }
-    else
-    {
-        tempBool = false;
-        for (int i=0; i<nrOfPuzzles; i++)
-            puzzleCleared[i] = tempBool;
-    }
-
-    do
-    {
-        nowTime=SDL_GetTicks();
-
-
-        DrawIMG(background, screen, 0, 0);
-        DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-        NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle"));
-        //Now drow the fields you click in (and a V if clicked):
-        for (int i = 0; i < nrOfPuzzles;i++)
-        {
-            DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-            if (puzzleCleared[i]==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-        }
-
-        SDL_Event event;
-        while ( SDL_PollEvent(&event) )
-            if ( event.type == SDL_KEYDOWN )
-            {
-                if ( event.key.keysym.sym == SDLK_ESCAPE ) {
-                    levelNr = -1;
-                    levelSelected = true;
-                }
-            }
-
-        keys = SDL_GetKeyState(NULL);
-
-        SDL_GetMouseState(&mousex,&mousey);
-
-        // If the mouse button is released, make bMouseUp equal true
-        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
-        {
-            bMouseUp=true;
-        }
-
-        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
-        {
-            bMouseUp = false;
-
-            int levelClicked = -1;
-            int i;
-            for (i = 0; (i<nrOfPuzzles/10)||((i<nrOfPuzzles/10+1)&&(nrOfPuzzles%10 != 0)); i++)
-                if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
-                    levelClicked = i*10;
-            i++;
-            if (levelClicked != -1)
-                for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
-                    if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
-                    {
-                        levelClicked +=j;
-                        levelSelected = true;
-                        levelNr = levelClicked;
-                    }
-        }
-
-        //DrawIMG(mouse,screen,mousex,mousey);
-        mouse.PaintTo(screen,mousex,mousey);
-        SDL_Flip(screen); //draws it all to the screen
-
-    } while (!levelSelected);
-    DrawIMG(background, screen, 0, 0);
-    return levelNr;
+	return PuzzleLevelSelect(0);
 }
 
 //The function that allows the player to choose Level number
 int StageLevelSelect()
 {
-    const int xplace = 200;
-    const int yplace = 300;
-    Uint8 *keys;
-    int levelNr, mousex, mousey;
-    bool levelSelected = false;
-    bool tempBool;
-    Uint32 tempUInt32;
-    Uint32 totalScore = 0;
-    Uint32 totalTime = 0;
-
-    //Keeps track of background;
-    //int nowTime=SDL_GetTicks();
-
-    MakeBackground(xsize,ysize);
-    ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
-    if (stageFile)
-    {
-        for (int i = 0; i<nrOfStageLevels; i++)
-        {
-            stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
-            stageCleared[i]=tempBool;
-        }
-        if(!stageFile.eof())
-        {
-            for(int i=0; i<nrOfStageLevels; i++)
-            {
-                tempUInt32 = 0;
-                if(!stageFile.eof())
-                    stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
-                stageScores[i]=tempUInt32;
-                totalScore+=tempUInt32;
-            }
-            for(int i=0; i<nrOfStageLevels; i++)
-            {
-                tempUInt32 = 0;
-                if(!stageFile.eof())
-                    stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
-                stageTimes[i]=tempUInt32;
-                totalTime += tempUInt32;
-            }
-        }
-        else
-        {
-            for(int i=0; i<nrOfStageLevels; i++)
-            {
-                 stageScores[i]=0;
-                 stageTimes[i]=0;
-            }
-        }
-        stageFile.close();
-    }
-    else
-    {
-        for (int i=0; i<nrOfStageLevels; i++)
-        {
-            stageCleared[i]= false;
-            stageScores[i]=0;
-            stageTimes[i]=0;
-        }
-    }
-
-
-    do
-    {
-        //nowTime=SDL_GetTicks();
-        DrawIMG(background, screen, 0, 0);
-        DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-        NFont_Write(screen, xplace+12,yplace+2,"Stage Clear Level Select");
-        for (int i = 0; i < nrOfStageLevels;i++)
-        {
-            DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-            if (stageCleared[i]==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-        }
-
-        SDL_Event event;
-        while ( SDL_PollEvent(&event) )
-            if ( event.type == SDL_KEYDOWN )
-            {
-                if ( event.key.keysym.sym == SDLK_ESCAPE ) {
-                    levelNr = -1;
-                    levelSelected = true;
-                }
-            }
-
-        keys = SDL_GetKeyState(NULL);
-
-        SDL_GetMouseState(&mousex,&mousey);
-
-        // If the mouse button is released, make bMouseUp equal true
-        if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
-        {
-            bMouseUp=true;
-        }
-
-        if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
-        {
-            bMouseUp = false;
-
-            int levelClicked = -1;
-            int i;
-            for (i = 0; (i<nrOfStageLevels/10)||((i<nrOfStageLevels/10+1)&&(nrOfStageLevels%10 != 0)); i++)
-                if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
-                    levelClicked = i*10;
-            i++;
-            if (levelClicked != -1)
-                for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
-                    if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
-                    {
-                        levelClicked +=j;
-                        levelSelected = true;
-                        levelNr = levelClicked;
-                    }
-        }
-        //Find what we are over:
-            int overLevel = -1;
-            int i;
-            for (i = 0; (i<nrOfStageLevels/10)||((i<nrOfStageLevels/10+1)&&(nrOfStageLevels%10 != 0)); i++)
-                if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
-                    overLevel = i*10;
-            i++;
-            if (overLevel != -1)
-                for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
-                    if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
-                    {
-                        overLevel +=j;
-                        string scoreString = "Best score: 0";
-                        string timeString = "Time used: -- : --";
-                        
-                        if(stageScores.at(overLevel)>0)
-                            scoreString = "Best score: "+itoa(stageScores[overLevel]);
-                        if(stageTimes[overLevel]>0)
-                            timeString = "Time used: "+itoa(stageTimes[overLevel]/1000/60)+" : "+itoa2((stageTimes[overLevel]/1000)%60);
-                        
-                        NFont_Write(screen, 200,200,scoreString.c_str());
-                        NFont_Write(screen, 200,250,timeString.c_str());
-                        
-                        overLevel;
-                    }
-            string totalString = "Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
-            NFont_Write(screen, 200,600,totalString.c_str());
-
-        //DrawIMG(mouse,screen,mousex,mousey);
-        mouse.PaintTo(screen,mousex,mousey);
-        SDL_Flip(screen); //draws it all to the screen
-
-    } while (!levelSelected);
-    DrawIMG(background, screen, 0, 0);
-    return levelNr;
+	return PuzzleLevelSelect(1);
 }
 
 //Ask user for what AI level he will compete agains, return the number. Number must be 0..AIlevels

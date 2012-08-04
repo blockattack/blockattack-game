@@ -99,6 +99,7 @@ static SDL_Surface *bChange;
 static SDL_Surface *b1024;
 static SDL_Surface *iLevelCheck;		//To the level select screen
 static SDL_Surface *iLevelCheckBox;
+static SDL_Surface *iLevelCheckBoxMarked;
 static SDL_Surface *iCheckBoxArea;
 static SDL_Surface *boardBackBack;
 static SDL_Surface *garbageTL;			//the Garbage Blocks
