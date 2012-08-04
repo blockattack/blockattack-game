@@ -25,7 +25,7 @@ Copyright (C) 2008 Poul Sander
 
 
 #ifndef VERSION_NUMBER
-    #define VERSION_NUMBER "version 1.4.2 BETA"
+    #define VERSION_NUMBER "version 1.5.0 BETA"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
@@ -74,7 +74,13 @@ Copyright (C) 2008 Poul Sander
 #define SHAREDIR "."
 #endif
 
-
+#ifndef LOCALEDIR
+#define LOCALEDIR SHAREDIR"/locale"
+#endif
+ 
+#ifndef PACKAGE
+#define PACKAGE "blockattack_roftb"
+#endif
 
 //enet things
 #if NETWORK
@@ -121,7 +127,7 @@ SDL_Surface * IMG_Load2(string path)
 {
     if (!PHYSFS_exists(path.c_str()))
     {
-        cout << "File not in blockattack.data: " << path << endl;
+        cerr << "File not in blockattack.data: " << path << endl;
         return NULL; //file doesn't exist
     }
 
@@ -140,7 +146,7 @@ SDL_Surface * IMG_Load2(string path)
             delete [] m_data;
             m_data = 0;
             PHYSFS_close(myfile);
-            cout << "Error. Curropt data file!" << endl;
+            cerr << "Error. Curropt data file!" << endl;
             return NULL;
     }
 
@@ -155,7 +161,7 @@ SDL_Surface * IMG_Load2(string path)
         delete [] m_data;
         m_data = 0;
         PHYSFS_close(myfile);
-        cout << "Error. Curropt data file!" << endl;
+        cerr << "Error. Curropt data file!" << endl;
         return NULL;
     }
 
@@ -168,7 +174,7 @@ CppSdl::CppSdlImageHolder IMG_Load3(string path)
 {
     if (!PHYSFS_exists(path.c_str()))
     {
-        cout << "File not in blockattack.data: " << path << endl;
+        cerr << "File not in blockattack.data: " << path << endl;
         throw exception();
     }
 
@@ -187,7 +193,7 @@ CppSdl::CppSdlImageHolder IMG_Load3(string path)
             delete [] m_data;
             m_data = 0;
             PHYSFS_close(myfile);
-            cout << "Error. Curropt data file!" << endl;
+            cerr << "Error. Curropt data file!" << endl;
             throw exception();
     }
 
@@ -247,7 +253,7 @@ void loadTheme(string themeName)
 long NFont_OpenFont(NFont *target, string path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL) {
     if (!PHYSFS_exists(path.c_str()))
     {
-        cout << "File not in blockattack.data: " << path << endl;
+        cerr << "Warning: File not in blockattack.data: " << path << endl;
         return -1; //file doesn't exist
     }
 
@@ -268,7 +274,7 @@ long NFont_OpenFont(NFont *target, string path,int ptsize, SDL_Color color, int 
             delete [] m_data;
             m_data = 0;
             PHYSFS_close(myfile);
-            cout << "Error. Curropt data file!" << endl;
+            cerr << "Error: Curropt data file!" << endl;
             return -3;
     }
 
@@ -283,7 +289,7 @@ long NFont_OpenFont(NFont *target, string path,int ptsize, SDL_Color color, int 
         delete [] m_data;
         m_data = 0;
         PHYSFS_close(myfile);
-        cout << "Error. Curropt data file!" << endl;
+        cerr << "Error: Curropt data file!" << endl;
         return -2;
     }
 
@@ -303,7 +309,7 @@ Mix_Music * Mix_LoadMUS2(string path)
 {
     if (!PHYSFS_exists(path.c_str()))
     {
-        cout << "File not in blockattack.data: " << path << endl;
+        cerr << "Warning: File not in blockattack.data: " << path << endl;
         return NULL; //file doesn't exist
     }
 
@@ -322,7 +328,7 @@ Mix_Music * Mix_LoadMUS2(string path)
             delete [] m_data;
             m_data = 0;
             PHYSFS_close(myfile);
-            cout << "Error. Curropt data file!" << endl;
+            cerr << "Error: Curropt data file!" << endl;
             return NULL;
     }
 
@@ -337,7 +343,7 @@ Mix_Music * Mix_LoadMUS2(string path)
         delete [] m_data;
         m_data = 0;
         PHYSFS_close(myfile);
-        cout << "Error. Curropt data file!" << endl;
+        cerr << "Error: Curropt data file!" << endl;
         return NULL;
     }
 
@@ -347,11 +353,11 @@ Mix_Music * Mix_LoadMUS2(string path)
 }
 
 
-Mix_Chunk * Mix_LoadWAV2(char* path)
+Mix_Chunk * Mix_LoadWAV2(const char* path)
 {
     if (!PHYSFS_exists(path))
     {
-        cout << "File not in blockattack.data: " << path << endl;
+        cerr << "Warning: File not in blockattack.data: " << path << endl;
         return NULL; //file doesn't exist
     }
 
@@ -370,7 +376,7 @@ Mix_Chunk * Mix_LoadWAV2(char* path)
             delete [] m_data;
             m_data = 0;
             PHYSFS_close(myfile);
-            cout << "Error. Curropt data file!" << endl;
+            cerr << "Error: Curropt data file!" << endl;
             return NULL;
     }
 
@@ -385,7 +391,7 @@ Mix_Chunk * Mix_LoadWAV2(char* path)
         delete [] m_data;
         m_data = 0;
         PHYSFS_close(myfile);
-        cout << "Error. Curropt data file!" << endl;
+        cerr << "Error: Curropt data file!" << endl;
         return NULL;
     }
 
@@ -403,120 +409,120 @@ static int InitImages()
             && (b2players = IMG_Load2("gfx/bTwoPlayers.png"))
             && (bVsMode = IMG_Load2("gfx/bVsGame.png"))
             && (bVsModeConfig = IMG_Load2("gfx/bVsGameConfig.png"))
-            && (bPuzzle = IMG_Load2((char*)"gfx/bPuzzle.png"))
-            && (bStageClear = IMG_Load2((char*)"gfx/bStageClear.png"))
-            && (bTimeTrial = IMG_Load2((char*)"gfx/bTimeTrial.png"))
-            && (bEndless = IMG_Load2((char*)"gfx/bEndless.png"))
-            && (bOptions = IMG_Load2((char*)"gfx/bOptions.png"))
-            && (bConfigure = IMG_Load2((char*)"gfx/bConfigure.png"))
-            && (bSelectPuzzle = IMG_Load2((char*)"gfx/bSelectPuzzle.png"))
-            && (bHighScore = IMG_Load2((char*)"gfx/bHighScore.png"))
-            && (bExit = IMG_Load2((char*)"gfx/bExit.png"))
-            && (bBack = IMG_Load2((char*)"gfx/bBack.png"))
-            && (bForward = IMG_Load2((char*)"gfx/bForward.png"))
-            && (bReplay = IMG_Load2((char*)"gfx/bReplays.png"))
-            && (bSave = IMG_Load2((char*)"gfx/bSave.png"))
-            && (bLoad = IMG_Load2((char*)"gfx/bLoad.png"))
+            && (bPuzzle = IMG_Load2("gfx/bPuzzle.png"))
+            && (bStageClear = IMG_Load2("gfx/bStageClear.png"))
+            && (bTimeTrial = IMG_Load2("gfx/bTimeTrial.png"))
+            && (bEndless = IMG_Load2("gfx/bEndless.png"))
+            && (bOptions = IMG_Load2("gfx/bOptions.png"))
+            && (bConfigure = IMG_Load2("gfx/bConfigure.png"))
+            && (bSelectPuzzle = IMG_Load2("gfx/bSelectPuzzle.png"))
+            && (bHighScore = IMG_Load2("gfx/bHighScore.png"))
+            && (bExit = IMG_Load2("gfx/bExit.png"))
+            && (bBack = IMG_Load2("gfx/bBack.png"))
+            && (bForward = IMG_Load2("gfx/bForward.png"))
+            && (bReplay = IMG_Load2("gfx/bReplays.png"))
+            && (bSave = IMG_Load2("gfx/bSave.png"))
+            && (bLoad = IMG_Load2("gfx/bLoad.png"))
 #if NETWORK
-            && (bNetwork = IMG_Load2((char*)"gfx/bNetwork.png"))
-            && (bHost = IMG_Load2((char*)"gfx/bHost.png"))
-            && (bConnect = IMG_Load2((char*)"gfx/bConnect.png"))
+            && (bNetwork = IMG_Load2("gfx/bNetwork.png"))
+            && (bHost = IMG_Load2("gfx/bHost.png"))
+            && (bConnect = IMG_Load2("gfx/bConnect.png"))
 #endif
-            && (blackLine = IMG_Load2((char*)"gfx/blackLine.png"))
-            && (stageBobble = IMG_Load2((char*)"gfx/iStageClearLimit.png"))
-            && (bricks[0] = IMG_Load2((char*)"gfx/bricks/blue.png"))
-            && (bricks[1] = IMG_Load2((char*)"gfx/bricks/green.png"))
-            && (bricks[2] = IMG_Load2((char*)"gfx/bricks/purple.png"))
-            && (bricks[3] = IMG_Load2((char*)"gfx/bricks/red.png"))
-            && (bricks[4] = IMG_Load2((char*)"gfx/bricks/turkish.png"))
-            && (bricks[5] = IMG_Load2((char*)"gfx/bricks/yellow.png"))
-            && (bricks[6] = IMG_Load2((char*)"gfx/bricks/grey.png"))
-            && (crossover = IMG_Load2((char*)"gfx/crossover.png"))
-            && (balls[0] = IMG_Load2((char*)"gfx/balls/ballBlue.png"))
-            && (balls[1] = IMG_Load2((char*)"gfx/balls/ballGreen.png"))
-            && (balls[2] = IMG_Load2((char*)"gfx/balls/ballPurple.png"))
-            && (balls[3] = IMG_Load2((char*)"gfx/balls/ballRed.png"))
-            && (balls[4] = IMG_Load2((char*)"gfx/balls/ballTurkish.png"))
-            && (balls[5] = IMG_Load2((char*)"gfx/balls/ballYellow.png"))
-            && (balls[6] = IMG_Load2((char*)"gfx/balls/ballGray.png"))
-            && (cursor[0] = IMG_Load2((char*)"gfx/animations/cursor/1.png"))
-            && (cursor[1] = IMG_Load2((char*)"gfx/animations/cursor/2.png"))
-            && (bomb[0] = IMG_Load2((char*)"gfx/animations/bomb/bomb_1.png"))
-            && (bomb[1] = IMG_Load2((char*)"gfx/animations/bomb/bomb_2.png"))
-            && (ready[0] = IMG_Load2((char*)"gfx/animations/ready/ready_1.png"))
-            && (ready[1] = IMG_Load2((char*)"gfx/animations/ready/ready_2.png"))
-            && (explosion[0] = IMG_Load2((char*)"gfx/animations/explosion/0.png"))
-            && (explosion[1] = IMG_Load2((char*)"gfx/animations/explosion/1.png"))
-            && (explosion[2] = IMG_Load2((char*)"gfx/animations/explosion/2.png"))
-            && (explosion[3] = IMG_Load2((char*)"gfx/animations/explosion/3.png"))
-            && (counter[0] = IMG_Load2((char*)"gfx/counter/1.png"))
-            && (counter[1] = IMG_Load2((char*)"gfx/counter/2.png"))
-            && (counter[2] = IMG_Load2((char*)"gfx/counter/3.png"))
-            && (backBoard = IMG_Load2((char*)"gfx/BackBoard.png")) //not used, we just test if it exists :)
-            && (iGameOver = IMG_Load2((char*)"gfx/iGameOver.png"))
-            && (iWinner = IMG_Load2((char*)"gfx/iWinner.png"))
-            && (iDraw = IMG_Load2((char*)"gfx/iDraw.png"))
-            && (iLoser = IMG_Load2((char*)"gfx/iLoser.png"))
-            && (iChainBack = IMG_Load2((char*)"gfx/chainFrame.png"))
-            && (optionsBack = IMG_Load2((char*)"gfx/options.png"))
-            && (bOn = IMG_Load2((char*)"gfx/bOn.png"))
-            && (bOff = IMG_Load2((char*)"gfx/bOff.png"))
-            && (bChange = IMG_Load2((char*)"gfx/bChange.png"))
-            && (b1024 = IMG_Load2((char*)"gfx/b1024.png"))
-            && (dialogBox = IMG_Load2((char*)"gfx/dialogbox.png"))
+            && (blackLine = IMG_Load2("gfx/blackLine.png"))
+            && (stageBobble = IMG_Load2("gfx/iStageClearLimit.png"))
+            && (bricks[0] = IMG_Load2("gfx/bricks/blue.png"))
+            && (bricks[1] = IMG_Load2("gfx/bricks/green.png"))
+            && (bricks[2] = IMG_Load2("gfx/bricks/purple.png"))
+            && (bricks[3] = IMG_Load2("gfx/bricks/red.png"))
+            && (bricks[4] = IMG_Load2("gfx/bricks/turkish.png"))
+            && (bricks[5] = IMG_Load2("gfx/bricks/yellow.png"))
+            && (bricks[6] = IMG_Load2("gfx/bricks/grey.png"))
+            && (crossover = IMG_Load2("gfx/crossover.png"))
+            && (balls[0] = IMG_Load2("gfx/balls/ballBlue.png"))
+            && (balls[1] = IMG_Load2("gfx/balls/ballGreen.png"))
+            && (balls[2] = IMG_Load2("gfx/balls/ballPurple.png"))
+            && (balls[3] = IMG_Load2("gfx/balls/ballRed.png"))
+            && (balls[4] = IMG_Load2("gfx/balls/ballTurkish.png"))
+            && (balls[5] = IMG_Load2("gfx/balls/ballYellow.png"))
+            && (balls[6] = IMG_Load2("gfx/balls/ballGray.png"))
+            && (cursor[0] = IMG_Load2("gfx/animations/cursor/1.png"))
+            && (cursor[1] = IMG_Load2("gfx/animations/cursor/2.png"))
+            && (bomb[0] = IMG_Load2("gfx/animations/bomb/bomb_1.png"))
+            && (bomb[1] = IMG_Load2("gfx/animations/bomb/bomb_2.png"))
+            && (ready[0] = IMG_Load2("gfx/animations/ready/ready_1.png"))
+            && (ready[1] = IMG_Load2("gfx/animations/ready/ready_2.png"))
+            && (explosion[0] = IMG_Load2("gfx/animations/explosion/0.png"))
+            && (explosion[1] = IMG_Load2("gfx/animations/explosion/1.png"))
+            && (explosion[2] = IMG_Load2("gfx/animations/explosion/2.png"))
+            && (explosion[3] = IMG_Load2("gfx/animations/explosion/3.png"))
+            && (counter[0] = IMG_Load2("gfx/counter/1.png"))
+            && (counter[1] = IMG_Load2("gfx/counter/2.png"))
+            && (counter[2] = IMG_Load2("gfx/counter/3.png"))
+            && (backBoard = IMG_Load2("gfx/BackBoard.png")) //not used, we just test if it exists :)
+            && (iGameOver = IMG_Load2("gfx/iGameOver.png"))
+            && (iWinner = IMG_Load2("gfx/iWinner.png"))
+            && (iDraw = IMG_Load2("gfx/iDraw.png"))
+            && (iLoser = IMG_Load2("gfx/iLoser.png"))
+            && (iChainBack = IMG_Load2("gfx/chainFrame.png"))
+            && (optionsBack = IMG_Load2("gfx/options.png"))
+            && (bOn = IMG_Load2("gfx/bOn.png"))
+            && (bOff = IMG_Load2("gfx/bOff.png"))
+            && (bChange = IMG_Load2("gfx/bChange.png"))
+            && (b1024 = IMG_Load2("gfx/b1024.png"))
+            && (dialogBox = IMG_Load2("gfx/dialogbox.png"))
 //	&& (fileDialogBox = IMG_Load2("gfx/fileDialogbox.png"))
-            && (iLevelCheck = IMG_Load2((char*)"gfx/iLevelCheck.png"))
-            && (iLevelCheckBox = IMG_Load2((char*)"gfx/iLevelCheckBox.png"))
-            && (iCheckBoxArea = IMG_Load2((char*)"gfx/iCheckBoxArea.png"))
-            && (boardBackBack = IMG_Load2((char*)"gfx/boardBackBack.png"))
-            && (changeButtonsBack = IMG_Load2((char*)"gfx/changeButtonsBack.png"))
-            && (garbageTL = IMG_Load2((char*)"gfx/garbage/garbageTL.png"))
-            && (garbageT = IMG_Load2((char*)"gfx/garbage/garbageT.png"))
-            && (garbageTR = IMG_Load2((char*)"gfx/garbage/garbageTR.png"))
-            && (garbageR = IMG_Load2((char*)"gfx/garbage/garbageR.png"))
-            && (garbageBR = IMG_Load2((char*)"gfx/garbage/garbageBR.png"))
-            && (garbageB = IMG_Load2((char*)"gfx/garbage/garbageB.png"))
-            && (garbageBL = IMG_Load2((char*)"gfx/garbage/garbageBL.png"))
-            && (garbageL = IMG_Load2((char*)"gfx/garbage/garbageL.png"))
-            && (garbageFill = IMG_Load2((char*)"gfx/garbage/garbageFill.png"))
-            && (garbageML = IMG_Load2((char*)"gfx/garbage/garbageML.png"))
-            && (garbageM = IMG_Load2((char*)"gfx/garbage/garbageM.png"))
-            && (garbageMR = IMG_Load2((char*)"gfx/garbage/garbageMR.png"))
-            && (garbageGM = IMG_Load2((char*)"gfx/garbage/garbageGM.png"))
-            && (garbageGML = IMG_Load2((char*)"gfx/garbage/garbageGML.png"))
-            && (garbageGMR = IMG_Load2((char*)"gfx/garbage/garbageGMR.png"))
-            && (smiley[0] = IMG_Load2((char*)"gfx/smileys/0.png"))
-            && (smiley[1] = IMG_Load2((char*)"gfx/smileys/1.png"))
-            && (smiley[2] = IMG_Load2((char*)"gfx/smileys/2.png"))
-            && (smiley[3] = IMG_Load2((char*)"gfx/smileys/3.png"))
+            && (iLevelCheck = IMG_Load2("gfx/iLevelCheck.png"))
+            && (iLevelCheckBox = IMG_Load2("gfx/iLevelCheckBox.png"))
+            && (iCheckBoxArea = IMG_Load2("gfx/iCheckBoxArea.png"))
+            && (boardBackBack = IMG_Load2("gfx/boardBackBack.png"))
+            && (changeButtonsBack = IMG_Load2("gfx/changeButtonsBack.png"))
+            && (garbageTL = IMG_Load2("gfx/garbage/garbageTL.png"))
+            && (garbageT = IMG_Load2("gfx/garbage/garbageT.png"))
+            && (garbageTR = IMG_Load2("gfx/garbage/garbageTR.png"))
+            && (garbageR = IMG_Load2("gfx/garbage/garbageR.png"))
+            && (garbageBR = IMG_Load2("gfx/garbage/garbageBR.png"))
+            && (garbageB = IMG_Load2("gfx/garbage/garbageB.png"))
+            && (garbageBL = IMG_Load2("gfx/garbage/garbageBL.png"))
+            && (garbageL = IMG_Load2("gfx/garbage/garbageL.png"))
+            && (garbageFill = IMG_Load2("gfx/garbage/garbageFill.png"))
+            && (garbageML = IMG_Load2("gfx/garbage/garbageML.png"))
+            && (garbageM = IMG_Load2("gfx/garbage/garbageM.png"))
+            && (garbageMR = IMG_Load2("gfx/garbage/garbageMR.png"))
+            && (garbageGM = IMG_Load2("gfx/garbage/garbageGM.png"))
+            && (garbageGML = IMG_Load2("gfx/garbage/garbageGML.png"))
+            && (garbageGMR = IMG_Load2("gfx/garbage/garbageGMR.png"))
+            && (smiley[0] = IMG_Load2("gfx/smileys/0.png"))
+            && (smiley[1] = IMG_Load2("gfx/smileys/1.png"))
+            && (smiley[2] = IMG_Load2("gfx/smileys/2.png"))
+            && (smiley[3] = IMG_Load2("gfx/smileys/3.png"))
             //new in 1.3.2
-            && (transCover = IMG_Load2((char*)"gfx/transCover.png"))
+            && (transCover = IMG_Load2("gfx/transCover.png"))
             #if LEVELEDITOR
-            && (bCreateFile = IMG_Load2((char*)"gfx/editor/bCreateFile.png"))
-            && (bDeletePuzzle = IMG_Load2((char*)"gfx/editor/bDeletePuzzle.png"))
-            && (bLoadFile = IMG_Load2((char*)"gfx/editor/bLoadFile.png"))
-            && (bMoveBack = IMG_Load2((char*)"gfx/editor/bMoveBack.png"))
-            && (bMoveDown = IMG_Load2((char*)"gfx/editor/bMoveDown.png"))
-            && (bMoveForward = IMG_Load2((char*)"gfx/editor/bMoveForward.png"))
-            && (bMoveLeft = IMG_Load2((char*)"gfx/editor/bMoveLeft.png"))
-            && (bMoveRight = IMG_Load2((char*)"gfx/editor/bMoveRight.png"))
-            && (bMoveUp = IMG_Load2((char*)"gfx/editor/bMoveUp.png"))
-            && (bNewPuzzle = IMG_Load2((char*)"gfx/editor/bNewPuzzle.png"))
-            && (bSaveFileAs = IMG_Load2((char*)"gfx/editor/bSaveFileAs.png"))
-            && (bSavePuzzle = IMG_Load2((char*)"gfx/editor/bSavePuzzle.png"))
-            && (bSaveToFile = IMG_Load2((char*)"gfx/editor/bSaveToFile.png"))
-            && (bTestPuzzle = IMG_Load2((char*)"gfx/editor/bTestPuzzle.png"))
+            && (bCreateFile = IMG_Load2("gfx/editor/bCreateFile.png"))
+            && (bDeletePuzzle = IMG_Load2("gfx/editor/bDeletePuzzle.png"))
+            && (bLoadFile = IMG_Load2("gfx/editor/bLoadFile.png"))
+            && (bMoveBack = IMG_Load2("gfx/editor/bMoveBack.png"))
+            && (bMoveDown = IMG_Load2("gfx/editor/bMoveDown.png"))
+            && (bMoveForward = IMG_Load2("gfx/editor/bMoveForward.png"))
+            && (bMoveLeft = IMG_Load2("gfx/editor/bMoveLeft.png"))
+            && (bMoveRight = IMG_Load2("gfx/editor/bMoveRight.png"))
+            && (bMoveUp = IMG_Load2("gfx/editor/bMoveUp.png"))
+            && (bNewPuzzle = IMG_Load2("gfx/editor/bNewPuzzle.png"))
+            && (bSaveFileAs = IMG_Load2("gfx/editor/bSaveFileAs.png"))
+            && (bSavePuzzle = IMG_Load2("gfx/editor/bSavePuzzle.png"))
+            && (bSaveToFile = IMG_Load2("gfx/editor/bSaveToFile.png"))
+            && (bTestPuzzle = IMG_Load2("gfx/editor/bTestPuzzle.png"))
             #endif
             //end new in 1.3.2
             //new in 1.4.0
-            && (bTheme = IMG_Load2((char*)"gfx/bTheme.png"))
-            && (bSkip = IMG_Load2((char*)"gfx/bSkip.png"))
-            && (bNext = IMG_Load2((char*)"gfx/bNext.png"))
-            && (bRetry = IMG_Load2((char*)"gfx/bRetry.png"))
+            && (bTheme = IMG_Load2("gfx/bTheme.png"))
+            && (bSkip = IMG_Load2("gfx/bSkip.png"))
+            && (bNext = IMG_Load2("gfx/bNext.png"))
+            && (bRetry = IMG_Load2("gfx/bRetry.png"))
          ))
         //if there was a problem ie. "File not found"
     {
-        cout << "Error loading image file: " << SDL_GetError() << endl;
+        cerr << "Error loading image file: " << SDL_GetError() << endl;
         exit(1);
     }
     try{
@@ -646,26 +652,26 @@ static int InitImages()
     nf_standard_small_font.setDest(screen);
     NFont_OpenFont(&nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color);
     nf_scoreboard_font.setDest(boardBackBack);
-    nf_scoreboard_font.draw(370,148,"Score:");
-    nf_scoreboard_font.draw(370,197,"Time:");
-    nf_scoreboard_font.draw(370,246,"Chain:");
-    nf_scoreboard_font.draw(370,295,"Speed:");
+    nf_scoreboard_font.draw(370,148,_("Score:"));
+    nf_scoreboard_font.draw(370,197,_("Time:"));
+    nf_scoreboard_font.draw(370,246,_("Chain:"));
+    nf_scoreboard_font.draw(370,295,_("Speed:"));
 
     
 //Loads the sound if sound present
     if (!NoSound)
     {
         //And here the music:
-        bgMusic = Mix_LoadMUS2((char*)"music/bgMusic.ogg");
-        highbeatMusic = Mix_LoadMUS2((char*)"music/highbeat.ogg");
+        bgMusic = Mix_LoadMUS2("music/bgMusic.ogg");
+        highbeatMusic = Mix_LoadMUS2("music/highbeat.ogg");
         //the music... we just hope it exists, else the user won't hear anything
         //Same goes for the sounds
-        boing = Mix_LoadWAV2((char*)"sound/pop.ogg");
-        applause = Mix_LoadWAV2((char*)"sound/applause.ogg");
-        photoClick = Mix_LoadWAV2((char*)"sound/cameraclick.ogg");
-        typingChunk = Mix_LoadWAV2((char*)"sound/typing.ogg");
-        counterChunk = Mix_LoadWAV2((char*)"sound/counter.ogg");
-        counterFinalChunk = Mix_LoadWAV2((char*)"sound/counterFinal.ogg");
+        boing = Mix_LoadWAV2("sound/pop.ogg");
+        applause = Mix_LoadWAV2("sound/applause.ogg");
+        photoClick = Mix_LoadWAV2("sound/cameraclick.ogg");
+        typingChunk = Mix_LoadWAV2("sound/typing.ogg");
+        counterChunk = Mix_LoadWAV2("sound/counter.ogg");
+        counterFinalChunk = Mix_LoadWAV2("sound/counterFinal.ogg");
     } //All sound has been loaded or not
     return 0;
 } //InitImages()
@@ -800,7 +806,7 @@ static int LoadPuzzleStages()
     //    return 1;
     if (!PHYSFS_exists(("puzzles/"+puzzleName).c_str()))
     {
-        cout << "File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
+        cerr << "Error: File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
         return -1; //file doesn't exist
     }
     PhysFS::ifstream inFile(("puzzles/"+puzzleName).c_str());
@@ -1232,7 +1238,7 @@ public:
     SDL_Surface* sBoard;
 
     BlockGameSdl(int tx, int ty) {
-        tmp = IMG_Load2((char*)"gfx/BackBoard.png");
+        tmp = IMG_Load2("gfx/BackBoard.png");
         sBoard = SDL_DisplayFormat(tmp);
         SDL_FreeSurface(tmp);
         //BlockGame::BlockGame(tx,ty);
@@ -1499,7 +1505,7 @@ public:
         if (stageClear) DrawIMG(blackLine, sBoard, 0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
         if (puzzleMode&&(!bGameOver)) {
             //We need to write nr. of moves left!
-            strHolder = "Moves left: " + itoa(MovesLeft);
+            strHolder = _("Moves left: ") + itoa(MovesLeft);
             nf_standard_blue_font.draw(5,5,strHolder.c_str());
             
         }
@@ -1515,7 +1521,7 @@ public:
             }
             else
             {
-                strHolder = "Last puzzle";
+                strHolder = _("Last puzzle");
                 nf_standard_blue_font.draw(5,5,strHolder.c_str());
             }
         }
@@ -1949,67 +1955,67 @@ void DrawHighscores(int x, int y, bool endless)
 
 void DrawStats()
 {
-    MakeBackground(xsize,ysize);
-    DrawIMG(background,screen,0,0);
-    int y = 5;
-    const int y_spacing = 30;
-    NFont_Write(screen, 10,y,"Stats");
-    y+=y_spacing*2;
-    NFont_Write(screen, 10,y,"Chains");
-    for(int i=2;i<13;i++)
-    {
-        y+=y_spacing;
-        NFont_Write(screen, 10,y,(itoa(i)+"X").c_str());
-        string numberAsString = itoa(Stats::getInstance()->getNumberOf("chainX"+itoa(i)));
-        NFont_Write(screen, 300,y,numberAsString.c_str());
-    }
-    y+=y_spacing*2;
-    NFont_Write(screen, 10,y,"Lines Pushed: ");
-    string numberAsString = itoa(Stats::getInstance()->getNumberOf("linesPushed"));
-    NFont_Write(screen, 300,y,numberAsString.c_str());
+	MakeBackground(xsize,ysize);
+	DrawIMG(background,screen,0,0);
+	int y = 5;
+	const int y_spacing = 30;
+	NFont_Write(screen, 10,y,_("Stats") );
+	y+=y_spacing*2;
+	NFont_Write(screen, 10,y,_("Chains") );
+	for(int i=2; i<13; i++)
+	{
+		y+=y_spacing;
+		NFont_Write(screen, 10,y,(itoa(i)+"X").c_str());
+		string numberAsString = itoa(Stats::getInstance()->getNumberOf("chainX"+itoa(i)));
+		NFont_Write(screen, 300,y,numberAsString.c_str());
+	}
+	y+=y_spacing*2;
+	NFont_Write(screen, 10,y,_("Lines Pushed: ") );
+	string numberAsString = itoa(Stats::getInstance()->getNumberOf("linesPushed"));
+	NFont_Write(screen, 300,y,numberAsString.c_str());
 
-    y+=y_spacing;
-    NFont_Write(screen, 10,y,"Puzzles solved: ");
-    numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
-    NFont_Write(screen, 300,y,numberAsString.c_str());
+	y+=y_spacing;
+	NFont_Write(screen, 10,y, _("Puzzles solved: ") );
+	numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
+	NFont_Write(screen, 300,y,numberAsString.c_str());
 
-    y+=y_spacing*2;
-    NFont_Write(screen, 10,y,"Run time: ");
-    commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
-    y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Days: "+itoa(ct.days))).c_str());
-    y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Hours: "+itoa(ct.hours))).c_str());
-    y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
-    y+=y_spacing;
-    NFont_Write(screen, 10,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+	y+=y_spacing*2;
+	NFont_Write(screen, 10,y, _("Run time: ") );
+	commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
+	y+=y_spacing;
+	NFont_Write(screen, 10,y,((string)( _("Days: ")+itoa(ct.days))).c_str());
+	y+=y_spacing;
+	NFont_Write(screen, 10,y,((string)( _("Hours: ")+itoa(ct.hours))).c_str());
+	y+=y_spacing;
+	NFont_Write(screen, 10,y,((string)( _("Minutes: ")+itoa(ct.minutes))).c_str());
+	y+=y_spacing;
+	NFont_Write(screen, 10,y,((string)( _("Seconds: ")+itoa(ct.seconds))).c_str());
 
-    y-=y_spacing*4; //Four rows back
-    const int x_offset3 = xsize/3+10; //Ofset for three rows
-    NFont_Write(screen, x_offset3,y,"Play time: ");
-    ct = TimeHandler::getTime("playTime");
-    y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Days: "+itoa(ct.days))).c_str());
-    y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Hours: "+itoa(ct.hours))).c_str());
-    y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Minutes: "+itoa(ct.minutes))).c_str());
-    y+=y_spacing;
-    NFont_Write(screen, x_offset3,y,((string)("Seconds: "+itoa(ct.seconds))).c_str());
+	y-=y_spacing*4; //Four rows back
+	const int x_offset3 = xsize/3+10; //Ofset for three rows
+	NFont_Write(screen, x_offset3,y, _("Play time: ") );
+	ct = TimeHandler::getTime("playTime");
+	y+=y_spacing;
+	NFont_Write(screen, x_offset3,y,((string)( _("Days: ")+itoa(ct.days))).c_str());
+	y+=y_spacing;
+	NFont_Write(screen, x_offset3,y,((string)( _("Hours: ")+itoa(ct.hours))).c_str());
+	y+=y_spacing;
+	NFont_Write(screen, x_offset3,y,((string)( _("Minutes: ")+itoa(ct.minutes))).c_str());
+	y+=y_spacing;
+	NFont_Write(screen, x_offset3,y,((string)( _("Seconds: ")+itoa(ct.seconds))).c_str());
 
-    const int x_offset = xsize/2+10;
-    y = 5+y_spacing*2;
-    NFont_Write(screen, x_offset,y,"VS CPU (win/loss)");
-    for(int i=0;i<7;i++)
-    {
-        y += y_spacing;
-        NFont_Write(screen, x_offset,y,("AI "+itoa(i+1)).c_str());
-        numberAsString = itoa(Stats::getInstance()->getNumberOf("defeatedAI"+itoa(i)));
-        string numberAsString2 = itoa(Stats::getInstance()->getNumberOf("defeatedByAI"+itoa(i)));
-        string toPrint = numberAsString + "/" + numberAsString2;
-        NFont_Write(screen, x_offset+230,y,toPrint.c_str());
-    }
+	const int x_offset = xsize/2+10;
+	y = 5+y_spacing*2;
+	NFont_Write(screen, x_offset,y, _("VS CPU (win/loss)") );
+	for(int i=0; i<7; i++)
+	{
+		y += y_spacing;
+		NFont_Write(screen, x_offset,y,("AI "+itoa(i+1)).c_str());
+		numberAsString = itoa(Stats::getInstance()->getNumberOf("defeatedAI"+itoa(i)));
+		string numberAsString2 = itoa(Stats::getInstance()->getNumberOf("defeatedByAI"+itoa(i)));
+		string toPrint = numberAsString + "/" + numberAsString2;
+		NFont_Write(screen, x_offset+230,y,toPrint.c_str());
+	}
 }
 
 void OpenScoresDisplay()
@@ -2838,7 +2844,7 @@ int PuzzleLevelSelect()
 
         DrawIMG(background, screen, 0, 0);
         DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-        NFont_Write(screen, xplace+12,yplace+2,"Select Puzzle");
+        NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle"));
         //Now drow the fields you click in (and a V if clicked):
         for (int i = 0; i < nrOfPuzzles;i++)
         {
@@ -3403,11 +3409,11 @@ int main(int argc, char *argv[])
 #if defined(__unix__)
     //Compiler warns about unused result. The users envisonment should normally give the user all the information he needs
     if(system("mkdir -p ~/.gamesaves/blockattack/screenshots"))
-        cout << "mkdir error creating ~/.gamesaves/blockattack/screenshots" << endl;
+        cerr << "mkdir error creating ~/.gamesaves/blockattack/screenshots" << endl;
     if(system("mkdir -p ~/.gamesaves/blockattack/replays"))
-        cout << "mkdir error creating ~/.gamesaves/blockattack/replays" << endl;
+        cerr << "mkdir error creating ~/.gamesaves/blockattack/replays" << endl;
     if(system("mkdir -p ~/.gamesaves/blockattack/puzzles"))
-        cout << "mkdir error creating ~/.gamesaves/blockattack/puzzles" << endl;
+        cerr << "mkdir error creating ~/.gamesaves/blockattack/puzzles" << endl;
 #elif defined(_WIN32)
     //Now for Windows NT/2k/xp/2k3 etc.
     string tempA = getMyDocumentsPath()+"\\My Games";
@@ -3423,29 +3429,32 @@ int main(int argc, char *argv[])
     bFullscreen = false;
     //Set default Config variables:
     Config::getInstance()->setDefault("themename","default");
+	setlocale (LC_ALL, "");
+	bindtextdomain (PACKAGE, LOCALEDIR);
+	textdomain (PACKAGE);
     if (argc > 1)
     {
         int argumentNr = 1;
         forceredraw = 2;
         while (argc>argumentNr)
         {
-            char helpString[] = "--help";
-            char priorityString[] = "-priority";
-            char forceRedrawString[] = "-forceredraw";
-            char forcepartdrawString[] = "-forcepartdraw";
-            char singlePuzzleString[] = "-SP";
-            char noSoundAtAll[] = "-nosound";
-            char IntegratedEditor[] = "-editor";
-            char selectTheme[] = "-theme";
+            const char helpString[] = "--help";
+            const char priorityString[] = "-priority";
+            const char forceRedrawString[] = "-forceredraw";
+            const char forcepartdrawString[] = "-forcepartdraw";
+            const char singlePuzzleString[] = "-SP";
+            const char noSoundAtAll[] = "-nosound";
+            const char IntegratedEditor[] = "-editor";
+            const char selectTheme[] = "-theme";
             if (!(strncmp(argv[argumentNr],helpString,6)))
             {
-                cout << "Block Attack Help" << endl << "--help Display this message" <<
-                endl << "-priority  Starts game in high priority" << endl <<
-                "-forceredraw  Redraw the whole screen every frame, prevents garbage" << endl <<
-                "-forcepartdraw  Only draw what is changed, sometimes cause garbage" << endl <<
-                "-nosound  No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)" << endl <<
+                cout << "Block Attack Help" << endl << "--help " << _("Display this message") <<
+                endl << "-priority " << _("Starts game in high priority") << endl <<
+                "-forceredraw " << _("Redraw the whole screen every frame, prevents garbage") << endl <<
+                "-forcepartdraw " <<  _("Only draw what is changed, sometimes cause garbage") << endl <<
+                "-nosound " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl <<
                 "-theme <THEMENAME>  Changes to the theme <THEMENAME> on startup" << endl <<
-                "-editor  Starts the build-in editor (not yet integrated)" << endl;
+                "-editor " << _("Starts the build-in editor (not yet integrated)") << endl;
 #ifdef WIN32
                 system("Pause");
 #endif
@@ -3584,7 +3593,7 @@ int main(int argc, char *argv[])
     //Init SDL
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
     {
-        cout << "Unable to init SDL: " << SDL_GetError() << endl;
+        cerr << "Unable to init SDL: " << SDL_GetError() << endl;
         exit(1);
     }
     atexit(SDL_Quit);		//quits SDL when the game stops for some reason (like you hit exit or Esc)
@@ -3602,7 +3611,7 @@ int main(int argc, char *argv[])
     if (!NoSound) //If sound has not been disabled, then load the sound system
         if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0)
         {
-            cout << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
+            cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
             << "Sound will be disabled!" << endl;
             NoSound = true; //Tries to stop all sound from playing/loading
         }
@@ -3743,7 +3752,7 @@ int main(int argc, char *argv[])
 
     if ( screen == NULL )
     {
-        cout << "Unable to set " << xsize << "x" << ysize << " video: " << SDL_GetError() << endl;
+        cerr << "Unable to set " << xsize << "x" << ysize << " video: " << SDL_GetError() << endl;
         exit(1);
     }
 
@@ -3755,9 +3764,6 @@ int main(int argc, char *argv[])
     SDL_Surface *icon = IMG_Load2("gfx/icon.png");
     SDL_WM_SetIcon(icon,NULL);
 
-    cout << "Images loaded" << endl;
-
-    //InitMenues();
 
     BlockGameSdl theGame = BlockGameSdl(50,100);			//creates game objects
     BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
@@ -3806,7 +3812,6 @@ int main(int argc, char *argv[])
     SDL_Flip(screen);
     //game loop
     int done = 0;
-    cout << "Starting game loop" << endl;
     while (done == 0)
     {
         if (!(highPriority)) SDL_Delay(10);
