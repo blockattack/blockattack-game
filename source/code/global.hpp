@@ -12,6 +12,7 @@
 #include "Libs/NFont.h"
 
 void MainMenu();
+void ConfigureMenu();
 void ResetFullscreen();
 
 extern CppSdl::CppSdlImageHolder menuMarked;

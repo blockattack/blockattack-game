@@ -4042,7 +4042,9 @@ int main(int argc, char *argv[])
                             //theGame.CreateGreyGarbage();
                             //char mitNavn[30];
                             //SelectThemeDialogbox(300,400,mitNavn);
-                           MainMenu();
+                           //MainMenu();
+							ConfigureMenu();
+							DrawIMG(background, screen, 0, 0);
                             //OpenScoresDisplay();
                         } //F11
                     }
@@ -4533,7 +4535,7 @@ int main(int argc, char *argv[])
                                                                                 else
                                                                                 {
                                                                                     closeAllMenus();
-                                                                                    bOptionsOpen = true;
+																					ConfigureMenu();
                                                                                     DrawIMG(background, screen, 0, 0);
                                                                                 }
                                                                             }
@@ -5301,6 +5303,7 @@ void runGame(int gametype) {
                             //char mitNavn[30];
                             //SelectThemeDialogbox(300,400,mitNavn);
                            MainMenu();
+						   DrawIMG(background, screen, 0, 0);
                             //OpenScoresDisplay();
                         } //F11
                     }
