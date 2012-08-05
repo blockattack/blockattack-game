@@ -29,6 +29,8 @@ Handles replay
 
 #include "replay.h"
 
+extern int verboseLevel;
+
 Replay::Replay()
 {
 	isLoaded = false;
@@ -51,7 +53,8 @@ Replay::Replay(const Replay& r)
 bool Replay::saveReplay(string filename)
 {
 	//Saving as fileversion 4
-	cout << "Saving as version 4 save file" << endl;
+	if(verboseLevel)
+		cout << "Saving as version 4 save file" << endl;
 	ofstream saveFile;
 	saveFile.open(filename.c_str(),ios::binary|ios::trunc);
 	if (saveFile)
@@ -73,7 +76,8 @@ bool Replay::saveReplay(string filename)
 bool Replay::saveReplay(string filename,Replay p2)
 {
 	//Saving as fileversion 4
-	cout << "Saving as version 4 save file (2 players)" << endl;
+	if(verboseLevel)
+		cout << "Saving as version 4 save file (2 players)" << endl;
 	ofstream saveFile;
 	saveFile.open(filename.c_str(),ios::binary|ios::trunc);
 	if (saveFile)
@@ -136,11 +140,12 @@ bool Replay::loadReplay(string filename)
 			
 		}
 		loadFile.close();
-		cout << "Loaded 1 player, actions.size="<< actions.size() << endl;
+		if(verboseLevel)
+			cout << "Loaded 1 player, actions.size="<< actions.size() << endl;
 	}
 	else
 	{
-		cout << "File not found or couldn't open: " << filename << endl;
+		cerr << "File not found or couldn't open: " << filename << endl;
 		return false;
 	}
 
@@ -188,11 +193,12 @@ bool Replay::loadReplay2(string filename)
 			
 		}
 		loadFile.close();
-		cout << "Loaded 2 player, actions.size="<< actions.size() << endl;
+		if(verboseLevel)
+			cout << "Loaded 2 player, actions.size="<< actions.size() << endl;
 	}
 	else
 	{
-		cout << "File not found or couldn't open: " << filename << endl;
+		cerr << "File not found or couldn't open: " << filename << endl;
 		return false;
 	}
 
@@ -214,7 +220,9 @@ vector<Action> Replay::getActions() const {
 
 void Replay::addAction(int tick, int action, string param) 
 {
+#if DEBUG
 	cout << tick << " " << action << " " << param << endl;
+#endif
 	Action a;
 	a.time = tick;
 	a.action = action;

@@ -43,5 +43,5 @@ public:
 	ReadKeyboard(char*);
 	Uint8 CharsBeforeCursor(); //Where should the cursor be placed?
 	bool ReadKey(SDLKey); //true if key accepted
-	char* GetString(void);
+	const char* GetString(void);
 };

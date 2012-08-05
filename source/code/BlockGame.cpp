@@ -80,6 +80,8 @@ BlockGame::BlockGame()
 	linesCleared = 0;
 	AI_Enabled = false;
 	AI_MoveSpeed=100;
+	AIlineToClear = 0;
+	AIcolorToClear = 0;
 	hasWonTheGame = false;
 	combo=0;                      //counts
 	chain=0;
@@ -485,7 +487,7 @@ void BlockGame::playReplay(int tx, int ty, unsigned int ticks, Replay r)
 {
 	if(r.getActions().size()==0) 
 	{
-		cout << "Empty replay data" << endl;
+		cerr << "Empty replay data" << endl;
 		return;
 	}
 	NewGame(tx, ty,ticks);
@@ -620,7 +622,9 @@ void BlockGame::putStartBlocks(Uint32 n)
 	format f("%1%");
 	f % n;
 	ActionPerformed(ACTION_STARTBLOCKS ,f.str());
+#if DEBUG
 	cout << n << ":" << f.str() << endl;
+#endif
 	for (int i=0; i<7; i++)
 		for (int j=0; j<30; j++)
 		{
@@ -1452,7 +1456,8 @@ void BlockGame::PushLineInternal()
 		{
 			if (SoundEnabled)Mix_PlayChannel(1, applause, 0);
 			theTopScoresEndless.addScore(name, score);
-			cout << "New high score!" << endl;
+			if(verboseLevel)
+				cout << "New high score!" << endl;
 		}
 		SetGameOver();
 	}
@@ -1607,6 +1612,11 @@ bool BlockGame::ThereIsATower()
 
 double BlockGame::firstInLine1(int line)
 {
+	if(line > 20 || line < 0)
+	{
+		cerr << "Warning: first in Line1: " << line << endl;
+		return 3.0;
+	}
 	for (int i=0; i<6; i++)
 		if ((board[i][line]>-1)&&(board[i][line]<7))
 			return (double)i;
@@ -1616,6 +1626,11 @@ double BlockGame::firstInLine1(int line)
 //returns the first coordinate of the block of type
 double BlockGame::firstInLine(int line, int type)
 {
+	if(line > 20 || line < 0)
+	{
+		cerr << "Warning: first in Line: " << line << endl;
+		return 3.0;
+	}
 	for (int i=0; i<6; i++)
 		if (board[i][line]==type)
 			return (double)i;
@@ -1778,6 +1793,17 @@ void BlockGame::AI_ClearVertical()
 	//First we find the place there we will align the bricks
 	int placeToCenter = (int)(firstInLine(AIlineToClear, AIcolorToClear)/3.0+firstInLine(AIlineToClear+1, AIcolorToClear)/3.0+firstInLine(AIlineToClear+2, AIcolorToClear)/3.0);
 	int unlimitedLoop=0;
+	if(AIlineToClear < 0 || AIlineToClear > 20)
+	{
+		cerr << "AIlineToClear out of range: " << AIlineToClear << endl;
+		return;
+	}
+	if(placeToCenter<0 || placeToCenter > 5)
+	{
+		cerr << "placeToCenter out of range: " << placeToCenter << endl;
+		return;
+	}
+	//cout << "AI_ClearVertical: " << placeToCenter << ", " << AIlineToClear << endl;
 	while (((board[placeToCenter][AIlineToClear]>1000000)||(board[placeToCenter][AIlineToClear+1]>1000000)||(board[placeToCenter][AIlineToClear+2]>1000000))&&(unlimitedLoop<10))
 	{
 		unlimitedLoop++;
@@ -1788,6 +1814,7 @@ void BlockGame::AI_ClearVertical()
 	if(unlimitedLoop>9)
 	{
 		AIstatus = 0;
+		return;
 	}
 	//cout << ", ptc: " << placeToCenter << ", line: " << AIlineToClear << ", cy: " << cursory;
 	if (cursory+1>AIlineToClear+2)
@@ -1933,7 +1960,7 @@ void BlockGame::Update()
 			outfile.open(stageClearSavePath.c_str(), ios::binary |ios::trunc);
 			if (!outfile)
 			{
-				cout << "Error writing to file: " << stageClearSavePath << endl;
+				cerr << "Error writing to file: " << stageClearSavePath << endl;
 			}
 			else
 			{
@@ -1989,7 +2016,7 @@ void BlockGame::Update()
 				outfile.open(puzzleSavePath.c_str(), ios::binary |ios::trunc);
 				if (!outfile)
 				{
-					cout << "Error writing to file: " << puzzleSavePath << endl;
+					cerr << "Error writing to file: " << puzzleSavePath << endl;
 				}
 				else
 				{

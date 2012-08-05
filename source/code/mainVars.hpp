@@ -35,7 +35,7 @@ http://blockattack.sf.net
 
 
 using namespace std;	//remove it if you dare...
-char sharedir[] = SHAREDIR;
+const char sharedir[] = SHAREDIR;
 
 //All graphic in the game (as pointers):
 static SDL_Surface *background;    //Stores background
@@ -281,6 +281,8 @@ char FPS[10];
 #endif
 
 int lastNrOfPlayers; //1 if 1 player and 2 if vs. mode
+
+int verboseLevel = 0;
 
 //keySetup
 int player1keys, player2keys;

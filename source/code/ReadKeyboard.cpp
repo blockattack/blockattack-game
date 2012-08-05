@@ -28,7 +28,7 @@ ReadKeyboard::ReadKeyboard(void)
 	length = 0;
 	maxLength = 16;
 	position = 0;
-	strcpy(textstring,"                              ");
+	strcpy(textstring,"                             ");
 }
 
 ReadKeyboard::~ReadKeyboard(void)
@@ -45,7 +45,7 @@ ReadKeyboard::ReadKeyboard(char *oldName)
 	length = 0;
 	maxLength = 16;
 	position = 0;
-	strcpy(textstring,"                              ");
+	strcpy(textstring,"                             ");
 	strncpy(textstring,oldName,strlen(oldName));
 	char charecter = textstring[maxLength+1];
 	int i = maxLength+1;
@@ -371,7 +371,7 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed)
 	return true;
 }
 
-char* ReadKeyboard::GetString()
+const char* ReadKeyboard::GetString()
 {
 	textstring[29]='\0';
 	return &textstring[0];

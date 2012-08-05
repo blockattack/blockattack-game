@@ -60,7 +60,8 @@ public:
 		}
 		else
 		{
-			cout << "Network is working!" << endl;
+			if(verboseLevel)
+				cout << "Network is working!" << endl;
 		}
 		//atexit (enet_deinitialize); in deconstructor
 	}
@@ -100,10 +101,12 @@ public:
 	//Lets disconnect before we close...
 	~NetworkThing()
 	{
-		cout << "Network system is going down" << endl;
+		if(verboseLevel)
+			cout << "Network system is going down" << endl;
 		ntDisconnect();
 		enet_deinitialize();
-		cout << "Network system went down" << endl;
+		if(verboseLevel)
+			cout << "Network system went down" << endl;
 	}
 
 	void theGameHasStarted()
@@ -149,7 +152,8 @@ public:
 				weAreAServer = true;
 				enemyIsReady = false;
 				gameHasStarted = false;
-				cout << "Server is listening on port " << SERVERPORT << endl;
+				if(verboseLevel)
+					cout << "Server is listening on port " << SERVERPORT << endl;
 			}
 		}
 	}
@@ -171,7 +175,7 @@ public:
 
 		if (client == NULL)
 		{
-			cout << "An error occurred while trying to create an ENet client host." << endl;
+			cerr << "Error: An error occurred while trying to create an ENet client host." << endl;
 		}
 		else
 		{
@@ -180,12 +184,13 @@ public:
 
 			if (peer == NULL)
 			{
-				cout << "No available peers for initiating an ENet connection." << endl;
+				cerr << "Error: No available peers for initiating an ENet connection." << endl;
 			}
 			else if (enet_host_service (client, & event, 2000) > 0 &&
 					 event.type == ENET_EVENT_TYPE_CONNECT)
 			{
-				cout << "We are connected!" << endl;
+				if(verboseLevel)
+					cout << "We are connected!" << endl;
 				enemyIsReady = false;
 				weAreAClient = true;
 				weAreConnected = true;
@@ -274,7 +279,8 @@ public:
 						enet_host_broadcast (server, 2, packet);
 					else if (weAreAClient)
 						enet_peer_send (peer, 2, packet);
-					cout << "We send a garbage block: " << (int)x << "," << (int)y << "==" << g << endl;
+					if(verboseLevel)
+						cout << "We send a garbage block: " << (int)x << "," << (int)y << "==" << g << endl;
 				}
 		}
 		ENetEvent event;
@@ -304,7 +310,8 @@ public:
 					bgHome->putStartBlocks(theSeed);
 					ENetPacket * timePacket = enet_packet_create(&theSeed,sizeof(theSeed),ENET_PACKET_FLAG_RELIABLE);
 					enet_host_broadcast (server, 3, timePacket);
-					cout << "We send the seed: " << theSeed << endl;
+					if(verboseLevel)
+						cout << "We send the seed: " << theSeed << endl;
 				}
 				break;
 
@@ -346,7 +353,8 @@ public:
 					memcpy(&g,event.packet->data,sizeof(Uint16));
 					Uint8 x = (g/256);
 					Uint8 y = (g%256);
-					cout << "Recieved Garbage: " << (int)x << "," << (int)y << endl;
+					if(verboseLevel)
+						cout << "Recieved Garbage: " << (int)x << "," << (int)y << endl;
 					if ((x==255)&&(y==255))
 						bgHome->CreateGreyGarbage();
 					else
@@ -358,7 +366,8 @@ public:
 					if (event.packet->dataLength==sizeof(char[30])) //We have reveived a name
 					{
 						strcpy(bgAway->name,(const char*)event.packet->data);
-						cout << "The enemy name is: " << bgAway->name << " Length: " << sizeof(char[30])<< endl;
+						if(verboseLevel)
+							cout << "The enemy name is: " << bgAway->name << " Length: " << sizeof(char[30])<< endl;
 						if (weAreAClient) //We have just recieved the servers name and must send our own
 						{
 							ENetPacket * answerPacket = enet_packet_create(bgHome->name,sizeof(char[30]),ENET_PACKET_FLAG_RELIABLE);
@@ -369,7 +378,7 @@ public:
 					{
 						if (0!=strcmp((const char*)event.packet->data,"version4"))
 						{
-							cout << "Incompatible version: " << event.packet->data << "!=" << "version4" << endl;
+							cerr << "Error: Incompatible version: " << event.packet->data << "!=" << "version4" << endl;
 							ntDisconnect();
 						}
 						if (weAreAClient) //We will send our version number
@@ -382,7 +391,8 @@ public:
 					{
 						memcpy(&theSeed,event.packet->data,sizeof(Uint32));
 						bgHome->putStartBlocks(theSeed);
-						cout << "We recieved a seed: " << theSeed << endl;
+						if(verboseLevel)
+							cout << "We recieved a seed: " << theSeed << endl;
 					}
 				}
 
@@ -393,7 +403,8 @@ public:
 
 			case ENET_EVENT_TYPE_DISCONNECT:
 				//printf ("%s disconected.\n", event.peer -> data);
-				cout << event.peer -> data << " disconnected." << endl;
+				if(verboseLevel)
+					cout << event.peer -> data << " disconnected." << endl;
 
 				/* Reset the peer's client information. */
 

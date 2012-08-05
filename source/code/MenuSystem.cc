@@ -30,6 +30,7 @@ http://blockattack.sf.net
 extern CppSdl::CppSdlImageHolder mouse;
 extern SDL_Surface *backgroundImage;
 extern bool highPriority;
+extern int verboseLevel;
 int mousex;
 int mousey;
 
@@ -56,7 +57,8 @@ void ButtonGfx::setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImage
 	ButtonGfx::_unmarked = unmarked;
 	xsize=(marked).GetWidth();
 	ysize=(marked).GetHeight();
-	cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
+	if(verboseLevel)
+		cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
 }
 
 Button::Button()
@@ -104,7 +106,7 @@ void Button::doAction()
 	if(action)
 		action(this);
 	else
-		cout << "Warning: button \"" << label << "\" has no action assigned!";
+		cerr << "Warning: button \"" << label << "\" has no action assigned!";
 }
 
 void Button::drawTo(SDL_Surface **surface)

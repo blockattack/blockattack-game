@@ -29,6 +29,8 @@ Copyright (C) 2011 Poul Sander
 
 using namespace std;
 
+extern int verboseLevel;
+
 //Menu
 static void PrintHi(Button* b)
 {
@@ -54,7 +56,8 @@ extern control keySettings[3];
 static string getKeyName(SDLKey key)
 {
 	string keyname(SDL_GetKeyName(key));
-	cout << key << " translated to " << keyname << endl;
+	if(verboseLevel)
+		cout << key << " translated to " << keyname << endl;
 	return keyname;
 }
 
