@@ -665,8 +665,49 @@ static int InitImages()
 	nf_button_font.drawCenter(60,10,_("Skip"));
     nf_button_font.setDest(bBack);
     nf_button_font.drawCenter(60,10,_("Back"));	
-    nf_button_font.setDest(screen);
-
+    
+	//old pre 2.0.0 buttons:
+	nf_button_font.setDest(bNewGame.GetRawDataInsecure());
+	nf_button_font.draw(12,10,_("Play"));
+	nf_button_font.setDest(b1player);
+	nf_button_font.draw(12,10,_("Alone"));
+	nf_button_font.setDest(b2players);
+	nf_button_font.draw(12,10,_("Together"));
+	nf_button_font.setDest(bNetwork);
+	nf_button_font.draw(12,10,_("Network"));
+	nf_button_font.setDest(bConnect);
+	nf_button_font.draw(12,10,_("Connect"));
+	nf_button_font.setDest(bEndless);
+	nf_button_font.draw(12,10,_("Endless"));
+	nf_button_font.setDest(bHost);
+	nf_button_font.draw(12,10,_("Host"));
+	nf_button_font.setDest(bReplay);
+	nf_button_font.draw(12,10,_("Replay"));
+	nf_button_font.setDest(bLoad);
+	nf_button_font.draw(12,10,_("Load"));
+	nf_button_font.setDest(bSave);
+	nf_button_font.draw(12,10,_("Save"));
+	nf_button_font.setDest(bNetwork);
+	nf_button_font.draw(12,10,_("Network"));
+	nf_button_font.setDest(bOptions);
+	nf_button_font.draw(12,10,_("Options"));
+	nf_button_font.setDest(bPuzzle);
+	nf_button_font.draw(12,10,_("Puzzle"));
+	nf_button_font.setDest(bStageClear);
+	nf_button_font.draw(12,10,_("Stage Clear"));
+	nf_button_font.setDest(bTheme);
+	nf_button_font.draw(12,10,_("Theme"));
+	nf_button_font.setDest(bTimeTrial);
+	nf_button_font.draw(12,10,_("Time Trial"));
+	nf_button_font.setDest(bVsMode);
+	nf_button_font.draw(12,10,_("VS Mode"));
+	nf_button_font.setDest(bVsModeConfig);
+	nf_button_font.draw(12,10,_("VS Mode"));
+	
+	
+	//old buttons end
+	
+	nf_button_font.setDest(screen);
     
 //Loads the sound if sound present
     if (!NoSound)
@@ -4534,8 +4575,8 @@ int main(int argc, char *argv[])
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    closeAllMenus();
-																					ConfigureMenu();
+                                                                                    //closeAllMenus();
+																					bOptionsOpen = true;
                                                                                     DrawIMG(background, screen, 0, 0);
                                                                                 }
                                                                             }
@@ -4544,10 +4585,11 @@ int main(int argc, char *argv[])
                                                                                 {
                                                                                     //Configure button clicked
                                                                                     closeAllMenus();
-                                                                                    if (!showOptions) {
+                                                                                    /*if (!showOptions) {
                                                                                         showOptions = true;
                                                                                     }
-                                                                                    else showOptions = false;
+                                                                                    else showOptions = false;*/
+																					ConfigureMenu();
                                                                                     DrawIMG(background, screen, 0, 0);
                                                                                 }
                                                                                 else
