@@ -140,7 +140,8 @@ void Button::setGfx(ButtonGfx* gfx)
 	this->gfx = gfx;
 }
 
-int Button::getHeight() {
+int Button::getHeight()
+{
 	return this->gfx->ysize;
 }
 
@@ -267,7 +268,8 @@ void Menu::run()
 
 				if(event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER )
 				{
-					if(marked < buttons.size()) {
+					if(marked < buttons.size())
+					{
 						buttons.at(marked)->doAction();
 						if(buttons.at(marked)->isPopOnRun())
 							running = false;

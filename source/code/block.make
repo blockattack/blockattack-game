@@ -29,9 +29,9 @@ endif
 
 #Compile with debug information or optimized.
 ifeq ($(DEBUG),1)
-BASE_CFLAGS += -g -DDEBUG=1
+BASE_CFLAGS += -g -DDEBUG=1 -Wall
 else
-BASE_CFLAGS += -O4
+BASE_CFLAGS += -O3 
 endif
 
 ifeq ($(NETWORK),1)

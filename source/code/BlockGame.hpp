@@ -98,10 +98,10 @@ protected:
 	bool bDisconnected; //The player has disconnected
 #endif
 	unsigned int ticks;
-	Sint32 gameStartedAt;
-	Sint32 gameEndedAfter;		//How long did the game last?
-	int replayIndex; //Used during replay to remeber how many replay actions we have performed.
-	int actionIndex; //Used during network to remeber how many actions we have sent.
+	unsigned int gameStartedAt;
+	unsigned int gameEndedAfter;		//How long did the game last?
+	unsigned int replayIndex; //Used during replay to remeber how many replay actions we have performed.
+	unsigned int actionIndex; //Used during network to remeber how many actions we have sent.
 	int linesCleared;
 	int TowerHeight;
 	BlockGame *garbageTarget;
@@ -206,8 +206,8 @@ public:
 	void SwitchAtCursor();
 	//Generates a new line and moves the field one block up (restart puzzle mode)
 	void PushLine();
-	void Update(int newtick);
-	void PerformAction(int tick, int action, string param);
+	void Update(unsigned int newtick);
+	void PerformAction(unsigned int tick, int action, string param);
 	/**
 	 * 
      * @param tick Tick of the action
@@ -215,7 +215,7 @@ public:
      * @param param Params.
      * @return 1 if an action was selected 
      */
-	int GotAction(int &tick,int &action,string &param);
+	int GotAction(unsigned int &tick,int &action,string &param);
 #if NETWORK
 	//network play
 	void playNetwork(int tx, int ty,unsigned int ticks);
@@ -311,7 +311,7 @@ private:
 	void PushLineInternal();
 	//Updates evrything, if not called nothing happends
 	void Update();
-	void UpdateInternal(int newtick);
+	void UpdateInternal(unsigned int newtick);
 };
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// BlockAttack class end ////////////////////////////////

@@ -675,9 +675,9 @@ static int InitImages()
 	nf_button_font.drawCenter(60,10,_("Next"));
 	nf_button_font.setDest(bSkip);
 	nf_button_font.drawCenter(60,10,_("Skip"));
-        nf_button_font.setDest(bBack);
-        nf_button_font.drawCenter(60,10,_("Back"));	
-        nf_button_font.setDest(screen);
+	nf_button_font.setDest(bBack);
+	nf_button_font.drawCenter(60,10,_("Back"));
+	nf_button_font.setDest(screen);
 
 
 //Loads the sound if sound present
@@ -1644,10 +1644,19 @@ public:
 		}
 
 		if ((bGameOver)&&(!editorMode))
-			if (hasWonTheGame)DrawIMG(iWinner, sBoard, 0, 5*bsize);
-			else if (bDraw) DrawIMG(iDraw, sBoard, 0, 5*bsize);
+		{
+			if (hasWonTheGame)
+			{
+				DrawIMG(iWinner, sBoard, 0, 5*bsize);
+			}
 			else
-				DrawIMG(iGameOver, sBoard, 0, 5*bsize);
+			{
+				if (bDraw)
+					DrawIMG(iDraw, sBoard, 0, 5*bsize);
+				else
+					DrawIMG(iGameOver, sBoard, 0, 5*bsize);
+			}
+		}
 		nf_standard_blue_font.setDest(screen);
 	}
 
@@ -2020,8 +2029,6 @@ bool OpenFileDialogbox(int x, int y, char *name)
 	string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles";
 	lf.setDirectory2(homeFolder.c_str());
 #endif
-	Uint8* keys;
-	string strHolder;
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
 	DrawIMG(bForward,background,x+460,y+420);
@@ -2107,6 +2114,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
 		mouse.PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //Update screen
 	}
+	return true;
 }
 
 //Slelect a theme
@@ -2123,8 +2131,6 @@ bool SelectThemeDialogbox(int x, int y, char *name)
 	string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes";
 	lf.setDirectory2(homeFolder.c_str());
 #endif
-	Uint8* keys;
-	string strHolder;
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
 	DrawIMG(bForward,background,x+460,y+420);
@@ -2211,6 +2217,7 @@ bool SelectThemeDialogbox(int x, int y, char *name)
 		mouse.PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //Update screen
 	}
+	return true;
 }
 
 //Open a saved replay
@@ -2231,8 +2238,6 @@ bool OpenReplayDialogbox(int x, int y, char *name)
 	lf.setDirectory(directory);
 	if(verboseLevel)
 		cout << "Directory sat" << endl;
-	Uint8* keys;
-	string strHolder;
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
 	DrawIMG(bForward,background,x+460,y+420);
@@ -2317,10 +2322,10 @@ bool OpenReplayDialogbox(int x, int y, char *name)
 			}
 		}
 
-		//DrawIMG(mouse,screen,mousex,mousey);
 		mouse.PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //Update screen
 	}
+	return false;
 }
 
 //Draws the balls and explosions
@@ -2625,7 +2630,6 @@ int PuzzleLevelSelect(int Type)
 {
 	const int xplace = 200;
 	const int yplace = 300;
-	Uint8 *keys;
 	int levelNr, mousex, mousey, oldmousex, oldmousey;
 	bool levelSelected = false;
 	bool tempBool;
@@ -2640,10 +2644,11 @@ int PuzzleLevelSelect(int Type)
 		LoadPuzzleStages();
 
 	//Keeps track of background;
-	int nowTime=SDL_GetTicks();
+	SDL_GetTicks();
 
 	MakeBackground(xsize,ysize);
-	if(Type == 0) {
+	if(Type == 0)
+	{
 		ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
 		if (puzzleFile)
 		{
@@ -2662,7 +2667,8 @@ int PuzzleLevelSelect(int Type)
 		}
 		nrOfLevels = nrOfPuzzles;
 	}
-	if(Type == 1) {
+	if(Type == 1)
+	{
 		ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
 		if (stageFile)
 		{
@@ -2712,9 +2718,9 @@ int PuzzleLevelSelect(int Type)
 		nrOfLevels = nrOfStageLevels;
 	}
 
-	do
+	while(!levelSelected)
 	{
-		nowTime=SDL_GetTicks();
+		SDL_GetTicks();
 
 
 		DrawIMG(background, screen, 0, 0);
@@ -2772,7 +2778,7 @@ int PuzzleLevelSelect(int Type)
 				}
 			}
 
-		keys = SDL_GetKeyState(NULL);
+		SDL_GetKeyState(NULL);
 
 		SDL_GetMouseState(&mousex,&mousey);
 		if(mousex != oldmousex || mousey != oldmousey)
@@ -2818,7 +2824,7 @@ int PuzzleLevelSelect(int Type)
 						levelNr = levelClicked;
 					}
 		}
-		
+
 		if(Type == 1)
 		{
 			string scoreString = _("Best score: 0");
@@ -2840,7 +2846,6 @@ int PuzzleLevelSelect(int Type)
 		SDL_Flip(screen); //draws it all to the screen
 
 	}
-	while (!levelSelected);
 	DrawIMG(background, screen, 0, 0);
 	return levelNr;
 }
@@ -2851,7 +2856,6 @@ void startVsMenu()
 {
 	const int xplace = 200;
 	const int yplace = 100;
-	Uint8 *keys;
 	int mousex, mousey;
 	bool done = false;
 
@@ -2923,6 +2927,7 @@ void startVsMenu()
 
 		SDL_Event event;
 		while ( SDL_PollEvent(&event) )
+		{
 			if ( event.type == SDL_KEYDOWN )
 			{
 				if ( event.key.keysym.sym == SDLK_ESCAPE )
@@ -2938,8 +2943,9 @@ void startVsMenu()
 					done = true;
 				}
 			}
+		}
 
-		keys = SDL_GetKeyState(NULL);
+		SDL_GetKeyState(NULL);
 
 		SDL_GetMouseState(&mousex,&mousey);
 
@@ -3027,7 +3033,7 @@ void changePuzzleLevels()
 #if NETWORK
 #include "NetworkThing.hpp"
 //#include "MenuSystem.h"
-	NetworkThing nt;
+NetworkThing nt;
 #endif
 
 static BlockGameSdl *player1;
@@ -3266,19 +3272,16 @@ int main(int argc, char *argv[])
 
 	SoundEnabled = true;
 	MusicEnabled = true;
-	int mousex, mousey;   //Mouse coordinates
 	showOptions = false;
 	b1playerOpen = false;
 	b2playersOpen = false;
 	bReplayOpen = false;
 	bScreenLocked = false;
 	twoPlayers = false;	//true if two players splitscreen
-	bool vsMode = false;
 	theTopScoresEndless = Highscore(1);
 	theTopScoresTimeTrial = Highscore(2);
 	drawBalls = true;
 	puzzleLoaded = false;
-	bool weWhereConnected = false;
 
 	theBallManeger = ballManeger();
 	theExplosionManeger = explosionManeger();
@@ -3318,10 +3321,6 @@ int main(int argc, char *argv[])
 #endif
 	puzzleName="puzzle.levels";
 
-	Uint8 *keys;
-
-
-
 	//Init SDL
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
 	{
@@ -3333,7 +3332,6 @@ int main(int argc, char *argv[])
 	SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
 
 	Joypad_init();    //Prepare the joysticks
-
 	Joypad joypad1 = Joypad();    //Creates a joypad
 	Joypad joypad2 = Joypad();    //Creates a joypad
 
@@ -3354,8 +3352,8 @@ int main(int argc, char *argv[])
 	{
 		//Copyright notice:
 		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2011 Poul Sander" << endl <<
-			"A SDL based game (see www.libsdl.org)" << endl <<
-			"The game is availeble under the GPL, see COPYING for details." << endl;
+			 "A SDL based game (see www.libsdl.org)" << endl <<
+			 "The game is availeble under the GPL, see COPYING for details." << endl;
 #if defined(_WIN32)
 		cout << "Windows build" << endl;
 #elif defined(__linux__)
@@ -3528,10 +3526,6 @@ int main(int argc, char *argv[])
 	strcpy(theGame.name, player1name);
 	strcpy(theGame2.name, player2name);
 
-	//Keeps track of background;
-	int nowTime=SDL_GetTicks();
-
-
 #if NETWORK
 	//NetworkThing nt = NetworkThing();
 	nt.setBGpointers(&theGame,&theGame2);
@@ -3542,7 +3536,6 @@ int main(int argc, char *argv[])
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr,0,0,SDL_GetTicks());
 		showGame = true;
-		vsMode = true;
 	}
 	//Draws everything to screen
 	if (!editorMode)
@@ -3622,7 +3615,6 @@ int runGame(int gametype, int level)
 	b2playersOpen = false;
 	bReplayOpen = false;
 	bScreenLocked = false;
-	bool vsMode = false;
 	theTopScoresEndless = Highscore(1);
 	theTopScoresTimeTrial = Highscore(2);
 	drawBalls = true;
@@ -3660,30 +3652,17 @@ int runGame(int gametype, int level)
 	BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
 	player1 = &theGame;
 	player2 = &theGame2;
-	/*if (singlePuzzle)
-	{
-	    theGame.GetTopY()=0;
-	    theGame.GetTopX()=0;
-	    theGame2.GetTopY()=10000;
-	    theGame2.GetTopX()=10000;
-	}*/
 	theGame.DoPaintJob();			//Makes sure what there is something to paint
 	theGame2.DoPaintJob();
 	theGame.SetGameOver();		//sets the game over in the beginning
 	theGame2.SetGameOver();
 
-
 	//Takes names from file instead
 	strcpy(theGame.name, player1name);
 	strcpy(theGame2.name, player2name);
 
-
 	Joypad joypad1 = Joypad();    //Creates a joypad
 	Joypad joypad2 = Joypad();    //Creates a joypad
-
-	//Keeps track of background;
-	int nowTime=SDL_GetTicks();
-
 
 #if NETWORK
 	//NetworkThing nt = NetworkThing();
@@ -3695,7 +3674,6 @@ int runGame(int gametype, int level)
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr,0,0,SDL_GetTicks());
 		showGame = true;
-		vsMode = true;
 	}
 	//Draws everything to screen
 	if (!editorMode)
@@ -3734,7 +3712,6 @@ int runGame(int gametype, int level)
 				twoPlayers =false;
 				theGame2.SetGameOver();
 				showGame = true;
-				vsMode = false;
 				strcpy(theGame.name, player1name);
 				strcpy(theGame2.name, player2name);
 			}
@@ -3755,7 +3732,6 @@ int runGame(int gametype, int level)
 				DrawIMG(background, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
 				showGame = true;
-				vsMode = true;
 				theGame2.setAIlevel((Uint8)theAIlevel);
 				int theTime = time(0);
 				theGame.putStartBlocks(theTime);
@@ -3957,7 +3933,8 @@ int runGame(int gametype, int level)
 							 */
 							mustsetupgame = true;
 						}
-						if ( event.key.keysym.sym == SDLK_F10 ) {
+						if ( event.key.keysym.sym == SDLK_F10 )
+						{
 							StartReplay("/home/poul/.gamesaves/blockattack/quicksave");
 						}
 						if ( event.key.keysym.sym == SDLK_F9 )
@@ -3966,7 +3943,8 @@ int runGame(int gametype, int level)
 						}
 						if ( event.key.keysym.sym == SDLK_F5 )
 						{
-							if(theGame.isGameOver() && theGame2.isGameOver()) {
+							if(theGame.isGameOver() && theGame2.isGameOver())
+							{
 								string filename = "/home/poul/.gamesaves/blockattack/quicksave";
 								if(!twoPlayers)
 									theGame.theReplay.saveReplay(filename);
@@ -3979,7 +3957,7 @@ int runGame(int gametype, int level)
 							/*This is the test place, place function to test here*/
 
 							StartReplay("/home/poul/.gamesaves/blockattack/bestTT");
-							
+
 							//theGame.CreateGreyGarbage();
 							//char mitNavn[30];
 							//SelectThemeDialogbox(300,400,mitNavn);
@@ -4084,6 +4062,7 @@ int runGame(int gametype, int level)
 			if (joyplay1||joyplay2)
 			{
 				if (joypad1.working && !theGame.GetAIenabled())
+				{
 					if (joyplay1)
 					{
 						joypad1.update();
@@ -4156,7 +4135,9 @@ int runGame(int gametype, int level)
 						if (joypad1.but2)
 							theGame2.PushLine();
 					}
+				}
 				if (joypad2.working && !theGame2.GetAIenabled())
+				{
 					if (!joyplay2)
 					{
 						joypad2.update();
@@ -4229,6 +4210,7 @@ int runGame(int gametype, int level)
 						if (joypad2.but2)
 							theGame2.PushLine();
 					}
+				}
 			}
 
 			/**********************************************************************
@@ -4244,7 +4226,7 @@ int runGame(int gametype, int level)
 			**************** Here comes mouse play ******************************
 			********************************************************************/
 
-			if ((mouseplay1)&&((!editorMode)&&(!theGame.GetAIenabled())||(editorModeTest))) //player 1
+			if ((mouseplay1)&&( ( (!editorMode)&&(!theGame.GetAIenabled()) ) ||(editorModeTest))) //player 1
 				if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
 				{
 					int yLine, xLine;
@@ -4461,4 +4443,5 @@ int runGame(int gametype, int level)
 		mouse.PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen);
 	} //game loop
+	return 0;
 }

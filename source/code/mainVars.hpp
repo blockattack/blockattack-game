@@ -40,7 +40,6 @@ const char sharedir[] = SHAREDIR;
 //All graphic in the game (as pointers):
 static SDL_Surface *background;    //Stores background
 SDL_Surface *backgroundImage; //Stores the background image
-static int backgroundImageW, backgroundImageH; //size of background image
 static SDL_Surface *backBoard;     //Stores the background to the board
 //static SDL_Surface *b1player;
 //static SDL_Surface *b2players;
@@ -204,8 +203,6 @@ static bool editorModeTest = false;
 #if NETWORK
 static bool networkPlay;
 static bool networkActive;
-static Uint8 nrOfNetworkPlayers;  //Up to 4 players (inkl. self)
-static bool playerAlive[4];
 //sockets here
 #define SERVERPORT 41780
 #define CLIENTPORT 41781

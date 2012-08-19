@@ -485,7 +485,7 @@ void BlockGame::Demonstration(bool toggle)
 //We want to play the replay (must have been loaded beforehand)
 void BlockGame::playReplay(int tx, int ty, unsigned int ticks, Replay r)
 {
-	if(r.getActions().size()==0) 
+	if(r.getActions().size()==0)
 	{
 		cerr << "Empty replay data" << endl;
 		return;
@@ -747,7 +747,7 @@ void BlockGame::putStartBlocks(Uint32 n)
 //decreases hang for all hanging blocks and wait for waiting blocks
 void BlockGame::ReduceStuff()
 {
-	Uint32 howMuchHang = (ticks - FRAMELENGTH*hangTicks)/FRAMELENGTH;
+	Sint32 howMuchHang = (ticks - FRAMELENGTH*hangTicks)/FRAMELENGTH;
 	if (howMuchHang>0)
 	{
 		for (int i=0; i<7; i++)
@@ -828,6 +828,7 @@ bool BlockGame::CreateGarbage(int wide, int height)
 		//bGarbageFallLeft = !(bGarbageFallLeft);
 		return true;
 	}
+	return false;
 }
 
 //Creates garbage using a given wide and height
@@ -853,14 +854,18 @@ bool BlockGame::CreateGreyGarbage()
 			end=6;
 		}
 		for (int i = startPosition; i <startPosition+1; i++)
+		{
 			for (int j = start; j < end; j++)
 			{
 				board[j][i] = 2*1000000+nextGarbageNumber;
 			}
+		}
 		nextGarbageNumber++;
-		if (nextGarbageNumber>999999) nextGarbageNumber = 10;
+		if (nextGarbageNumber>999999)
+			nextGarbageNumber = 10;
 		return true;
 	}
+	return false;
 }
 
 
@@ -1070,12 +1075,6 @@ void BlockGame::ClearBlocks()
 
 		} //for j
 	} //for i
-	bool blockIsFalling[6][30]; //See that is falling
-	for (int i=0; i<30; i++)
-		for (int j=0; j<6; j++)
-			blockIsFalling[j][i] = false;
-
-
 
 	combo = 0;
 	chain = 0;
@@ -2103,23 +2102,24 @@ void BlockGame::Update()
 	}
 }
 
-bool BlockGame::IsNearDeath() {
-    if ((TowerHeight>12)&&(!puzzleMode)&&(!bGameOver))
-        return true;
-    else
-        return false;
+bool BlockGame::IsNearDeath()
+{
+	if ((TowerHeight>12)&&(!puzzleMode)&&(!bGameOver))
+		return true;
+	else
+		return false;
 }
 
-void BlockGame::UpdateInternal(int newtick)
+void BlockGame::UpdateInternal(unsigned int newtick)
 {
-	while(newtick >= ticks+50) 
+	while(newtick >= ticks+50)
 	{
 		ticks+=50;
 		Update();
 	}
 }
 
-void BlockGame::Update(int newtick)
+void BlockGame::Update(unsigned int newtick)
 {
 	if(bNetworkPlayer)
 		return;
@@ -2128,14 +2128,14 @@ void BlockGame::Update(int newtick)
 		/*cout << "Testing " << replayIndex << "<" << theReplay.getActions().size()
 			<< " && " << theReplay.getActions().at(replayIndex).time << "<=" <<
 			newtick-gameStartedAt << endl;*/
-		while(replayIndex >= 0 && replayIndex < theReplay.getActions().size() && 
-			theReplay.getActions().at(replayIndex).time <= newtick-gameStartedAt)
+		while(replayIndex >= 0 && replayIndex < theReplay.getActions().size() &&
+				theReplay.getActions().at(replayIndex).time <= newtick-gameStartedAt)
 		{
 			Action a = theReplay.getActions().at(replayIndex);
 			PerformAction(a.time+gameStartedAt,a.action,a.param);
 			++replayIndex;
 		}
-			
+
 	}
 	else
 	{
@@ -2143,16 +2143,17 @@ void BlockGame::Update(int newtick)
 	}
 }
 
-void BlockGame::ActionPerformed(int action, string param) 
+void BlockGame::ActionPerformed(int action, string param)
 {
 	if(bGameOver || bReplaying)
 		return;
 	theReplay.addAction(ticks-gameStartedAt,action,param);
 }
 
-int BlockGame::GotAction(Sint32 &tick,int &action,string &param) 
+int BlockGame::GotAction(unsigned int &tick,int &action,string &param)
 {
-	if(actionIndex < theReplay.getActions().size()) {
+	if(actionIndex < theReplay.getActions().size())
+	{
 		Action a = theReplay.getActions().at(actionIndex);
 		tick = a.time;
 		action = a.action;
@@ -2163,14 +2164,14 @@ int BlockGame::GotAction(Sint32 &tick,int &action,string &param)
 	return 0;
 }
 
-void BlockGame::PerformAction(int tick, int action, string param) 
+void BlockGame::PerformAction(unsigned int tick, int action, string param)
 {
 	ss.str(std::string());
 	ss.clear();
 	ss << param;
 	int p1,p2;
 	Uint32 p3;
-	switch(action) 
+	switch(action)
 	{
 	case ACTION_UPDATE:
 		UpdateInternal(tick);
@@ -2180,12 +2181,12 @@ void BlockGame::PerformAction(int tick, int action, string param)
 		break;
 	case ACTION_MOVECURSORTO:
 	{
-		
+
 		int p1,p2;
 		ss >> p1 >> p2;
 		MoveCursorTo(p1,p2);
 	}
-		break;
+	break;
 	case ACTION_SWITCH:
 		SwitchAtCursor();
 		break;
@@ -2197,7 +2198,7 @@ void BlockGame::PerformAction(int tick, int action, string param)
 		ss >> p1 >> p2;
 		CreateGarbage(p1,p2);
 	}
-		break;
+	break;
 	case ACTION_CREATEGRAYGARBAGE:
 		CreateGreyGarbage();
 		break;

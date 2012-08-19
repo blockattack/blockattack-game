@@ -40,7 +40,7 @@ Uint8 ReadKeyboard::CharsBeforeCursor()
 	return position;
 }
 
-ReadKeyboard::ReadKeyboard(char *oldName)
+ReadKeyboard::ReadKeyboard(const char *oldName)
 {
 	length = 0;
 	maxLength = 16;

@@ -61,7 +61,8 @@ bool Replay::saveReplay(string filename)
 	{
 		saveFile << "0 16 PLAYER 1\n";
 		saveFile << "0 16 NAME " << name << "\n";
-		for(int i = 0;i < actions.size(); ++i) {
+		for(int i = 0; i < actions.size(); ++i)
+		{
 			saveFile << actions.at(i).time << " " << actions.at(i).action << " " << actions.at(i).param << "\n";
 		}
 		saveFile.close();
@@ -84,12 +85,14 @@ bool Replay::saveReplay(string filename,Replay p2)
 	{
 		saveFile << "0 16 PLAYER 1\n";
 		saveFile << "0 16 NAME " << name << "\n";
-		for(int i = 0;i < actions.size(); ++i) {
+		for(int i = 0; i < actions.size(); ++i)
+		{
 			saveFile << actions.at(i).time << " " << actions.at(i).action << " " << actions.at(i).param << "\n";
 		}
 		saveFile << "0 16 PLAYER 2\n";
 		saveFile << "0 16 NAME " << name << "\n";
-		for(int i = 0;i < p2.getActions().size(); ++i) {
+		for(int i = 0; i < p2.getActions().size(); ++i)
+		{
 			saveFile << p2.getActions().at(i).time << " " << p2.getActions().at(i).action << " " << p2.getActions().at(i).param << "\n";
 		}
 		saveFile.close();
@@ -109,7 +112,8 @@ bool Replay::loadReplay(string filename)
 	loadFile.open(filename.c_str());
 	if (loadFile)
 	{
-		while(!loadFile.eof()) {
+		while(!loadFile.eof())
+		{
 			Sint32 time;
 			Uint32 action;
 			string restOfLine;
@@ -120,12 +124,14 @@ bool Replay::loadReplay(string filename)
 				loadFile >> command;
 				if(command == "NAME")
 					getline(loadFile,name,'\n');
-				if(command == "PLAYER") {
+				if(command == "PLAYER")
+				{
 					getline(loadFile,restOfLine,'\n');
 					if(restOfLine != " 1")
 						break;
 				}
-			} else
+			}
+			else
 			{
 				getline(loadFile,restOfLine,'\n');
 				Action a;
@@ -137,7 +143,7 @@ bool Replay::loadReplay(string filename)
 					a.param = "";
 				actions.push_back(a);
 			}
-			
+
 		}
 		loadFile.close();
 		if(verboseLevel)
@@ -160,7 +166,8 @@ bool Replay::loadReplay2(string filename)
 	loadFile.open(filename.c_str());
 	if (loadFile)
 	{
-		while(!loadFile.eof()) {
+		while(!loadFile.eof())
+		{
 			Sint32 time;
 			Uint32 action;
 			string restOfLine;
@@ -171,12 +178,14 @@ bool Replay::loadReplay2(string filename)
 				loadFile >> command;
 				if(command == "NAME")
 					getline(loadFile,name,'\n');
-				if(command == "PLAYER") {
+				if(command == "PLAYER")
+				{
 					getline(loadFile,restOfLine,'\n');
 					if(restOfLine == " 2")
 						player2started = true;
 				}
-			} else
+			}
+			else
 			{
 				getline(loadFile,restOfLine,'\n');
 				if(!player2started)
@@ -190,7 +199,7 @@ bool Replay::loadReplay2(string filename)
 					a.param = "";
 				actions.push_back(a);
 			}
-			
+
 		}
 		loadFile.close();
 		if(verboseLevel)
@@ -214,11 +223,12 @@ string Replay::getName() const
 	return name;
 }
 
-vector<Action> Replay::getActions() const {
+vector<Action> Replay::getActions() const
+{
 	return actions;
 }
 
-void Replay::addAction(int tick, int action, string param) 
+void Replay::addAction(int tick, int action, string param)
 {
 #if DEBUG
 	cout << tick << " " << action << " " << param << endl;

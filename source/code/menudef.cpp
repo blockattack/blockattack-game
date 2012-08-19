@@ -133,22 +133,22 @@ static void runSinglePlayerVs(Button* b)
 	runGame(4,b->iGeneric1);
 }
 
-static void runTwoPlayerTimeTrial(Button* b) 
+static void runTwoPlayerTimeTrial(Button* b)
 {
 	runGame(10,0);
 }
 
-static void runTwoPlayerVs(Button* b) 
+static void runTwoPlayerVs(Button* b)
 {
 	runGame(11,0);
 }
 
-static void runHostGame(Button* b) 
+static void runHostGame(Button* b)
 {
 	runGame(12,0);
 }
 
-static void runJoinGame(Button* b) 
+static void runJoinGame(Button* b)
 {
 	runGame(13,0);
 }
@@ -188,7 +188,7 @@ static void buttonActionPortChange(Button *b)
 {
 	char port[30];
 	snprintf(port,sizeof(port),"%i",Config::getInstance()->getInt("portv4") );
-	if (OpenDialogbox(200,100,port) && atoi(port)) 
+	if (OpenDialogbox(200,100,port) && atoi(port))
 	{
 		Config::getInstance()->setInt("portv4",atoi(port));
 		format f(_("Port: %1%") );
@@ -201,7 +201,7 @@ static void buttonActionIpChange(Button *b)
 {
 	char ip[30];
 	snprintf(ip,sizeof(ip),"%s",Config::getInstance()->getString("address0").c_str() );
-	if (OpenDialogbox(200,100,ip)) 
+	if (OpenDialogbox(200,100,ip))
 	{
 		Config::getInstance()->setString("address0",ip);
 		format f(_("Address: %1%") );
@@ -272,7 +272,7 @@ static void ConfigureMenu(Button *b)
 	cm.run();
 }
 
-static void SinglePlayerVsMenu(Button *b) 
+static void SinglePlayerVsMenu(Button *b)
 {
 	Menu spvs(&screen,_("Single player VS"),true);
 	Button d1,d2,d3,d4,d5,d6,d7;
@@ -314,7 +314,7 @@ static void SinglePlayerVsMenu(Button *b)
 	spvs.run();
 }
 
-static void NetworkMenu(Button *b) 
+static void NetworkMenu(Button *b)
 {
 	Menu nm(&screen,_("Network"),true);
 	Button bPort, bIp, bHost, bJoin;
@@ -335,10 +335,10 @@ static void NetworkMenu(Button *b)
 	nm.addButton(&bIp);
 	nm.addButton(&bPort);
 	nm.run();
-	
+
 }
 
-static void MultiplayerMenu(Button *b) 
+static void MultiplayerMenu(Button *b)
 {
 	Menu mm(&screen,_("Multiplayer"),true);
 	Button bTT, bVs, bNet;

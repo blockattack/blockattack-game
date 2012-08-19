@@ -220,7 +220,7 @@ public:
 		if (weAreConnected)
 		{
 			//cout << "Creating package" << endl;
-			Sint32 tick;
+			Uint32 tick;
 			Sint32 action;
 			Sint32 paramsize;
 			string param;
@@ -417,7 +417,10 @@ public:
 				}
 
 				ntDisconnect(); //When we will disconnect!
-
+                                break;
+                                
+                            case ENET_EVENT_TYPE_NONE:
+                                break;
 			}
 		}
 

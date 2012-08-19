@@ -40,7 +40,7 @@ private:
 public:
 	ReadKeyboard(void);
 	~ReadKeyboard(void);
-	ReadKeyboard(char*);
+	ReadKeyboard(const char*);
 	Uint8 CharsBeforeCursor(); //Where should the cursor be placed?
 	bool ReadKey(SDLKey); //true if key accepted
 	const char* GetString(void);

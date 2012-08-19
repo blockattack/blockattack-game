@@ -41,7 +41,7 @@ using namespace std;
 
 struct Action
 {
-	Sint32 time;
+	Uint32 time;
 	Sint32 action;
 	string param;
 };
