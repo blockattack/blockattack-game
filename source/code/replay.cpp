@@ -61,7 +61,7 @@ bool Replay::saveReplay(string filename)
 	{
 		saveFile << "0 16 PLAYER 1\n";
 		saveFile << "0 16 NAME " << name << "\n";
-		for(int i = 0; i < actions.size(); ++i)
+		for(unsigned int i = 0; i < actions.size(); ++i)
 		{
 			saveFile << actions.at(i).time << " " << actions.at(i).action << " " << actions.at(i).param << "\n";
 		}
@@ -85,13 +85,13 @@ bool Replay::saveReplay(string filename,Replay p2)
 	{
 		saveFile << "0 16 PLAYER 1\n";
 		saveFile << "0 16 NAME " << name << "\n";
-		for(int i = 0; i < actions.size(); ++i)
+		for(unsigned int i = 0; i < actions.size(); ++i)
 		{
 			saveFile << actions.at(i).time << " " << actions.at(i).action << " " << actions.at(i).param << "\n";
 		}
 		saveFile << "0 16 PLAYER 2\n";
 		saveFile << "0 16 NAME " << name << "\n";
-		for(int i = 0; i < p2.getActions().size(); ++i)
+		for(unsigned int i = 0; i < p2.getActions().size(); ++i)
 		{
 			saveFile << p2.getActions().at(i).time << " " << p2.getActions().at(i).action << " " << p2.getActions().at(i).param << "\n";
 		}
@@ -154,7 +154,7 @@ bool Replay::loadReplay(string filename)
 		cerr << "File not found or couldn't open: " << filename << endl;
 		return false;
 	}
-
+	return true;
 }
 
 bool Replay::loadReplay2(string filename)
@@ -210,7 +210,7 @@ bool Replay::loadReplay2(string filename)
 		cerr << "File not found or couldn't open: " << filename << endl;
 		return false;
 	}
-
+	return true;
 }
 
 void Replay::setName(string name)

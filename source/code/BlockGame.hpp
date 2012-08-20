@@ -209,12 +209,12 @@ public:
 	void Update(unsigned int newtick);
 	void PerformAction(unsigned int tick, int action, string param);
 	/**
-	 * 
-     * @param tick Tick of the action
-     * @param action The action
-     * @param param Params.
-     * @return 1 if an action was selected 
-     */
+	 *
+	 * @param tick Tick of the action
+	 * @param action The action
+	 * @param param Params.
+	 * @return 1 if an action was selected
+	 */
 	int GotAction(unsigned int &tick,int &action,string &param);
 #if NETWORK
 	//network play

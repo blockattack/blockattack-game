@@ -59,10 +59,10 @@ private:
 	string label;
 	//Pointer to a callback function.
 	void (*action)(Button *b);
-	
+
 	//If true the menu should also be closed then the button is clicked
 	bool popOnRun;
-	
+
 	ButtonGfx *gfx;
 
 public:
@@ -85,11 +85,11 @@ public:
 	bool isClicked(int x,int y); //Returns true if (x,y) is within the borders of the button
 	virtual void doAction(); //Run the callback function
 	void drawTo(SDL_Surface **surface);
-    void setPopOnRun(bool popOnRun);
-    bool isPopOnRun() const;
-    void setGfx(ButtonGfx* gfx); //Draws to screen
+	void setPopOnRun(bool popOnRun);
+	bool isPopOnRun() const;
+	void setGfx(ButtonGfx* gfx); //Draws to screen
 	int getHeight();
-	
+
 	//May hold any other information the callback might need
 	int iGeneric1;
 };

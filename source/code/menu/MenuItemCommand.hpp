@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   MenuItemCommand.hpp
  * Author: poul
  *
@@ -10,21 +10,22 @@
 
 #include "MenuItem.hpp"
 
-class MenuItemCommand : MenuItem{
+class MenuItemCommand : MenuItem
+{
 public:
-    MenuItemCommand();
-    MenuItemCommand(string text, void (*pt2Function)(void));
-    MenuItemCommand(const MenuItemCommand& orig);
-    virtual ~MenuItemCommand();
-    void SetSelected(bool selected);
-    void Activated();
-    string GetText();
-    string GetType();
-    void SetText(string text);
+	MenuItemCommand();
+	MenuItemCommand(string text, void (*pt2Function)(void));
+	MenuItemCommand(const MenuItemCommand& orig);
+	virtual ~MenuItemCommand();
+	void SetSelected(bool selected);
+	void Activated();
+	string GetText();
+	string GetType();
+	void SetText(string text);
 private:
-    bool selected;
-    string text;
-    void (*command)(void);
+	bool selected;
+	string text;
+	void (*command)(void);
 };
 
 #endif	/* _MENUITEMCOMMAND_HPP */

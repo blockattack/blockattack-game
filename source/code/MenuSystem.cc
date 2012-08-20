@@ -312,7 +312,7 @@ void Menu::run()
 		}
 
 		//mouse clicked
-		if(buttonState&SDL_BUTTON(1)==SDL_BUTTON(1) && bMouseUp)
+		if( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp)
 		{
 			bMouseUp = false;
 			for(int i=0; i< buttons.size(); ++i)

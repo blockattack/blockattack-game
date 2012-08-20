@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   MenuItem.hpp
  * Author: poul
  *
@@ -12,12 +12,13 @@
 
 using namespace std;
 
-class MenuItem {
-    virtual void SetSelected(bool selected) = 0;
-    virtual void Activated() = 0;
-    virtual string GetText() = 0;
-    virtual void GetType() = 0;
-    virtual void SetText(string text) = 0;
+class MenuItem
+{
+	virtual void SetSelected(bool selected) = 0;
+	virtual void Activated() = 0;
+	virtual string GetText() = 0;
+	virtual void GetType() = 0;
+	virtual void SetText(string text) = 0;
 };
 
 

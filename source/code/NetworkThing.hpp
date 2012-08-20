@@ -54,6 +54,8 @@ public:
 		enemyIsReady = false;
 		enemyHasStarted = false;
 		gameHasStarted = false;
+		bgAway = NULL;
+		bgHome = NULL;
 		if (enet_initialize () != 0)
 		{
 			fprintf (stderr, "An error occurred while initializing ENet.\n");
@@ -69,6 +71,8 @@ public:
 	//This function couses us to remove the connection to the other peer, plus destroying servers
 	void ntDisconnect()
 	{
+		if(!bgHome || !bgAway)
+			return;
 		strcpy(bgAway->name,player2name);
 		if (weAreConnected || weAreAClient || weAreAServer)
 		{
@@ -224,13 +228,14 @@ public:
 			Sint32 action;
 			Sint32 paramsize;
 			string param;
-			while(bgHome->GotAction(tick,action,param)) 
+			while(bgHome->GotAction(tick,action,param))
 			{
 				if(action == ACTION_NEW || action == ACTION_NEWTT || action == ACTION_NEWVS)
 					continue; //Do not send start messages
 				paramsize = param.length();
 				char *tmpPacket = (char*)malloc(sizeof(Sint32)*3+param.length()+1);
-				if(!tmpPacket) {
+				if(!tmpPacket)
+				{
 					cerr << "Failed to alloc memoroy" << endl;
 					exit(-3);
 				}
@@ -239,8 +244,8 @@ public:
 				memcpy(tmpPacket+sizeof(Sint32)*2,&paramsize,sizeof(Sint32));
 				memcpy(tmpPacket+sizeof(Sint32)*3,param.c_str(),paramsize+1);
 				ENetPacket * packet = enet_packet_create (tmpPacket,
-									sizeof(Sint32)*3+param.length()+1,
-									ENET_PACKET_FLAG_RELIABLE);
+									  sizeof(Sint32)*3+param.length()+1,
+									  ENET_PACKET_FLAG_RELIABLE);
 				//Now lets send the package
 				if (weAreAServer)
 					enet_host_broadcast (server, 0, packet);
@@ -417,10 +422,10 @@ public:
 				}
 
 				ntDisconnect(); //When we will disconnect!
-                                break;
-                                
-                            case ENET_EVENT_TYPE_NONE:
-                                break;
+				break;
+
+			case ENET_EVENT_TYPE_NONE:
+				break;
 			}
 		}
 
