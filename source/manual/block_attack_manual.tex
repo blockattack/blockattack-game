@@ -44,7 +44,7 @@ can get a precompiled package including source. On some systems
 you may have to recompile. There are two options for compiling. You can use \verb+make+ on the svn checkout/source package.\newline Or you could use \verb+scons+ by typing \verb+scons+ as a normal user and then \verb+scons install+ as root however it is currently broken for unknown reason. \newline 
 
 %to do this type \verb+make+ while in the source dictory (there the cpp files are). To install the game in Linux type \verb+make install+, you can change the \verb+Makefile+ for dictory placements. \verb+make remove+ removes the game again. Both \verb+make install+ and \verb+make remove+ must be runned as root. \newline
-Scons should be used for packing there gamedata and executables should be in different places. 
+Scons should be used for packing there game data and executables should be in different places. 
 \subsection{Program Parameters}
 There are a small number of parameters you can use, to change some
 things in the game. This doesn't work if the game is installed on a Linux system with the standard install command. Many of these options are not really usefull after version 1.1.1
@@ -55,9 +55,9 @@ causing the game to take 100\% processor power even on strong
 systems, but it will also increase the framerate.
 \item["-forceredraw"] This will force the game to draw the entire
 screen every frame, this might remove garbage in the graphics, but
-it will also cause the framerate to drop. \item["-forcepartdraw"]
+it will also cause the frame rate to drop. \item["-forcepartdraw"]
 The game will only update the parts of the screen that has been
-changed, increasing framerate by more than 50\% (sometimes 200\%).
+changed, increasing frame rate by more than 50\% (sometimes 200\%).
 This is default in windowed mode.
 \item["-nosound"] Disables any sound in the game. On some systems the sound could crash the game.
 \end{description}
@@ -67,9 +67,9 @@ From version 1.1.1 the Options have been split in three.
 This used to be the only options in the game.
 By selecting options in the menu in the game, you get to the
 options screen. Here you can turn music on/off, sound effects
-on/off and fullscreen on/off, but you can't change the
+on/off and full screen on/off, but you can't change the
 resolution although a button is provided, this functionality has
-been removed to reduce size, also the framerate dropped
+been removed to reduce size, also the frame rate dropped
 significantly.
 
 You can also change names and controls. The default controls for
@@ -79,8 +79,8 @@ Right  to switch blocks.
 The default controls for player to is: move: WASD, lift shift to
 push and left control to switch.
 
-Mouseplay and Joypad support can be enabled under "Keys", the game
-will use the first two joypads connected to the computer.
+Mouse play and Joy pad support can be enabled under "Keys", the game
+will use the first two joy pads connected to the computer.
 
 The mouse and joypad controls can't be configured. Left click
 switch the two blocks there the cursor is placed. Right click
@@ -90,19 +90,19 @@ to switch and half to push.
 You can also change the names in options, the names can be a
 maximum of 15 characters and will be saved in the options.dat
 file. Remember to change names before you start the game, or the
-wrong names will be entered in the highscore list.
+wrong names will be entered in the high score list.
 \subsubsection{Puzzle File}
 All puzzles in the game is loaded from a file in the \verb+res+ folder. The default puzzles are in \verb+puzzle.levels+ but in this menu you can selct any of the files in the \verb+res+ folder.
 \subsubsection{Vs. Mode}
 Here you can select speed for player 1 and player 2 in a local game, there are 5 levels (default = 1). You can also specify if an AI must play for one or both of the players. It is possible to let an AI play against another AI if you want. On this screen you can also give players handicap in "Time Trial", again there are five levels (0,1000,2000,3000,4000) default is level 1 = 0 point. The handicap is added to the players score, making it easier for that player\footnote{The highscore list shows scores without handicap}. \newline
 No options on this page is saved when the game quits and they are only valid for 2 player games on the local machine.
 \subsection{Files}
-The game is saving data into several datafiles. Highscores are
+The game is saving data into several data files. High scores are
 saved in \verb+endless.dat+ and \verb+timetrial.dat+ depending on
-gametype. Options (Player names and keys etc.) are saved in
+game type. Options (Player names and keys etc.) are saved in
 \verb+options.dat+. Finally information about witch stages has
 been cleared in Stage Clear is saved to \verb+stageClear.SCsave+ and
-default Puzzle Clear in \verb+puzzleClear.save+, other puzzles are stored in \verb+<puzzleName>.save+. Under Windows NT/2k/xp/2k3 the files was saved in \verb+%APPDATA%\.gamesaves\blockattack\+, but since version 1.3.2 it is saved in \verb+My Documents\My Games\blockattack+. In Linux the files should
+default Puzzle Clear in \verb+puzzleClear.save+, other puzzles are stored in \verb+<puzzleName>.save+. Under Windows NT/2k/xp/2k3 the files was saved in \verb+%APPDATA%\.gamesaves\blockattack\+, but since version 1.3.2 it is saved in \verb+My DocumentsMy Games\blockattack+. In Linux the files should
 be saved to \verb+~/.gamesaves/blockattack/+. If this folder
 doesn't exist it will be created. Then you get a new version you
 should delete the old \verb+puzzleClear.save+ file, or  wired
@@ -117,14 +117,14 @@ blocks are cleared the blocks above them will fall down, if they
 cause more blocks to be cleared, you will perform a chain reaction
 and get lots of points. You know that you are making chains then small numbers apper at the blocks you are clearing.
 \subsection{How to start}
-You can select gamemodes from the menu, by selecting "New Game"
+You can select game modes from the menu, by selecting "New Game"
 and your choice. You can also press F2 for endless, F3 for Time
 Trial, F4 for 2-player Time Trial, F5 for Stage Clear, F6 for two
 Player VS. Mode, F7 for Puzzle Mode or F8 for "Highscores".
 \subsection{Gamemode: Endless}
 In endless you keep clearing until you hit the roof (or you simply
 don't have more time) The top ten scores will get there name on
-the Endless highscore list.
+the Endless high score list.
 \subsection{Gamemode: Time Trial}
 Like endless, but this time you have a two minute limit to gain
 points. If you hit the roof your game is over, and you won't get
@@ -149,7 +149,7 @@ might be corrupted if you take more than 100 minutes). You can
 reset the puzzle by pressing the Push Line key. You can't raise
 the block stack in this mode.
 \subsection{Gamemode: Vs. Mode}
-This game is unlike the others, since in thsi game you actually attacks! You can select the AI controlled players difficulty (1..7). You attack by clearing more than 3 blocks at a time or by making chainreactions. The AI doesn't give much challange yet.
+This game is unlike the others, since in this game you actually attacks! You can select the AI controlled players difficulty (1..7). You attack by clearing more than 3 blocks at a time or by making chain reactions. The AI doesn't give much challenge yet.
 \subsection{Gamemode: Two-player Time Trial}
 Like single-player Time Trial, but this time there is two players.
 If you hit the roof, the other player is instantly declared as the
@@ -172,7 +172,7 @@ Identical to the other Vs. modes but this time over a network. Network play migh
 Windows and Linux uses can play against each other but some operating systems might not be able to play together. If you find an OS that can play with Windows or Linux I would like to hear.
 
 \section{Replays}
-The game supports Replays of matches. After you have played a game you can go to the Replay-menu and select "Save" and then enter a name. You can then at any time select "Load" and see it again. The first version of the replay system does only support up to 5 minuttes and can't save both players in network games. \newline
+The game supports Replays of matches. After you have played a game you can go to the Replay-menu and select "Save" and then enter a name. You can then at any time select "Load" and see it again. The first version of the replay system does only support up to 5 minutes and can't save both players in network games. \newline
 The second version used in 1.3.2 can save the replays so they take up less space. But 1.3.2 and newer can only load player one from old replays. \newline
-The third version usin in 1.4.0 saves additional information in replays. Version 1.4.0 are not able to read replays from old versions.
+The third version used in 1.4.0 saves additional information in replays. Version 1.4.0 are not able to read replays from old versions.
 \end{document}
