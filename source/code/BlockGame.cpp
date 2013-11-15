@@ -518,32 +518,32 @@ void BlockGame::playNetwork(int tx, int ty,unsigned int ticks)
 void BlockGame::setPlayerWon()
 {
 	ActionPerformed(ACTION_WIN,"");
-	if (!bGameOver)
+	if (!bGameOver || !hasWonTheGame)
 	{
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
 		if(!AI_Enabled && !bReplaying)
 		{
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
-	}
-	bGameOver = true;
-	hasWonTheGame = true;
-	showGame = false;
-	if (SoundEnabled)Mix_PlayChannel(1, applause, 0);
-	if(!AI_Enabled && !bReplaying)
-	{
-		Stats::getInstance()->addOne("totalWins");
-		if(garbageTarget->AI_Enabled && !(garbageTarget->bReplaying))
+		bGameOver = true;
+		if (SoundEnabled)Mix_PlayChannel(1, applause, 0);
+		if(!AI_Enabled && !bReplaying)
 		{
-			//We have defeated an AI
-			Stats::getInstance()->addOne("defeatedAI"+itoa(garbageTarget->getAIlevel()));
+			Stats::getInstance()->addOne("totalWins");
+			if(garbageTarget->AI_Enabled && !(garbageTarget->bReplaying))
+			{
+				//We have defeated an AI
+				Stats::getInstance()->addOne("defeatedAI"+itoa(garbageTarget->getAIlevel()));
+			}
+		}
+		if(AI_Enabled && !(garbageTarget->AI_Enabled) && garbageTarget->bReplaying==false)
+		{
+			//The AI have defeated a human player
+			Stats::getInstance()->addOne("defeatedByAI"+itoa(getAIlevel()));
 		}
 	}
-	if(AI_Enabled && !(garbageTarget->AI_Enabled) && garbageTarget->bReplaying==false)
-	{
-		//The AI have defeated a human player
-		Stats::getInstance()->addOne("defeatedByAI"+itoa(getAIlevel()));
-	}
+	hasWonTheGame = true;
+	showGame = false;
 }
 
 //void SetGameOver();

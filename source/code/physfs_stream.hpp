@@ -193,7 +193,7 @@ protected:
 		}
 
 		char_type* xend = (static_cast<size_t> (objectsRead) == BUF_SIZE) ? &*_buf.end() : &_buf[objectsRead];
-		setg(&*_buf.begin(), &*_buf.begin(), xend);
+		this->setg(&*_buf.begin(), &*_buf.begin(), xend);
 
 		return traits_type::to_int_type(_buf.front());
 	}
@@ -209,7 +209,7 @@ protected:
 		}
 
 		// the seek invalidated the buffer
-		setg(&*_buf.begin(), &*_buf.begin(), &*_buf.begin());
+		this->setg(&*_buf.begin(), &*_buf.begin(), &*_buf.begin());
 		return pos;
 	}
 
@@ -274,7 +274,7 @@ protected:
 		}
 
 		char_type* xend = (static_cast<size_t> (res) == BUF_SIZE) ? &*_buf.end() : &_buf[res];
-		setp(&*_buf.begin(), xend);
+		this->setp(&*_buf.begin(), xend);
 		return 0;
 	}
 

@@ -536,7 +536,7 @@ static int InitImages()
 		menuMarked = IMG_Load3("gfx/menu/marked.png");
 		menuUnmarked = IMG_Load3("gfx/menu/unmarked.png");
 	}
-	catch (exception e)
+	catch (exception &e)
 	{
 		cerr << e.what() << endl;
 		exit(1);
@@ -832,12 +832,12 @@ static int LoadPuzzleStages()
 {
 	//if(puzzleLoaded)
 	//    return 1;
-	if (!PHYSFS_exists(("puzzles/"+puzzleName).c_str()))
+	if (!PHYSFS_exists(((string)("puzzles/"+puzzleName)).c_str()))
 	{
 		cerr << "Warning: File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
 		return -1; //file doesn't exist
 	}
-	PhysFS::ifstream inFile(("puzzles/"+puzzleName).c_str());
+	PhysFS::ifstream inFile(((string)("puzzles/"+puzzleName)).c_str());
 
 	inFile >> nrOfPuzzles;
 	if (nrOfPuzzles>maxNrOfPuzzleStages)
@@ -1184,7 +1184,7 @@ public:
 		return y;
 	}
 
-	char* getText()
+	const char* getText()
 	{
 		return textt;
 	}
@@ -1879,7 +1879,7 @@ void DrawStats()
 	for(int i=0; i<7; i++)
 	{
 		y += y_spacing;
-		NFont_Write(screen, x_offset,y,("AI "+itoa(i+1)).c_str());
+		NFont_Write(screen, x_offset,y,string("AI "+itoa(i+1)).c_str());
 		numberAsString = itoa(Stats::getInstance()->getNumberOf("defeatedAI"+itoa(i)));
 		string numberAsString2 = itoa(Stats::getInstance()->getNumberOf("defeatedByAI"+itoa(i)));
 		string toPrint = numberAsString + "/" + numberAsString2;
