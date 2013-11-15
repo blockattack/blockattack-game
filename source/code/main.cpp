@@ -917,7 +917,7 @@ public:
 	//constructor:
 	aBall(int X, int Y, bool right, int coulor)
 	{
-		double tal = 1.0;
+		double tal = 1.0+((double)rand()/((double)RAND_MAX));
 		velocityY = -tal*startVelocityY;
 		lastTime = currentTime;
 		x = (double)X;
