@@ -48,7 +48,7 @@ string double2str(double num)
  * if the string is not a double then 0.0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-double str2double(string str2parse)
+double str2double(const string &str2parse)
 {
 	try
 	{
@@ -58,7 +58,7 @@ double str2double(string str2parse)
 		converter >> val;
 		return val;
 	}
-	catch(ios_base::failure f)
+	catch(ios_base::failure &f)
 	{
 		return 0.0;
 	}
@@ -69,7 +69,7 @@ double str2double(string str2parse)
  * if the string is not an int then 0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-int str2int(string str2parse)
+int str2int(const string &str2parse)
 {
 	try
 	{
@@ -79,7 +79,7 @@ int str2int(string str2parse)
 		converter >> val;
 		return val;
 	}
-	catch(ios_base::failure f)
+	catch(ios_base::failure &f)
 	{
 		return 0;
 	}
@@ -143,7 +143,7 @@ commonTime TimeHandler::ms2ct(unsigned int milliseconds)
 	return ct;
 }
 
-commonTime TimeHandler::getTime(string name)
+commonTime TimeHandler::getTime(const string &name)
 {
 	commonTime ct;
 	ct.days = Config::getInstance()->getInt(name+"Days");
@@ -157,7 +157,7 @@ commonTime TimeHandler::getTime(string name)
  * Returns the total runtime with toAdd added but without writing it to config file.
  * Used for stats
  */
-commonTime TimeHandler::peekTime(string name, commonTime toAdd)
+commonTime TimeHandler::peekTime(const string &name, const commonTime &toAdd)
 {
 	commonTime ct = getTime(name);
 
@@ -181,7 +181,7 @@ commonTime TimeHandler::peekTime(string name, commonTime toAdd)
  * Same as peekTotalTime but writes the time to the config file.
  * Should only be called only once! when the program shuts down
  */
-commonTime TimeHandler::addTime(string name, commonTime toAdd)
+commonTime TimeHandler::addTime(const string &name, const commonTime &toAdd)
 {
 	commonTime ct = peekTime(name,toAdd);
 
@@ -255,13 +255,13 @@ void Config::save()
 	outFile.close();
 }
 
-bool Config::exists(string varName) const
+bool Config::exists(const string &varName) const
 {
 	//Using that find returns an iterator to the end of the map if not found
 	return configMap.find(varName) != configMap.end();
 }
 
-void Config::setDefault(string varName,string content)
+void Config::setDefault(const string &varName,const string &content)
 {
 	if(exists(varName))
 		return; //Already exists do not change
@@ -278,22 +278,22 @@ long Config::isShuttingDown() const
 	return shuttingDown;
 }
 
-void Config::setString(string varName, string content)
+void Config::setString(const string &varName, const string &content)
 {
 	configMap[varName] = content;
 }
 
-void Config::setInt(string varName, int content)
+void Config::setInt(const string &varName, int content)
 {
 	configMap[varName] = itoa(content);
 }
 
-void Config::setValue(string varName,double content)
+void Config::setValue(const string &varName,double content)
 {
 	configMap[varName] = double2str(content);
 }
 
-string Config::getString(string varName)
+string Config::getString(const string &varName)
 {
 	if(exists(varName))
 	{
@@ -303,7 +303,7 @@ string Config::getString(string varName)
 		return "";
 }
 
-int Config::getInt(string varName)
+int Config::getInt(const string &varName)
 {
 	if(exists(varName))
 	{
@@ -313,7 +313,7 @@ int Config::getInt(string varName)
 		return 0;
 }
 
-double Config::getValue(string varName)
+double Config::getValue(const string &varName)
 {
 	if(exists(varName))
 	{

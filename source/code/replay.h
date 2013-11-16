@@ -63,14 +63,14 @@ public:
 	Replay(const Replay& r); //Copy constructor
 
 	//New replay type 2.0.0+:
-	void addAction(int tick, int action, string param);
+	void addAction(int tick, int action,const string &param);
 
 //Ok, I'll ignore this for some time, and just save to file, if however, we ever use a dynamic saving structure, we are fucked
-	bool saveReplay(string);	//Saves a replay
-	bool saveReplay(string,Replay p2); //saves a replay, plus another replay given as a parameter
-	bool loadReplay(string); //laods a replay
-	bool loadReplay2(string);
-	void setName(string name);
+	bool saveReplay(const string &filename);	//Saves a replay
+	bool saveReplay(const string &filename, const Replay &p2); //saves a replay, plus another replay given as a parameter
+	bool loadReplay(const string &filename); //laods a replay
+	bool loadReplay2(const string &filename);
+	void setName(const string &name);
 	string getName() const;
 	vector<Action> getActions() const; //loads the second part of the replay file, if it exists, returns false otherwise
 };

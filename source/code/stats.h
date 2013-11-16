@@ -58,11 +58,11 @@ public:
 
 	void save();
 
-	unsigned int getNumberOf(string statName);
+	unsigned int getNumberOf(const string &statName);
 
-	void addOne(string statName);
+	void addOne(const string &statName);
 
-	bool exists(string statName);
+	bool exists(const string &statName);
 
 
 };

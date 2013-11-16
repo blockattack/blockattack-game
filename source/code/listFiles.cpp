@@ -38,14 +38,14 @@ ListFiles::~ListFiles()
 }*/
 
 
-void ListFiles::setDirectory(string directory)
+void ListFiles::setDirectory(const string &directory)
 {
 	for (int i=0; i<MAX_NR_OF_FILES; i++)
 		filenames[i]="";
 #if defined(_WIN32)
 	DWORD dwError;
-	directory+="/*";
-	hFind = FindFirstFile(directory.c_str(), &FindFileData);
+	string directory2 = directory+"/*";
+	hFind = FindFirstFile(directory2.c_str(), &FindFileData);
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
 		cout << "Invalid file handle. Error is " << GetLastError() << endl;
@@ -94,7 +94,7 @@ void ListFiles::setDirectory(string directory)
 	//Put code here
 }
 
-bool ListFiles::isInList(string name)
+bool ListFiles::isInList(const string &name)
 {
 	for (int i=0; (i<=nrOfFiles); i++)
 	{
@@ -106,7 +106,7 @@ bool ListFiles::isInList(string name)
 	return false;
 }
 
-void ListFiles::setDirectory2(string dic)
+void ListFiles::setDirectory2(const string &dic)
 {
 #if defined(__unix__)
 	DIR *DirectoryPointer;
@@ -136,7 +136,6 @@ string ListFiles::getFileName(int nr)
 		return filenames[startFileNr+nr];
 	else
 	{
-		string emptyString="";
 		return "";
 	}
 }

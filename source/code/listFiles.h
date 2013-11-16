@@ -52,12 +52,12 @@ private:
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 #endif
-	bool isInList(string name); //The name is already in the list
+	bool isInList(const string &name); //The name is already in the list
 public:
 	//ListFiles();
 	//~ListFiles();
-	void setDirectory(string dictory); //Find file in BlockAttack folder
-	void setDirectory2(string dictory); //Second directory we also look in
+	void setDirectory(const string &dictory); //Find file in BlockAttack folder
+	void setDirectory2(const string &dictory); //Second directory we also look in
 	//void setDirecctoryInHome(string dictory); //Find files in home folder (it should work...)
 	string getFileName(int);      //Returns the filename of a file
 	bool fileExists(int);

@@ -72,7 +72,7 @@ string getPathToSaveFiles() __attribute__((pure));
  * if the string is not an int then 0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-int str2int(string str2parse) __attribute__((const));
+int str2int(const string &str2parse) __attribute__((const));
 
 string double2str(double num) __attribute__((const));
 
@@ -81,7 +81,7 @@ string double2str(double num) __attribute__((const));
  * if the string is not a double then 0.0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-double str2double(string str2parse) __attribute__((const));
+double str2double(const string &str2parse) __attribute__((const));
 
 #ifdef WIN32
 string getMyDocumentsPath();
@@ -92,11 +92,11 @@ class TimeHandler
 public:
 	static commonTime ms2ct(unsigned int milliseconds);
 
-	static commonTime getTime(string name);
+	static commonTime getTime(const string &name);
 
-	static commonTime peekTime(string name, commonTime toAdd);
+	static commonTime peekTime(const string &name, const commonTime &toAdd);
 
-	static commonTime addTime(string name, commonTime toAdd);
+	static commonTime addTime(const string &name, const commonTime &toAdd);
 };
 
 #define MAX_VAR_LENGTH 1024
@@ -140,36 +140,36 @@ public:
 	 *Looks in the config file and returns the string that matches the key "varName"
 	 *Returns an empty string if varName does not exist.
 	 */
-	string getString(string varName);
+	string getString(const string &varName);
 
 	/*getInt(varName)
 	 *Looks in the config file and returns the int that matches the key "varName"
 	 *Returns "0" if varName does not exist or cannot be parsed.
 	 */
-	int getInt(string varName);
+	int getInt(const string &varName);
 
 	/*getValue(varName)
 	 *Looks in the config file and returns the double that matches the key "varName"
 	 *Returns "0.0" if varName does not exist or cannot be parsed.
 	 */
-	double getValue(string varName);
+	double getValue(const string &varName);
 
 	/*setString(varName,content)
 	 *Sets the config variable with key "varName" to the value of "content"
 	 */
-	void setString(string varName,string content);
+	void setString(const string &varName,const string &content);
 
 	/*setInt(varName,content)
 	 *Sets the config variable with key "varName" to the value of "content"
 	 */
-	void setInt(string varName,int content);
+	void setInt(const string &varName,int content);
 
 	/**
 	 * Sets a config variable to a given (double) value
 	 * @param varName Name of the variable to set
 	 * @param content Value to give the variable
 	 */
-	void setValue(string varName,double content);
+	void setValue(const string &varName,double content);
 
 	/**
 	 * returns true if the key varName exists. This is used the first time 1.4.0
@@ -178,7 +178,7 @@ public:
 	 * @param varName Name of the variable
 	 * @return true if the varaible exists
 	 */
-	bool exists(string varName) const;
+	bool exists(const string &varName) const;
 
 	/*setDefault(varName,value)
 	 *if the variable "varName" does not exist it will be created with value "value"
@@ -190,7 +190,7 @@ public:
 	 * @param varName Name of the variable
 	 * @param content The default value
 	 */
-	void setDefault(string varName, string content);
+	void setDefault(const string &varName, const string &content);
 
 	/**
 	 * Should be set if the user has requested the program to shutdown.

@@ -77,7 +77,7 @@ void Stats::save()
 	}
 }
 
-unsigned int Stats::getNumberOf(string statName)
+unsigned int Stats::getNumberOf(const string &statName)
 {
 	if(exists(statName))
 	{
@@ -87,7 +87,7 @@ unsigned int Stats::getNumberOf(string statName)
 		return 0;
 }
 
-void Stats::addOne(string statName)
+void Stats::addOne(const string &statName)
 {
 	map<string,unsigned int>::iterator iter = statMap.find(statName);
 	if(iter == statMap.end())
@@ -100,7 +100,7 @@ void Stats::addOne(string statName)
 	}
 }
 
-bool Stats::exists(string statName)
+bool Stats::exists(const string &statName)
 {
 	//Using that 'find' returns an iterator to the end of the map if not found
 	return statMap.find(statName) != statMap.end();

@@ -50,7 +50,7 @@ Replay::Replay(const Replay& r)
 
 
 
-bool Replay::saveReplay(string filename)
+bool Replay::saveReplay(const string &filename)
 {
 	//Saving as fileversion 4
 	if(verboseLevel)
@@ -74,7 +74,7 @@ bool Replay::saveReplay(string filename)
 	}
 }
 
-bool Replay::saveReplay(string filename,Replay p2)
+bool Replay::saveReplay(const string &filename,const Replay &p2)
 {
 	//Saving as fileversion 4
 	if(verboseLevel)
@@ -104,7 +104,7 @@ bool Replay::saveReplay(string filename,Replay p2)
 	}
 }
 
-bool Replay::loadReplay(string filename)
+bool Replay::loadReplay(const string &filename)
 {
 	isLoaded = true;
 	actions.clear();
@@ -157,7 +157,7 @@ bool Replay::loadReplay(string filename)
 	return true;
 }
 
-bool Replay::loadReplay2(string filename)
+bool Replay::loadReplay2(const string &filename)
 {
 	isLoaded = true;
 	bool player2started = false; //set to true once the player two part is reached
@@ -213,7 +213,7 @@ bool Replay::loadReplay2(string filename)
 	return true;
 }
 
-void Replay::setName(string name)
+void Replay::setName(const string &name)
 {
 	this->name = name;
 }
@@ -228,7 +228,7 @@ vector<Action> Replay::getActions() const
 	return actions;
 }
 
-void Replay::addAction(int tick, int action, string param)
+void Replay::addAction(int tick, int action, const string &param)
 {
 #if DEBUG
 	cout << tick << " " << action << " " << param << endl;
