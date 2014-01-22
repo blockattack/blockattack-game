@@ -43,61 +43,24 @@ endif
 
 BASE_LIBS += -lphysfs
 
-$(BINARY): 	$(BUILDDIR)/main.o $(BUILDDIR)/highscore.o $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o $(BUILDDIR)/menudef.o
-	$(CPP) -O -o $(BINARY) $(BUILDDIR)/main.o $(BUILDDIR)/highscore.o  $(BUILDDIR)/ReadKeyboard.o $(BUILDDIR)/joypad.o $(BUILDDIR)/listFiles.o $(BUILDDIR)/replay.o $(BUILDDIR)/common.o $(BUILDDIR)/stats.o $(BUILDDIR)/CppSdlException.o $(BUILDDIR)/CppSdlImageHolder.o  $(BUILDDIR)/nfont.o $(BUILDDIR)/MenuSystem.o $(BUILDDIR)/menudef.o $(BASE_LIBS)
+OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o CppSdlException.o CppSdlImageHolder.o Libs/NFont.o MenuSystem.o menudef.o
+
+$(BINARY): 	$(OFILES)
+	$(CPP) -O -o $(BINARY) $(OFILES) $(BASE_LIBS)
 #-lphysfs
 
-$(BUILDDIR)/main.o:	main.cpp mainVars.hpp common.h BlockGame.hpp BlockGame.cpp
-	$(CPP) $(BASE_CFLAGS) main.cpp -o $(BUILDDIR)/main.o
+%.o : %.cpp
+	g++ -MD $(BASE_CFLAGS) -c -o $@ $<
+	@cp $*.d $*.P; \
+             sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+                 -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+             rm -f $*.d
 
-$(BUILDDIR)/blockgame.o:	BlockGame.hpp BlockGame.cpp
-	$(CPP) $(BASE_CFLAGS) BlockGame.cpp -o $(BUILDDIR)/blockgame.o
-
-$(BUILDDIR)/highscore.o: highscore.h highscore.cpp
-	$(CPP) $(BASE_CFLAGS) highscore.cpp -o $(BUILDDIR)/highscore.o
-
-
-$(BUILDDIR)/ReadKeyboard.o: ReadKeyboard.h ReadKeyboard.cpp
-	$(CPP) $(BASE_CFLAGS) ReadKeyboard.cpp -o $(BUILDDIR)/ReadKeyboard.o
-
-$(BUILDDIR)/joypad.o: joypad.h joypad.cpp
-	$(CPP) $(BASE_CFLAGS) joypad.cpp -o $(BUILDDIR)/joypad.o
-
-$(BUILDDIR)/listFiles.o: listFiles.h listFiles.cpp
-	$(CPP) $(BASE_CFLAGS) listFiles.cpp -o $(BUILDDIR)/listFiles.o
-
-$(BUILDDIR)/replay.o: replay.h replay.cpp
-	$(CPP) $(BASE_CFLAGS) replay.cpp -o $(BUILDDIR)/replay.o
-
-$(BUILDDIR)/stats.o: stats.h stats.cc
-	$(CPP) $(BASE_CFLAGS) stats.cc -o $(BUILDDIR)/stats.o
-
-$(BUILDDIR)/common.o: common.h common.cc
-	$(CPP) $(BASE_CFLAGS) common.cc -o $(BUILDDIR)/common.o
-
-$(BUILDDIR)/nfont.o: Libs/NFont.h Libs/NFont.cpp
-	$(CPP) $(BASE_CFLAGS) Libs/NFont.cpp -o $(BUILDDIR)/nfont.o
-
-$(BUILDDIR)/menudef.o: menudef.cpp
-	$(CPP) $(BASE_CFLAGS) menudef.cpp -o $(BUILDDIR)/menudef.o
-
-#$(BUILDDIR)/uploadReplay.o: uploadReplay.cc uploadReplay.h
-#	$(CPP) $(BASE_CFLAGS) uploadReplay.cc -o $(BUILDDIR)/uploadReplay.o
-
-$(BUILDDIR)/MenuSystem.o: MenuSystem.cc MenuSystem.h
-	$(CPP) $(BASE_CFLAGS) MenuSystem.cc -o $(BUILDDIR)/MenuSystem.o
-
-#$(BUILDDIR)/ttfont.o: ttfont.h ttfont.cc
-#	$(CPP) $(BASE_CFLAGS) ttfont.cc -o $(BUILDDIR)/ttfont.o
-
-$(BUILDDIR)/CppSdlImageHolder.o: CppSdlImageHolder.hpp CppSdlImageHolder.cpp
-	$(CPP) $(BASE_CFLAGS) -o $(BUILDDIR)/CppSdlImageHolder.o CppSdlImageHolder.cpp
-
-$(BUILDDIR)/CppSdlException.o: CppSdlException.hpp CppSdlException.cpp
-	$(CPP) $(BASE_CFLAGS) -o $(BUILDDIR)/CppSdlException.o CppSdlException.cpp
+-include *.P
 
 
 run: $(BINARY)
+	cd $(GAMEDIR) && ./blockattack
 
 clean:
-	rm $(BUILDDIR)/*o
+	rm *.o *.P
