@@ -9,7 +9,7 @@ standard:
 	@echo "Now compiling..."
 	export CC=gcc
 	export CPP=g++
-	@CC=gcc CPP=g++ make -C source/code -f block.make
+	@CC=gcc CPP=g++ make -C source/code -f Makefile
 	@echo "Everything has been compiled!"
 	
 clean:
