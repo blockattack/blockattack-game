@@ -134,6 +134,7 @@ public:
 
             server = enet_host_create (& address /* the address to bind the server host to */,
                                        1      /* allow up to 1 clients and/or outgoing connections */,
+					0      /* no channel limit */,
                                        0      /* assume any amount of incoming bandwidth */,
                                        0      /* assume any amount of outgoing bandwidth */);
             if (server == NULL)
@@ -163,6 +164,7 @@ public:
         ntDisconnect();
         client = enet_host_create (NULL /* create a client host */,
                                    1 /* only allow 1 outgoing connection */,
+				   0      /* no channel limit */,
                                    0 /* Unlimited downstream bandwidth */,
                                    0 /* Unlimted upstream bandwidth */);
 
@@ -173,7 +175,7 @@ public:
         else
         {
             /* Initiate the connection, allocating the four channels 0 and 1 and 2 and 3. */
-            peer = enet_host_connect (client, & address, 4);
+            peer = enet_host_connect (client, & address, 4, 0);
 
             if (peer == NULL)
             {
