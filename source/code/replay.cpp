@@ -89,7 +89,7 @@ void Replay::setFinalFrame(boardPackage bp,int theStatus)
 //Returns the frame to the current time, if time too high the final frame is returned
 boardPackage Replay::getFrameSec(Uint32 miliseconds)
 {
-    int frameToGet = (miliseconds*FRAMESPERSEC)/1000;
+    Uint32 frameToGet = (miliseconds*FRAMESPERSEC)/1000;
     if (!(frameToGet<nrOfFrames))
         return getFinalFrame();
     return bps.at(frameToGet);
@@ -97,7 +97,7 @@ boardPackage Replay::getFrameSec(Uint32 miliseconds)
 
 bool Replay::isFinnished(Uint32 miliseconds)
 {
-    int frameToGet = (miliseconds*FRAMESPERSEC)/1000;
+    Uint32 frameToGet = (miliseconds*FRAMESPERSEC)/1000;
     if (!(frameToGet<nrOfFrames))
         return true;
     return false;
@@ -129,7 +129,7 @@ bool Replay::saveReplay(string filename)
         Uint8 nrOfReplays = 1;
         saveFile.write(reinterpret_cast<char*>(&nrOfReplays),sizeof(Uint8)); //nrOfReplaysIn File
         saveFile.write(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32)); //Nr of frames in file
-        for (int i=0; i<nrOfFrames && i<bps.size();i++)
+        for (Uint32 i=0; i<nrOfFrames && i<bps.size();i++)
         { //Writing frames
             bp = bps.at(i);
             saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
@@ -161,7 +161,7 @@ bool Replay::saveReplay(string filename,Replay p2)
         Uint8 nrOfReplays = 2;
         saveFile.write(reinterpret_cast<char*>(&nrOfReplays),sizeof(Uint8)); //nrOfReplaysIn File
         saveFile.write(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32)); //Nr of frames in file
-        for (int i=0; i<nrOfFrames && i<bps.size();i++)
+        for (Uint32 i=0; i<nrOfFrames && i<bps.size();i++)
         { //Writing frames
             bp = bps.at(i);
             saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
@@ -171,7 +171,7 @@ bool Replay::saveReplay(string filename,Replay p2)
         saveFile.write(reinterpret_cast<char*>(&name),sizeof(name));
         ///Player 2 starts here!!!!!!!!!!!!!!!!!!!!!!
         saveFile.write(reinterpret_cast<char*>(&p2.nrOfFrames),sizeof(Uint32)); //Nr of frames in file
-        for (int i=0; (i<p2.nrOfFrames)&& i<p2.bps.size();i++)
+        for (Uint32 i=0; (i<p2.nrOfFrames)&& i<p2.bps.size();i++)
         { //Writing frames
             bp = p2.bps.at(i);
             saveFile.write(reinterpret_cast<char*>(&bp),sizeof(bp));
@@ -206,7 +206,7 @@ bool Replay::loadReplay(string filename)
             loadFile.read(reinterpret_cast<char*>(&nrOfPlayers),sizeof(Uint8));
             loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
             bps.clear();
-            for (int i=0; (i<nrOfFrames);i++)
+            for (Uint32 i=0; (i<nrOfFrames);i++)
             {
                 loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
                 bps.push_back(bp);
@@ -227,7 +227,7 @@ bool Replay::loadReplay(string filename)
         cout << "File not found or couldn't open: " << filename << endl;
         return false;
     }
-
+    return true;
 }
 
 bool Replay::loadReplay2(string filename)
@@ -253,7 +253,7 @@ bool Replay::loadReplay2(string filename)
             }
             cout << "loading player 2" << endl;
             loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
-            for (int i=0; (i<nrOfFrames);i++)
+            for (Uint32 i=0; (i<nrOfFrames);i++)
             {
                 loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
                 //bps.push_back(bp); We have already read player 1 with another function
@@ -263,7 +263,7 @@ bool Replay::loadReplay2(string filename)
             loadFile.read(reinterpret_cast<char*>(&name),sizeof(name));
             loadFile.read(reinterpret_cast<char*>(&nrOfFrames),sizeof(Uint32));
             bps.reserve(nrOfFrames);
-            for (int i=0; (i<nrOfFrames);i++)
+            for (Uint32 i=0; (i<nrOfFrames);i++)
             {
                 loadFile.read(reinterpret_cast<char*>(&bp),sizeof(bp));
                 bps.push_back(bp);
@@ -283,5 +283,5 @@ bool Replay::loadReplay2(string filename)
         cout << "File not found or couldn't open: " << filename << endl;
         return false;
     }
-
+    return true;
 }

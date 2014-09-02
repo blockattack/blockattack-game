@@ -386,7 +386,10 @@ public:
                 }
 
                 ntDisconnect(); //When we will disconnect!
-
+                break;
+            default:
+		//Nothing
+		break;
             }
         }
 

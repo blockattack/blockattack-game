@@ -1513,7 +1513,6 @@ void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2)
 int OpenControlsBox(int x, int y, int player)
 {
     int mousex, mousey;
-    Uint8 *keys;
     bool done =false;
     string keyname;
     MakeBackground(xsize,ysize);
@@ -2014,7 +2013,6 @@ bool OpenFileDialogbox(int x, int y, char *name)
     string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles";
     lf.setDirectory2(homeFolder.c_str());
 #endif
-    Uint8* keys;
     string strHolder;
     MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
@@ -2095,6 +2093,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
         DrawIMG(mouse,screen,mousex,mousey);
         SDL_Flip(screen); //Update screen
     }
+    return false;
 }
 
 //Slelect a theme
@@ -2110,7 +2109,6 @@ bool SelectThemeDialogbox(int x, int y, char *name)
     string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes";
     lf.setDirectory2(homeFolder.c_str());
 #endif
-    Uint8* keys;
     string strHolder;
     MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
@@ -2192,6 +2190,7 @@ bool SelectThemeDialogbox(int x, int y, char *name)
         DrawIMG(mouse,screen,mousex,mousey);
         SDL_Flip(screen); //Update screen
     }
+    return false;
 }
 
 //Open a saved replay
@@ -2209,7 +2208,6 @@ bool OpenReplayDialogbox(int x, int y, char *name)
 #endif
     lf.setDirectory(directory);
     cout << "Directory sat" << endl;
-    Uint8* keys;
     string strHolder;
     MakeBackground(xsize,ysize);
     DrawIMG(background,screen,0,0);
@@ -2378,7 +2376,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
     else
         DrawIMG(background,screen,0,0);
     //draw bottons (should be moves and drawn directly to background once)
-    if (!editorMode)
+    if (!editorMode) {
         #if NETWORK
         if (!networkActive) //We don't show the menu while running server or connected to a server
         #else
@@ -2395,6 +2393,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         { //If network is active
             DrawIMG(bBack, screen, 0, 0); //Display a disconnect button
         }
+    }
     if (!editorMode)
         DrawIMG(bExit, screen, xsize-120,ysize-120);
     //DrawIMG(boardBackBack,screen,theGame.topx-60,theGame.topy-68);
@@ -2658,7 +2657,6 @@ int PuzzleLevelSelect()
 {
     const int xplace = 200;
     const int yplace = 300;
-    Uint8 *keys;
     int levelNr, mousex, mousey;
     bool levelSelected = false;
     bool tempBool;
@@ -2747,7 +2745,6 @@ int StageLevelSelect()
 {
     const int xplace = 200;
     const int yplace = 300;
-    Uint8 *keys;
     int levelNr, mousex, mousey;
     bool levelSelected = false;
     bool tempBool;
@@ -2874,8 +2871,6 @@ int StageLevelSelect()
                         
                         SFont_Write(screen,fBlueFont,200,200,scoreString.c_str());
                         SFont_Write(screen,fBlueFont,200,250,timeString.c_str());
-                        
-                        overLevel;
                     }
             string totalString = "Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
             SFont_Write(screen,fBlueFont,200,600,totalString.c_str());   
@@ -2894,7 +2889,6 @@ int startSingleVs()
     //Where to place the windows
     const int xplace = 200;
     const int yplace = 100;
-    Uint8 *keys;	//To take keyboard input
     int mousex = 0, mousey = 0;	//To allow mouse
     bool done = false;	//When are we done?
 
@@ -3003,7 +2997,6 @@ void startVsMenu()
 {
     const int xplace = 200;
     const int yplace = 100;
-    Uint8 *keys;
     int mousex, mousey;
     bool done = false;
 
@@ -4009,7 +4002,7 @@ int main(int argc, char *argv[])
             //Gameplay
             if (joyplay1||joyplay2)
             {
-                if (joypad1.working && !theGame.AI_Enabled)
+                if (joypad1.working && !theGame.AI_Enabled) {
                     if (joyplay1)
                     {
                         joypad1.update();
@@ -4082,7 +4075,8 @@ int main(int argc, char *argv[])
                         if (joypad1.but2)
                             theGame2.PushLine();
                     }
-                if (joypad2.working && !theGame2.AI_Enabled)
+		}
+                if (joypad2.working && !theGame2.AI_Enabled) {
                     if (!joyplay2)
                     {
                         joypad2.update();
@@ -4155,6 +4149,7 @@ int main(int argc, char *argv[])
                         if (joypad2.but2)
                             theGame2.PushLine();
                     }
+		}
             }
 
             /**********************************************************************
@@ -4173,7 +4168,7 @@ int main(int argc, char *argv[])
             **************** Here comes mouse play ******************************
             ********************************************************************/
 
-            if ((mouseplay1)&&((!editorMode)&&(!theGame.AI_Enabled)||(editorModeTest))) //player 1
+            if ( mouseplay1 && ( (!editorMode && !theGame.AI_Enabled) || editorModeTest)) //player 1
                 if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
                 {
                     int yLine, xLine;
@@ -4195,7 +4190,7 @@ int main(int argc, char *argv[])
                     theGame.cursory=yLine;
                 }
 
-            if ((mouseplay2)&&(!editorMode)&&(!theGame2.AI_Enabled)) //player 2
+            if ( mouseplay2 && !editorMode && !theGame2.AI_Enabled) //player 2
                 if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
                 {
                     int yLine, xLine;

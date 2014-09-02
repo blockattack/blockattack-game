@@ -772,7 +772,7 @@ public:
             for (int i=0; i<7; i++)
                 for (int j=0; j<30; j++) {
                     if ((board[i][j]/BLOCKHANG)%10==1) {
-                        int hangNumber = (board[i][j]/10)%100;
+                        Uint32 hangNumber = (board[i][j]/10)%100;
                         if (hangNumber<=howMuchHang) {
                             board[i][j]-=BLOCKHANG;
                             board[i][j]-=hangNumber*10;
@@ -782,7 +782,7 @@ public:
                         }
                     }
                     if ((board[i][j]/BLOCKWAIT)%10==1) {
-                        int hangNumber = (board[i][j]/10)%100;
+                        Uint32 hangNumber = (board[i][j]/10)%100;
                         if (hangNumber<=howMuchHang) {
                             //The blocks must be cleared
                             board[i][j]-=hangNumber*10;
@@ -834,6 +834,7 @@ public:
             //bGarbageFallLeft = !(bGarbageFallLeft);
             return true;
         }
+	return false;
     }
 
     //Creates garbage using a given wide and height
@@ -863,6 +864,7 @@ public:
             if (nextGarbageNumber>999999) nextGarbageNumber = 10;
             return true;
         }
+        return false;
     }
 
 
@@ -1037,12 +1039,6 @@ public:
 
             } //for j
         } //for i
-        bool blockIsFalling[6][30]; //See that is falling
-        for (int i=0;i<30;i++)
-            for (int j=0;j<6;j++)
-                blockIsFalling[j][i] = false;
-
-
 
         combo = 0;
         chain = 0;
@@ -1385,33 +1381,6 @@ public:
         if (pixels>bsize)
             pixels=0;
     }
-
-    //See how high the tower is, saved in integer TowerHeight
-    /*void FindTowerHeight()
-     * {
-     * /*
-     * This function needs to be corrected, if an empty line appears towerheight become to low!
-     * /
-     * bool found = false;
-     * bool notNew = false;
-     * TowerHeight = 0;
-     * for(int i=0; i<19;i++)
-     * //while(!found)
-     * {
-     * found = true;
-     * for(int j=0;j<6;j++)
-     * if(board[j][i] != -1)
-     * found = false;
-     * if((!found) && (notNew))
-     * notNew =false;
-     * if((found)&&(!notNew))
-     * {
-     * TowerHeight=i;
-     * notNew = true;
-     * }
-     * }
-     * TowerHeight--;
-     * }*/
 
     //See how high the tower is, saved in integer TowerHeight
     void FindTowerHeight() {
@@ -2158,11 +2127,17 @@ public:
             }
         }
         
-        if ((bGameOver)&&(!editorMode))
-            if (hasWonTheGame)DrawIMG(iWinner, sBoard, 0, 5*bsize);
-            else if (bDraw) DrawIMG(iDraw, sBoard, 0, 5*bsize);
-            else
+        if ((bGameOver)&&(!editorMode)) {
+            if (hasWonTheGame) {
+                DrawIMG(iWinner, sBoard, 0, 5*bsize);
+            }
+            else if (bDraw) { 
+                DrawIMG(iDraw, sBoard, 0, 5*bsize);
+            }
+            else {
                 DrawIMG(iGameOver, sBoard, 0, 5*bsize);
+            }
+        }
     }
 
     #endif
