@@ -295,7 +295,7 @@ public:
                     event.packet -> data,
                     event.peer -> data,
                     event.channelID);*/
-                //cout << "Package recieved" << endl;
+                //cout << "Package received" << endl;
                 if (event.channelID==0) //Unreliable (only boardPacks)
                 {
                     boardPackage bpack;
@@ -324,7 +324,7 @@ public:
                     memcpy(&g,event.packet->data,sizeof(Uint16));
                     Uint8 x = (g/256);
                     Uint8 y = (g%256);
-                    cout << "Recieved Garbage: " << (int)x << "," << (int)y << endl;
+                    cout << "Received Garbage: " << (int)x << "," << (int)y << endl;
                     if ((x==255)&&(y==255))
                         bgHome->CreateGreyGarbage();
                     else
@@ -337,14 +337,14 @@ public:
                     {
                         strcpy(bgAway->name,(const char*)event.packet->data);
                         cout << "The enemy name is: " << bgAway->name << " Length: " << sizeof(char[30])<< endl;
-                        if (weAreAClient) //We have just recieved the servers name and must send our own
+                        if (weAreAClient) //We have just received the servers name and must send our own
                         {
                             ENetPacket * answerPacket = enet_packet_create(bgHome->name,sizeof(char[30]),ENET_PACKET_FLAG_RELIABLE);
                             enet_peer_send (peer, 3, answerPacket);
                         }
                     }
                     else
-                        if (event.packet->dataLength==sizeof("version3")) //We have recieved aversion number
+                        if (event.packet->dataLength==sizeof("version3")) //We have received aversion number
                         {
                             if (0!=strcmp((const char*)event.packet->data,"version3"))
                             {
@@ -358,11 +358,11 @@ public:
                             }
                         }
                         else
-                            if (event.packet->dataLength==sizeof(Uint32)) //We have recieved a seed
+                            if (event.packet->dataLength==sizeof(Uint32)) //We have received a seed
                             {
                                 memcpy(&theSeed,event.packet->data,sizeof(Uint32));
                                 bgHome->putStartBlocks(theSeed);
-                                cout << "We recieved a seed: " << theSeed << endl;
+                                cout << "We received a seed: " << theSeed << endl;
                             }
                 }
 
