@@ -3176,7 +3176,7 @@ void changePuzzleLevels()
         puzzleSavePath = home+"/.gamesaves/blockattack/"+puzzleName+".save";
 #elif defined(_WIN32)
         string home = getMyDocumentsPath();
-        if (&home!=NULL)
+        if (home.length())
         {
             puzzleSavePath = home+"/My Games/blockattack/"+puzzleName+".save";
         }
@@ -3373,7 +3373,7 @@ int main(int argc, char *argv[])
 #elif defined(_WIN32)
     string home = getMyDocumentsPath();
     string optionsPath;
-    if (&home!=NULL) //Null if no APPDATA dir exists (win 9x)
+    if (home.length()) //Null if no APPDATA dir exists (win 9x)
         optionsPath = home+"/My Games/blockattack/options.dat";
     else
         optionsPath = "options.dat";
@@ -3385,7 +3385,7 @@ int main(int argc, char *argv[])
     stageClearSavePath = home+"/.gamesaves/blockattack/stageClear.SCsave";
     puzzleSavePath = home+"/.gamesaves/blockattack/puzzle.levels.save";
 #elif defined(_WIN32)
-    if (&home!=NULL)
+    if (home.length())
     {
         stageClearSavePath = home+"/My Games/blockattack/stageClear.SCsave";
         puzzleSavePath = home+"/My Games/blockattack/puzzle.levels.save";
@@ -4567,7 +4567,7 @@ int main(int argc, char *argv[])
                                                                                                         //cout << "Replay->Save clicked" << endl;
                                                                                                         char buf[30];
                                                                                                         for (int i=0;i<29;i++)buf[i]=' ';
-                                                                                                        buf[30]=0;
+                                                                                                        buf[sizeof(buf)-1]=0;
                                                                                                         OpenDialogbox(200,100,buf);
                                                                                                         for (int i=28;buf[i]==' ';i--)
                                                                                                             buf[i]=0;
@@ -4593,7 +4593,7 @@ int main(int argc, char *argv[])
 
                                                                                                             char buf[30];
                                                                                                             for (int i=0;i<29;i++)buf[i]=' ';
-                                                                                                            buf[30]=0;
+                                                                                                            buf[sizeof(buf)-1]=0;
                                                                                                             if (OpenReplayDialogbox(50,100,buf))
                                                                                                             {
                                                                                                                 //cout << "Good way" << endl;

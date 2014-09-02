@@ -30,7 +30,7 @@ ReadKeyboard::ReadKeyboard(void)
     length = 0;
     maxLength = 16;
     position = 0;
-    strcpy(textstring,"                              ");
+    strcpy(textstring,"                             ");
 }
 
 ReadKeyboard::~ReadKeyboard(void)
@@ -47,7 +47,7 @@ ReadKeyboard::ReadKeyboard(char *oldName)
     length = 0;
     maxLength = 16;
     position = 0;
-    strcpy(textstring,"                              ");
+    strcpy(textstring,"                             ");
     strcpy(textstring,oldName);
     char charecter = textstring[maxLength+1];
     int i = maxLength+1;

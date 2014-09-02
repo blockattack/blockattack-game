@@ -57,7 +57,7 @@ Highscore::Highscore(int type)
 #elif defined(_WIN32)
     string home = getMyDocumentsPath1();
     string filename1, filename2;
-    if (&home!=NULL)
+    if (home.length())
     {
         filename1 = home+"/My Games/blockattack/endless.dat";
         filename2 = home+"/My Games/blockattack/timetrial.dat";
@@ -111,7 +111,7 @@ void Highscore::writeFile()
 #elif defined(_WIN32)
     string home = getMyDocumentsPath1();
     string filename1, filename2;
-    if (&home!=NULL)
+    if (home.length())
     {
         filename1 = home+"/My Games/blockattack/endless.dat";
         filename2 = home+"/My Games/blockattack/timetrial.dat";
