@@ -1571,8 +1571,6 @@ int OpenControlsBox(int x, int y, int player)
             }
         }	//PollEvent
 
-        keys = SDL_GetKeyState(NULL);
-
         SDL_GetMouseState(&mousex,&mousey);
 
         // If the mouse button is released, make bMouseUp equal true
@@ -2199,7 +2197,6 @@ bool SelectThemeDialogbox(int x, int y, char *name)
 //Open a saved replay
 bool OpenReplayDialogbox(int x, int y, char *name)
 {
-    bool done = false;	//We are done!
     int mousex, mousey;
     ListFiles lf = ListFiles();
     cout << "Ready to set directory!" << endl;
@@ -2218,7 +2215,7 @@ bool OpenReplayDialogbox(int x, int y, char *name)
     DrawIMG(background,screen,0,0);
     DrawIMG(bForward,background,x+460,y+420);
     DrawIMG(bBack,background,x+20,y+420);
-    while (!done)
+    while (true)
     {
         DrawIMG(background,screen,0,0);
         const int nrOfFiles = 10;
@@ -2233,14 +2230,12 @@ bool OpenReplayDialogbox(int x, int y, char *name)
         while ( SDL_PollEvent(&event) )
         {
             if ( event.type == SDL_QUIT )  {
-                done = true;
                 return false;
             }
 
             if ( event.type == SDL_KEYDOWN )
             {
                 if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
-                    done = true;
                     return false;
                 }
 
@@ -2286,7 +2281,6 @@ bool OpenReplayDialogbox(int x, int y, char *name)
                     if (lf.fileExists(i))
                     {
                         strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
-                        done=true; //The user have, clicked the purpose of this function is now complete
                         return true;
                     }
                 }
@@ -2672,9 +2666,6 @@ int PuzzleLevelSelect()
     //Loads the levels, if they havn't been loaded:
     LoadPuzzleStages();
 
-    //Keeps track of background;
-    int nowTime=SDL_GetTicks();
-
     ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
     MakeBackground(xsize,ysize);
     if (puzzleFile)
@@ -2695,9 +2686,6 @@ int PuzzleLevelSelect()
 
     do
     {
-        nowTime=SDL_GetTicks();
-
-
         DrawIMG(background, screen, 0, 0);
         DrawIMG(iCheckBoxArea,screen,xplace,yplace);
         SFont_Write(screen,fBlueFont,xplace+12,yplace+2,"Select Puzzle");
@@ -2717,8 +2705,6 @@ int PuzzleLevelSelect()
                     levelSelected = true;
                 }
             }
-
-        keys = SDL_GetKeyState(NULL);
 
         SDL_GetMouseState(&mousex,&mousey);
 
@@ -2768,9 +2754,6 @@ int StageLevelSelect()
     Uint32 tempUInt32;
     Uint32 totalScore = 0;
     Uint32 totalTime = 0;
-
-    //Keeps track of background;
-    //int nowTime=SDL_GetTicks();
 
     MakeBackground(xsize,ysize);
     ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
@@ -2823,7 +2806,6 @@ int StageLevelSelect()
 
     do
     {
-        //nowTime=SDL_GetTicks();
         DrawIMG(background, screen, 0, 0);
         DrawIMG(iCheckBoxArea,screen,xplace,yplace);
         SFont_Write(screen,fBlueFont,xplace+12,yplace+2,"Stage Clear Level Select");
@@ -2842,8 +2824,6 @@ int StageLevelSelect()
                     levelSelected = true;
                 }
             }
-
-        keys = SDL_GetKeyState(NULL);
 
         SDL_GetMouseState(&mousex,&mousey);
 
@@ -2915,7 +2895,7 @@ int startSingleVs()
     const int xplace = 200;
     const int yplace = 100;
     Uint8 *keys;	//To take keyboard input
-    int mousex, mousey;	//To allow mouse
+    int mousex = 0, mousey = 0;	//To allow mouse
     bool done = false;	//When are we done?
 
     MakeBackground(xsize,ysize);
@@ -3027,15 +3007,11 @@ void startVsMenu()
     int mousex, mousey;
     bool done = false;
 
-    //Keeps track of background;
-    //int nowTime=SDL_GetTicks();
-
     MakeBackground(xsize,ysize);
     SFont_Write(background,fBlueFont,360,650,"Press ESC to accept");
     DrawIMG(bBack,background,xsize/2-120/2,600);
     do
     {
-        //nowTime=SDL_GetTicks();
         DrawIMG(background, screen, 0, 0);
         DrawIMG(changeButtonsBack,screen,xplace,yplace);
         SFont_Write(screen,fBlueFont,xplace+50,yplace+20,"Player 1");
@@ -3107,8 +3083,6 @@ void startVsMenu()
                     done = true;
                 }
             }
-
-        keys = SDL_GetKeyState(NULL);
 
         SDL_GetMouseState(&mousex,&mousey);
 
@@ -3328,7 +3302,6 @@ int main(int argc, char *argv[])
     bReplayOpen = false;
     bScreenLocked = false;
     twoPlayers = false;	//true if two players splitscreen
-    bool vsMode = false;
     theTopScoresEndless = Highscore(1);
     theTopScoresTimeTrial = Highscore(2);
     drawBalls = true;
@@ -3608,10 +3581,6 @@ int main(int argc, char *argv[])
     strcpy(theGame.name, player1name);
     strcpy(theGame2.name, player2name);
 
-    //Keeps track of background;
-    int nowTime=SDL_GetTicks();
-
-
 #if NETWORK
     NetworkThing nt = NetworkThing();
     nt.setBGpointers(&theGame,&theGame2);
@@ -3622,7 +3591,6 @@ int main(int argc, char *argv[])
         LoadPuzzleStages();
         theGame.NewPuzzleGame(singlePuzzleNr,0,0);
         showGame = true;
-        vsMode = true;
     }
     //Draws everything to screen
     if (!editorMode)
@@ -3794,7 +3762,6 @@ int main(int argc, char *argv[])
                                 twoPlayers =false;
                                 theGame2.SetGameOver();
                                 showGame = true;
-                                vsMode = false;
                                 strcpy(theGame.name, player1name);
                                 strcpy(theGame2.name, player2name);
                             }}
@@ -3811,7 +3778,6 @@ int main(int argc, char *argv[])
                                 twoPlayers =false;
                                 theGame2.SetGameOver();
                                 showGame = true;
-                                vsMode = false;
                                 strcpy(theGame.name, player1name);
                                 strcpy(theGame2.name, player2name);
                             }}
@@ -3831,7 +3797,6 @@ int main(int argc, char *argv[])
                                 twoPlayers =false;
                                 theGame2.SetGameOver();
                                 showGame = true;
-                                vsMode = false;
                                 strcpy(theGame.name, player1name);
                                 strcpy(theGame2.name, player2name);
                             }
@@ -3847,7 +3812,6 @@ int main(int argc, char *argv[])
                                 theGame.NewVsGame(50,100,&theGame2);
                                 theGame2.NewVsGame(xsize-500,100,&theGame);
                                 closeAllMenus();
-                                vsMode = true;
                                 strcpy(theGame.name, player1name);
                                 strcpy(theGame2.name, player2name);
                                 theGame.setGameSpeed(player1Speed);
@@ -3909,7 +3873,6 @@ int main(int argc, char *argv[])
                                 twoPlayers = false;
                                 theGame2.SetGameOver();
                                 showGame = true;
-                                vsMode = true;
                                 strcpy(theGame.name, player1name);
                                 strcpy(theGame2.name, player2name);
                             }
@@ -4198,9 +4161,6 @@ int main(int argc, char *argv[])
             ***************************** Joypad end ******************************
             **********************************************************************/
 
-
-            keys = SDL_GetKeyState(NULL);
-
             if(keymenu.activated)
             {
                 mousex = keymenu.x*buttonXsize-10;
@@ -4374,7 +4334,6 @@ int main(int argc, char *argv[])
                                                     twoPlayers =false;
                                                     theGame2.SetGameOver();
                                                     showGame = true;
-                                                    vsMode = false;
                                                     strcpy(theGame.name, player1name);
                                                     strcpy(theGame2.name, player2name);
                                                 }
@@ -4391,7 +4350,6 @@ int main(int argc, char *argv[])
                                                         twoPlayers =false;
                                                         theGame2.SetGameOver();
                                                         showGame = true;
-                                                        vsMode = false;
                                                         strcpy(theGame.name, player1name);
                                                         strcpy(theGame2.name, player2name);
                                                     }
@@ -4408,7 +4366,6 @@ int main(int argc, char *argv[])
                                                             DrawIMG(background, screen, 0, 0);
                                                             twoPlayers = true; //Single player, but AI plays
                                                             showGame = true;
-                                                            vsMode = true;
                                                             theGame2.AI_Enabled=true; //Of course we need an AI
                                                             theGame2.setAIlevel((Uint8)theAIlevel);
                                                             int theTime = time(0);
@@ -4451,7 +4408,6 @@ int main(int argc, char *argv[])
                                                                     theGame.NewVsGame(50,100,&theGame2);
                                                                     theGame2.NewVsGame(xsize-500,100,&theGame);
                                                                     bNewGameOpen = false;
-                                                                    vsMode = true;
                                                                     twoPlayers = true;
                                                                     b2playersOpen = false;
                                                                     theGame.setGameSpeed(player1Speed);

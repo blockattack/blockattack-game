@@ -93,7 +93,7 @@ Highscore::Highscore(int type)
     {
         for (int i = 0; i<top; i++)
         {
-            strcpy(tabel[i].name,"Poul Sander                  \0");
+            strcpy(tabel[i].name,"Poul Sander                  ");
             tabel[i].score = 2000 - i*100;
         }
     }
