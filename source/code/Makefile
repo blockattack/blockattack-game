@@ -6,6 +6,10 @@ ifndef CC
 CC=gcc
 endif
 
+#ifdef CROSS
+CXX=$(CROSS)g++
+#endif
+
 BASE_CFLAGS=-c $(shell sdl-config --cflags)
 
 ifndef BUILDDIR
