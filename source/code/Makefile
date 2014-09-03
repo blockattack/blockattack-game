@@ -6,9 +6,9 @@ ifndef CC
 CC=gcc
 endif
 
-#ifdef CROSS
+ifdef CROSS
 CXX=$(CROSS)g++
-#endif
+endif
 
 BASE_CFLAGS=-c $(shell sdl-config --cflags)
 
@@ -16,7 +16,7 @@ ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
+BASE_LIBS=$(shell $(CROSS)sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
 
 #For developement only 
 ifndef DEBUG
