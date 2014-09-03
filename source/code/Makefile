@@ -10,7 +10,7 @@ ifdef CROSS
 CXX=$(CROSS)g++
 endif
 
-BASE_CFLAGS=-c $(shell sdl-config --cflags)
+BASE_CFLAGS=-c $(shell $(CROSS)sdl-config --cflags)
 
 ifndef BUILDDIR
 BUILDDIR=build
