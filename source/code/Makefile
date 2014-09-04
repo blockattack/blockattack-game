@@ -16,7 +16,7 @@ ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell $(CROSS)sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
+BASE_LIBS=$(shell $(CROSS)sdl-config --libs) $(shell $(CROSS)pkg-config SDL_image SDL_mixer SDL_ttf --libs) 
 
 #For developement only 
 ifndef DEBUG
