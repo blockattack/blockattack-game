@@ -185,7 +185,7 @@ void loadTheme(string themeName)
     //Remove old theme
     PHYSFS_removeFromSearchPath(oldThemePath.c_str());
     //Look in blockattack.data
-    PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
+    PHYSFS_addToSearchPath(SHAREDIR"/blockattack.data", 1);
     //Look in folder
     PHYSFS_addToSearchPath(SHAREDIR, 1);
     //Look in home folder
@@ -1976,7 +1976,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
     bool done = false;	//We are done!
     int mousex, mousey;
     ListFiles lf = ListFiles();
-    string folder = (string)SHAREDIR+(string)"/puzzles";
+    string folder = SHAREDIR"/puzzles";
     cout << "Looking in " << folder << endl;
     lf.setDirectory(folder.c_str());
 #ifdef __unix__
