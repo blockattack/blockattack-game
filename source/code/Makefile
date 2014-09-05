@@ -50,7 +50,7 @@ $(BINARY): 	$(OFILES)
 #-lphysfs
 
 %.o : %.cpp
-	g++ -MD $(BASE_CFLAGS) -c -o $@ $<
+	$(CPP) -MD $(BASE_CFLAGS) -c -o $@ $<
 	@cp $*.d $*.P; \
              sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
                  -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \

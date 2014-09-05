@@ -213,7 +213,7 @@ static int InitImages();
 static string oldThemePath = "default";
 static bool loaded = false;
 
-void loadTheme(string themeName)
+void loadTheme(const string &themeName)
 {
 	if(loaded)
 		UnloadImages();
