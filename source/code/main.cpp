@@ -128,7 +128,7 @@ SDL_Surface * IMG_Load2(const char* path)
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_File* myfile = PHYSFS_openRead(path);
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -221,7 +221,7 @@ Mix_Music * Mix_LoadMUS2(const char* path)
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_File* myfile = PHYSFS_openRead(path);
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -269,7 +269,7 @@ Mix_Chunk * Mix_LoadWAV2(const char* path)
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_File* myfile = PHYSFS_openRead(path);
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
