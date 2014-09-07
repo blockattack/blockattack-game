@@ -188,6 +188,7 @@ void loadTheme(string themeName)
     PHYSFS_addToSearchPath(SHAREDIR"/blockattack.data", 1);
     //Look in folder
     PHYSFS_addToSearchPath(SHAREDIR, 1);
+	PHYSFS_addToSearchPath(PHYSFS_getBaseDir(),1);
     //Look in home folder
     #if defined(__unix__) || defined(_WIN32)
     PHYSFS_addToSearchPath(home.c_str(), 1);
