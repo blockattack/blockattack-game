@@ -128,7 +128,7 @@ SDL_Surface * IMG_Load2(const char* path)
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_File* myfile = PHYSFS_openRead(path);
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -185,9 +185,10 @@ void loadTheme(string themeName)
     //Remove old theme
     PHYSFS_removeFromSearchPath(oldThemePath.c_str());
     //Look in blockattack.data
-    PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
+    PHYSFS_addToSearchPath(SHAREDIR"/blockattack.data", 1);
     //Look in folder
     PHYSFS_addToSearchPath(SHAREDIR, 1);
+	PHYSFS_addToSearchPath(PHYSFS_getBaseDir(),1);
     //Look in home folder
     #if defined(__unix__) || defined(_WIN32)
     PHYSFS_addToSearchPath(home.c_str(), 1);
@@ -220,7 +221,7 @@ Mix_Music * Mix_LoadMUS2(const char* path)
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_File* myfile = PHYSFS_openRead(path);
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -268,7 +269,7 @@ Mix_Chunk * Mix_LoadWAV2(const char* path)
         return NULL; //file doesn't exist
     }
 
-    PHYSFS_file* myfile = PHYSFS_openRead(path);
+    PHYSFS_File* myfile = PHYSFS_openRead(path);
 
     // Get the lenght of the file
     unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -1976,7 +1977,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
     bool done = false;	//We are done!
     int mousex, mousey;
     ListFiles lf = ListFiles();
-    string folder = (string)SHAREDIR+(string)"/puzzles";
+    string folder = SHAREDIR"/puzzles";
     cout << "Looking in " << folder << endl;
     lf.setDirectory(folder.c_str());
 #ifdef __unix__

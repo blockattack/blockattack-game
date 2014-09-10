@@ -50,17 +50,17 @@ $(BINARY): 	$(OFILES)
 #-lphysfs
 
 %.o : %.cpp
-	$(CXX) -MD $(BASE_CFLAGS) -c -o $@ $<
-	@cp $*.d $*.P; \
+	$(CXX) -MD ${BASE_CFLAGS} -o $@ $<
+	@mkdir -p .$(CROSS)deps/ ; cp $*.d .$(CROSS)deps/$*.P; \
              sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-                 -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+                 -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> .$(CROSS)deps/$*.P; \
              rm -f $*.d
 
--include *.P
+-include .$(CROSS)deps/*.P
 
 
 run: $(BINARY)
 	cd $(GAMEDIR) && ./blockattack
 
 clean:
-	rm *.o *.P
+	rm *.o */*.P; rm -rf .$(CROSS)deps;

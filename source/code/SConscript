@@ -6,13 +6,13 @@ Import('*')
 # Sources #
 src = Split("""main.cpp
 highscore.cpp
-SFont.c
+SFont.cpp
 ReadKeyboard.cpp
 joypad.cpp
 listFiles.cpp
 replay.cpp
-stats.cc
-common.cc""")
+stats.cpp
+common.cpp""")
 
 # Modify Build Environment #
 env.ParseConfig('sdl-config --cflags --libs')

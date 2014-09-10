@@ -1,6 +1,6 @@
-Thanks for downloading Block Attack - Rise Of the Blocks 1.3.2 for Linux and other Platforms
+Thanks for downloading Block Attack - Rise Of the Blocks 1.4.2 for Linux and other Platforms
 
-Version 1.3.2
+Version 1.4.2
 
 scons must be present on the system to compile. (There is a make file but it is mostly for development and unpriviliged compiling, NEVER use "make install"!)
 
@@ -12,6 +12,10 @@ The game can be ran by double clicking "starter" in the "Game" directory. (Only 
 
 If it doesn't work (because your distro uses an old stdc++ file, is not Linux or you are running 64 bit you will need to compile)
 
+Alternativly it can be build with a classic Makefile:
+cd source/code
+make
+make run
 
 If you get errors you might need certain packages on your system.
 
