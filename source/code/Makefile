@@ -41,6 +41,10 @@ else
 BASE_CFLAGS += -DNETWORK=0
 endif
 
+ifeq ($(CROSS),'i686-pc-mingw32-')
+BASE_LIBS += lws2_32
+endif
+
 BASE_LIBS += -lphysfs
 
 OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o SFont.o
