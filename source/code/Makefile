@@ -6,17 +6,17 @@ ifndef CC
 CC=gcc
 endif
 
-#ifndef CPP
-CPP=g++
-#endif
+ifdef CROSS
+CXX=$(CROSS)g++
+endif
 
-BASE_CFLAGS=-c $(shell sdl-config --cflags)
+BASE_CFLAGS=-c $(shell $(CROSS)sdl-config --cflags)
 
 ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell sdl-config --libs) -lSDL_image -lSDL_mixer -lSDL_ttf
+BASE_LIBS=$(shell $(CROSS)sdl-config --libs) $(shell $(CROSS)pkg-config SDL_image SDL_mixer SDL_ttf --libs) 
 
 #For developement only 
 ifndef DEBUG
@@ -46,11 +46,11 @@ BASE_LIBS += -lphysfs
 OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o CppSdlException.o CppSdlImageHolder.o Libs/NFont.o MenuSystem.o menudef.o
 
 $(BINARY): 	$(OFILES)
-	$(CPP) -O -o $(BINARY) $(OFILES) $(BASE_LIBS)
+	$(CXX) -O -o $(BINARY) $(OFILES) $(BASE_LIBS)
 #-lphysfs
 
 %.o : %.cpp
-	$(CPP) -MD $(BASE_CFLAGS) -c -o $@ $<
+	$(CXX) -MD $(BASE_CFLAGS) -c -o $@ $<
 	@cp $*.d $*.P; \
              sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
                  -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
