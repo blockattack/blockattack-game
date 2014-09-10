@@ -21,7 +21,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-;!insertmacro MUI_PAGE_LICENSE "..\Game\COPYING.TXT"
+;!insertmacro MUI_PAGE_LICENSE "..\..\Game\COPYING.TXT"
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
 ; Directory page
@@ -58,14 +58,14 @@ ShowUnInstDetails show
 Section "Game Files" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite try
-  File "..\Game\blockattack.exe"
-  SetOutPath "$INSTDIR\res"
-  File "..\Game\res\puzzle.levels"
-  File "..\Game\res\copy"
-  File "..\Game\res\testPuzzles"
+  File "..\..\Game\blockattack.exe"
+  SetOutPath "$INSTDIR\puzzles"
+  File "..\..\Game\puzzles\puzzle.levels"
+  File "..\..\Game\puzzles\copy"
+  File "..\..\Game\puzzles\testPuzzles"
   SetOutPath "$INSTDIR"
-  File "..\Game\COPYING.TXT"
-  File "..\Game\blockattack.data"
+  File "..\..\Game\COPYING.TXT"
+  File "....\\Game\blockattack.data"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -246,6 +246,9 @@ Section Uninstall
   Delete "$INSTDIR\gmon.out"
   Delete "$INSTDIR\stderr.txt"
   Delete "$INSTDIR\stdout.txt"
+  Delete "$INSTDIR\puzzles\puzzle.levels"
+  Delete "$INSTDIR\puzzles\copy"
+  Delete "$INSTDIR\puzzles\testPuzzles"
 
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
@@ -256,6 +259,7 @@ Section Uninstall
   RMDir "$SMPROGRAMS\$ICONS_GROUP"
   RMDir "$INSTDIR\sound"
   RMDir "$INSTDIR\res"
+  RMDir "$INSTDIR\puzzles"
   RMDir "$INSTDIR\music"
   RMDir "$INSTDIR\gfx\garbage"
   RMDir "$INSTDIR\gfx\counter"

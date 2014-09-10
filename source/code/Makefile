@@ -41,8 +41,8 @@ else
 BASE_CFLAGS += -DNETWORK=0
 endif
 
-ifeq ($(CROSS),'i686-pc-mingw32-')
-BASE_LIBS += lws2_32
+ifeq ($(CROSS),i686-pc-mingw32-)
+BASE_LIBS += -lws2_32
 endif
 
 BASE_LIBS += -lphysfs
