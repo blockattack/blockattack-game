@@ -65,7 +65,7 @@ Section "Game Files" SEC01
   File "..\..\Game\puzzles\testPuzzles"
   SetOutPath "$INSTDIR"
   File "..\..\Game\COPYING.TXT"
-  File "....\\Game\blockattack.data"
+  File "..\..\Game\blockattack.data"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -246,6 +246,7 @@ Section Uninstall
   Delete "$INSTDIR\gmon.out"
   Delete "$INSTDIR\stderr.txt"
   Delete "$INSTDIR\stdout.txt"
+  Delete "$INSTDIR\blockattack.data"
   Delete "$INSTDIR\puzzles\puzzle.levels"
   Delete "$INSTDIR\puzzles\copy"
   Delete "$INSTDIR\puzzles\testPuzzles"
