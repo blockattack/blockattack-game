@@ -49,9 +49,16 @@ BASE_LIBS += -lphysfs
 
 OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o stats.o SFont.o
 
+ifeq ($(CROSS),i686-pc-mingw32-)
+OFILES += winicon.res
+endif
+
 $(BINARY): 	$(OFILES)
 	$(CXX) -O -o $(BINARY) $(OFILES) $(BASE_LIBS)
 #-lphysfs
+
+winicon.res:	winicon.rc
+	$(CROSS)windres winicon.rc -O coff -o winicon.res
 
 %.o : %.cpp
 	$(CXX) -MD ${BASE_CFLAGS} -o $@ $<
