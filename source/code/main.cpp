@@ -2433,7 +2433,7 @@ void DrawEverything(int xsize, int ysize,BlockGame &theGame, BlockGame &theGame2
         /*
          *If single player mode (and not VS)
          */
-        if(!twoPlayers && !theGame.bGameOver)
+        if(!twoPlayers && !theGame.bGameOver && theGame2.bGameOver)
         {
             //Blank player2's board:
             DrawIMG(backBoard,screen,theGame2.topx,theGame2.topy);
