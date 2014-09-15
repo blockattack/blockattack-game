@@ -51,6 +51,7 @@ OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o replay.o common.o 
 
 ifeq ($(CROSS),i686-pc-mingw32-)
 OFILES += winicon.res
+BINARY+=.exe
 endif
 
 $(BINARY): 	$(OFILES)
