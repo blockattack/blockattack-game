@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Block Attack - Rise of the Blocks
+Comment=Switch blocks so they match
+Comment[ro_RO]=Ridicarea blocurilor
+Comment[da_DK]=Byt blokke så de passer sammen
+Comment[fr_FR]=Empilez les blocks
+GenericName=Block Attack
+Exec=blockattack
+Icon=blockattack32
+Terminal=false
+Type=Application
+Categories=Game;ArcadeGame;
