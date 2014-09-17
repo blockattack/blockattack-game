@@ -2,7 +2,7 @@ Thanks for downloading Block Attack - Rise Of the Blocks 1.4.2 for Linux and oth
 
 Version 1.4.2
 
-scons must be present on the system to compile. (There is a make file but it is mostly for development and unpriviliged compiling, NEVER use "make install"!)
+scons or make must be present on the system to compile. (There is a make file but it is mostly for development and unpriviliged compiling, NEVER use "make install"!)
 
 To build:
 scons
