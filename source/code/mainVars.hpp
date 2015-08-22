@@ -173,15 +173,9 @@ Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
 
 static bool bMouseUp;              //true if the mouse(1) is unpressed
 static bool bMouseUp2;             //true if the mouse(2) is unpressed
-static bool bNewGameOpen;          //show sub menues
-static bool bOptionsOpen;          //Show OptionsMenu (Configure and Select Puzzle)
-static bool b1playerOpen;			//show submenu
-static bool b2playersOpen;			//show submenu
-static bool bReplayOpen;			//Show replay menu
 #if NETWORK
 static bool bNetworkOpen;			//Show the network menu
 #endif
-static bool showOptions;           //true if options is open
 static bool bScreenLocked;			//Don't take input or allow any mouse interaction! Used for dialogbox and warningbox
 static bool showDialog;
 static bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline

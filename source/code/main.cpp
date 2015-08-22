@@ -112,20 +112,6 @@ http://blockattack.sf.net
 
 static void MakeBackground(int,int);
 
-void closeAllMenus()
-{
-	bNewGameOpen=false;          //show sub menues
-	bOptionsOpen=false;          //Show OptionsMenu (Configure and Select Puzzle)
-	b1playerOpen=false;			//show submenu
-	b2playersOpen=false;
-	bReplayOpen = false;
-#if NETWORK
-	bNetworkOpen = false;
-#endif
-	showOptions = false;
-
-}
-
 SDL_Surface * IMG_Load2(const char* path)
 {
 	if (!PHYSFS_exists(path))
@@ -3066,8 +3052,6 @@ static void StartSinglePlayerEndless()
 	//1 player - endless
 	player1->NewGame(SDL_GetTicks());
 	player1->putStartBlocks(time(0));
-	bNewGameOpen = false;
-	b1playerOpen = false;
 	twoPlayers =false;
 	player2->SetGameOver();
 	player1->name = player1name;
@@ -3077,7 +3061,6 @@ static void StartSinglePlayerEndless()
 static void StartSinglePlayerTimeTrial()
 {
 	player1->NewTimeTrialGame(SDL_GetTicks());
-	closeAllMenus();
 	twoPlayers =false;
 	player2->SetGameOver();
 	//vsMode = false;
@@ -3093,7 +3076,6 @@ static int StartSinglePlayerPuzzle(int level)
 	player1->NewPuzzleGame(myLevel,SDL_GetTicks());
 	MakeBackground(xsize,ysize,player1,player2);
 	DrawIMG(background, screen, 0, 0);
-	closeAllMenus();
 	twoPlayers = false;
 	player2->SetGameOver();
 	//vsMode = true;
@@ -3110,7 +3092,6 @@ static void StarTwoPlayerTimeTrial()
 	int theTime = time(0);
 	player1->putStartBlocks(theTime);
 	player2->putStartBlocks(theTime);
-	closeAllMenus();
 	twoPlayers = true;
 	player1->setGameSpeed(player1Speed);
 	player2->setGameSpeed(player2Speed);
@@ -3129,10 +3110,8 @@ static void StartTwoPlayerVs()
 	//2 player - VsMode
 	player1->NewVsGame(player2,SDL_GetTicks());
 	player2->NewVsGame(player1,SDL_GetTicks());
-	bNewGameOpen = false;
 	//vsMode = true;
 	twoPlayers = true;
-	b2playersOpen = false;
 	player1->setGameSpeed(player1Speed);
 	player2->setGameSpeed(player2Speed);
 	player1->setHandicap(player1handicap);
@@ -3291,10 +3270,6 @@ int main(int argc, char *argv[])
 
 	SoundEnabled = true;
 	MusicEnabled = true;
-	showOptions = false;
-	b1playerOpen = false;
-	b2playersOpen = false;
-	bReplayOpen = false;
 	bScreenLocked = false;
 	twoPlayers = false;	//true if two players splitscreen
 	theTopScoresEndless = Highscore(1);
@@ -3627,10 +3602,6 @@ int runGame(int gametype, int level)
 {
 	Uint8 *keys;
 	int mousex, mousey;   //Mouse coordinates
-	showOptions = false;
-	b1playerOpen = false;
-	b2playersOpen = false;
-	bReplayOpen = false;
 	bScreenLocked = false;
 	theTopScoresEndless = Highscore(1);
 	theTopScoresTimeTrial = Highscore(2);
@@ -3724,7 +3695,6 @@ int runGame(int gametype, int level)
 				theGame.NewStageGame(myLevel,SDL_GetTicks());
 				MakeBackground(xsize,ysize,&theGame,&theGame2);
 				DrawIMG(background, screen, 0, 0);
-				closeAllMenus();
 				twoPlayers =false;
 				theGame2.SetGameOver();
 				theGame.name = player1name;
@@ -3738,8 +3708,6 @@ int runGame(int gametype, int level)
 			case 4:
 			{
 				//1 player - Vs mode
-				bNewGameOpen = false;
-				b1playerOpen = false;
 				int theAIlevel = level; //startSingleVs();
 				theGame.NewVsGame(&theGame2, SDL_GetTicks());
 				theGame2.NewVsGame(&theGame, SDL_GetTicks());
@@ -3843,12 +3811,7 @@ int runGame(int gametype, int level)
 				{
 					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) )
 					{
-						if (showOptions)
-						{
-							showOptions = false;
-						}
-						else
-							done=1;
+						done=1;
 						DrawIMG(background, screen, 0, 0);
 
 					}
@@ -4310,7 +4273,6 @@ int runGame(int gametype, int level)
 					/********************************************************************
 					**************** Here comes mouse play ******************************
 					********************************************************************/
-					if ((!showOptions))
 					{
 						if (mouseplay1 && !theGame.GetAIenabled()) //player 1
 							if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
@@ -4353,19 +4315,19 @@ int runGame(int gametype, int level)
 					/********************************************************************
 					**************** Here comes mouse play ******************************
 					********************************************************************/
-					if (!showOptions)
-					{
-						if (mouseplay1 && !theGame.GetAIenabled()) //player 1
-							if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
-							{
+					
+						if (mouseplay1 && !theGame.GetAIenabled()) {
+							//player 1
+							if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600)) {
 								theGame.PushLine();
 							}
-						if (mouseplay2 && !theGame2.GetAIenabled()) //player 2
-							if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
-							{
+						} 
+						if (mouseplay2 && !theGame2.GetAIenabled()) {
+							//player 2
+							if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600)) {
 								theGame2.PushLine();
 							}
-					}
+						}
 					/********************************************************************
 					**************** Here ends mouse play *******************************
 					********************************************************************/
