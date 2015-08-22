@@ -4383,7 +4383,6 @@ int runGame(int gametype, int level)
 #endif
 			if (twoPlayers)
 			{
-				lastNrOfPlayers = 2;
 				if ((theGame.isGameOver()) && (theGame2.isGameOver()))
 				{
 					if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap())

@@ -319,7 +319,6 @@ void BlockGame::NewGame( unsigned int ticks)
 	bDisconnected =false;
 #endif
 	nrFellDown = 0;
-	lastNrOfPlayers = 1; //At least one player :-)
 	nrPushedPixel = 0;
 	nrStops = 0;
 	cursorx = 2;

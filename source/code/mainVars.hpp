@@ -270,8 +270,6 @@ unsigned long int Frames, Ticks;
 char FPS[10];
 #endif
 
-int lastNrOfPlayers; //1 if 1 player and 2 if vs. mode
-
 int verboseLevel = 0;
 
 //keySetup
