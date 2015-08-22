@@ -71,6 +71,7 @@ http://blockattack.sf.net
 #include <SDL/SDL_ttf.h>
 #include "CppSdlImageHolder.hpp"
 #include "MenuSystem.h"
+#include "puzzlehandler.hpp"
 
 //if SHAREDIR is not used we look in current directory
 #ifndef SHAREDIR
@@ -813,34 +814,6 @@ static string itoa2(int num)
 	return converter.str();
 }
 
-/*Loads all the puzzle levels*/
-static int LoadPuzzleStages()
-{
-	//if(puzzleLoaded)
-	//    return 1;
-	if (!PHYSFS_exists(((string)("puzzles/"+puzzleName)).c_str()))
-	{
-		cerr << "Warning: File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
-		return -1; //file doesn't exist
-	}
-	PhysFS::ifstream inFile(((string)("puzzles/"+puzzleName)).c_str());
-
-	inFile >> nrOfPuzzles;
-	if (nrOfPuzzles>maxNrOfPuzzleStages)
-		nrOfPuzzles=maxNrOfPuzzleStages;
-	for (int k=0; (k<nrOfPuzzles) /*&&(!inFile.eof())*/ ; k++)
-	{
-		inFile >> nrOfMovesAllowed[k];
-		for (int i=11; i>=0; i--)
-			for (int j=0; j<6; j++)
-			{
-				inFile >> puzzleLevels[k][j][i];
-			}
-	}
-	puzzleLoaded = true;
-	return 0;
-}
-
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
 {
@@ -1566,7 +1539,7 @@ public:
 		if(puzzleMode && stageButtonStatus == SBpuzzleMode)
 		{
 			DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
-			if(Level<nrOfPuzzles-1)
+			if (Level<PuzzleGetNumberOfPuzzles()-1)
 			{
 				if(hasWonTheGame)
 					DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
@@ -2657,23 +2630,7 @@ int PuzzleLevelSelect(int Type)
 	MakeBackground(xsize,ysize);
 	if(Type == 0)
 	{
-		ifstream puzzleFile(puzzleSavePath.c_str(),ios::binary);
-		if (puzzleFile)
-		{
-			for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
-			{
-				puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
-				puzzleCleared[i] = tempBool;
-			}
-			puzzleFile.close();
-		}
-		else
-		{
-			tempBool = false;
-			for (int i=0; i<nrOfPuzzles; i++)
-				puzzleCleared[i] = tempBool;
-		}
-		nrOfLevels = nrOfPuzzles;
+		nrOfLevels = PuzzleGetNumberOfPuzzles();
 	}
 	if(Type == 1)
 	{
@@ -2742,7 +2699,7 @@ int PuzzleLevelSelect(int Type)
 		{
 			DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			if(i==selected) DrawIMG(iLevelCheckBoxMarked,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-			if (Type == 0 && puzzleCleared.at(i)==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			if (Type == 0 && PuzzleIsCleared(i)) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			if (Type == 1 && stageCleared.at(i)==true) DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 		}
 
@@ -3009,30 +2966,30 @@ void startVsMenu()
 void changePuzzleLevels()
 {
 	char theFileName[30];
-	strcpy(theFileName,puzzleName.c_str());
-	for (int i=puzzleName.length(); i<30; i++)
+	strcpy(theFileName, PuzzleGetName().c_str());
+	for (int i=PuzzleGetName().length(); i<30; i++)
 		theFileName[i]=' ';
 	theFileName[29]=0;
 	if (OpenFileDialogbox(200,100,theFileName))
 	{
 		for (int i=28; ((theFileName[i]==' ')&&(i>0)); i--)
 			theFileName[i]=0;
-		puzzleName = theFileName;
+		PuzzleSetName(theFileName);
 #if defined(__unix__)
 		string home = getenv("HOME");
-		puzzleSavePath = home+"/.gamesaves/blockattack/"+puzzleName+".save";
+		PuzzleSetSavePath(home+"/.gamesaves/blockattack/"+PuzzleGetName()+".save");
 #elif defined(_WIN32)
 		string home = getMyDocumentsPath();
 		if (&home!=NULL)
 		{
-			puzzleSavePath = home+"/My Games/blockattack/"+puzzleName+".save";
+			PuzzleSetSavePath(home+"/My Games/blockattack/"+PuzzleGetName()+".save");
 		}
 		else
 		{
-			puzzleSavePath = puzzleName+".save";
+			PuzzleSetSavePath(PuzzleGetName()+".save");
 		}
 #else
-		puzzleSavePath = puzzleName+".save";
+		PuzzleSetSavePath(PuzzleGetName()+".save");
 #endif
 	}
 
@@ -3297,23 +3254,23 @@ int main(int argc, char *argv[])
 
 #if defined(__unix__)
 	stageClearSavePath = home+"/.gamesaves/blockattack/stageClear.SCsave";
-	puzzleSavePath = home+"/.gamesaves/blockattack/puzzle.levels.save";
+	PuzzleSetSavePath(home+"/.gamesaves/blockattack/puzzle.levels.save");
 #elif defined(_WIN32)
 	if (&home!=NULL)
 	{
 		stageClearSavePath = home+"/My Games/blockattack/stageClear.SCsave";
-		puzzleSavePath = home+"/My Games/blockattack/puzzle.levels.save";
+		PuzzleSetSavePath(home+"/My Games/blockattack/puzzle.levels.save");
 	}
 	else
 	{
 		stageClearSavePath = "stageClear.SCsave";
-		puzzleSavePath = "puzzle.levels.save";
+		PuzzleSetSavePath("puzzle.levels.save");
 	}
 #else
 	stageClearSavePath = "stageClear.SCsave";
-	puzzleSavePath = "puzzle.levels.save";
+	PuzzleSetSavePath("puzzle.levels.save");
 #endif
-	puzzleName="puzzle.levels";
+	PuzzleSetName("puzzle.levels");
 
 	//Init SDL
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )

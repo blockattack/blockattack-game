@@ -204,18 +204,11 @@ char player2name[30];
 
 //paths
 static string stageClearSavePath;
-static string puzzleSavePath;
-static string puzzleName;              //The filename of
 
 static const int nrOfStageLevels = 50;		//number of stages in stage Clear
-static const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
 vector<bool> stageCleared(nrOfStageLevels);		//vector that tells if a stage is cleared
 vector<Uint32> stageTimes(nrOfStageLevels);             //For statistical puposes
 vector<Uint32> stageScores(nrOfStageLevels);            //--||--
-vector<bool> puzzleCleared(maxNrOfPuzzleStages); //vector that tells if puzzle cleared
-vector<int> nrOfMovesAllowed(maxNrOfPuzzleStages);  //Moves to clear
-int puzzleLevels[maxNrOfPuzzleStages][6][12]; //Contains board layout;
-int nrOfPuzzles;    //How many are there actually?
 bool twoPlayers;    //True if two players are playing
 
 //Old mouse position:

@@ -32,6 +32,7 @@ http://blockattack.sf.net
 #define CHAINPLACE 10000000
 
 #include "BlockGame.hpp"
+#include "puzzlehandler.hpp"
 #include<boost/lexical_cast.hpp>
 
 
@@ -390,11 +391,11 @@ void BlockGame::NewPuzzleGame(int level, unsigned int ticks)
 		NewGame(ticks);
 		puzzleMode = true;
 		Level = level;
-		MovesLeft = nrOfMovesAllowed[Level];
+		MovesLeft = PuzzleNumberOfMovesAllowed(Level);
 		for (int i=0; i<6; i++)
 			for (int j=0; j<12; j++)
 			{
-				board[i][j+1] = puzzleLevels[Level][i][j];
+				board[i][j+1] = PuzzleGetBrick(Level,i,j);
 			}
 		baseSpeed = 100000;
 		speed = 100000;
@@ -437,7 +438,7 @@ void BlockGame::retryLevel(unsigned int ticks)
 void BlockGame::nextLevel(unsigned int ticks)
 {
 	if (puzzleMode) {
-		if (Level<nrOfPuzzles-1) {
+		if (Level<PuzzleGetNumberOfPuzzles()-1) {
 			NewPuzzleGame(Level+1, ticks);
 		}
 	}
@@ -1434,11 +1435,11 @@ void BlockGame::PushLineInternal()
 	if (puzzleMode && !bGameOver)
 	{
 		//Reloads level
-		MovesLeft = nrOfMovesAllowed[Level];
+		MovesLeft = PuzzleNumberOfMovesAllowed(Level);
 		for (int i=0; i<6; i++)
 			for (int j=0; j<12; j++)
 			{
-				board[i][j+1] = puzzleLevels[Level][i][j];
+				board[i][j+1] = PuzzleGetBrick(Level,i,j);
 			}
 		score=0;
 		bGameOver=false;
@@ -1996,31 +1997,13 @@ void BlockGame::Update()
 			nrStops++;
 		}
 		//If we have static content, we don't raise at all!
-		if (hasStaticContent())
+		if (hasStaticContent()) {
 			stop++;
-		if ((puzzleMode)&&(!bGameOver)&&BoardEmpty())
-		{
-			if (!singlePuzzle)
-			{
-				if(puzzleCleared[Level]==false)
-					Stats::getInstance()->addOne("puzzlesSolved");
-				puzzleCleared[Level] = true;
-				ofstream outfile;
+		}
+		if ((puzzleMode)&&(!bGameOver)&&BoardEmpty()) {
+			if (!singlePuzzle) {
+				PuzzleSetClear(Level);
 				stageButtonStatus = SBpuzzleMode;
-				outfile.open(puzzleSavePath.c_str(), ios::binary |ios::trunc);
-				if (!outfile)
-				{
-					cerr << "Error writing to file: " << puzzleSavePath << endl;
-				}
-				else
-				{
-					for (int i=0; i<nrOfPuzzles; i++)
-					{
-						bool tempBool = puzzleCleared[i];
-						outfile.write(reinterpret_cast<char*>(&tempBool), sizeof(bool));
-					}
-					outfile.close();
-				}
 			}
 			setPlayerWon();
 		}
