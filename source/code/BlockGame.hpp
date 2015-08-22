@@ -143,7 +143,7 @@ public:
 	Uint8 getAIlevel();
 	
 	virtual void AddText(int x, int y, const std::string& text, int time) {};
-	virtual void AddBall(int x, int y, bool left, int color) {};
+	virtual void AddBall(int x, int y, bool right, int color) {};
 	virtual void AddExplosion(int x, int y) {};
 	
 	int GetScore();

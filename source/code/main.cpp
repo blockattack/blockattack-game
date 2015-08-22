@@ -1262,10 +1262,10 @@ public:
 		SDL_FreeSurface(sBoard);
 	}
 	
-	int GetTopX() {
+	int GetTopX() const {
 		return topx;
 	}
-	int GetTopY() {
+	int GetTopY() const {
 		return topy;
 	}
 	
@@ -1273,7 +1273,7 @@ public:
 		theTextManeger.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
 	}
 	
-	void AddBall(int x, int y, bool left, int color) override {
+	void AddBall(int x, int y, bool right, int color) override {
 		theBallManeger.addBall(topx+40+x*bsize, topy+bsize*12-y*bsize, left, color);
 	}
 	
