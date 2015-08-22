@@ -1287,7 +1287,7 @@ private:
 		sBoard = SDL_DisplayFormat(backBoard);
 	}
 	//Draws all the bricks to the board (including garbage)
-	void PaintBricks()
+	void PaintBricks() const
 	{
 		for (int i=0; ((i<13)&&(i<30)); i++)
 			for (int j=0; j<6; j++)
@@ -1386,7 +1386,7 @@ private:
 
 	}
 	//Paints the bricks gotten from a replay/net package
-	void SimplePaintBricks()
+	void SimplePaintBricks() const
 	{
 		/*
 		 * We will need to mark the blocks that must have a bomb, we will here need to see, what is falling

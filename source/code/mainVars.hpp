@@ -196,7 +196,7 @@ unsigned long int currentTime;      //contains the current time, so we don't cal
 
 static int xsize = 1024;
 static int ysize = 768;
-static int bsize = 50;
+static const int bsize = 50;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
 char player1name[30];
