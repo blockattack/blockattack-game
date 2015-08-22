@@ -73,7 +73,7 @@ public:
 	{
 		if(!bgHome || !bgAway)
 			return;
-		strcpy(bgAway->name,player2name);
+		bgAway->name = player2name;
 		if (weAreConnected || weAreAClient || weAreAServer)
 		{
 			if (weAreAClient)
@@ -303,8 +303,9 @@ public:
 				/* Store any relevant client information here. */
 				//event.peer -> data = "Client";
 				{
-
-					ENetPacket * namePacket = enet_packet_create(bgHome->name,sizeof(char[30]),ENET_PACKET_FLAG_RELIABLE);
+					char buffer[30];
+					snprintf(buffer, sizeof(buffer), "%s", bgHome->name.c_str());
+					ENetPacket * namePacket = enet_packet_create(buffer,sizeof(buffer),ENET_PACKET_FLAG_RELIABLE);
 					//if(weAreAServer)
 					enet_host_broadcast (server, 3, namePacket);
 					ENetPacket * answerPacket = enet_packet_create("version4",sizeof("version4"),ENET_PACKET_FLAG_RELIABLE);
@@ -370,12 +371,14 @@ public:
 				{
 					if (event.packet->dataLength==sizeof(char[30])) //We have reveived a name
 					{
-						strcpy(bgAway->name,(const char*)event.packet->data);
+						bgAway->name = (const char*)event.packet->data;
 						if(verboseLevel)
 							cout << "The enemy name is: " << bgAway->name << " Length: " << sizeof(char[30])<< endl;
 						if (weAreAClient) //We have just recieved the servers name and must send our own
 						{
-							ENetPacket * answerPacket = enet_packet_create(bgHome->name,sizeof(char[30]),ENET_PACKET_FLAG_RELIABLE);
+							char buffer[30];
+							snprintf(buffer, sizeof(buffer), "%s", bgHome->name.c_str());
+							ENetPacket * answerPacket = enet_packet_create(buffer, sizeof(buffer), ENET_PACKET_FLAG_RELIABLE);
 							enet_peer_send (peer, 3, answerPacket);
 						}
 					}

@@ -136,7 +136,7 @@ protected:
 
 public:
 
-	char name[30];
+	std::string name;
 	Replay theReplay;   //Stores the replay
 
 public:

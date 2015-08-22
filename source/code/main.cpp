@@ -3049,8 +3049,8 @@ static void StartSinglePlayerEndless()
 	twoPlayers =false;
 	player2->SetGameOver();
 	showGame = true;
-	strcpy(player1->name, player1name);
-	strcpy(player2->name, player2name);
+	player1->name = player1name;
+	player2->name = player2name;
 }
 
 static void StartSinglePlayerTimeTrial()
@@ -3061,8 +3061,8 @@ static void StartSinglePlayerTimeTrial()
 	player2->SetGameOver();
 	showGame = true;
 	//vsMode = false;
-	strcpy(player1->name, player1name);
-	strcpy(player2->name, player2name);
+	player1->name = player1name;
+	player2->name = player2name;
 }
 
 static int StartSinglePlayerPuzzle(int level)
@@ -3078,8 +3078,8 @@ static int StartSinglePlayerPuzzle(int level)
 	player2->SetGameOver();
 	showGame = true;
 	//vsMode = true;
-	strcpy(player1->name, player1name);
-	strcpy(player2->name, player2name);
+	player1->name = player1name;
+	player2->name = player2name;
 	return 0;
 }
 
@@ -3101,8 +3101,8 @@ static void StarTwoPlayerTimeTrial()
 		player1->setAIlevel(player1AIlevel);
 	if(player2AI)
 		player2->setAIlevel(player2AIlevel);
-	strcpy(player1->name, player1name);
-	strcpy(player2->name, player2name);
+	player1->name = player1name;
+	player2->name = player2name;
 }
 
 static void StartTwoPlayerVs()
@@ -3125,8 +3125,8 @@ static void StartTwoPlayerVs()
 	int theTime = time(0);
 	player1->putStartBlocks(theTime);
 	player2->putStartBlocks(theTime);
-	strcpy(player1->name, player1name);
-	strcpy(player2->name, player2name);
+	player1->name = player1name;
+	player2->name = player2name;
 }
 
 static void StartReplay(string filename)
@@ -3523,8 +3523,8 @@ int main(int argc, char *argv[])
 
 
 	//Takes names from file instead
-	strcpy(theGame.name, player1name);
-	strcpy(theGame2.name, player2name);
+	theGame.name = player1name;
+	theGame2.name = player2name;
 
 #if NETWORK
 	//NetworkThing nt = NetworkThing();
@@ -3658,8 +3658,8 @@ int runGame(int gametype, int level)
 	theGame2.SetGameOver();
 
 	//Takes names from file instead
-	strcpy(theGame.name, player1name);
-	strcpy(theGame2.name, player2name);
+	theGame.name = player1name;
+	theGame2.name = player2name;
 
 	Joypad joypad1 = Joypad();    //Creates a joypad
 	Joypad joypad2 = Joypad();    //Creates a joypad
@@ -3712,8 +3712,8 @@ int runGame(int gametype, int level)
 				twoPlayers =false;
 				theGame2.SetGameOver();
 				showGame = true;
-				strcpy(theGame.name, player1name);
-				strcpy(theGame2.name, player2name);
+				theGame.name = player1name;
+				theGame2.name = player2name;
 			}
 			break;
 			case 3:
@@ -3736,8 +3736,8 @@ int runGame(int gametype, int level)
 				int theTime = time(0);
 				theGame.putStartBlocks(theTime);
 				theGame2.putStartBlocks(theTime);
-				strcpy(theGame.name, player1name);
-				strcpy(theGame2.name, player2name);
+				theGame.name = player1name;
+				theGame2.name = player2name;
 			}
 			break;
 			case 10:

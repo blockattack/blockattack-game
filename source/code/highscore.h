@@ -62,7 +62,7 @@ public:
 	Highscore(int type);
 
 	bool isHighScore(int);
-	void addScore(char[],int);
+	void addScore(const std::string& newName, int);
 	int getScoreNumber(int);
 	char* getScoreName(int);
 };

@@ -143,7 +143,7 @@ bool Highscore::isHighScore(int newScore)
 		return false;
 }
 
-void Highscore::addScore(char newName[], int newScore)
+void Highscore::addScore(const string& newName, int newScore)
 {
 	int ranking = top-1;
 	while ((tabel[ranking-1].score<newScore) && (ranking != 0))
@@ -156,7 +156,7 @@ void Highscore::addScore(char newName[], int newScore)
 	}
 	tabel[ranking].score = newScore;
 	strcpy(tabel[ranking].name,"                            \0");
-	strcpy(tabel[ranking].name,newName);
+	snprintf(tabel[ranking].name, sizeof(tabel[ranking].name), "%s", newName.c_str());
 	Highscore::writeFile();
 }
 

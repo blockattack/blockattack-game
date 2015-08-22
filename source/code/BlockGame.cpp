@@ -264,7 +264,7 @@ void BlockGame::MoveCursorTo(int x, int y)
 {
 	format f("%1% %2%");
 	f % x % y;
-	ActionPerformed(ACTION_MOVECURSORTO,f.str());
+	ActionPerformed(ACTION_MOVECURSORTO, f.str());
 	cursorx = x;
 	cursory = y;
 }
@@ -469,10 +469,12 @@ void BlockGame::NewVsGame(int tx, int ty, BlockGame *target, bool AI,unsigned in
 	NewGame(tx, ty,ticks);
 	vsMode = true;
 	AI_Enabled = AI;
-	if(!AI)
+	if(!AI) {
 		Stats::getInstance()->addOne("VSgamesStarted");
-	else
-		strcpy(name,"CPU\0");
+	}
+	else {
+		name = "CPU";
+	}
 	putStartBlocks();
 	garbageTarget = target;
 }
@@ -2147,7 +2149,7 @@ void BlockGame::ActionPerformed(int action, string param)
 {
 	if(bGameOver || bReplaying)
 		return;
-	theReplay.addAction(ticks-gameStartedAt,action,param);
+	theReplay.addAction(ticks-gameStartedAt, action, param);
 }
 
 int BlockGame::GotAction(unsigned int &tick,int &action,string &param)
