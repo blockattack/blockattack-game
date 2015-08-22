@@ -29,6 +29,8 @@ http://blockattack.sf.net
 #include "replay.h"
 
 #define NUMBEROFCHAINS 100
+#define BLOCKWAIT 100000
+#define BLOCKHANG 1000
 
 #define ACTION_UPDATE 0
 #define ACTION_MOVECURSOR 1

@@ -181,7 +181,6 @@ static bool bReplayOpen;			//Show replay menu
 #if NETWORK
 static bool bNetworkOpen;			//Show the network menu
 #endif
-static bool showGame;              //the game is active don't show highscores/options
 static bool showOptions;           //true if options is open
 static bool bScreenLocked;			//Don't take input or allow any mouse interaction! Used for dialogbox and warningbox
 static bool showDialog;

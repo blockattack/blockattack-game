@@ -28,8 +28,6 @@ http://blockattack.sf.net
 #define FALLTIME 20
 //Don't change the following, they are fundamental and later some functions are hardcoded
 #define BLOCKFALL 10000
-#define BLOCKWAIT 100000
-#define BLOCKHANG 1000
 #define GARBAGE 1000000
 #define CHAINPLACE 10000000
 
@@ -117,7 +115,6 @@ BlockGame::BlockGame()
 		chainSize[i] = 0;
 	}
 	theReplay = Replay();
-	showGame = true;              //The game is now active
 	lastCounter = -1;           //To prevent the final chunk to be played when stating the program
 }	//Constructor
 
@@ -360,7 +357,6 @@ void BlockGame::NewGame( unsigned int ticks)
 		chainSize[i] = 0;
 	}
 	lastAImove = ticks+3000;
-	showGame = true;
 	theReplay = Replay();
 	ActionPerformed(ACTION_NEW,"");
 }	//NewGame
@@ -546,7 +542,6 @@ void BlockGame::setPlayerWon()
 		}
 	}
 	hasWonTheGame = true;
-	showGame = false;
 }
 
 //void SetGameOver();
@@ -571,7 +566,6 @@ void BlockGame::setDraw()
 	}
 	hasWonTheGame = false;
 	bDraw = true;
-	showGame = false;
 	Mix_HaltChannel(1);
 	if(!AI_Enabled && !bReplaying)
 		Stats::getInstance()->addOne("totalDraws");
@@ -1274,7 +1268,6 @@ void BlockGame::SetGameOver()
 		theReplay.setName(name);
 	}
 	bGameOver = true;
-	showGame = false;
 	if(stageClear)
 		stageButtonStatus = SBstageClear;
 }
@@ -1450,7 +1443,6 @@ void BlockGame::PushLineInternal()
 			}
 		score=0;
 		bGameOver=false;
-		showGame = true;
 	}
 
 	if ((TowerHeight>12) && (!puzzleMode)&&(!bGameOver)&&(chain==0))

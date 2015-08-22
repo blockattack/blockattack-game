@@ -3070,7 +3070,6 @@ static void StartSinglePlayerEndless()
 	b1playerOpen = false;
 	twoPlayers =false;
 	player2->SetGameOver();
-	showGame = true;
 	player1->name = player1name;
 	player2->name = player2name;
 }
@@ -3081,7 +3080,6 @@ static void StartSinglePlayerTimeTrial()
 	closeAllMenus();
 	twoPlayers =false;
 	player2->SetGameOver();
-	showGame = true;
 	//vsMode = false;
 	player1->name = player1name;
 	player2->name = player2name;
@@ -3098,7 +3096,6 @@ static int StartSinglePlayerPuzzle(int level)
 	closeAllMenus();
 	twoPlayers = false;
 	player2->SetGameOver();
-	showGame = true;
 	//vsMode = true;
 	player1->name = player1name;
 	player2->name = player2name;
@@ -3553,11 +3550,9 @@ int main(int argc, char *argv[])
 	nt.setBGpointers(&theGame,&theGame2);
 #endif
 
-	if (singlePuzzle)
-	{
+	if (singlePuzzle) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
-		showGame = true;
 	}
 	//Draws everything to screen
 	if (!editorMode)
@@ -3695,7 +3690,6 @@ int runGame(int gametype, int level)
 	{
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
-		showGame = true;
 	}
 	//Draws everything to screen
 	if (!editorMode)
@@ -3733,7 +3727,6 @@ int runGame(int gametype, int level)
 				closeAllMenus();
 				twoPlayers =false;
 				theGame2.SetGameOver();
-				showGame = true;
 				theGame.name = player1name;
 				theGame2.name = player2name;
 			}
@@ -3753,7 +3746,6 @@ int runGame(int gametype, int level)
 				MakeBackground(xsize,ysize,&theGame,&theGame2);
 				DrawIMG(background, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
-				showGame = true;
 				theGame2.setAIlevel((Uint8)theAIlevel);
 				int theTime = time(0);
 				theGame.putStartBlocks(theTime);
@@ -3877,14 +3869,14 @@ int runGame(int gametype, int level)
 							timeHeldP1S=SDL_GetTicks();
 							timesRepeatedP1S=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player1keys].left) && (showGame) )
+						if ( (event.key.keysym.sym == keySettings[player1keys].left) )
 						{
 							theGame.MoveCursor('W');
 							repeatingW[0]=true;
 							timeHeldP1W=SDL_GetTicks();
 							timesRepeatedP1W=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player1keys].right) && (showGame) )
+						if ( (event.key.keysym.sym == keySettings[player1keys].right) )
 						{
 							theGame.MoveCursor('E');
 							repeatingE[0]=true;
@@ -3917,14 +3909,14 @@ int runGame(int gametype, int level)
 							timeHeldP2S=SDL_GetTicks();
 							timesRepeatedP2S=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player2keys].left) && (showGame) )
+						if ( (event.key.keysym.sym == keySettings[player2keys].left) )
 						{
 							theGame2.MoveCursor('W');
 							repeatingW[1]=true;
 							timeHeldP2W=SDL_GetTicks();
 							timesRepeatedP2W=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player2keys].right) && (showGame) )
+						if ( (event.key.keysym.sym == keySettings[player2keys].right) )
 						{
 							theGame2.MoveCursor('E');
 							repeatingE[1]=true;
