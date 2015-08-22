@@ -311,8 +311,8 @@ public:
 					ENetPacket * answerPacket = enet_packet_create("version4",sizeof("version4"),ENET_PACKET_FLAG_RELIABLE);
 					enet_host_broadcast (server, 3, answerPacket);
 					theSeed = time(0)/4;
-					bgHome->NewVsGame(50,100,bgAway,SDL_GetTicks());
-					bgAway->NewVsGame(xsize-500,100,bgHome,SDL_GetTicks());
+					bgHome->NewVsGame(bgAway, SDL_GetTicks());
+					bgAway->NewVsGame(bgHome, SDL_GetTicks());
 					bgHome->putStartBlocks(theSeed);
 					ENetPacket * timePacket = enet_packet_create(&theSeed,sizeof(theSeed),ENET_PACKET_FLAG_RELIABLE);
 					enet_host_broadcast (server, 3, timePacket);

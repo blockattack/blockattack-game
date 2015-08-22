@@ -1268,12 +1268,31 @@ public:
 		sBoard = SDL_DisplayFormat(tmp);
 		SDL_FreeSurface(tmp);
 		//BlockGame::BlockGame(tx,ty);
-		BlockGame::topx = tx;
-		BlockGame::topy = ty;
+		topx = tx;
+		topy = ty;
 	}
 	~BlockGameSdl()
 	{
 		SDL_FreeSurface(sBoard);
+	}
+	
+	int GetTopX() {
+		return topx;
+	}
+	int GetTopY() {
+		return topy;
+	}
+	
+	void AddText(int x, int y, const std::string& text, int time) override {
+		theTextManeger.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
+	}
+	
+	void AddBall(int x, int y, bool left, int color) override {
+		theBallManeger.addBall(topx+40+x*bsize, topy+bsize*12-y*bsize, left, color);
+	}
+	
+	void AddExplosion(int x, int y) override { 
+		theExplosionManeger.addExplosion(topx-10+x*bsize, topy+bsize*12-10-y*bsize);
 	}
 private:
 	void convertSurface()
@@ -1666,6 +1685,9 @@ public:
 		BlockGame::Update(newtick);
 		DoPaintJob();
 	}
+	
+private:
+	int topx, topy;
 };
 
 
@@ -2609,7 +2631,7 @@ static void MakeBackground(int xsize,int ysize)
 }
 
 //Generates the background with red board backs
-static void MakeBackground(int xsize,int ysize,BlockGame *theGame, BlockGame *theGame2)
+static void MakeBackground(int xsize,int ysize,BlockGameSdl *theGame, BlockGameSdl *theGame2)
 {
 	MakeBackground(xsize,ysize);
 	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
@@ -2617,7 +2639,7 @@ static void MakeBackground(int xsize,int ysize,BlockGame *theGame, BlockGame *th
 	standardBackground = false;
 }
 
-static void MakeBackground(int xsize, int ysize, BlockGame *theGame)
+static void MakeBackground(int xsize, int ysize, BlockGameSdl *theGame)
 {
 	MakeBackground(xsize,ysize);
 	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
@@ -3042,7 +3064,7 @@ static BlockGameSdl *player2;
 static void StartSinglePlayerEndless()
 {
 	//1 player - endless
-	player1->NewGame(50,100,SDL_GetTicks());
+	player1->NewGame(SDL_GetTicks());
 	player1->putStartBlocks(time(0));
 	bNewGameOpen = false;
 	b1playerOpen = false;
@@ -3055,7 +3077,7 @@ static void StartSinglePlayerEndless()
 
 static void StartSinglePlayerTimeTrial()
 {
-	player1->NewTimeTrialGame(50,100,SDL_GetTicks());
+	player1->NewTimeTrialGame(SDL_GetTicks());
 	closeAllMenus();
 	twoPlayers =false;
 	player2->SetGameOver();
@@ -3070,7 +3092,7 @@ static int StartSinglePlayerPuzzle(int level)
 	int myLevel = PuzzleLevelSelect(0);
 	if(myLevel == -1)
 		return 1;
-	player1->NewPuzzleGame(myLevel,50,100,SDL_GetTicks());
+	player1->NewPuzzleGame(myLevel,SDL_GetTicks());
 	MakeBackground(xsize,ysize,player1,player2);
 	DrawIMG(background, screen, 0, 0);
 	closeAllMenus();
@@ -3086,8 +3108,8 @@ static int StartSinglePlayerPuzzle(int level)
 
 static void StarTwoPlayerTimeTrial()
 {
-	player1->NewTimeTrialGame(50,100,SDL_GetTicks());
-	player2->NewTimeTrialGame(xsize-500,100,SDL_GetTicks());
+	player1->NewTimeTrialGame(SDL_GetTicks());
+	player2->NewTimeTrialGame(SDL_GetTicks());
 	int theTime = time(0);
 	player1->putStartBlocks(theTime);
 	player2->putStartBlocks(theTime);
@@ -3108,8 +3130,8 @@ static void StarTwoPlayerTimeTrial()
 static void StartTwoPlayerVs()
 {
 	//2 player - VsMode
-	player1->NewVsGame(50,100,player2,SDL_GetTicks());
-	player2->NewVsGame(xsize-500,100,player1,SDL_GetTicks());
+	player1->NewVsGame(player2,SDL_GetTicks());
+	player2->NewVsGame(player1,SDL_GetTicks());
 	bNewGameOpen = false;
 	//vsMode = true;
 	twoPlayers = true;
@@ -3133,9 +3155,9 @@ static void StartReplay(string filename)
 {
 	Replay r1,r2;
 	r1.loadReplay(filename);
-	player1->playReplay(50,100,SDL_GetTicks(),r1);
+	player1->playReplay(SDL_GetTicks(),r1);
 	r2.loadReplay2(filename);
-	player2->playReplay(xsize-500,100,SDL_GetTicks(),r2);
+	player2->playReplay(SDL_GetTicks(),r2);
 }
 
 static void StartHostServer()
@@ -3534,7 +3556,7 @@ int main(int argc, char *argv[])
 	if (singlePuzzle)
 	{
 		LoadPuzzleStages();
-		theGame.NewPuzzleGame(singlePuzzleNr,0,0,SDL_GetTicks());
+		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 		showGame = true;
 	}
 	//Draws everything to screen
@@ -3672,7 +3694,7 @@ int runGame(int gametype, int level)
 	if (singlePuzzle)
 	{
 		LoadPuzzleStages();
-		theGame.NewPuzzleGame(singlePuzzleNr,0,0,SDL_GetTicks());
+		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 		showGame = true;
 	}
 	//Draws everything to screen
@@ -3705,7 +3727,7 @@ int runGame(int gametype, int level)
 				int myLevel = PuzzleLevelSelect(1);
 				if(myLevel == -1)
 					return 1;
-				theGame.NewStageGame(myLevel,50,100,SDL_GetTicks());
+				theGame.NewStageGame(myLevel,SDL_GetTicks());
 				MakeBackground(xsize,ysize,&theGame,&theGame2);
 				DrawIMG(background, screen, 0, 0);
 				closeAllMenus();
@@ -3726,8 +3748,8 @@ int runGame(int gametype, int level)
 				bNewGameOpen = false;
 				b1playerOpen = false;
 				int theAIlevel = level; //startSingleVs();
-				theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
-				theGame2.NewVsGame(xsize-500,100,&theGame,SDL_GetTicks());
+				theGame.NewVsGame(&theGame2, SDL_GetTicks());
+				theGame2.NewVsGame(&theGame, SDL_GetTicks());
 				MakeBackground(xsize,ysize,&theGame,&theGame2);
 				DrawIMG(background, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
@@ -3798,9 +3820,9 @@ int runGame(int gametype, int level)
 			networkPlay=true;
 			if (!weWhereConnected) //We have just connected
 			{
-				theGame.NewVsGame(50,100,&theGame2,SDL_GetTicks());
+				theGame.NewVsGame(&theGame2,SDL_GetTicks());
 				theGame.putStartBlocks(nt.theSeed);
-				theGame2.playNetwork(xsize-500,100,SDL_GetTicks());
+				theGame2.playNetwork(SDL_GetTicks());
 				nt.theGameHasStarted();
 				DrawIMG(background, screen, 0, 0);
 			}

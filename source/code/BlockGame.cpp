@@ -21,6 +21,17 @@ http://blockattack.sf.net
 ===========================================================================
 */
 
+//Some definitions
+//The game is divided in frames. FALLTIME means the blocks will fall one block every FRAMELENGTH*FALLTIME millisecond
+#define FRAMELENGTH 50
+#define HANGTIME 40
+#define FALLTIME 20
+//Don't change the following, they are fundamental and later some functions are hardcoded
+#define BLOCKFALL 10000
+#define BLOCKWAIT 100000
+#define BLOCKHANG 1000
+#define GARBAGE 1000000
+#define CHAINPLACE 10000000
 
 #include "BlockGame.hpp"
 #include<boost/lexical_cast.hpp>
@@ -180,16 +191,6 @@ bool BlockGame::isGameOver()
 	return bGameOver;
 }
 
-int BlockGame::GetTopX()
-{
-	return topx;
-}
-
-int BlockGame::GetTopY()
-{
-	return topy;
-}
-
 Sint32 BlockGame::GetGameStartedAt()
 {
 	return gameStartedAt;
@@ -311,7 +312,7 @@ bool BlockGame::popGarbage(Uint8 *width, Uint8 *height, Uint8 *type)
 
 
 //Instead of creating new object new game is called, to prevent memory leaks
-void BlockGame::NewGame(int tx, int ty, unsigned int ticks)
+void BlockGame::NewGame( unsigned int ticks)
 {
 	this->ticks = ticks;
 	stageButtonStatus = SBdontShow;
@@ -324,8 +325,6 @@ void BlockGame::NewGame(int tx, int ty, unsigned int ticks)
 	lastNrOfPlayers = 1; //At least one player :-)
 	nrPushedPixel = 0;
 	nrStops = 0;
-	topx = tx;
-	topy = ty;
 	cursorx = 2;
 	cursory = 3;
 	stop = 0;
@@ -366,20 +365,20 @@ void BlockGame::NewGame(int tx, int ty, unsigned int ticks)
 	ActionPerformed(ACTION_NEW,"");
 }	//NewGame
 
-void BlockGame::NewTimeTrialGame(int x,int y, unsigned int ticks)
+void BlockGame::NewTimeTrialGame( unsigned int ticks)
 {
-	NewGame(x,y,ticks);
+	NewGame(ticks);
 	ActionPerformed(ACTION_NEWTT,"");
 	timetrial = true;
 	putStartBlocks();
 }
 
 //Starts a new stage game, takes level as input!
-void BlockGame::NewStageGame(int level, int tx, int ty,unsigned int ticks)
+void BlockGame::NewStageGame(int level, unsigned int ticks)
 {
 	if (level > -1)
 	{
-		NewGame(tx, ty,ticks);
+		NewGame(ticks);
 		stageClear = true;
 		Level = level;
 		Stats::getInstance()->addOne("PlayedStageLevel"+itoa2(level));
@@ -389,11 +388,11 @@ void BlockGame::NewStageGame(int level, int tx, int ty,unsigned int ticks)
 	}
 }
 
-void BlockGame::NewPuzzleGame(int level, int tx, int ty, unsigned int ticks)
+void BlockGame::NewPuzzleGame(int level, unsigned int ticks)
 {
 	if (level>-1)
 	{
-		NewGame(tx, ty,ticks);
+		NewGame(ticks);
 		puzzleMode = true;
 		Level = level;
 		MovesLeft = nrOfMovesAllowed[Level];
@@ -431,31 +430,33 @@ void BlockGame::NewPuzzleGame(int level, int tx, int ty, unsigned int ticks)
 //Replay the current level
 void BlockGame::retryLevel(unsigned int ticks)
 {
-	if(puzzleMode)
-		NewPuzzleGame(Level,topx,topy,ticks);
-	else if(stageClear)
-		NewStageGame(Level,topx,topy,ticks);
+	if (puzzleMode) {
+		NewPuzzleGame(Level, ticks);
+	}
+	else if (stageClear) {
+		NewStageGame(Level, ticks);
+	}
 }
 
 //Play the next level
 void BlockGame::nextLevel(unsigned int ticks)
 {
-	if(puzzleMode)
-	{
-		if(Level<nrOfPuzzles-1)
-			NewPuzzleGame(Level+1,topx,topy,ticks);
+	if (puzzleMode) {
+		if (Level<nrOfPuzzles-1) {
+			NewPuzzleGame(Level+1, ticks);
+		}
 	}
-	else if(stageClear)
-	{
-		if(Level<50-1)
-			NewStageGame(Level+1,topx,topy,ticks);
+	else if(stageClear) {
+		if (Level<50-1) {
+			NewStageGame(Level+1, ticks);
+		}
 	}
 }
 
 //Starts new Vs Game (two Player)
-void BlockGame::NewVsGame(int tx, int ty, BlockGame *target,unsigned int ticks)
+void BlockGame::NewVsGame(BlockGame *target, unsigned int ticks)
 {
-	NewGame(tx, ty,ticks);
+	NewGame(ticks);
 	ActionPerformed(ACTION_NEWVS,"");
 	vsMode = true;
 	putStartBlocks();
@@ -464,9 +465,9 @@ void BlockGame::NewVsGame(int tx, int ty, BlockGame *target,unsigned int ticks)
 }
 
 //Starts new Vs Game (two Player)
-void BlockGame::NewVsGame(int tx, int ty, BlockGame *target, bool AI,unsigned int ticks)
+void BlockGame::NewVsGame(BlockGame *target, bool AI, unsigned int ticks)
 {
-	NewGame(tx, ty,ticks);
+	NewGame(ticks);
 	vsMode = true;
 	AI_Enabled = AI;
 	if(!AI) {
@@ -485,14 +486,14 @@ void BlockGame::Demonstration(bool toggle)
 	baseSpeed = 0;
 }
 //We want to play the replay (must have been loaded beforehand)
-void BlockGame::playReplay(int tx, int ty, unsigned int ticks, Replay r)
+void BlockGame::playReplay( unsigned int ticks, const Replay& r)
 {
 	if(r.getActions().size()==0)
 	{
 		cerr << "Empty replay data" << endl;
 		return;
 	}
-	NewGame(tx, ty,ticks);
+	NewGame(ticks);
 	gameStartedAt = ticks+3000;
 	replayIndex = 0;
 	bReplaying = true; //We are playing, no calculations
@@ -506,9 +507,9 @@ void BlockGame::playReplay(int tx, int ty, unsigned int ticks, Replay r)
 #if NETWORK
 
 //network play
-void BlockGame::playNetwork(int tx, int ty,unsigned int ticks)
+void BlockGame::playNetwork(unsigned int ticks)
 {
-	NewGame(tx, ty,ticks);
+	NewGame(ticks);
 	gameStartedAt = ticks;
 	bReplaying = false; //We are playing, no calculations
 	bNetworkPlayer = true; //Don't Take input from replay file
@@ -1007,9 +1008,9 @@ void BlockGame::ClearBlocks()
 					if (chainSize[chain]<chainSize[board[i][j]/10000000])
 						chain = board[i][j]/10000000;
 
-					theBallManeger.addBall(topx+40+i*bsize, topy+bsize*12-j*bsize, true, board[i][j]%10);
-					theBallManeger.addBall(topx+i*bsize, topy+bsize*12-j*bsize, false, board[i][j]%10);
-					theExplosionManeger.addExplosion(topx-10+i*bsize, topy+bsize*12-10-j*bsize);
+					AddBall(i, j, true, board[i][j]%10);
+					AddBall(i, j, false, board[i][j]%10);
+					AddExplosion(i, j);
 					board[i][j]=-2;
 				}
 		}
@@ -1135,8 +1136,9 @@ void BlockGame::ClearBlocks()
 					{
 						dead=true;
 						string tempS = itoa(chainSize[chain]);
-						if (chainSize[chain]>1)
-							theTextManeger.addText(topx-10+j*bsize, topy+12*bsize-i*bsize, tempS, 1000);
+						if (chainSize[chain]>1) {
+							AddText(j, i, tempS, 1000);
+						}
 					}
 				}
 	} //This was there text was added

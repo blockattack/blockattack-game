@@ -26,21 +26,8 @@ http://blockattack.sf.net
 
 #include "stats.h"
 #include "common.h"
-#include "SDL.h"
 #include "replay.h"
 
-
-//Some definitions
-//The game is divided in frames. FALLTIME means the blocks will fall one block every FRAMELENGTH*FALLTIME millisecond
-#define FRAMELENGTH 50
-#define HANGTIME 40
-#define FALLTIME 20
-//Don't change the following, they are fundamental and later some functions are hardcoded
-#define BLOCKFALL 10000
-#define BLOCKWAIT 100000
-#define BLOCKHANG 1000
-#define GARBAGE 1000000
-#define CHAINPLACE 10000000
 #define NUMBEROFCHAINS 100
 
 #define ACTION_UPDATE 0
@@ -113,7 +100,6 @@ protected:
 	bool timetrial, stageClear, vsMode, puzzleMode;
 	int Level; //Only used in stageClear and puzzle (not implemented)
 	int stageClearLimit; //stores number of lines user must clear to win
-	int topx, topy;
 	int combo;
 	int chain;
 	int cursorx; //stores cursor position
@@ -153,12 +139,14 @@ public:
 	//Also enables AI
 	void setAIlevel(Uint8 aiLevel);
 	Uint8 getAIlevel();
-
+	
+	virtual void AddText(int x, int y, const std::string& text, int time) {};
+	virtual void AddBall(int x, int y, bool left, int color) {};
+	virtual void AddExplosion(int x, int y) {};
+	
 	int GetScore();
 	int GetHandicap();
 	bool isGameOver();
-	int GetTopX();
-	int GetTopY();
 	Sint32 GetGameStartedAt();
 	Sint32 GetGameEndedAt();
 	bool isTimeTrial();
@@ -176,21 +164,21 @@ public:
 	void MoveCursorTo(int x, int y);
 	bool GetIsWinner();
 	//Instead of creating new object new game is called, to prevent memory leaks
-	void NewGame(int tx, int ty, unsigned int ticks);
-	void NewTimeTrialGame(int x,int y, unsigned int ticks);
+	void NewGame(unsigned int ticks);
+	void NewTimeTrialGame(unsigned int ticks);
 	//Starts a new stage game, takes level as input!
-	void NewStageGame(int level, int tx, int ty,unsigned int ticks);
-	void NewPuzzleGame(int level, int tx, int ty, unsigned int ticks);
+	void NewStageGame(int level, unsigned int ticks);
+	void NewPuzzleGame(int level, unsigned int ticks);
 	//Replay the current level
 	void retryLevel(unsigned int ticks);
 	//Play the next level
 	void nextLevel(unsigned int ticks);
 	//Starts new Vs Game (two Player)
-	void NewVsGame(int tx, int ty, BlockGame *target,unsigned int ticks);
+	void NewVsGame(BlockGame *target,unsigned int ticks);
 	//Starts new Vs Game (two Player)
-	void NewVsGame(int tx, int ty, BlockGame *target, bool AI,unsigned int ticks);
+	void NewVsGame(BlockGame *target, bool AI,unsigned int ticks);
 	//We want to play the replay (must have been loaded beforehand)
-	void playReplay(int tx, int ty, unsigned int ticks, Replay r);
+	void playReplay(unsigned int ticks, const Replay& r);
 	void putStartBlocks(Uint32 n);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
@@ -218,7 +206,7 @@ public:
 	int GotAction(unsigned int &tick,int &action,string &param);
 #if NETWORK
 	//network play
-	void playNetwork(int tx, int ty,unsigned int ticks);
+	void playNetwork(unsigned int ticks);
 #endif
 	//Prints "winner" and ends game
 	void setPlayerWon();
