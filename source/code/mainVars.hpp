@@ -41,37 +41,19 @@ const char sharedir[] = SHAREDIR;
 static SDL_Surface *background;    //Stores background
 SDL_Surface *backgroundImage; //Stores the background image
 static SDL_Surface *backBoard;     //Stores the background to the board
-//static SDL_Surface *b1player;
-//static SDL_Surface *b2players;
-//static SDL_Surface *bVsMode;
-//static SDL_Surface *bVsModeConfig; //Added in 1.4.0
-//static SDL_Surface *bStageClear;
-//static SDL_Surface *bPuzzle;
 static CppSdl::CppSdlImageHolder bNewGame;      //The New Game botton
-//static SDL_Surface *bEndless;      //Endless button (sub to new)
-//static SDL_Surface *bTimeTrial;    //Time trial button (sub to new)
 static SDL_Surface *bOptions;      //The Options botton
-//new in 1.1.1
 static SDL_Surface *bConfigure;    //The configure button
 static SDL_Surface *bSelectPuzzle; //The Select Puzzle Button
 static SDL_Surface *bBack;         //The "Back" button
 static SDL_Surface *bForward;      //The "forward" button
-//new in 1.1.1 end
-//new in 1.1.2
 static SDL_Surface *iChainBack;
-//new in 1.1.2 end (nota that iSmallFont has also been added)
-//new in 1.2.0
-//static SDL_Surface *bReplay;
-//static SDL_Surface *bSave;
-//static SDL_Surface *bLoad;
 #if NETWORK
 //static SDL_Surface *bNetwork;
 //static SDL_Surface *bConnect;
 //static SDL_Surface *bHost;
 #endif
-//new in 1.2.0 end
 static SDL_Surface *bHighScore;    //The High Score botton
-//static SDL_Surface *bExit;         //The Exit botton
 static SDL_Surface *blackLine;		//The seperator in stage clear
 static SDL_Surface *stageBobble;	//The bobble instage clear
 SDL_Surface *screen;        //The whole screen;
@@ -89,15 +71,10 @@ static SDL_Surface *counter[3];    //Counts down from 3
 static SDL_Surface *bricks[7];     //The bricks, saved in an array of pointers
 static SDL_Surface *crossover;     //Cross the bricks that will be cleared soon
 static SDL_Surface *balls[7];      //The balls (the small ones that jump around)
-//static SDL_Surface *iBlueFont;      //Contains the blue font used
-//static SDL_Surface *iSmallFont;	//Small font used for the chain text
-//static SDL_Surface *optionsBack;
 static SDL_Surface *changeButtonsBack;
 static SDL_Surface *dialogBox;
-//SDL_Surface *fileDialogBox;  //Manual entering of filename, new in 1.1.1, obsolute in 1.1.2
 static SDL_Surface *bOn;
 static SDL_Surface *bOff;
-//static SDL_Surface *bChange;
 static SDL_Surface *b1024;
 static SDL_Surface *iLevelCheck;		//To the level select screen
 static SDL_Surface *iLevelCheckBox;
@@ -143,17 +120,10 @@ static SDL_Surface *bNext;
 
 CppSdl::CppSdlImageHolder menuMarked;
 CppSdl::CppSdlImageHolder menuUnmarked;
-//end new in 1.4.0
-//static SDL_Surface *mouse;				//The mouse cursor
 CppSdl::CppSdlImageHolder mouse;
-
 
 static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
 
-
-//static SFont_Font *fBlueFont;      //Stores the blue font (SFont)
-//static SFont_Font *fSmallFont;		//Stores the small font (SFont)
-//TTFont ttfont;           //Stores the TTF font (TTFSDL)
 static NFont nf_button_font;        //Font used for buttons!
 NFont nf_scoreboard_font;
 static NFont nf_standard_blue_font;      //Font used instead of the old blue SFont
@@ -203,10 +173,6 @@ static bool networkActive;
 
 static char serverAddress[30];
 #endif
-
-//should be automatically disabled if framerate to low (isn't implemented and wont be soon/ever):
-//const int ballsFpsEnable = 30;     //If framerate higher -> enable balls
-//const int ballsFpsDisable = 10;    //If framerate lower -> disable balls
 
 //other ball constants:
 static const double gravity = 200.8; //acceleration
@@ -294,20 +260,6 @@ control keySettings[3];	//array to hold the controls (default and two custom)
 
 #define KEYMENU_MAXWITH 4
 #define KEYMENU_MAXDEPTH 7
-
-//The following struct holds variables relevant to selecting menu items with
-//keyboard/joypad.
-/*struct KeyMenu_t
-{
-    unsigned long canBeActivatedTime; //Time that the KeyMenu can be activated by pressing a button
-    bool activated; //The keymenu is activated
-    //Here comes the coordinates to the key we are howering.
-    int x;
-    int y;
-    bool menumap[KEYMENU_MAXWITH][KEYMENU_MAXDEPTH];
-};
-
-static KeyMenu_t keymenu;*/
 
 enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
 
