@@ -525,7 +525,7 @@ void BlockGame::setPlayerWon()
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
 		bGameOver = true;
-		if (SoundEnabled)Mix_PlayChannel(1, applause, 0);
+		PlayerWonEvent();
 		if(!AI_Enabled && !bReplaying)
 		{
 			Stats::getInstance()->addOne("totalWins");
@@ -1019,7 +1019,7 @@ void BlockGame::ClearBlocks()
 			{
 				board[i][j]=-1;
 				setChain=true;
-				if (SoundEnabled)Mix_PlayChannel(0, boing, 0);
+				BlockPopEvent();
 			}
 			if (board[i][j]!=-1)
 				if ((setChain)&&((board[i][j]/GARBAGE)%10!=1)&&((board[i][j]/GARBAGE)%10!=2))
@@ -1240,7 +1240,9 @@ void BlockGame::ClearBlocks()
 			if (chainUsed[i]==true)
 			{
 				if ((vsMode)&&(chainSize[i]>1)) garbageTarget->CreateGarbage(6, chainSize[i]-1);
-				if ((SoundEnabled)&&(chainSize[i]>4))Mix_PlayChannel(1, applause, 0);
+				if (chainSize[i]>4) {
+					LongChainDoneEvent();
+				}
 				if(chainSize[i]>1 && !puzzleMode && !AI_Enabled)
 					Stats::getInstance()->addOne((string)"chainX"+itoa(chainSize[i]));
 				chainUsed[i]=false;
@@ -1449,7 +1451,7 @@ void BlockGame::PushLineInternal()
 	{
 		if ((!vsMode)&&(theTopScoresEndless.isHighScore(score))&&(!AI_Enabled))
 		{
-			if (SoundEnabled)Mix_PlayChannel(1, applause, 0);
+			EndlessHighscoreEvent();
 			theTopScoresEndless.addScore(name, score);
 			if(verboseLevel)
 				cout << "New high score!" << endl;
@@ -1981,7 +1983,6 @@ void BlockGame::Update()
 		}
 		if ((TowerHeight>12)&&(prevTowerHeight<13)&&(!puzzleMode))
 		{
-			//if (SoundEnabled) Mix_PlayChannel(1, heartBeat, 0);
 			stop+=1000;
 		}
 
@@ -2053,7 +2054,7 @@ void BlockGame::Update()
 		if ((timetrial) && (!bGameOver) && (nowTime>gameStartedAt+2*60*1000))
 		{
 			SetGameOver();
-			if(!NoSound && SoundEnabled)Mix_PlayChannel(1,counterFinalChunk,0);
+			TimeTrialEndEvent();
 			if ((theTopScoresTimeTrial.isHighScore(score))&&(!AI_Enabled))
 			{
 				theTopScoresTimeTrial.addScore(name, score);

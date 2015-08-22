@@ -1242,16 +1242,42 @@ public:
 		return topy;
 	}
 	
-	void AddText(int x, int y, const std::string& text, int time) override {
+	void AddText(int x, int y, const std::string& text, int time) const override {
 		theTextManeger.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
 	}
 	
-	void AddBall(int x, int y, bool right, int color) override {
+	void AddBall(int x, int y, bool right, int color) const  override {
 		theBallManeger.addBall(topx+40+x*bsize, topy+bsize*12-y*bsize, left, color);
 	}
 	
-	void AddExplosion(int x, int y) override { 
+	void AddExplosion(int x, int y) const  override { 
 		theExplosionManeger.addExplosion(topx-10+x*bsize, topy+bsize*12-10-y*bsize);
+	}
+	
+	void PlayerWonEvent() const  override {
+		if (!SoundEnabled) {return;}
+		Mix_PlayChannel(1, applause, 0);
+	}
+	
+	void BlockPopEvent() const  override {
+		if (!SoundEnabled) {return;}
+		Mix_PlayChannel(0, boing, 0);
+	}
+	
+	void LongChainDoneEvent() const  override {
+		if (!SoundEnabled) {return;}
+		Mix_PlayChannel(1, applause, 0);
+	}
+	
+	void TimeTrialEndEvent() const  override {
+		if(!NoSound && SoundEnabled) {
+			Mix_PlayChannel(1,counterFinalChunk,0);
+		}
+	}
+	
+	void EndlessHighscoreEvent() const  override {
+		if (!SoundEnabled) { return; }
+		Mix_PlayChannel(1, applause, 0);
 	}
 private:
 	void convertSurface()

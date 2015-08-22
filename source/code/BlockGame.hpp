@@ -142,9 +142,14 @@ public:
 	void setAIlevel(Uint8 aiLevel);
 	Uint8 getAIlevel();
 	
-	virtual void AddText(int x, int y, const std::string& text, int time) {};
-	virtual void AddBall(int x, int y, bool right, int color) {};
-	virtual void AddExplosion(int x, int y) {};
+	virtual void AddText(int x, int y, const std::string& text, int time) const  {}
+	virtual void AddBall(int x, int y, bool right, int color) const  {}
+	virtual void AddExplosion(int x, int y) const  {}
+	virtual void PlayerWonEvent() const  {}
+	virtual void BlockPopEvent() const  {}
+	virtual void LongChainDoneEvent() const  {}
+	virtual void TimeTrialEndEvent() const  {}
+	virtual void EndlessHighscoreEvent() const  {}
 	
 	int GetScore();
 	int GetHandicap();
