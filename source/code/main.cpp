@@ -1259,6 +1259,10 @@ public:
 		Mix_PlayChannel(1, applause, 0);
 	}
 	
+	void DrawEvent() const override {
+		Mix_HaltChannel(1);
+	}
+	
 	void BlockPopEvent() const  override {
 		if (!SoundEnabled) {return;}
 		Mix_PlayChannel(0, boing, 0);

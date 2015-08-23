@@ -169,92 +169,92 @@ void BlockGame::setAIlevel(Uint8 aiLevel)
 	AI_MoveSpeed=120-(20*(aiLevel-3));
 };
 
-Uint8 BlockGame::getAIlevel()
+Uint8 BlockGame::getAIlevel() const
 {
 	return (120-AI_MoveSpeed)/20+3;
 }
 
-int BlockGame::GetScore()
+int BlockGame::GetScore() const
 {
 	return score;
 }
 
-int BlockGame::GetHandicap()
+int BlockGame::GetHandicap() const
 {
 	return handicap;
 }
 
-bool BlockGame::isGameOver()
+bool BlockGame::isGameOver() const
 {
 	return bGameOver;
 }
 
-Sint32 BlockGame::GetGameStartedAt()
+Sint32 BlockGame::GetGameStartedAt() const
 {
 	return gameStartedAt;
 }
 
-Sint32 BlockGame::GetGameEndedAt()
+Sint32 BlockGame::GetGameEndedAt() const
 {
 	return gameEndedAfter;
 }
 
-bool BlockGame::isTimeTrial()
+bool BlockGame::isTimeTrial() const
 {
 	return timetrial;
 }
 
-bool BlockGame::isStageClear()
+bool BlockGame::isStageClear() const
 {
 	return stageClear;
 }
 
-bool BlockGame::isVsMode()
+bool BlockGame::isVsMode() const
 {
 	return vsMode;
 }
 
-bool BlockGame::isPuzzleMode()
+bool BlockGame::isPuzzleMode() const
 {
 	return puzzleMode;
 }
 
-int BlockGame::GetLinesCleared()
+int BlockGame::GetLinesCleared() const
 {
 	return linesCleared;
 }
 
-int BlockGame::GetStageClearLimit()
+int BlockGame::GetStageClearLimit() const
 {
 	return stageClearLimit;
 }
 
-int BlockGame::GetChains()
+int BlockGame::GetChains() const
 {
 	return chain;
 }
 
-int BlockGame::GetPixels()
+int BlockGame::GetPixels() const
 {
 	return pixels;
 }
 
-int BlockGame::GetSpeedLevel()
+int BlockGame::GetSpeedLevel() const
 {
 	return speedLevel;
 }
 
-int BlockGame::GetTowerHeight()
+int BlockGame::GetTowerHeight() const
 {
 	return TowerHeight;
 }
 
-int BlockGame::GetCursorX()
+int BlockGame::GetCursorX() const
 {
 	return cursorx;
 }
 
-int BlockGame::GetCursorY()
+int BlockGame::GetCursorY() const
 {
 	return cursory;
 }
@@ -268,7 +268,7 @@ void BlockGame::MoveCursorTo(int x, int y)
 	cursory = y;
 }
 
-bool BlockGame::GetIsWinner()
+bool BlockGame::GetIsWinner()  const
 {
 	return hasWonTheGame;
 }
@@ -566,9 +566,10 @@ void BlockGame::setDraw()
 	}
 	hasWonTheGame = false;
 	bDraw = true;
-	Mix_HaltChannel(1);
-	if(!AI_Enabled && !bReplaying)
+	DrawEvent();
+	if (!AI_Enabled && !bReplaying) {
 		Stats::getInstance()->addOne("totalDraws");
+	}
 }
 
 

@@ -140,36 +140,37 @@ public:
 	//Set the move speed of the AI based on the aiLevel parameter
 	//Also enables AI
 	void setAIlevel(Uint8 aiLevel);
-	Uint8 getAIlevel();
+	Uint8 getAIlevel()  const;
 	
 	virtual void AddText(int x, int y, const std::string& text, int time) const  {}
 	virtual void AddBall(int x, int y, bool right, int color) const  {}
 	virtual void AddExplosion(int x, int y) const  {}
 	virtual void PlayerWonEvent() const  {}
+	virtual void DrawEvent() const {}
 	virtual void BlockPopEvent() const  {}
 	virtual void LongChainDoneEvent() const  {}
 	virtual void TimeTrialEndEvent() const  {}
 	virtual void EndlessHighscoreEvent() const  {}
 	
-	int GetScore();
-	int GetHandicap();
-	bool isGameOver();
-	Sint32 GetGameStartedAt();
-	Sint32 GetGameEndedAt();
-	bool isTimeTrial();
-	bool isStageClear();
-	bool isVsMode();
-	bool isPuzzleMode();
-	int GetLinesCleared();
-	int GetStageClearLimit();
-	int GetChains();
-	int GetPixels();
-	int GetSpeedLevel();
-	int GetTowerHeight();
-	int GetCursorX();
-	int GetCursorY();
+	int GetScore() const;
+	int GetHandicap() const;
+	bool isGameOver() const;
+	Sint32 GetGameStartedAt() const;
+	Sint32 GetGameEndedAt() const;
+	bool isTimeTrial() const;
+	bool isStageClear() const;
+	bool isVsMode() const;
+	bool isPuzzleMode() const;
+	int GetLinesCleared() const;
+	int GetStageClearLimit() const;
+	int GetChains() const;
+	int GetPixels() const;
+	int GetSpeedLevel() const;
+	int GetTowerHeight() const;
+	int GetCursorX() const;
+	int GetCursorY() const;
 	void MoveCursorTo(int x, int y);
-	bool GetIsWinner();
+	bool GetIsWinner() const;
 	//Instead of creating new object new game is called, to prevent memory leaks
 	void NewGame(unsigned int ticks);
 	void NewTimeTrialGame(unsigned int ticks);
