@@ -78,7 +78,6 @@ BlockGame::BlockGame()
 	score = 0;
 	bGameOver = false;
 	bDraw = false;
-	bReplaying=false; //No replay by default
 	timetrial = false;
 	stageClear = false;
 	vsMode = false;
@@ -111,7 +110,6 @@ BlockGame::BlockGame()
 		chainUsed[i]=false;
 		chainSize[i] = 0;
 	}
-	theReplay = Replay();
 	lastCounter = -1;           //To prevent the final chunk to be played when stating the program
 }	//Constructor
 
@@ -125,7 +123,6 @@ void BlockGame::setGameSpeed(Uint8 globalSpeedLevel)
 {
 	format f("%1%");
 	f % globalSpeedLevel;
-	ActionPerformed(ACTION_GAMESPEED,f.str());
 	switch (globalSpeedLevel)
 	{
 	case 0:
@@ -153,7 +150,6 @@ void BlockGame::setHandicap(Uint8 globalHandicap)
 {
 	format f("%1%");
 	f % globalHandicap;
-	ActionPerformed(ACTION_HANDICAP, f.str());
 	handicap=1000*((Uint32)globalHandicap);
 }
 
@@ -257,9 +253,6 @@ int BlockGame::GetCursorY() const
 
 void BlockGame::MoveCursorTo(int x, int y)
 {
-	format f("%1% %2%");
-	f % x % y;
-	ActionPerformed(ACTION_MOVECURSORTO, f.str());
 	cursorx = x;
 	cursory = y;
 }
@@ -274,7 +267,6 @@ void BlockGame::NewGame( unsigned int ticks)
 {
 	this->ticks = ticks;
 	stageButtonStatus = SBdontShow;
-	bReplaying  =  false;
 	nrFellDown = 0;
 	nrPushedPixel = 0;
 	nrStops = 0;
@@ -301,7 +293,6 @@ void BlockGame::NewGame( unsigned int ticks)
 	pushedPixelAt = gameStartedAt;
 	nextGarbageNumber = 10;
 	handicap=0;
-	actionIndex = 0;
 	for (int i=0; i<7; i++)
 		for (int j=0; j<30; j++)
 		{
@@ -313,14 +304,11 @@ void BlockGame::NewGame( unsigned int ticks)
 		chainSize[i] = 0;
 	}
 	lastAImove = ticks+3000;
-	theReplay = Replay();
-	ActionPerformed(ACTION_NEW,"");
 }	//NewGame
 
 void BlockGame::NewTimeTrialGame( unsigned int ticks)
 {
 	NewGame(ticks);
-	ActionPerformed(ACTION_NEWTT,"");
 	timetrial = true;
 	putStartBlocks();
 }
@@ -409,7 +397,6 @@ void BlockGame::nextLevel(unsigned int ticks)
 void BlockGame::NewVsGame(BlockGame *target, unsigned int ticks)
 {
 	NewGame(ticks);
-	ActionPerformed(ACTION_NEWVS,"");
 	vsMode = true;
 	putStartBlocks();
 	garbageTarget = target;
@@ -437,44 +424,29 @@ void BlockGame::Demonstration(bool toggle)
 	speed=0;
 	baseSpeed = 0;
 }
-//We want to play the replay (must have been loaded beforehand)
-void BlockGame::playReplay( unsigned int ticks, const Replay& r)
-{
-	if(r.getActions().size()==0)
-	{
-		cerr << "Empty replay data" << endl;
-		return;
-	}
-	NewGame(ticks);
-	gameStartedAt = ticks+3000;
-	replayIndex = 0;
-	bReplaying = true; //We are playing, no calculations
-	theReplay = r;
-}
 
 //Prints "winner" and ends game
 void BlockGame::setPlayerWon()
 {
-	ActionPerformed(ACTION_WIN,"");
 	if (!bGameOver || !hasWonTheGame)
 	{
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
-		if(!AI_Enabled && !bReplaying)
+		if(!AI_Enabled)
 		{
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
 		bGameOver = true;
 		PlayerWonEvent();
-		if(!AI_Enabled && !bReplaying)
+		if(!AI_Enabled)
 		{
 			Stats::getInstance()->addOne("totalWins");
-			if(garbageTarget->AI_Enabled && !(garbageTarget->bReplaying))
+			if(garbageTarget->AI_Enabled)
 			{
 				//We have defeated an AI
 				Stats::getInstance()->addOne("defeatedAI"+itoa(garbageTarget->getAIlevel()));
 			}
 		}
-		if(AI_Enabled && !(garbageTarget->AI_Enabled) && garbageTarget->bReplaying==false)
+		if(AI_Enabled && !(garbageTarget->AI_Enabled))
 		{
 			//The AI have defeated a human player
 			Stats::getInstance()->addOne("defeatedByAI"+itoa(getAIlevel()));
@@ -486,24 +458,22 @@ void BlockGame::setPlayerWon()
 //Prints "draw" and ends the game
 void BlockGame::setDraw()
 {
-	ActionPerformed(ACTION_DRAW, "");
 	bGameOver = true;
-	if(!AI_Enabled && !bReplaying)
+	if(!AI_Enabled)
 	{
 		TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 	}
 	hasWonTheGame = false;
 	bDraw = true;
 	DrawEvent();
-	if (!AI_Enabled && !bReplaying) {
+	if (!AI_Enabled) {
 		Stats::getInstance()->addOne("totalDraws");
 	}
 }
 
 
-
 //Test if LineNr is an empty line, returns false otherwise.
-bool BlockGame::LineEmpty(int lineNr)
+bool BlockGame::LineEmpty(int lineNr) const
 {
 	bool empty = true;
 	for (int i = 0; i <7; i++)
@@ -513,7 +483,7 @@ bool BlockGame::LineEmpty(int lineNr)
 }
 
 //Test if the entire board is empty (used for Puzzles)
-bool BlockGame::BoardEmpty()
+bool BlockGame::BoardEmpty() const
 {
 	bool empty = true;
 	for (int i=0; i<6; i++)
@@ -524,7 +494,7 @@ bool BlockGame::BoardEmpty()
 }
 
 //Anything that the user can't move? In that case Game Over cannot occur
-bool BlockGame::hasStaticContent()
+bool BlockGame::hasStaticContent() const
 {
 	for (int i=0; i<6; i++)
 		for (int j=1; j<13; j++)
@@ -545,9 +515,6 @@ void BlockGame::putStartBlocks()
 
 void BlockGame::putStartBlocks(Uint32 n)
 {
-	format f("%1%");
-	f % n;
-	ActionPerformed(ACTION_STARTBLOCKS ,f.str());
 #if DEBUG
 	cout << n << ":" << f.str() << endl;
 #endif
@@ -713,9 +680,6 @@ void BlockGame::ReduceStuff()
 //Creates garbage using a given wide and height
 bool BlockGame::CreateGarbage(int wide, int height)
 {
-	format f("%1% %2%");
-	f % wide % height;
-	ActionPerformed(ACTION_CREATEGARBAGE,f.str());
 	{
 		if (wide>6) wide = 6;
 		if (height>12) height = 12;
@@ -753,31 +717,27 @@ bool BlockGame::CreateGarbage(int wide, int height)
 //Creates garbage using a given wide and height
 bool BlockGame::CreateGreyGarbage()
 {
-	ActionPerformed(ACTION_CREATEGRAYGARBAGE,"");
+	int startPosition = 12;
+	while ((!(LineEmpty(startPosition))) || (startPosition == 29))
+		startPosition++;
+	if (startPosition == 29) return false; //failed to place blocks
+	if (29-startPosition<1) return false;	//not enough space
+	int start, end;
 	{
-		int startPosition = 12;
-		while ((!(LineEmpty(startPosition))) || (startPosition == 29))
-			startPosition++;
-		if (startPosition == 29) return false; //failed to place blocks
-		if (29-startPosition<1) return false;	//not enough space
-		int start, end;
-		{
-			start=0;
-			end=6;
-		}
-		for (int i = startPosition; i <startPosition+1; i++)
-		{
-			for (int j = start; j < end; j++)
-			{
-				board[j][i] = 2*1000000+nextGarbageNumber;
-			}
-		}
-		nextGarbageNumber++;
-		if (nextGarbageNumber>999999)
-			nextGarbageNumber = 10;
-		return true;
+		start=0;
+		end=6;
 	}
-	return false;
+	for (int i = startPosition; i <startPosition+1; i++)
+	{
+		for (int j = start; j < end; j++)
+		{
+			board[j][i] = 2*1000000+nextGarbageNumber;
+		}
+	}
+	nextGarbageNumber++;
+	if (nextGarbageNumber>999999)
+		nextGarbageNumber = 10;
+	return true;
 }
 
 
@@ -1167,22 +1127,11 @@ void BlockGame::ClearBlocks()
 //prints "Game Over" and ends game
 void BlockGame::SetGameOver()
 {
-	ActionPerformed(ACTION_GAMEOVER ,"");
-	if (!bGameOver)
-	{
+	if (!bGameOver) {
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
-		if(!AI_Enabled && !bReplaying)
-		{
+		if (!AI_Enabled) {
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
-	}
-	if(bReplaying)
-	{
-		bReplaying = false;
-	}
-	else
-	{
-		theReplay.setName(name);
 	}
 	bGameOver = true;
 	if(stageClear)
@@ -1266,9 +1215,6 @@ void BlockGame::FallDown()
 //Moves the cursor, receaves N,S,E or W as a char an moves as desired
 void BlockGame::MoveCursor(char way)
 {
-	format f("%1%");
-	f % way;
-	ActionPerformed(ACTION_MOVECURSOR,f.str());
 	if (!bGameOver)       //If game over nothing happends
 	{
 		if ((way == 'N') && ((cursory<10)||(TowerHeight>12) ||(((pixels==bsize)||(pixels==0)) && (cursory<11))))
@@ -1285,7 +1231,6 @@ void BlockGame::MoveCursor(char way)
 //switches the two blocks at the cursor position, unless game over
 void BlockGame::SwitchAtCursor()
 {
-	ActionPerformed(ACTION_SWITCH,"");
 	if ((board[cursorx][cursory+1]<7) && (board[cursorx+1][cursory+1]<7) && (!bGameOver) && ((!puzzleMode)||(MovesLeft>0)) && (gameStartedAt<ticks))
 	{
 		int temp = board[cursorx][cursory+1];
@@ -1297,7 +1242,6 @@ void BlockGame::SwitchAtCursor()
 
 void BlockGame::PushLine()
 {
-	ActionPerformed(ACTION_PUSH,"");
 	PushLineInternal();
 }
 
@@ -1328,10 +1272,8 @@ void BlockGame::PushLineInternal()
 				board[j][0] = rand2() % 6;
 		}
 		score+=1;
-		if(!bReplaying)
-			MoveCursor('N'); //Workaround for this being done registred too
-		if (vsMode)
-		{
+		MoveCursor('N'); //Workaround for this being done registred too
+		if (vsMode) {
 			if (rand2()%6==1)
 				board[rand2()%6][0]=6;
 		}
@@ -1342,7 +1284,7 @@ void BlockGame::PushLineInternal()
 		AI_LineOffset++;
 		nrPushedPixel=(int)((double)(pushedPixelAt-gameStartedAt)/(1000.0*speed));
 
-		if(!AI_Enabled && !bReplaying)
+		if(!AI_Enabled)
 		{
 			Stats::getInstance()->addOne("linesPushed");
 		}
@@ -1854,12 +1796,10 @@ void BlockGame::Update()
 {
 	Uint32 tempUInt32;
 	Uint32 nowTime = ticks; //We remember the time, so it doesn't change during this call
-	ActionPerformed(ACTION_UPDATE, "");
 
 	{
 		FindTowerHeight();
-		if ((linesCleared-TowerHeight>stageClearLimit) && (stageClear) && (!bGameOver))
-		{
+		if ((linesCleared-TowerHeight>stageClearLimit) && (stageClear) && (!bGameOver)) {
 			stageCleared[Level] = true;
 			if(stageScores[Level]<score)
 			{
@@ -1983,14 +1923,6 @@ void BlockGame::Update()
 					inFile >> bestResult;
 					inFile.close();
 				}
-				if(score>bestResult)
-				{
-					string bestFile = getPathToSaveFiles() + "/bestTT";
-					theReplay.saveReplay(bestFile);
-					ofstream outFile(checkFilename.c_str(),ios::trunc);
-					if(outFile)
-						outFile << score;
-				}
 			}
 		}
 	}
@@ -2015,45 +1947,7 @@ void BlockGame::UpdateInternal(unsigned int newtick)
 
 void BlockGame::Update(unsigned int newtick)
 {
-	if(bReplaying)
-	{
-		/*cout << "Testing " << replayIndex << "<" << theReplay.getActions().size()
-			<< " && " << theReplay.getActions().at(replayIndex).time << "<=" <<
-			newtick-gameStartedAt << endl;*/
-		while(replayIndex >= 0 && replayIndex < theReplay.getActions().size() &&
-				theReplay.getActions().at(replayIndex).time <= newtick-gameStartedAt)
-		{
-			Action a = theReplay.getActions().at(replayIndex);
-			PerformAction(a.time+gameStartedAt,a.action,a.param);
-			++replayIndex;
-		}
-
-	}
-	else
-	{
-		UpdateInternal(newtick);
-	}
-}
-
-void BlockGame::ActionPerformed(int action, string param)
-{
-	if(bGameOver || bReplaying)
-		return;
-	theReplay.addAction(ticks-gameStartedAt, action, param);
-}
-
-int BlockGame::GotAction(unsigned int &tick,int &action,string &param)
-{
-	if(actionIndex < theReplay.getActions().size())
-	{
-		Action a = theReplay.getActions().at(actionIndex);
-		tick = a.time;
-		action = a.action;
-		param = a.param;
-		++actionIndex;
-		return 1;
-	}
-	return 0;
+	UpdateInternal(newtick);
 }
 
 void BlockGame::PerformAction(unsigned int tick, int action, string param)

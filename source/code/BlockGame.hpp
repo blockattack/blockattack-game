@@ -26,7 +26,6 @@ http://blockattack.sf.net
 
 #include "stats.h"
 #include "common.h"
-#include "replay.h"
 
 #define NUMBEROFCHAINS 100
 #define BLOCKWAIT 100000
@@ -81,12 +80,9 @@ protected:
 	int lastCounter;
 	string strHolder;
 	bool bDraw;
-	bool bReplaying; //true if we are watching a replay
 	unsigned int ticks;
 	unsigned int gameStartedAt;
 	unsigned int gameEndedAfter;		//How long did the game last?
-	unsigned int replayIndex; //Used during replay to remeber how many replay actions we have performed.
-	unsigned int actionIndex; //Used during network to remeber how many actions we have sent.
 	int linesCleared;
 	int TowerHeight;
 	BlockGame *garbageTarget;
@@ -121,7 +117,6 @@ protected:
 public:
 
 	std::string name;
-	Replay theReplay;   //Stores the replay
 
 public:
 	//Constructor
@@ -181,8 +176,6 @@ public:
 	void NewVsGame(BlockGame *target,unsigned int ticks);
 	//Starts new Vs Game (two Player)
 	void NewVsGame(BlockGame *target, bool AI,unsigned int ticks);
-	//We want to play the replay (must have been loaded beforehand)
-	void playReplay(unsigned int ticks, const Replay& r);
 	void putStartBlocks(Uint32 n);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
@@ -217,11 +210,11 @@ private:
 	//Go in Demonstration mode, no movement
 	void Demonstration(bool toggle);
 	//Test if LineNr is an empty line, returns false otherwise.
-	bool LineEmpty(int lineNr);
+	bool LineEmpty(int lineNr) const;
 	//Test if the entire board is empty (used for Puzzles)
-	bool BoardEmpty();
+	bool BoardEmpty() const;
 	//Anything that the user can't move? In that case Game Over cannot occur
-	bool hasStaticContent();
+	bool hasStaticContent() const;
 	void putStartBlocks();
 	//decreases hang for all hanging blocks and wait for waiting blocks
 	void ReduceStuff();
@@ -278,7 +271,6 @@ private:
 ///////////////////////////// AI ends here! //////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-	void ActionPerformed(int action, string param);
 	void PushLineInternal();
 	//Updates evrything, if not called nothing happends
 	void Update();

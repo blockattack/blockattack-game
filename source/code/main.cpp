@@ -85,7 +85,6 @@ http://blockattack.sf.net
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "joypad.h"         //Used for joypads
 #include "listFiles.h"	    //Used to show files on screen
-#include "replay.h"			//Used for replays
 #include "stats.h"          //Saves general stats 
 #if LEVELEDITOR
 #include "editor/editorMain.hpp" //The level editor
@@ -3020,15 +3019,6 @@ static void StartTwoPlayerVs()
 	player2->name = player2name;
 }
 
-static void StartReplay(string filename)
-{
-	Replay r1,r2;
-	r1.loadReplay(filename);
-	player1->playReplay(SDL_GetTicks(),r1);
-	r2.loadReplay2(filename);
-	player2->playReplay(SDL_GetTicks(),r2);
-}
-
 //The main function, quite big... too big
 int main(int argc, char *argv[])
 {
@@ -3743,34 +3733,16 @@ int runGame(int gametype, int level)
 						}
 						if ( event.key.keysym.sym == SDLK_F10 )
 						{
-							StartReplay("/home/poul/.gamesaves/blockattack/quicksave");
+							//StartReplay("/home/poul/.gamesaves/blockattack/quicksave");
 						}
 						if ( event.key.keysym.sym == SDLK_F9 )
 						{
 							writeScreenShot();
 						}
-						if ( event.key.keysym.sym == SDLK_F5 )
-						{
-							if(theGame.isGameOver() && theGame2.isGameOver())
-							{
-								string filename = "/home/poul/.gamesaves/blockattack/quicksave";
-								if(!twoPlayers)
-									theGame.theReplay.saveReplay(filename);
-								else
-									theGame.theReplay.saveReplay(filename,theGame2.theReplay);
-							}
+						if ( event.key.keysym.sym == SDLK_F5 ) {
 						}
 						if ( event.key.keysym.sym == SDLK_F11 )
 						{
-							/*This is the test place, place function to test here*/
-
-							StartReplay("/home/poul/.gamesaves/blockattack/bestTT");
-
-							//theGame.CreateGreyGarbage();
-							//char mitNavn[30];
-							//SelectThemeDialogbox(300,400,mitNavn);
-							//MainMenu();
-							//OpenScoresDisplay();
 						} //F11
 					}
 					if ( event.key.keysym.sym == SDLK_F12 )
