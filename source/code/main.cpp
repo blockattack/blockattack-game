@@ -36,11 +36,6 @@ http://blockattack.sf.net
 #define DEBUG 0
 #endif
 
-//If NETWORK id defined: enet will be used
-#ifndef NETWORK
-#define NETWORK 1
-#endif
-
 //Build-in level editor is still experimental!
 #ifndef LEVELEDITOR
 #define LEVELEDITOR 0
@@ -86,13 +81,6 @@ http://blockattack.sf.net
 #define PACKAGE "blockattack_roftb"
 #endif
 
-//enet things
-#if NETWORK
-#include "enet/enet.h"
-#endif
-//enet things end
-
-//#include "SFont.h"          //Used to write on screen
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "joypad.h"         //Used for joypads
@@ -396,29 +384,12 @@ static int InitImages()
 {
 	if (!((backgroundImage = IMG_Load2("gfx/background.png"))
 			&& (background = IMG_Load2("gfx/blackBackGround.png"))
-//            && (b1player = IMG_Load2("gfx/bOnePlayer.png"))
-//            && (b2players = IMG_Load2("gfx/bTwoPlayers.png"))
-//            && (bVsMode = IMG_Load2("gfx/bVsGame.png"))
-//            && (bVsModeConfig = IMG_Load2("gfx/bVsGameConfig.png"))
-//            && (bPuzzle = IMG_Load2("gfx/bPuzzle.png"))
-//            && (bStageClear = IMG_Load2("gfx/bStageClear.png"))
-//            && (bTimeTrial = IMG_Load2("gfx/bTimeTrial.png"))
-			//&& (bEndless = IMG_Load2("gfx/bEndless.png"))
 			&& (bOptions = IMG_Load2("gfx/bOptions.png"))
 			&& (bConfigure = IMG_Load2("gfx/bConfigure.png"))
 			&& (bSelectPuzzle = IMG_Load2("gfx/bSelectPuzzle.png"))
 			&& (bHighScore = IMG_Load2("gfx/bHighScore.png"))
-//            && (bExit = IMG_Load2("gfx/bExit.png"))
 			&& (bBack = IMG_Load2("gfx/bBlank.png"))
 			&& (bForward = IMG_Load2("gfx/bForward.png"))
-//            && (bReplay = IMG_Load2("gfx/bReplays.png"))
-//            && (bSave = IMG_Load2("gfx/bSave.png"))
-//            && (bLoad = IMG_Load2("gfx/bLoad.png"))
-			/*#if NETWORK
-			            && (bNetwork = IMG_Load2("gfx/bNetwork.png"))
-			            && (bHost = IMG_Load2("gfx/bHost.png"))
-			            && (bConnect = IMG_Load2("gfx/bConnect.png"))
-			#endif*/
 			&& (blackLine = IMG_Load2("gfx/blackLine.png"))
 			&& (stageBobble = IMG_Load2("gfx/iStageClearLimit.png"))
 			&& (bricks[0] = IMG_Load2("gfx/bricks/blue.png"))
@@ -533,28 +504,12 @@ static int InitImages()
 	//Prepare for fast blittering!
 	CONVERT(background);
 	CONVERT(backgroundImage);
-//    CONVERT(b1player);
-//    CONVERT(b2players);
-//    CONVERT(bVsMode);
-//    CONVERT(bVsModeConfig);
-//    CONVERT(bPuzzle);
-//    CONVERT(bStageClear);
-//    CONVERT(bTimeTrial);
-	//CONVERT(bEndless);
 	CONVERT(bOptions);
 	CONVERTA(bConfigure);
 	CONVERTA(bSelectPuzzle);
-//    CONVERTA(bReplay);
-//    CONVERTA(bSave);
-//    CONVERTA(bLoad);
 	CONVERTA(bSkip);
 	CONVERTA(bRetry);
 	CONVERTA(bNext);
-	/*#if NETWORK
-	    CONVERTA(bNetwork);
-	    CONVERTA(bHost);
-	    CONVERTA(bConnect);
-	#endif*/
 	CONVERT(bHighScore);
 	CONVERTA(boardBackBack);
 	CONVERT(backBoard);
@@ -565,11 +520,8 @@ static int InitImages()
 	CONVERTA(counter[0]);
 	CONVERTA(counter[1]);
 	CONVERTA(counter[2]);
-//    CONVERTA(optionsBack);
-//    CONVERT(bExit);
 	CONVERT(bOn);
 	CONVERT(bOff);
-//    CONVERT(bChange);
 	CONVERT(b1024);
 	CONVERTA(dialogBox);
 //	CONVERTA(fileDialogBox);
@@ -708,28 +660,10 @@ void UnloadImages()
 	//Chrashes no more. Caused by an undocumented double free
 	SDL_FreeSurface(backgroundImage);
 	SDL_FreeSurface(background);
-	//SDL_FreeSurface(bNewGame);
-//    SDL_FreeSurface(b1player);
-//    SDL_FreeSurface(b2players);
-//    SDL_FreeSurface(bVsMode);
-//    SDL_FreeSurface(bVsModeConfig);
-//    SDL_FreeSurface(bPuzzle);
-//    SDL_FreeSurface(bStageClear);
-//    SDL_FreeSurface(bTimeTrial);
-	//SDL_FreeSurface(bEndless);
 	SDL_FreeSurface(bOptions);
 	SDL_FreeSurface(bConfigure);
 	SDL_FreeSurface(bSelectPuzzle);
 	SDL_FreeSurface(bHighScore);
-//    SDL_FreeSurface(bReplay);
-//    SDL_FreeSurface(bSave);
-//    SDL_FreeSurface(bLoad);
-	/*    #if NETWORK
-	    SDL_FreeSurface(bNetwork);
-	    SDL_FreeSurface(bHost);
-	    SDL_FreeSurface(bConnect);
-	    #endif
-	    SDL_FreeSurface(bExit);*/
 	SDL_FreeSurface(blackLine);
 	SDL_FreeSurface(stageBobble);
 	SDL_FreeSurface(bricks[0]);
@@ -755,10 +689,8 @@ void UnloadImages()
 	SDL_FreeSurface(iDraw);
 	SDL_FreeSurface(iLoser);
 	SDL_FreeSurface(iChainBack);
-//    SDL_FreeSurface(optionsBack);
 	SDL_FreeSurface(bOn);
 	SDL_FreeSurface(bOff);
-//    SDL_FreeSurface(bChange);
 	SDL_FreeSurface(b1024);
 	SDL_FreeSurface(dialogBox);
 	//SDL_FreeSurface(fileDialogBox);
@@ -2404,30 +2336,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 
 		DrawIMG(background,screen,50,60,300,50,50,60);
 		DrawIMG(background,screen,510,60,300,50,510,60);
-	}
-	else
+	} 
+	else {
 		DrawIMG(background,screen,0,0);
-	//draw bottons (should be moves and drawn directly to background once)
-	/*if (!editorMode)
-	    #if NETWORK
-	    if (!networkActive) //We don't show the menu while running server or connected to a server
-	    #else
-	        if(true)
-	    #endif
-	    {
-	        //Here we draw the menu
-	        bNewGame.PaintTo(screen,0,0);
-	        DrawIMG(bOptions, screen, buttonXsize,0);
-	        DrawIMG(bHighScore, screen, 2*buttonXsize,0);
-	        DrawIMG(bReplay,screen,3*buttonXsize,0);
-	    }
-	    else
-	    { //If network is active
-	        DrawIMG(bBack, screen, 0, 0); //Display a disconnect button
-	    }
-	if (!editorMode)
-	    DrawIMG(bExit, screen, xsize-120,ysize-120);*/
-	//DrawIMG(boardBackBack,screen,theGame->GetTopX()-60,theGame->GetTopY()-68);
+	}
 	DrawIMG(theGame->sBoard,screen,theGame->GetTopX(),theGame->GetTopY());
 	string strHolder;
 	strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
@@ -3025,12 +2937,6 @@ void changePuzzleLevels()
 
 }
 
-#if NETWORK
-#include "NetworkThing.hpp"
-//#include "MenuSystem.h"
-NetworkThing nt;
-#endif
-
 static BlockGameSdl *player1;
 static BlockGameSdl *player2;
 
@@ -3122,22 +3028,6 @@ static void StartReplay(string filename)
 	r2.loadReplay2(filename);
 	player2->playReplay(SDL_GetTicks(),r2);
 }
-
-static void StartHostServer()
-{
-	player1->SetGameOver();
-	player2->SetGameOver();
-	nt.startServer();
-}
-
-static void StartJoinServer()
-{
-	player1->SetGameOver();
-	player2->SetGameOver();
-	string server = Config::getInstance()->getString("address0");
-	nt.connectToServer(server.substr(0,server.find(" ")));
-}
-
 
 //The main function, quite big... too big
 int main(int argc, char *argv[])
@@ -3507,11 +3397,6 @@ int main(int argc, char *argv[])
 	theGame.name = player1name;
 	theGame2.name = player2name;
 
-#if NETWORK
-	//NetworkThing nt = NetworkThing();
-	nt.setBGpointers(&theGame,&theGame2);
-#endif
-
 	if (singlePuzzle) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
@@ -3639,11 +3524,6 @@ int runGame(int gametype, int level)
 	Joypad joypad1 = Joypad();    //Creates a joypad
 	Joypad joypad2 = Joypad();    //Creates a joypad
 
-#if NETWORK
-	//NetworkThing nt = NetworkThing();
-	nt.setBGpointers(&theGame,&theGame2);
-#endif
-
 	if (singlePuzzle)
 	{
 		LoadPuzzleStages();
@@ -3715,12 +3595,6 @@ int runGame(int gametype, int level)
 			case 11:
 				StartTwoPlayerVs();
 				break;
-			case 12:
-				StartHostServer();
-				break;
-			case 13:
-				StartJoinServer();
-				break;
 			case 0:
 			default:
 				StartSinglePlayerEndless();
@@ -3751,36 +3625,6 @@ int runGame(int gametype, int level)
 		theBallManeger.update();
 		theExplosionManeger.update();
 		theTextManeger.update();
-
-#if NETWORK
-		if (nt.isConnected())
-		{
-			nt.updateNetwork();
-			networkActive = true;
-			if (!nt.isConnectedToPeer())
-				DrawIMG(background, screen, 0, 0);
-		}
-		else
-			networkActive = false;
-		if (nt.isConnectedToPeer())
-		{
-			networkPlay=true;
-			if (!weWhereConnected) //We have just connected
-			{
-				theGame.NewVsGame(&theGame2,SDL_GetTicks());
-				theGame.putStartBlocks(nt.theSeed);
-				theGame2.playNetwork(SDL_GetTicks());
-				nt.theGameHasStarted();
-				DrawIMG(background, screen, 0, 0);
-			}
-			weWhereConnected = true;
-		}
-		else
-		{
-			networkPlay=false;
-			weWhereConnected = false;
-		}
-#endif
 
 		if (!bScreenLocked)
 		{

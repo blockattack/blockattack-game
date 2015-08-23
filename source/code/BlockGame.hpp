@@ -82,10 +82,6 @@ protected:
 	string strHolder;
 	bool bDraw;
 	bool bReplaying; //true if we are watching a replay
-#if NETWORK
-	bool bNetworkPlayer; //must recieve packages from the net
-	bool bDisconnected; //The player has disconnected
-#endif
 	unsigned int ticks;
 	unsigned int gameStartedAt;
 	unsigned int gameEndedAfter;		//How long did the game last?
@@ -212,33 +208,12 @@ public:
 	 * @return 1 if an action was selected
 	 */
 	int GotAction(unsigned int &tick,int &action,string &param);
-#if NETWORK
-	//network play
-	void playNetwork(unsigned int ticks);
-#endif
 	//Prints "winner" and ends game
 	void setPlayerWon();
 	//void SetGameOver();
-
-#if NETWORK
-	//Sets disconnected:
-	void setDisconnect();
-#endif
 	//Prints "draw" and ends the game
 	void setDraw();
 private:
-#if NETWORK
-#define garbageStackSize 10
-	Uint8 garbageStack[garbageStackSize][3]; //A garbage stack with space for 10 garbage blocks. 0=x,1=y,2=type
-	int garbageStackUsed;
-
-	void emptyGarbageStack();
-	bool pushGarbage(Uint8 width, Uint8 height, Uint8 type);
-public:
-	bool popGarbage(Uint8 *width, Uint8 *height, Uint8 *type);
-private:
-
-#endif
 	//Go in Demonstration mode, no movement
 	void Demonstration(bool toggle);
 	//Test if LineNr is an empty line, returns false otherwise.

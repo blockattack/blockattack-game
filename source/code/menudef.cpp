@@ -314,30 +314,6 @@ static void SinglePlayerVsMenu(Button *b)
 	spvs.run();
 }
 
-static void NetworkMenu(Button *b)
-{
-	Menu nm(&screen,_("Network"),true);
-	Button bPort, bIp, bHost, bJoin;
-	bHost.setLabel(_("Host game"));
-	bHost.setAction(runHostGame);
-	bJoin.setLabel(_("Join game"));
-	bJoin.setAction(runJoinGame);
-	format fi(_("Address: %1%") );
-	fi % Config::getInstance()->getString("address0");
-	bIp.setLabel(fi.str());
-	bIp.setAction(buttonActionIpChange);
-	format fp(_("Port: %1%") );
-	fp % Config::getInstance()->getString("portv4");
-	bPort.setLabel(fp.str());
-	bPort.setAction(buttonActionPortChange);
-	nm.addButton(&bHost);
-	nm.addButton(&bJoin);
-	nm.addButton(&bIp);
-	nm.addButton(&bPort);
-	nm.run();
-
-}
-
 static void MultiplayerMenu(Button *b)
 {
 	Menu mm(&screen,_("Multiplayer"),true);
@@ -346,13 +322,8 @@ static void MultiplayerMenu(Button *b)
 	bTT.setAction(runTwoPlayerTimeTrial);
 	bVs.setLabel(_("Two player - vs"));
 	bVs.setAction(runTwoPlayerVs);
-	bNet.setLabel(_("Network/Internet game"));
-	bNet.setAction(NetworkMenu);
 	mm.addButton(&bTT);
 	mm.addButton(&bVs);
-#if NETWORK
-	mm.addButton(&bNet);
-#endif
 	mm.run();
 }
 

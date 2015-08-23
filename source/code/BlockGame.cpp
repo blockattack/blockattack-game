@@ -79,10 +79,6 @@ BlockGame::BlockGame()
 	bGameOver = false;
 	bDraw = false;
 	bReplaying=false; //No replay by default
-#if NETWORK
-	bDisconnected=false;
-	bNetworkPlayer = false;
-#endif
 	timetrial = false;
 	stageClear = false;
 	vsMode = false;
@@ -273,52 +269,12 @@ bool BlockGame::GetIsWinner()  const
 	return hasWonTheGame;
 }
 
-#if NETWORK
-#define garbageStackSize 10
-
-void BlockGame::emptyGarbageStack()
-{
-	for (int i=0; i<10; i++)
-		for (int j=0; j<3; j++)
-			garbageStack[i][j] = 0;
-	garbageStackUsed = 0;
-}
-
-bool BlockGame::pushGarbage(Uint8 width, Uint8 height, Uint8 type)
-{
-	if (garbageStackUsed>=garbageStackSize)
-		return false;
-	garbageStack[garbageStackUsed][0]=width;
-	garbageStack[garbageStackUsed][1]=height;
-	garbageStack[garbageStackUsed][2]=type;
-	garbageStackUsed++;
-	return true;
-}
-
-bool BlockGame::popGarbage(Uint8 *width, Uint8 *height, Uint8 *type)
-{
-	if (garbageStackUsed<1)
-		return false;
-	garbageStackUsed--;
-	*width=garbageStack[garbageStackUsed][0];
-	*height=garbageStack[garbageStackUsed][1];
-	*type=garbageStack[garbageStackUsed][2];
-	return true;
-}
-
-#endif
-
-
 //Instead of creating new object new game is called, to prevent memory leaks
 void BlockGame::NewGame( unsigned int ticks)
 {
 	this->ticks = ticks;
 	stageButtonStatus = SBdontShow;
 	bReplaying  =  false;
-#if NETWORK
-	bNetworkPlayer=false;
-	bDisconnected =false;
-#endif
 	nrFellDown = 0;
 	nrPushedPixel = 0;
 	nrStops = 0;
@@ -494,24 +450,7 @@ void BlockGame::playReplay( unsigned int ticks, const Replay& r)
 	replayIndex = 0;
 	bReplaying = true; //We are playing, no calculations
 	theReplay = r;
-#if NETWORK
-	bNetworkPlayer = false; //Take input from replay file
-#endif
 }
-
-
-#if NETWORK
-
-//network play
-void BlockGame::playNetwork(unsigned int ticks)
-{
-	NewGame(ticks);
-	gameStartedAt = ticks;
-	bReplaying = false; //We are playing, no calculations
-	bNetworkPlayer = true; //Don't Take input from replay file
-	emptyGarbageStack();
-}
-#endif
 
 //Prints "winner" and ends game
 void BlockGame::setPlayerWon()
@@ -543,17 +482,6 @@ void BlockGame::setPlayerWon()
 	}
 	hasWonTheGame = true;
 }
-
-//void SetGameOver();
-
-#if NETWORK
-//Sets disconnected:
-void BlockGame::setDisconnect()
-{
-	bDisconnected = true;
-	SetGameOver();
-}
-#endif
 
 //Prints "draw" and ends the game
 void BlockGame::setDraw()
@@ -788,13 +716,6 @@ bool BlockGame::CreateGarbage(int wide, int height)
 	format f("%1% %2%");
 	f % wide % height;
 	ActionPerformed(ACTION_CREATEGARBAGE,f.str());
-#if NETWORK
-	if (bNetworkPlayer)
-	{
-		pushGarbage(wide, height, 0);
-	}
-	else
-#endif
 	{
 		if (wide>6) wide = 6;
 		if (height>12) height = 12;
@@ -833,13 +754,6 @@ bool BlockGame::CreateGarbage(int wide, int height)
 bool BlockGame::CreateGreyGarbage()
 {
 	ActionPerformed(ACTION_CREATEGRAYGARBAGE,"");
-#if NETWORK
-	if (bNetworkPlayer)
-	{
-		pushGarbage(6, 1, 1);
-	}
-	else
-#endif
 	{
 		int startPosition = 12;
 		while ((!(LineEmpty(startPosition))) || (startPosition == 29))
@@ -2101,8 +2015,6 @@ void BlockGame::UpdateInternal(unsigned int newtick)
 
 void BlockGame::Update(unsigned int newtick)
 {
-	if(bNetworkPlayer)
-		return;
 	if(bReplaying)
 	{
 		/*cout << "Testing " << replayIndex << "<" << theReplay.getActions().size()
