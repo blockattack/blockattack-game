@@ -207,8 +207,6 @@ public:
 	//Prints "draw" and ends the game
 	void setDraw();
 private:
-	//Go in Demonstration mode, no movement
-	void Demonstration(bool toggle);
 	//Test if LineNr is an empty line, returns false otherwise.
 	bool LineEmpty(int lineNr) const;
 	//Test if the entire board is empty (used for Puzzles)

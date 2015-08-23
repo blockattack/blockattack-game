@@ -418,12 +418,6 @@ void BlockGame::NewVsGame(BlockGame *target, bool AI, unsigned int ticks)
 	putStartBlocks();
 	garbageTarget = target;
 }
-//Go in Demonstration mode, no movement
-void BlockGame::Demonstration(bool toggle)
-{
-	speed=0;
-	baseSpeed = 0;
-}
 
 //Prints "winner" and ends game
 void BlockGame::setPlayerWon()
