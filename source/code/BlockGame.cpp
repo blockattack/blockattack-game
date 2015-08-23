@@ -857,8 +857,6 @@ void BlockGame::ClearBlocks()
 		} //for i
 	} //for j
 
-
-	combo = 0;
 	chain = 0;
 	for (int i=0; i<6; i++)
 		for (int j=0; j<30; j++)
@@ -899,7 +897,6 @@ void BlockGame::ClearBlocks()
 
 		}
 	}
-	combo=0;
 	int startvalue;
 	if (pixels == 0)
 		startvalue=1;

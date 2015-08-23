@@ -1897,216 +1897,6 @@ bool OpenFileDialogbox(int x, int y, char *name)
 	return true;
 }
 
-//Slelect a theme
-bool SelectThemeDialogbox(int x, int y, char *name)
-{
-	bool done = false;	//We are done!
-	int mousex, mousey;
-	ListFiles lf = ListFiles();
-	string folder = (string)SHAREDIR+(string)"/themes";
-	if(verboseLevel)
-		cout << "Looking in " << folder << endl;
-	lf.setDirectory(folder.c_str());
-#ifdef __unix__
-	string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/themes";
-	lf.setDirectory2(homeFolder.c_str());
-#endif
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
-	DrawIMG(bForward,background,x+460,y+420);
-	DrawIMG(bBack,background,x+20,y+420);
-	while (!done && !Config::getInstance()->isShuttingDown())
-	{
-		DrawIMG(background,screen,0,0);
-		const int nrOfFiles = 10;
-		DrawIMG(changeButtonsBack,screen,x,y);
-		for (int i=0; i<nrOfFiles; i++)
-		{
-			NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
-		}
-
-		SDL_Event event;
-
-		while ( SDL_PollEvent(&event) )
-		{
-			if ( event.type == SDL_QUIT )
-			{
-				Config::getInstance()->setShuttingDown(5);
-				done = true;
-			}
-
-			if ( event.type == SDL_KEYDOWN )
-			{
-				if ( (event.key.keysym.sym == SDLK_ESCAPE) )
-				{
-					done = true;
-				}
-
-				if ( (event.key.keysym.sym == SDLK_RIGHT) )
-				{
-					lf.forward();
-				}
-
-				if ( (event.key.keysym.sym == SDLK_LEFT) )
-				{
-					lf.back();
-				}
-			}
-
-		} //while(event)
-
-		SDL_GetMouseState(&mousex,&mousey);
-
-		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
-		{
-			bMouseUp=true;
-		}
-
-		if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
-		{
-			bMouseUp = false;
-
-			//The Forward Button:
-			if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
-			{
-				lf.forward();
-			}
-
-			//The back button:
-			if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
-			{
-				lf.back();
-			}
-
-			for (int i=0; i<10; i++)
-			{
-				if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) )
-				{
-					if (lf.fileExists(i))
-					{
-						strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
-						loadTheme(lf.getFileName(i));
-						done=true; //The user have, clicked the purpose of this function is now complete
-					}
-				}
-			}
-		}
-
-		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse.PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen); //Update screen
-	}
-	return true;
-}
-
-//Open a saved replay
-bool OpenReplayDialogbox(int x, int y, char *name)
-{
-	bool done = false;	//We are done!
-	int mousex, mousey;
-	ListFiles lf = ListFiles();
-	if(verboseLevel)
-		cout << "Ready to set directory!" << endl;
-#ifdef __unix__
-	string directory = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/replays";
-#elif WIN32
-	string directory = getMyDocumentsPath()+(string)"/My Games/blockattack/replays";
-#else
-	string directory = "./replays";
-#endif
-	lf.setDirectory(directory);
-	if(verboseLevel)
-		cout << "Directory sat" << endl;
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
-	DrawIMG(bForward,background,x+460,y+420);
-	DrawIMG(bBack,background,x+20,y+420);
-	while (!done && !Config::getInstance()->isShuttingDown())
-	{
-		DrawIMG(background,screen,0,0);
-		const int nrOfFiles = 10;
-		DrawIMG(changeButtonsBack,screen,x,y);
-		for (int i=0; i<nrOfFiles; i++)
-		{
-			NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
-		}
-
-		SDL_Event event;
-
-		while ( SDL_PollEvent(&event) )
-		{
-			if ( event.type == SDL_QUIT )
-			{
-				Config::getInstance()->setShuttingDown(5);
-				done = true;
-				return false;
-			}
-
-			if ( event.type == SDL_KEYDOWN )
-			{
-				if ( (event.key.keysym.sym == SDLK_ESCAPE) )
-				{
-					done = true;
-					return false;
-				}
-
-				if ( (event.key.keysym.sym == SDLK_RIGHT) )
-				{
-					lf.forward();
-				}
-
-				if ( (event.key.keysym.sym == SDLK_LEFT) )
-				{
-					lf.back();
-				}
-			}
-
-		} //while(event)
-
-		SDL_GetMouseState(&mousex,&mousey);
-
-		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
-		{
-			bMouseUp=true;
-		}
-
-		if (SDL_GetMouseState(NULL,NULL)&SDL_BUTTON(1) && bMouseUp)
-		{
-			bMouseUp = false;
-
-			//The Forward Button:
-			if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
-			{
-				lf.forward();
-			}
-
-			//The back button:
-			if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
-			{
-				lf.back();
-			}
-
-			for (int i=0; i<10; i++)
-			{
-				if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) )
-				{
-					if (lf.fileExists(i))
-					{
-						strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
-						done=true; //The user have, clicked the purpose of this function is now complete
-						return true;
-					}
-				}
-			}
-		}
-
-		mouse.PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen); //Update screen
-	}
-	return false;
-}
 
 //Draws the balls and explosions
 static void DrawBalls()
@@ -2390,10 +2180,13 @@ int PuzzleLevelSelect(int Type)
 {
 	const int xplace = 200;
 	const int yplace = 300;
-	int levelNr, mousex, mousey, oldmousex, oldmousey;
+	int levelNr = 0;
+	int mousex, mousey;
+	int oldmousex = 0;
+	int oldmousey = 0;
 	bool levelSelected = false;
 	bool tempBool;
-	int nrOfLevels;
+	int nrOfLevels = 0;
 	Uint32 tempUInt32;
 	Uint32 totalScore = 0;
 	Uint32 totalTime = 0;
@@ -3308,7 +3101,7 @@ int runGame(int gametype, int level)
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool weWhereConnected = false;
-	bool bNearDeath;                        //Play music faster or louder while tru
+	bool bNearDeath = false;                        //Play music faster or louder while tru
 
 	//Things used for repeating keystrokes:
 	bool repeatingS[2] = {false,false};
@@ -3836,7 +3629,7 @@ int runGame(int gametype, int level)
 			**********************************************************************/
 
 
-			keys = SDL_GetKeyState(NULL);
+			SDL_GetKeyState(NULL);
 
 			SDL_GetMouseState(&mousex,&mousey);
 
