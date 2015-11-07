@@ -10,12 +10,16 @@ addons:
     - libsdl1.2-dev
     - libsdl-image1.2-dev
     - libsdl-mixer1.2-dev
-    - libsdl-ttf1.2-dev
+    - libsdl-ttf2.0-dev
     - libenet-dev
     - libphysfs-dev
 
 cache:
   apt: true
+
+
+install:
+  - export CXX="g++-4.9"
 
 script: ./travis_build.script
 
