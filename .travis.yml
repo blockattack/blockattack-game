@@ -1,0 +1,23 @@
+language: cpp
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.9
+    - build-essential
+    - libsdl2-dev
+    - libsdl2-image-dev
+    - libsdl2-mixer-dev
+    - libsdl2-ttf-dev
+    - libenet-dev
+    - libphysfs-dev
+
+cache:
+  apt: true
+
+script: ./travis_build.script
+
+notifications:
+  email: false
