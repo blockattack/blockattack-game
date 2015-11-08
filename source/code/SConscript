@@ -10,11 +10,11 @@ Libs/NFont.cpp
 ReadKeyboard.cpp
 joypad.cpp
 listFiles.cpp
-replay.cpp
-stats.cc
-common.cc
-MenuSystem.cc
+stats.cpp
+common.cpp
+MenuSystem.cpp
 menudef.cpp
+puzzlehandler.cpp
 CppSdlImageHolder.cpp
 CppSdlException.cpp""")
 
