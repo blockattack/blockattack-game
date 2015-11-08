@@ -191,7 +191,7 @@ static void buttonActionPortChange(Button *b)
 	if (OpenDialogbox(200,100,port) && atoi(port))
 	{
 		Config::getInstance()->setInt("portv4",atoi(port));
-		format f(_("Port: %1%") );
+		boost::format f(_("Port: %1%") );
 		f % port;
 		b->setLabel(f.str());
 	}
@@ -204,7 +204,7 @@ static void buttonActionIpChange(Button *b)
 	if (OpenDialogbox(200,100,ip))
 	{
 		Config::getInstance()->setString("address0",ip);
-		format f(_("Address: %1%") );
+		boost::format f(_("Address: %1%") );
 		f % ip;
 		b->setLabel(f.str());
 	}

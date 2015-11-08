@@ -299,7 +299,7 @@ protected:
 private:
 	PHYSFS_file* _file;
 	bool _writeStream;
-	vector<char_type> _buf;
+	std::vector<char_type> _buf;
 };
 
 /** This class implements a C++ istream object for physfs files.

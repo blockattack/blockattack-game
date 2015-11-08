@@ -24,6 +24,8 @@ http://blockattack.sf.net
 #include "stats.h"
 #include "common.h"
 
+using namespace std;
+
 Stats* Stats::instance = NULL;
 
 Stats::Stats()

@@ -51,9 +51,6 @@ http://blockattack.sf.net
 
 #define _(String) gettext (String)
 
-using namespace std;
-using boost::format;
-
 struct commonTime
 {
 	unsigned int days;
@@ -62,9 +59,9 @@ struct commonTime
 	unsigned int seconds;
 };
 
-string itoa(int num) __attribute__((const));
+std::string itoa(int num) __attribute__((const));
 
-string getPathToSaveFiles() __attribute__((pure));
+std::string getPathToSaveFiles() __attribute__((pure));
 
 
 /**
@@ -72,16 +69,16 @@ string getPathToSaveFiles() __attribute__((pure));
  * if the string is not an int then 0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-int str2int(const string &str2parse) __attribute__((const));
+int str2int(const std::string &str2parse) __attribute__((const));
 
-string double2str(double num) __attribute__((const));
+std::string double2str(double num) __attribute__((const));
 
 /**
  * str2double parses a string and returns a double with the value of the string.
  * if the string is not a double then 0.0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-double str2double(const string &str2parse) __attribute__((const));
+double str2double(const std::string &str2parse) __attribute__((const));
 
 #ifdef WIN32
 string getMyDocumentsPath();
@@ -92,11 +89,11 @@ class TimeHandler
 public:
 	static commonTime ms2ct(unsigned int milliseconds);
 
-	static commonTime getTime(const string &name);
+	static commonTime getTime(const std::string &name);
 
-	static commonTime peekTime(const string &name, const commonTime &toAdd);
+	static commonTime peekTime(const std::string &name, const commonTime &toAdd);
 
-	static commonTime addTime(const string &name, const commonTime &toAdd);
+	static commonTime addTime(const std::string &name, const commonTime &toAdd);
 };
 
 #define MAX_VAR_LENGTH 1024
@@ -110,7 +107,7 @@ public:
 class Config
 {
 private:
-	map<string,string> configMap;
+	std::map<std::string, std::string> configMap;
 
 	static Config *instance;
 
@@ -140,36 +137,36 @@ public:
 	 *Looks in the config file and returns the string that matches the key "varName"
 	 *Returns an empty string if varName does not exist.
 	 */
-	string getString(const string &varName);
+	std::string getString(const std::string &varName);
 
 	/*getInt(varName)
 	 *Looks in the config file and returns the int that matches the key "varName"
 	 *Returns "0" if varName does not exist or cannot be parsed.
 	 */
-	int getInt(const string &varName);
+	int getInt(const std::string &varName);
 
 	/*getValue(varName)
 	 *Looks in the config file and returns the double that matches the key "varName"
 	 *Returns "0.0" if varName does not exist or cannot be parsed.
 	 */
-	double getValue(const string &varName);
+	double getValue(const std::string &varName);
 
 	/*setString(varName,content)
 	 *Sets the config variable with key "varName" to the value of "content"
 	 */
-	void setString(const string &varName,const string &content);
+	void setString(const std::string &varName, const std::string &content);
 
 	/*setInt(varName,content)
 	 *Sets the config variable with key "varName" to the value of "content"
 	 */
-	void setInt(const string &varName,int content);
+	void setInt(const std::string &varName, int content);
 
 	/**
 	 * Sets a config variable to a given (double) value
 	 * @param varName Name of the variable to set
 	 * @param content Value to give the variable
 	 */
-	void setValue(const string &varName,double content);
+	void setValue(const std::string &varName,double content);
 
 	/**
 	 * returns true if the key varName exists. This is used the first time 1.4.0
@@ -178,7 +175,7 @@ public:
 	 * @param varName Name of the variable
 	 * @return true if the varaible exists
 	 */
-	bool exists(const string &varName) const;
+	bool exists(const std::string &varName) const;
 
 	/*setDefault(varName,value)
 	 *if the variable "varName" does not exist it will be created with value "value"
@@ -190,7 +187,7 @@ public:
 	 * @param varName Name of the variable
 	 * @param content The default value
 	 */
-	void setDefault(const string &varName, const string &content);
+	void setDefault(const std::string &varName, const std::string &content);
 
 	/**
 	 * Should be set if the user has requested the program to shutdown.

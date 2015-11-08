@@ -121,7 +121,7 @@ BlockGame::~BlockGame()
 
 void BlockGame::setGameSpeed(Uint8 globalSpeedLevel)
 {
-	format f("%1%");
+	boost::format f("%1%");
 	f % globalSpeedLevel;
 	switch (globalSpeedLevel)
 	{
@@ -148,7 +148,7 @@ void BlockGame::setGameSpeed(Uint8 globalSpeedLevel)
 
 void BlockGame::setHandicap(Uint8 globalHandicap)
 {
-	format f("%1%");
+	boost::format f("%1%");
 	f % globalHandicap;
 	handicap=1000*((Uint32)globalHandicap);
 }

@@ -114,7 +114,7 @@ SDL_Rect NFont::rectUnion(const SDL_Rect& A, const SDL_Rect& B)
 	y = MIN(A.y, B.y);
 	x2 = MAX(A.x+A.w, B.x+B.w);
 	y2 = MAX(A.y+A.h, B.y+B.h);
-	SDL_Rect result = {x, y, x2 - x, y2 - y};
+	SDL_Rect result = {static_cast<Sint16>(x), static_cast<Sint16>(y), static_cast<Uint16>(x2 - x), static_cast<Uint16>(y2 - y)};
 	return result;
 }
 
@@ -454,10 +454,10 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg, SDL_Color bg)
 	Uint32 bgcolor = SDL_MapRGB(result->format, bg.r, bg.g, bg.b);
 
 	SDL_Rect pixel = {1, 0, 1, 1};
-	SDL_Rect line = {1, 0, 1, result->h};
-
+	SDL_Rect line = {1, 0, 1, static_cast<Uint16>(result->h)};
+	
 	int x = 1;
-	SDL_Rect dest = {x, 0, 0, 0};
+	SDL_Rect dest = {static_cast<Sint16>(x), 0, 0, 0};
 	for(int i = 0; i < 127 - 33; i++)
 	{
 		pixel.x = line.x = x-1;
@@ -509,7 +509,7 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg)
 	SDL_Rect pixel = {1, 0, 1, 1};
 
 	int x = 1;
-	SDL_Rect dest = {x, 0, 0, 0};
+	SDL_Rect dest = {static_cast<Sint16>(x), 0, 0, 0};
 	for(int i = 0; i < 127 - 33; i++)
 	{
 		pixel.x = x-1;

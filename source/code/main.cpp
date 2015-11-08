@@ -1703,7 +1703,7 @@ void OpenScoresDisplay()
 		DrawIMG(bNext,screen,nextX,nextY);
 
 		//Draw page number
-		string pageXofY = (format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
+		string pageXofY = (boost::format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
 		NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
 
 		SDL_Delay(10);
@@ -2374,7 +2374,7 @@ int PuzzleLevelSelect(int Type)
 
 			NFont_Write(screen, 200,200,scoreString.c_str());
 			NFont_Write(screen, 200,250,timeString.c_str());
-			string totalString = (format("Total score: %1% in %2%:%3%")%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
+			string totalString = (boost::format("Total score: %1% in %2%:%3%")%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
 			NFont_Write(screen, 200,600,totalString.c_str());
 		}
 

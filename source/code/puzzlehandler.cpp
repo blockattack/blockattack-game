@@ -6,6 +6,8 @@
 #include <physfs.h>         //Abstract file system. To use containers
 #include "physfs_stream.hpp" //To use C++ style file streams
 
+using namespace std;
+
 static const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
 static std::string puzzleSavePath;
 static std::string puzzleName;              //The filename of

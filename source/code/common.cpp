@@ -24,6 +24,9 @@ http://blockattack.sf.net
 #include "common.h"
 #include <sstream>
 
+using namespace std;
+using boost::format;
+
 static stringstream converter;
 
 //Function to convert numbers to string

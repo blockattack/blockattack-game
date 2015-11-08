@@ -31,8 +31,6 @@ http://blockattack.sf.net
 #ifndef _STATS_H
 #define	_STATS_H
 
-using namespace std;
-
 #include <map>
 #include <string>
 
@@ -42,7 +40,7 @@ using namespace std;
 class Stats
 {
 private:
-	map<string,unsigned int> statMap;
+	std::map<std::string,unsigned int> statMap;
 
 	static Stats *instance;
 
@@ -58,11 +56,11 @@ public:
 
 	void save();
 
-	unsigned int getNumberOf(const string &statName);
+	unsigned int getNumberOf(const std::string &statName);
 
-	void addOne(const string &statName);
+	void addOne(const std::string &statName);
 
-	bool exists(const string &statName);
+	bool exists(const std::string &statName);
 
 
 };

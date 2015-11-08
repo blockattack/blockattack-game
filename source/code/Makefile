@@ -71,4 +71,4 @@ run: $(BINARY)
 	cd $(GAMEDIR) && ./blockattack
 
 clean:
-	rm *.o *.P
+	rm *.o *.P Libs/*.o Libs/*.P
