@@ -12,6 +12,7 @@ standard:
 	
 clean:
 	rm -f ./source/code/build/*.o
+	@make -C source/code -f Makefile clean
 	rm -f ./source/code/blockattack #Build by scons
 	rm -f ./Game/blockattack #build by this
 	

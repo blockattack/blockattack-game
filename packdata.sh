@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 zip -9rj Game/blockattack.data source/AUTH
 cd Game
 zip -9r blockattack.data gfx -x \*svn*

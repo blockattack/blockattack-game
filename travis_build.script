@@ -1,2 +1,6 @@
 #! /bin/bash
 make -C source/code -f Makefile
+make clean
+./packdata.sh
+scons -Q prefix=$HOME -Q sharedir=$HOME/share/
+

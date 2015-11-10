@@ -15,6 +15,7 @@ addons:
     - libenet-dev
     - libphysfs-dev
     - libboost1.55-dev
+    - scons
 
 cache:
   apt: true
