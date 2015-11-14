@@ -30,6 +30,7 @@ http://blockattack.sf.net
 #include <vector>
 #include "Libs/NFont.h"
 #include "CppSdlImageHolder.hpp"
+#include <memory>
 
 using namespace std;
 
@@ -38,15 +39,15 @@ class ButtonGfx
 {
 public:
 	//Holds the graphic for a button that is selected
-	CppSdl::CppSdlImageHolder _marked;
+	std::shared_ptr<CppSdl::CppSdlImageHolder> _marked;
 	//Holds the graphic for a button that is not selected
-	CppSdl::CppSdlImageHolder _unmarked;
+	std::shared_ptr<CppSdl::CppSdlImageHolder> _unmarked;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize;
 	int ysize;
 	//A TTFont used for writing the label on the buttons
 	NFont thefont;
-	void setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked);
+	void setSurfaces(std::shared_ptr<CppSdl::CppSdlImageHolder> marked, std::shared_ptr<CppSdl::CppSdlImageHolder> unmarked);
 };
 
 extern ButtonGfx standardButton;

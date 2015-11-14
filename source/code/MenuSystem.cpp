@@ -27,7 +27,7 @@ http://blockattack.sf.net
 #include "common.h"
 #include "CppSdlImageHolder.hpp"
 
-extern CppSdl::CppSdlImageHolder mouse;
+extern std::shared_ptr<CppSdl::CppSdlImageHolder> mouse;
 extern SDL_Surface *backgroundImage;
 extern bool highPriority;
 extern int verboseLevel;
@@ -51,12 +51,12 @@ NFont ButtonGfx::thefont;*/
 
 ButtonGfx standardButton;
 
-void ButtonGfx::setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked)
+void ButtonGfx::setSurfaces(shared_ptr<CppSdl::CppSdlImageHolder> marked, shared_ptr<CppSdl::CppSdlImageHolder> unmarked)
 {
 	ButtonGfx::_marked = marked;
 	ButtonGfx::_unmarked = unmarked;
-	xsize=(marked).GetWidth();
-	ysize=(marked).GetHeight();
+	xsize=(marked)->GetWidth();
+	ysize=(marked)->GetHeight();
 	if(verboseLevel)
 		cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
 }
@@ -115,9 +115,9 @@ void Button::drawTo(SDL_Surface **surface)
 	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
 #endif
 	if (marked)
-		gfx->_marked.PaintTo(*surface,x,y);
+		gfx->_marked->PaintTo(*surface,x,y);
 	else
-		gfx->_unmarked.PaintTo(*surface,x,y);
+		gfx->_unmarked->PaintTo(*surface,x,y);
 	//int stringx = x + (ButtonGfx::xsize)/2 - ButtonGfx::ttf->getTextWidth(label)/2;
 	//int stringy = y + (ButtonGfx::ysize)/2 - ButtonGfx::ttf->getTextHeight()/2;
 	//ButtonGfx::ttf->writeText(label,surface,stringx,stringy);
@@ -153,7 +153,7 @@ void Menu::drawSelf()
 		(*it)->drawTo(&screen);
 	exit.drawTo(&screen);
 	standardButton.thefont.draw(50,50,title.c_str());
-	mouse.PaintTo(screen,mousex,mousey);
+	mouse->PaintTo(screen,mousex,mousey);
 }
 
 void Menu::performClick(int x,int y)
