@@ -33,13 +33,12 @@ http://blockattack.sf.net
 #include <memory>
 
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
-class ButtonGfx
+struct ButtonGfx
 {
-public:
 	//Holds the graphic for a button that is selected
-	std::shared_ptr<CppSdl::CppSdlImageHolder> _marked;
+	std::shared_ptr<CppSdl::CppSdlImageHolder> marked;
 	//Holds the graphic for a button that is not selected
-	std::shared_ptr<CppSdl::CppSdlImageHolder> _unmarked;
+	std::shared_ptr<CppSdl::CppSdlImageHolder> unmarked;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize;
 	int ysize;

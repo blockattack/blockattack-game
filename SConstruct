@@ -7,6 +7,7 @@ opts.Add('sharedir', 'Directory to use to store data file', '$prefix/share/block
 opts.Add('bindir', 'Directory to use to store data file', '$prefix/bin')
 opts.Add('mandir', 'Directory to use to store data file', '$prefix/share/man')
 opts.Add('CXX', 'C++ compiler to use', os.environ['CXX'])
+opts.Add('CXXFLAGS', 'C++ flags', "-std=c++11")
 
 
 # Copy Build Environment #

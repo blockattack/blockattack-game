@@ -55,8 +55,8 @@ ButtonGfx standardButton;
 
 void ButtonGfx::setSurfaces(shared_ptr<CppSdl::CppSdlImageHolder> marked, shared_ptr<CppSdl::CppSdlImageHolder> unmarked)
 {
-	ButtonGfx::_marked = marked;
-	ButtonGfx::_unmarked = unmarked;
+	this->marked = marked;
+	this->unmarked = unmarked;
 	xsize=(marked)->GetWidth();
 	ysize=(marked)->GetHeight();
 	if(verboseLevel)
@@ -117,9 +117,9 @@ void Button::drawTo(SDL_Surface **surface)
 	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
 #endif
 	if (marked)
-		gfx->_marked->PaintTo(*surface,x,y);
+		gfx->marked->PaintTo(*surface,x,y);
 	else
-		gfx->_unmarked->PaintTo(*surface,x,y);
+		gfx->unmarked->PaintTo(*surface,x,y);
 	//int stringx = x + (ButtonGfx::xsize)/2 - ButtonGfx::ttf->getTextWidth(label)/2;
 	//int stringy = y + (ButtonGfx::ysize)/2 - ButtonGfx::ttf->getTextHeight()/2;
 	//ButtonGfx::ttf->writeText(label,surface,stringx,stringy);
