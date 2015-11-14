@@ -34,6 +34,8 @@ extern int verboseLevel;
 int mousex;
 int mousey;
 
+using namespace std;
+
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
 {
@@ -83,7 +85,7 @@ Button::Button(const Button& b)
 	popOnRun = false;
 }
 
-void Button::setLabel(string text)
+void Button::setLabel(const string& text)
 {
 	label = text;
 }
@@ -212,7 +214,7 @@ Menu::Menu(SDL_Surface **screen,bool submenu)
 		exit.setLabel( _("Exit") );
 }
 
-Menu::Menu(SDL_Surface** screen, string title, bool submenu)
+Menu::Menu(SDL_Surface** screen, const string& title, bool submenu)
 {
 	this->screen = *screen;
 	buttons = vector<Button*>(0);

@@ -26,7 +26,6 @@ http://blockattack.sf.net
 
 #include "SDL.h"
 #include <string>
-#include "CppSdlException.hpp"
 
 namespace CppSdl
 {

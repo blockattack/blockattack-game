@@ -15,8 +15,7 @@ common.cpp
 MenuSystem.cpp
 menudef.cpp
 puzzlehandler.cpp
-CppSdlImageHolder.cpp
-CppSdlException.cpp""")
+CppSdlImageHolder.cpp""")
 
 # Modify Build Environment #
 env.ParseConfig('sdl-config --cflags --libs')

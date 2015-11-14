@@ -23,6 +23,7 @@ http://blockattack.sf.net
 
 #include "CppSdlImageHolder.hpp"
 #include "SDL_image.h"
+#include <stdexcept>
 
 namespace CppSdl
 {
@@ -38,8 +39,7 @@ CppSdlImageHolder::CppSdlImageHolder(std::string filename)
 	if(!data)
 	{
 		//Here we should throw an exception
-		CppSdlException e(IMAGE,CPPSDL_ERROR_MISSINGFILE,"Could not read file \""+filename+"\"");
-		throw e;
+		throw std::runtime_error(std::string("Could not read file \""+filename+"\""));
 	}
 	SDL_GetClipRect(data,&area);
 	OptimizeForBlit();
@@ -51,15 +51,13 @@ CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize)
 
 	//The above might fail and return null.
 	if (!rw) {
-		CppSdlException e(IMAGE,CPPSDL_ERROR_NULLPOINTER, "Could not read raw data");
-		throw e;
+		throw std::runtime_error(std::string("Could not read raw data"));
 	}
 
 	data = IMG_Load_RW(rw,true); //the second argument tells the function to free RWops
 
 	if (!data) {
-		CppSdlException e(IMAGE,CPPSDL_ERROR_DATA,"Could not convert raw data to image");
-		throw e;
+		throw std::runtime_error("Could not convert raw data to image");
 	}
 
 	SDL_GetClipRect(data,&area);
@@ -115,8 +113,9 @@ void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha)
 
 void CppSdlImageHolder::Initialized()
 {
-	if(data == NULL)
-		throw(CppSdlException(IMAGE,CPPSDL_ERROR_NULLPOINTER,"ImageHolder used uninitialized!"));
+	if(data == NULL) {
+		throw std::runtime_error("ImageHolder used uninitialized!");
+	}
 }
 
 bool CppSdlImageHolder::IsNull()
