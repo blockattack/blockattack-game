@@ -26,12 +26,13 @@ http://blockattack.sf.net
 
 #include "CppSdlImageHolder.hpp"
 #include "Libs/NFont.h"
+#include <memory>
 
 void MainMenu();
 void ResetFullscreen();
 
-extern CppSdl::CppSdlImageHolder menuMarked;
-extern CppSdl::CppSdlImageHolder menuUnmarked;
+extern std::shared_ptr<CppSdl::CppSdlImageHolder>  menuMarked;
+extern std::shared_ptr<CppSdl::CppSdlImageHolder>  menuUnmarked;
 extern NFont nf_scoreboard_font;
 extern bool MusicEnabled;			//true if background music is enabled
 extern bool SoundEnabled;			//true if sound effects is enabled

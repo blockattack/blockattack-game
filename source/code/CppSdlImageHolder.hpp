@@ -26,7 +26,6 @@ http://blockattack.sf.net
 
 #include "SDL.h"
 #include <string>
-#include "CppSdlException.hpp"
 
 namespace CppSdl
 {
@@ -47,9 +46,9 @@ public:
 	 * Creates a copy. The new copy shares raw data with the original but is otherwise independent.
 	 * @param orig
 	 */
-	CppSdlImageHolder(const CppSdlImageHolder& orig);
+	CppSdlImageHolder(const CppSdlImageHolder& orig) = delete;
 	CppSdlImageHolder(char *rawdata, int datasize);
-	virtual ~CppSdlImageHolder();
+	~CppSdlImageHolder();
 	/**
 	 * This gives access direct access to the internal data.
 	 * Careful, the data might be shared between multiple ImageHolders,
@@ -57,8 +56,7 @@ public:
 	 * @return A pointer
 	 */
 	SDL_Surface *GetRawDataInsecure();
-	CppSdlImageHolder & operator=(const CppSdlImageHolder &rhs);
-	void Cut(Uint32 x,Uint32 y,Sint32 w,Sint32 h);
+	CppSdlImageHolder & operator=(const CppSdlImageHolder &rhs) = delete;
 	/**
 	 * The width of the image
 	 * 0 if the image is nulled
@@ -92,7 +90,6 @@ public:
 	void MakeNull();
 private:
 	void Initialized(); //throws an exception if *data is null
-	int *counter;
 	SDL_Rect area;
 	SDL_Surface *data;
 };

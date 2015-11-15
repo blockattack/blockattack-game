@@ -67,6 +67,7 @@ http://blockattack.sf.net
 #include "CppSdlImageHolder.hpp"
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
+#include <memory>
 
 //if SHAREDIR is not used we look in current directory
 #ifndef SHAREDIR
@@ -147,7 +148,7 @@ SDL_Surface * IMG_Load2(const char* path)
 	return surface;
 }
 
-CppSdl::CppSdlImageHolder IMG_Load3(string path)
+shared_ptr<CppSdl::CppSdlImageHolder> IMG_Load3(string path)
 {
 	if (!PHYSFS_exists(path.c_str()))
 	{
@@ -176,7 +177,7 @@ CppSdl::CppSdlImageHolder IMG_Load3(string path)
 
 	PHYSFS_close(myfile);
 
-	CppSdl::CppSdlImageHolder surface(m_data, m_size);
+	shared_ptr<CppSdl::CppSdlImageHolder> surface(new CppSdl::CppSdlImageHolder(m_data, m_size));
 
 	return surface;
 }
@@ -560,8 +561,8 @@ static int InitImages()
 	CONVERTA(iLoser);
 	CONVERTA(iChainBack);
 	CONVERTA(iGameOver);
-	mouse.OptimizeForBlit(true);
-	bNewGame.OptimizeForBlit(true);
+	mouse->OptimizeForBlit(true);
+	bNewGame->OptimizeForBlit(true);
 	CONVERTA(stageBobble);
 	CONVERTA(transCover);
 	//Editor:
@@ -717,8 +718,8 @@ void UnloadImages()
 	SDL_FreeSurface(smiley[2]);
 	SDL_FreeSurface(smiley[3]);
 	SDL_FreeSurface(transCover);
-	mouse.MakeNull();
-	bNewGame.MakeNull();
+	mouse->MakeNull();
+	bNewGame->MakeNull();
 }
 
 //Function to convert numbers to string
@@ -1785,7 +1786,7 @@ void OpenScoresDisplay()
 		}
 
 		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse.PaintTo(screen,mousex,mousey);
+		mouse->PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //Update screen
 	}
 
@@ -1889,7 +1890,7 @@ bool OpenFileDialogbox(int x, int y, char *name)
 		}
 
 		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse.PaintTo(screen,mousex,mousey);
+		mouse->PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //Update screen
 	}
 	return true;
@@ -2377,7 +2378,7 @@ int PuzzleLevelSelect(int Type)
 		}
 
 		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse.PaintTo(screen,mousex,mousey);
+		mouse->PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //draws it all to the screen
 
 	}
@@ -2523,7 +2524,7 @@ void startVsMenu()
 		}
 
 		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse.PaintTo(screen,mousex,mousey);
+		mouse->PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //draws it all to the screen
 		SDL_Delay(10);
 
@@ -3847,7 +3848,7 @@ int runGame(int gametype, int level)
 		oldMousex = mousex;
 		oldMousey = mousey;
 		//Draw the mouse:
-		mouse.PaintTo(screen,mousex,mousey);
+		mouse->PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen);
 	} //game loop
 	return 0;

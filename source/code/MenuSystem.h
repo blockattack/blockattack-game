@@ -30,23 +30,21 @@ http://blockattack.sf.net
 #include <vector>
 #include "Libs/NFont.h"
 #include "CppSdlImageHolder.hpp"
-
-using namespace std;
+#include <memory>
 
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
-class ButtonGfx
+struct ButtonGfx
 {
-public:
 	//Holds the graphic for a button that is selected
-	CppSdl::CppSdlImageHolder _marked;
+	std::shared_ptr<CppSdl::CppSdlImageHolder> marked;
 	//Holds the graphic for a button that is not selected
-	CppSdl::CppSdlImageHolder _unmarked;
+	std::shared_ptr<CppSdl::CppSdlImageHolder> unmarked;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize;
 	int ysize;
 	//A TTFont used for writing the label on the buttons
 	NFont thefont;
-	void setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked);
+	void setSurfaces(std::shared_ptr<CppSdl::CppSdlImageHolder> marked, std::shared_ptr<CppSdl::CppSdlImageHolder> unmarked);
 };
 
 extern ButtonGfx standardButton;
@@ -56,7 +54,7 @@ class Button
 {
 private:
 	//The label. This is written on the button
-	string label;
+	std::string label;
 	//Pointer to a callback function.
 	void (*action)(Button *b);
 
@@ -78,7 +76,7 @@ public:
 
 
 	//Set the text to write on the button
-	void setLabel(string text);
+	void setLabel(const std::string& text);
 	//Set the action to run
 	void setAction(void (*action2run)(Button*));
 
@@ -98,13 +96,13 @@ public:
 class Menu
 {
 private:
-	vector<Button*> buttons; //Vector holder the buttons
+	std::vector<Button*> buttons; //Vector holder the buttons
 	Button exit; //The exit button is special since it does not have a callback function
 	bool isSubmenu; //True if the menu is a submenu
 	int marked; //The index of the marked button (for keyboard up/down)
 	bool running; //The menu is running. The menu will terminate then this is false
 	SDL_Surface *screen; //Pointer to the screen to draw to
-	string title;
+	std::string title;
 //        SDL_Surface *background; //Pointer to the background image
 
 	void drawSelf();        //Private function to draw the screen
@@ -115,7 +113,7 @@ public:
 	//SubMenu is true by default
 	Menu(SDL_Surface **screen,bool isSubmenu);
 	Menu(SDL_Surface **screen);
-	Menu(SDL_Surface **screen, string title, bool isSubmenu);
+	Menu(SDL_Surface **screen, const std::string& title, bool isSubmenu);
 
 	//Add a button to the menu
 	void addButton(Button *b);
@@ -127,13 +125,13 @@ public:
 class FileMenu
 {
 private:
-	string pm_path;
-	string pm_fileending;
+	std::string pm_path;
+	std::string pm_fileending;
 	bool pm_hidden_files;
 public:
-	FileMenu(string path,string fileending,bool hidden_files = false);
+	FileMenu(const std::string& path, const std::string& fileending, bool hidden_files = false);
 
-	string getFile(SDL_Surface **screen);
+	std::string getFile(SDL_Surface **screen);
 };
 
 #endif	/* _MENUSYSTEM_H */

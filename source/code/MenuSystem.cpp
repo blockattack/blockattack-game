@@ -27,12 +27,14 @@ http://blockattack.sf.net
 #include "common.h"
 #include "CppSdlImageHolder.hpp"
 
-extern CppSdl::CppSdlImageHolder mouse;
+extern std::shared_ptr<CppSdl::CppSdlImageHolder> mouse;
 extern SDL_Surface *backgroundImage;
 extern bool highPriority;
 extern int verboseLevel;
 int mousex;
 int mousey;
+
+using namespace std;
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
@@ -43,20 +45,14 @@ inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
 	SDL_BlitSurface(img, NULL, target, &dest);
 }
 
-/*CppSdl::CppSdlImageHolder ButtonGfx::_marked;
-CppSdl::CppSdlImageHolder ButtonGfx::_unmarked;
-int ButtonGfx::xsize;
-int ButtonGfx::ysize;
-NFont ButtonGfx::thefont;*/
-
 ButtonGfx standardButton;
 
-void ButtonGfx::setSurfaces(CppSdl::CppSdlImageHolder marked,CppSdl::CppSdlImageHolder unmarked)
+void ButtonGfx::setSurfaces(shared_ptr<CppSdl::CppSdlImageHolder> marked, shared_ptr<CppSdl::CppSdlImageHolder> unmarked)
 {
-	ButtonGfx::_marked = marked;
-	ButtonGfx::_unmarked = unmarked;
-	xsize=(marked).GetWidth();
-	ysize=(marked).GetHeight();
+	this->marked = marked;
+	this->unmarked = unmarked;
+	xsize=(marked)->GetWidth();
+	ysize=(marked)->GetHeight();
 	if(verboseLevel)
 		cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
 }
@@ -83,7 +79,7 @@ Button::Button(const Button& b)
 	popOnRun = false;
 }
 
-void Button::setLabel(string text)
+void Button::setLabel(const string& text)
 {
 	label = text;
 }
@@ -95,18 +91,19 @@ void Button::setAction(void (*action2run)(Button*))
 
 bool Button::isClicked(int x,int y)
 {
-	if ( x >= this->x && y >= this->y && x<= this->x+gfx->xsize && y <= this->y + gfx->ysize)
+	if ( x >= this->x && y >= this->y && x<= this->x+gfx->xsize && y <= this->y + gfx->ysize) {
 		return true;
-	else
-		return false;
+	}
+	return false;
 }
 
 void Button::doAction()
 {
-	if(action)
+	if (action) {
 		action(this);
-	else
-		cerr << "Warning: button \"" << label << "\" has no action assigned!";
+		return;
+	}
+	cerr << "Warning: button \"" << label << "\" has no action assigned!";
 }
 
 void Button::drawTo(SDL_Surface **surface)
@@ -114,13 +111,12 @@ void Button::drawTo(SDL_Surface **surface)
 #if DEBUG
 	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
 #endif
-	if (marked)
-		gfx->_marked.PaintTo(*surface,x,y);
-	else
-		gfx->_unmarked.PaintTo(*surface,x,y);
-	//int stringx = x + (ButtonGfx::xsize)/2 - ButtonGfx::ttf->getTextWidth(label)/2;
-	//int stringy = y + (ButtonGfx::ysize)/2 - ButtonGfx::ttf->getTextHeight()/2;
-	//ButtonGfx::ttf->writeText(label,surface,stringx,stringy);
+	if (marked) {
+		gfx->marked->PaintTo(*surface,x,y);
+	}
+	else {
+		gfx->unmarked->PaintTo(*surface,x,y);
+	}
 	gfx->thefont.setDest(*surface);
 	gfx->thefont.drawCenter(x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont.getHeight(label.c_str())/2,label.c_str());
 }
@@ -149,11 +145,12 @@ void Menu::drawSelf()
 {
 	DrawIMG(backgroundImage,screen,0,0);
 	vector<Button*>::iterator it;
-	for(it = buttons.begin(); it < buttons.end(); it++)
+	for (it = buttons.begin(); it < buttons.end(); it++) {
 		(*it)->drawTo(&screen);
+	}
 	exit.drawTo(&screen);
 	standardButton.thefont.draw(50,50,title.c_str());
-	mouse.PaintTo(screen,mousex,mousey);
+	mouse->PaintTo(screen,mousex,mousey);
 }
 
 void Menu::performClick(int x,int y)
@@ -162,13 +159,16 @@ void Menu::performClick(int x,int y)
 	for(it = buttons.begin(); it < buttons.end(); it++)
 	{
 		Button *b = (*it);
-		if(b->isClicked(x,y))
+		if (b->isClicked(x,y)) {
 			b->doAction();
-		if(b->isPopOnRun())
+		}
+		if (b->isPopOnRun()) {
 			running = false;
+		}
 	}
-	if(exit.isClicked(x,y))
+	if (exit.isClicked(x,y)) {
 		running = false;
+	}
 }
 
 void Menu::placeButtons()
@@ -212,7 +212,7 @@ Menu::Menu(SDL_Surface **screen,bool submenu)
 		exit.setLabel( _("Exit") );
 }
 
-Menu::Menu(SDL_Surface** screen, string title, bool submenu)
+Menu::Menu(SDL_Surface** screen, const string& title, bool submenu)
 {
 	this->screen = *screen;
 	buttons = vector<Button*>(0);

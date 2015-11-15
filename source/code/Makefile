@@ -43,7 +43,7 @@ endif
 
 BASE_LIBS += -lphysfs
 
-OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o common.o stats.o CppSdlException.o CppSdlImageHolder.o Libs/NFont.o MenuSystem.o menudef.o puzzlehandler.o
+OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o common.o stats.o CppSdlImageHolder.o Libs/NFont.o MenuSystem.o menudef.o puzzlehandler.o
 
 ifeq ($(CROSS),i686-pc-mingw32-)
 OFILES += winicon.res

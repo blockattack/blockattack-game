@@ -41,7 +41,7 @@ const char sharedir[] = SHAREDIR;
 static SDL_Surface *background;    //Stores background
 SDL_Surface *backgroundImage; //Stores the background image
 static SDL_Surface *backBoard;     //Stores the background to the board
-static CppSdl::CppSdlImageHolder bNewGame;      //The New Game botton
+static std::shared_ptr<CppSdl::CppSdlImageHolder> bNewGame;      //The New Game botton
 static SDL_Surface *bOptions;      //The Options botton
 static SDL_Surface *bConfigure;    //The configure button
 static SDL_Surface *bSelectPuzzle; //The Select Puzzle Button
@@ -118,9 +118,9 @@ static SDL_Surface *bSkip;
 static SDL_Surface *bRetry;
 static SDL_Surface *bNext;
 
-CppSdl::CppSdlImageHolder menuMarked;
-CppSdl::CppSdlImageHolder menuUnmarked;
-CppSdl::CppSdlImageHolder mouse;
+std::shared_ptr<CppSdl::CppSdlImageHolder> menuMarked;
+std::shared_ptr<CppSdl::CppSdlImageHolder> menuUnmarked;
+std::shared_ptr<CppSdl::CppSdlImageHolder> mouse;
 
 static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
 
