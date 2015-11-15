@@ -201,18 +201,16 @@ void loadTheme(const string &themeName)
 	//Look in blockattack.data
 	PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
 	//Look in folder
-	PHYSFS_addToSearchPath(SHAREDIR, 1);
+	PHYSFS_addToSearchPath(PHYSFS_getBaseDir(), 1);
 	//Look in home folder
 #if defined(__unix__) || defined(_WIN32)
 	PHYSFS_addToSearchPath(home.c_str(), 1);
 #endif
-	if(themeName.compare(Config::getInstance()->getString("themename"))!=0)
-	{
+	if (themeName == Config::getInstance()->getString("themename")) {
 		//If this is a theme different from the saved one. Remember it!
-		Config::getInstance()->setString("themename",themeName);
+		Config::getInstance()->setString("themename", themeName);
 	}
-	if(themeName.compare("default")==0 || (themeName.compare("start")==0))
-	{
+	if(themeName.compare("default")==0 || (themeName.compare("start")==0)) {
 		InitImages();
 		loaded =true;
 		return; //Nothing more to do
