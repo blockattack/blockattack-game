@@ -23,6 +23,9 @@ http://blockattack.sf.net
 
 #include "ReadKeyboard.h"
 
+
+using namespace std;
+
 ReadKeyboard::ReadKeyboard(void)
 {
 	length = 0;

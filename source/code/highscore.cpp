@@ -23,6 +23,8 @@ http://blockattack.sf.net
 
 #include "highscore.h"
 
+using namespace std;
+
 #ifdef WIN32
 
 //Returns path to "my Documents" in windows:

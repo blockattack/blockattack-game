@@ -28,8 +28,6 @@ Added to project 5/11-2004
 #include <cstring>
 #include "SDL.h"
 
-using namespace std;
-
 class ReadKeyboard
 {
 private:
