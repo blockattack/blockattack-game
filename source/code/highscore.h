@@ -36,8 +36,6 @@ http://blockattack.sf.net
 #include <shlobj.h>
 #endif
 
-using namespace std;
-
 const int top = 10;
 
 struct record
@@ -50,7 +48,7 @@ class Highscore
 {
 private:
 	record tabel[top];
-	string filename;
+	std::string filename;
 	int ourType;     //This is ugly, remove me, plz!
 	void writeFile();
 public:

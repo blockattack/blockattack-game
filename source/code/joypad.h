@@ -30,8 +30,6 @@ http://blockattack.sf.net
 #define NRofPADS 4
 #define NRofBUTTONS 12
 
-using namespace std;
-
 struct Joypad_status
 {
 	bool padLeft[NRofPADS];

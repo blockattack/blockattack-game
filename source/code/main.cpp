@@ -99,6 +99,8 @@ http://blockattack.sf.net
 *******************************************************************************/
 #include "mainVars.hpp"
 
+using namespace std;
+
 static void MakeBackground(int,int);
 
 SDL_Surface * IMG_Load2(const char* path)

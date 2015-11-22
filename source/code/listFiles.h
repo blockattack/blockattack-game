@@ -40,28 +40,26 @@ http://blockattack.sf.net
 #define FIRST_FILE 1
 #endif
 
-using namespace std;
-
 class ListFiles
 {
 private:
 	int startFileNr;   //The first fileto belisted
-	string filenames[MAX_NR_OF_FILES];
+	std::string filenames[MAX_NR_OF_FILES];
 	int nrOfFiles;
 #if defined(_WIN32)
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 #endif
-	bool isInList(const string &name); //The name is already in the list
+	bool isInList(const std::string &name); //The name is already in the list
 public:
 	//ListFiles();
 	//~ListFiles();
-	void setDirectory(const string &dictory); //Find file in BlockAttack folder
-	void setDirectory2(const string &dictory); //Second directory we also look in
+	void setDirectory(const std::string &dictory); //Find file in BlockAttack folder
+	void setDirectory2(const std::string &dictory); //Second directory we also look in
 	//void setDirecctoryInHome(string dictory); //Find files in home folder (it should work...)
-	string getFileName(int);      //Returns the filename of a file
+	std::string getFileName(int);      //Returns the filename of a file
 	bool fileExists(int);
 	void forward();  //inclease startFile by 10
 	void back();      //decrease startFile by 10
-	string getRandom(); //Return the name of a random file in the directory, empty if none
+	std::string getRandom(); //Return the name of a random file in the directory, empty if none
 };

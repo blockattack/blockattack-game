@@ -33,8 +33,6 @@ http://blockattack.sf.net
 #define BOMBTIME 200
 #define CURSORTIME 200
 
-
-using namespace std;	//remove it if you dare...
 const char sharedir[] = SHAREDIR;
 
 //All graphic in the game (as pointers):
@@ -203,12 +201,12 @@ char player1name[30];
 char player2name[30];
 
 //paths
-static string stageClearSavePath;
+static std::string stageClearSavePath;
 
 static const int nrOfStageLevels = 50;		//number of stages in stage Clear
-vector<bool> stageCleared(nrOfStageLevels);		//vector that tells if a stage is cleared
-vector<Uint32> stageTimes(nrOfStageLevels);             //For statistical puposes
-vector<Uint32> stageScores(nrOfStageLevels);            //--||--
+std::vector<bool> stageCleared(nrOfStageLevels);		//vector that tells if a stage is cleared
+std::vector<Uint32> stageTimes(nrOfStageLevels);             //For statistical puposes
+std::vector<Uint32> stageScores(nrOfStageLevels);            //--||--
 bool twoPlayers;    //True if two players are playing
 
 //Old mouse position:
@@ -221,7 +219,7 @@ static char forceredraw; //If 1: always redraw, if 2: rarely redraw
 
 static bool singlePuzzle = false; //if true we are just in a little 300x600 window
 static int singlePuzzleNr = 0;
-static string singlePuzzleFile;
+static std::string singlePuzzleFile;
 
 #if DEBUG
 //frame counter (fps)

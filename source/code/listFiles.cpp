@@ -27,15 +27,7 @@ listFiles.cpp
 
 #include "listFiles.h"
 
-/*ListFiles::ListFiles()
-{
-
-}
-
-ListFiles::~ListFiles()
-{
-
-}*/
+using namespace std;
 
 
 void ListFiles::setDirectory(const string &directory)
