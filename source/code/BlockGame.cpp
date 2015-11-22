@@ -64,7 +64,7 @@ int BlockGame::firstUnusedChain()
 //Constructor
 BlockGame::BlockGame()
 {
-	srand((int)time(NULL));
+	srand((int)time(nullptr));
 	nrFellDown = 0;
 	nrPushedPixel = 0;
 	garbageTarget = this;

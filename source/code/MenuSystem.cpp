@@ -42,7 +42,7 @@ inline void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
-	SDL_BlitSurface(img, NULL, target, &dest);
+	SDL_BlitSurface(img, nullptr, target, &dest);
 }
 
 ButtonGfx standardButton;
@@ -53,8 +53,9 @@ void ButtonGfx::setSurfaces(shared_ptr<CppSdl::CppSdlImageHolder> marked, shared
 	this->unmarked = unmarked;
 	xsize=(marked)->GetWidth();
 	ysize=(marked)->GetHeight();
-	if(verboseLevel)
+	if(verboseLevel) {
 		cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
+	}
 }
 
 Button::Button()
@@ -62,7 +63,7 @@ Button::Button()
 	gfx = &standardButton;
 	label = "";
 	marked = false;
-	action = NULL;
+	action = nullptr;
 	popOnRun = false;
 }
 
@@ -206,10 +207,12 @@ Menu::Menu(SDL_Surface **screen,bool submenu)
 	this->screen = *screen;
 	buttons = vector<Button*>(0);
 	isSubmenu = submenu;
-	if(isSubmenu)
+	if(isSubmenu) {
 		exit.setLabel( _("Back") );
-	else
+	}
+	else {
 		exit.setLabel( _("Exit") );
+	}
 }
 
 Menu::Menu(SDL_Surface** screen, const string& title, bool submenu)
@@ -218,10 +221,12 @@ Menu::Menu(SDL_Surface** screen, const string& title, bool submenu)
 	buttons = vector<Button*>(0);
 	isSubmenu = submenu;
 	this->title = title;
-	if(isSubmenu)
+	if(isSubmenu) {
 		exit.setLabel(_("Back") );
-	else
+	}
+	else {
 		exit.setLabel(_("Exit") );
+	}
 }
 
 void Menu::run()
@@ -232,7 +237,9 @@ void Menu::run()
 	long oldmousey = mousey;
 	while(running && !Config::getInstance()->isShuttingDown())
 	{
-		if (!(highPriority)) SDL_Delay(10);
+		if (!(highPriority)) {
+			SDL_Delay(10);
+		}
 
 
 		SDL_Event event;
@@ -255,15 +262,17 @@ void Menu::run()
 				if (event.key.keysym.sym == SDLK_UP)
 				{
 					marked--;
-					if(marked<0)
-						marked = buttons.size(); //not -1, since exit is after the last element in the list
+					if(marked<0) {
+						marked = buttons.size();    //not -1, since exit is after the last element in the list
+					}
 				}
 
 				if (event.key.keysym.sym == SDLK_DOWN)
 				{
 					marked++;
-					if(marked>buttons.size())
+					if(marked>buttons.size()) {
 						marked = 0;
+					}
 				}
 
 				if(event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER )
@@ -271,11 +280,13 @@ void Menu::run()
 					if(marked < buttons.size())
 					{
 						buttons.at(marked)->doAction();
-						if(buttons.at(marked)->isPopOnRun())
+						if(buttons.at(marked)->isPopOnRun()) {
 							running = false;
+						}
 					}
-					if(marked == buttons.size())
+					if(marked == buttons.size()) {
 						running = false;
+					}
 				}
 			}
 
@@ -320,8 +331,9 @@ void Menu::run()
 				if(buttons.at(i)->isClicked(mousex,mousey))
 				{
 					buttons.at(i)->doAction();
-					if(buttons.at(i)->isPopOnRun())
+					if(buttons.at(i)->isPopOnRun()) {
 						running = false;
+					}
 					mousex = 0;
 				}
 			}

@@ -56,8 +56,9 @@ extern control keySettings[3];
 static string getKeyName(SDLKey key)
 {
 	string keyname(SDL_GetKeyName(key));
-	if(verboseLevel)
+	if(verboseLevel) {
 		cout << key << " translated to " << keyname << endl;
+	}
 	return keyname;
 }
 
@@ -91,8 +92,9 @@ void Button_changekey::doAction()
 		{
 			if (event.type == SDL_KEYDOWN)
 			{
-				if (event.key.keysym.sym != SDLK_ESCAPE)
+				if (event.key.keysym.sym != SDLK_ESCAPE) {
 					*m_key2change = event.key.keysym.sym;
+				}
 				finnish = true;
 			}
 		}
@@ -174,14 +176,16 @@ static void buttonActionFullscreen(Button* b)
 
 static void buttonActionPlayer1Name(Button *b)
 {
-	if (OpenDialogbox(200,100,player1name))
-		return; //must save if true
+	if (OpenDialogbox(200,100,player1name)) {
+		return;    //must save if true
+	}
 }
 
 static void buttonActionPlayer2Name(Button *b)
 {
-	if (OpenDialogbox(200,100,player2name))
-		return; //must save if true
+	if (OpenDialogbox(200,100,player2name)) {
+		return;    //must save if true
+	}
 }
 
 static void buttonActionPortChange(Button *b)

@@ -30,7 +30,7 @@ namespace CppSdl
 
 CppSdlImageHolder::CppSdlImageHolder()
 {
-	data = NULL;
+	data = nullptr;
 }
 
 CppSdlImageHolder::CppSdlImageHolder(std::string filename)
@@ -77,23 +77,26 @@ SDL_Surface* CppSdlImageHolder::GetRawDataInsecure()
 
 Uint32 CppSdlImageHolder::GetWidth()
 {
-	if (IsNull())
+	if (IsNull()) {
 		return 0;
+	}
 	return area.w;
 }
 
 Uint32 CppSdlImageHolder::GetHeight()
 {
-	if(IsNull())
+	if(IsNull()) {
 		return 0;
+	}
 	return area.h;
 }
 
 void CppSdlImageHolder::PaintTo(SDL_Surface* target, int x, int y)
 {
 	static SDL_Rect dest; //static for reuse
-	if(IsNull())
+	if(IsNull()) {
 		return;
+	}
 	dest.x = x;
 	dest.y = y;
 	SDL_BlitSurface(data,&area, target,&dest);
@@ -103,24 +106,26 @@ void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha)
 {
 	static SDL_Surface *tmp;
 	Initialized();
-	if(allowAlpha)
+	if(allowAlpha) {
 		tmp = SDL_DisplayFormatAlpha(data);
-	else
+	}
+	else {
 		tmp = SDL_DisplayFormat(data);
+	}
 	SDL_FreeSurface(data);
 	data = tmp;
 }
 
 void CppSdlImageHolder::Initialized()
 {
-	if(data == NULL) {
+	if(data == nullptr) {
 		throw std::runtime_error("ImageHolder used uninitialized!");
 	}
 }
 
 bool CppSdlImageHolder::IsNull()
 {
-	if(data == NULL ) {
+	if(data == nullptr ) {
 		return true;
 	}
 	return false;
@@ -128,10 +133,11 @@ bool CppSdlImageHolder::IsNull()
 
 void CppSdlImageHolder::MakeNull()
 {
-	if(IsNull())
+	if(IsNull()) {
 		return;
+	}
 	SDL_FreeSurface(data);
-	data = NULL;
+	data = nullptr;
 }
 
 }

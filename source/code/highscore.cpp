@@ -29,8 +29,8 @@ http://blockattack.sf.net
 string getMyDocumentsPath1()
 {
 	TCHAR pszPath[MAX_PATH];
-	//if (SUCCEEDED(SHGetSpecialFolderPath(NULL, pszPath, CSIDL_PERSONAL, FALSE))) {
-	if (SUCCEEDED(SHGetSpecialFolderPath(NULL, pszPath, CSIDL_PERSONAL, FALSE)))
+	//if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
+	if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE)))
 	{
 		// pszPath is now the path that you want
 		cout << "MyDocuments Located: " << pszPath << endl;
@@ -56,7 +56,7 @@ Highscore::Highscore(int type)
 #elif defined(_WIN32)
 	string home = getMyDocumentsPath1();
 	string filename1, filename2;
-	if (&home!=NULL)
+	if (&home!=nullptr)
 	{
 		filename1 = home+"/My Games/blockattack/endless.dat";
 		filename2 = home+"/My Games/blockattack/timetrial.dat";
@@ -71,8 +71,12 @@ Highscore::Highscore(int type)
 	string filename2 = "timetrial.dat";
 #endif
 	ourType = type;
-	if (type == 1) filename = filename1;
-	if (type == 2) filename = filename2;
+	if (type == 1) {
+		filename = filename1;
+	}
+	if (type == 2) {
+		filename = filename2;
+	}
 	ifstream scorefile(filename.c_str(), ios::binary);
 	if (scorefile)
 	{
@@ -103,7 +107,7 @@ void Highscore::writeFile()
 #elif defined(_WIN32)
 	string home = getMyDocumentsPath1();
 	string filename1, filename2;
-	if (&home!=NULL)
+	if (&home!=nullptr)
 	{
 		filename1 = home+"/My Games/blockattack/endless.dat";
 		filename2 = home+"/My Games/blockattack/timetrial.dat";
@@ -117,8 +121,12 @@ void Highscore::writeFile()
 	string filename1 = "endless.dat";
 	string filename2 = "timetrial.dat";
 #endif
-	if (ourType == 1) filename = filename1;
-	if (ourType == 2) filename = filename2;
+	if (ourType == 1) {
+		filename = filename1;
+	}
+	if (ourType == 2) {
+		filename = filename2;
+	}
 
 	ofstream outfile;
 	outfile.open(Highscore::filename.c_str(), ios::binary |ios::trunc);
@@ -137,17 +145,20 @@ void Highscore::writeFile()
 
 bool Highscore::isHighScore(int newScore)
 {
-	if (newScore>tabel[top-1].score)
+	if (newScore>tabel[top-1].score) {
 		return true;
-	else
+	}
+	else {
 		return false;
+	}
 }
 
 void Highscore::addScore(const string& newName, int newScore)
 {
 	int ranking = top-1;
-	while ((tabel[ranking-1].score<newScore) && (ranking != 0))
+	while ((tabel[ranking-1].score<newScore) && (ranking != 0)) {
 		ranking--;
+	}
 	for (int i=top-1; i>ranking; i--)
 	{
 		tabel[i].score = tabel[i-1].score;

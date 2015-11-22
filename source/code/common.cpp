@@ -93,8 +93,8 @@ int str2int(const string &str2parse)
 string getMyDocumentsPath()
 {
 	TCHAR pszPath[MAX_PATH];
-	//if (SUCCEEDED(SHGetSpecialFolderPath(NULL, pszPath, CSIDL_PERSONAL, FALSE))) {
-	if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, pszPath)))
+	//if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
+	if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, pszPath)))
 	{
 		// pszPath is now the path that you want
 #if DEBUG
@@ -216,8 +216,9 @@ void Config::load()
 		while(!inFile.eof())
 		{
 			inFile >> key;
-			if(key==previuskey) //the last entry will be read 2 times if a linebreak is missing in the end
+			if(key==previuskey) { //the last entry will be read 2 times if a linebreak is missing in the end
 				continue;
+			}
 			previuskey = key;
 			inFile.get(); //Read the space between the key and the content
 			inFile.getline(value,MAX_VAR_LENGTH);
@@ -266,8 +267,9 @@ bool Config::exists(const string &varName) const
 
 void Config::setDefault(const string &varName,const string &content)
 {
-	if(exists(varName))
-		return; //Already exists do not change
+	if(exists(varName)) {
+		return;    //Already exists do not change
+	}
 	setString(varName,content);
 }
 
@@ -302,8 +304,9 @@ string Config::getString(const string &varName)
 	{
 		return configMap[varName];
 	}
-	else
+	else {
 		return "";
+	}
 }
 
 int Config::getInt(const string &varName)
@@ -312,8 +315,9 @@ int Config::getInt(const string &varName)
 	{
 		return str2int(configMap[varName]);
 	}
-	else
+	else {
 		return 0;
+	}
 }
 
 double Config::getValue(const string &varName)
@@ -322,6 +326,7 @@ double Config::getValue(const string &varName)
 	{
 		return str2double(configMap[varName]);
 	}
-	else
+	else {
 		return 0.0;
+	}
 }

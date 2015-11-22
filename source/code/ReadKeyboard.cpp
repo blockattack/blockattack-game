@@ -54,9 +54,15 @@ ReadKeyboard::ReadKeyboard(const char *oldName)
 		i--;
 		charecter = textstring[i];
 	}
-	if (i>0)length = i+1;
-	else if (charecter == ' ') length = 0;
-	else length = 1;
+	if (i>0) {
+		length = i+1;
+	}
+	else if (charecter == ' ') {
+		length = 0;
+	}
+	else {
+		length = 1;
+	}
 	position = length;
 
 }
@@ -84,7 +90,9 @@ void ReadKeyboard::removeChar()
 		textstring[i]=textstring[i+1];
 	}
 	textstring[28]=' ';
-	if (length>0)length--;
+	if (length>0) {
+		length--;
+	}
 }
 
 bool ReadKeyboard::ReadKey(SDLKey keyPressed)
@@ -96,7 +104,9 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed)
 	}
 	if (keyPressed == SDLK_DELETE)
 	{
-		if ((length>0)&& (position<length))ReadKeyboard::removeChar();
+		if ((length>0)&& (position<length)) {
+			ReadKeyboard::removeChar();
+		}
 		return true;
 	}
 	if (keyPressed == SDLK_BACKSPACE)
@@ -110,7 +120,7 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed)
 		return false;
 	}
 	Uint8* keys;
-	keys = SDL_GetKeyState(NULL);
+	keys = SDL_GetKeyState(nullptr);
 	if (keyPressed == SDLK_HOME)
 	{
 		position=0;

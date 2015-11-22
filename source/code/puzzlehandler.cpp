@@ -45,8 +45,9 @@ void PuzzleSetSavePath(const std::string& filepath) {
 }
 
 void PuzzleSetClear(int Level) {
-	if(puzzleCleared[Level]==false)
+	if(puzzleCleared[Level]==false) {
 		Stats::getInstance()->addOne("puzzlesSolved");
+	}
 	puzzleCleared[Level] = true;
 	std::ofstream outfile;
 	outfile.open(puzzleSavePath.c_str(), ios::binary |ios::trunc);
@@ -76,8 +77,9 @@ int LoadPuzzleStages( )
 	PhysFS::ifstream inFile(((std::string)("puzzles/"+puzzleName)).c_str());
 
 	inFile >> nrOfPuzzles;
-	if (nrOfPuzzles>maxNrOfPuzzleStages)
+	if (nrOfPuzzles>maxNrOfPuzzleStages) {
 		nrOfPuzzles=maxNrOfPuzzleStages;
+	}
 	for (int k=0; (k<nrOfPuzzles) /*&&(!inFile.eof())*/ ; k++)
 	{
 		inFile >> nrOfMovesAllowed[k];
@@ -101,8 +103,9 @@ int LoadPuzzleStages( )
 	else
 	{
 		tempBool = false;
-		for (int i=0; i<nrOfPuzzles; i++)
+		for (int i=0; i<nrOfPuzzles; i++) {
 			puzzleCleared[i] = tempBool;
+		}
 	}
 	return 0;
 }

@@ -25,10 +25,12 @@ http://blockattack.sf.net
 
 bool Joypad_init()
 {
-	if (0==SDL_InitSubSystem(SDL_INIT_JOYSTICK))
+	if (0==SDL_InitSubSystem(SDL_INIT_JOYSTICK)) {
 		return true;
-	else
+	}
+	else {
 		return false;
+	}
 }
 
 Joypad_status Joypad_getStatus(SDL_Joystick *joystick)
@@ -47,32 +49,43 @@ Joypad_status Joypad_getStatus(SDL_Joystick *joystick)
 		else
 		{
 			//cout << SDL_JoystickGetAxis(joystick,i*2+1)<< endl;
-			if (SDL_JoystickGetAxis(joystick,i*2)<(-8000))
+			if (SDL_JoystickGetAxis(joystick,i*2)<(-8000)) {
 				status.padLeft[i]=1;
-			else
+			}
+			else {
 				status.padLeft[i]=0;
-			if (SDL_JoystickGetAxis(joystick,i*2)>(8000))
+			}
+			if (SDL_JoystickGetAxis(joystick,i*2)>(8000)) {
 				status.padRight[i]=1;
-			else
+			}
+			else {
 				status.padRight[i]=0;
-			if (SDL_JoystickGetAxis(joystick,i*2+1)<(-8000))
+			}
+			if (SDL_JoystickGetAxis(joystick,i*2+1)<(-8000)) {
 				status.padUp[i]=1;
-			else
+			}
+			else {
 				status.padUp[i]=0;
-			if (SDL_JoystickGetAxis(joystick,i*2+1)>(8000))
+			}
+			if (SDL_JoystickGetAxis(joystick,i*2+1)>(8000)) {
 				status.padDown[i]=1;
-			else
+			}
+			else {
 				status.padDown[i]=0;
+			}
 		}
 	}//NRofPADS
 	for (int i=0; i<NRofBUTTONS; i++)
 	{
-		if (i>=SDL_JoystickNumButtons(joystick))
+		if (i>=SDL_JoystickNumButtons(joystick)) {
 			status.button[i]=false;
-		else if (1==SDL_JoystickGetButton(joystick,i))
+		}
+		else if (1==SDL_JoystickGetButton(joystick,i)) {
 			status.button[i] = true;
-		else
+		}
+		else {
 			status.button[i] = false;
+		}
 	}
 	return status;
 }
@@ -92,24 +105,29 @@ Joypad::Joypad()
 	but1REL=true;
 	but2REL=true;
 	int joynum = 0;
-	while ((SDL_JoystickOpened(joynum))&&(joynum<Joypad_number))
+	while ((SDL_JoystickOpened(joynum))&&(joynum<Joypad_number)) {
 		joynum++;
-	if (joynum>=Joypad_number)
+	}
+	if (joynum>=Joypad_number) {
 		working = false;
+	}
 	else
 	{
 		joystick=SDL_JoystickOpen(joynum);
-		if (joystick==NULL)
+		if (joystick==nullptr) {
 			working =false;
-		else
+		}
+		else {
 			working=true;
+		}
 	}
 }
 
 Joypad::~Joypad()
 {
-	if(working)
+	if(working) {
 		SDL_JoystickClose(joystick);
+	}
 }
 
 void Joypad::update()
@@ -121,54 +139,66 @@ void Joypad::update()
 		up=true;
 		upREL=false;
 	}
-	else
+	else {
 		up=false;
+	}
 	if ((downREL)&&((status.padDown[0])||(status.padDown[1])||(status.padDown[2])||(status.padDown[3])))
 	{
 		down=true;
 		downREL=false;
 	}
-	else
+	else {
 		down=false;
+	}
 	if ((leftREL)&&((status.padLeft[0])||(status.padLeft[1])||(status.padLeft[2])||(status.padLeft[3])))
 	{
 		left=true;
 		leftREL=false;
 	}
-	else
+	else {
 		left=false;
+	}
 	if ((rightREL)&&((status.padRight[0])||(status.padRight[1])||(status.padRight[2])||(status.padRight[3])))
 	{
 		right=true;
 		rightREL=false;
 	}
-	else
+	else {
 		right=false;
+	}
 	if ((but1REL)&&((status.button[0])||(status.button[2])||(status.button[4])||(status.button[6])))
 	{
 		but1=true;
 		but1REL=false;
 	}
-	else
+	else {
 		but1=false;
+	}
 	if ((but2REL)&&((status.button[1])||(status.button[3])||(status.button[5])||(status.button[7])))
 	{
 		but2=true;
 		but2REL=false;
 	}
-	else
+	else {
 		but2=false;
+	}
 	//Now testing for up
-	if (!((status.padUp[0])||(status.padUp[1])||(status.padUp[2])||(status.padUp[3])))
+	if (!((status.padUp[0])||(status.padUp[1])||(status.padUp[2])||(status.padUp[3]))) {
 		upREL = true;
-	if (!((status.padDown[0])||(status.padDown[1])||(status.padDown[2])||(status.padDown[3])))
+	}
+	if (!((status.padDown[0])||(status.padDown[1])||(status.padDown[2])||(status.padDown[3]))) {
 		downREL = true;
-	if (!((status.padLeft[0])||(status.padLeft[1])||(status.padLeft[2])||(status.padLeft[3])))
+	}
+	if (!((status.padLeft[0])||(status.padLeft[1])||(status.padLeft[2])||(status.padLeft[3]))) {
 		leftREL = true;
-	if (!((status.padRight[0])||(status.padRight[1])||(status.padRight[2])||(status.padRight[3])))
+	}
+	if (!((status.padRight[0])||(status.padRight[1])||(status.padRight[2])||(status.padRight[3]))) {
 		rightREL= true;
-	if (!((status.button[0])||(status.button[2])||(status.button[4])||(status.button[6])))
+	}
+	if (!((status.button[0])||(status.button[2])||(status.button[4])||(status.button[6]))) {
 		but1REL = true;
-	if (!((status.button[1])||(status.button[3])||(status.button[5])||(status.button[7])))
+	}
+	if (!((status.button[1])||(status.button[3])||(status.button[5])||(status.button[7]))) {
 		but2REL = true;
+	}
 }

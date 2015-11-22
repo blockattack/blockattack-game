@@ -40,8 +40,9 @@ ListFiles::~ListFiles()
 
 void ListFiles::setDirectory(const string &directory)
 {
-	for (int i=0; i<MAX_NR_OF_FILES; i++)
+	for (int i=0; i<MAX_NR_OF_FILES; i++) {
 		filenames[i]="";
+	}
 #if defined(_WIN32)
 	DWORD dwError;
 	string directory2 = directory+"/*";
@@ -75,8 +76,9 @@ void ListFiles::setDirectory(const string &directory)
 	nrOfFiles=0;
 	//cout << "Will look in: " << directory << endl;
 	DirectoryPointer = opendir(directory.c_str());
-	if(!DirectoryPointer)
+	if(!DirectoryPointer) {
 		return;
+	}
 	while ((dp=readdir(DirectoryPointer))&&(nrOfFiles<MAX_NR_OF_FILES-1))
 	{
 		string name = (string)(char*)dp->d_name;
@@ -113,8 +115,9 @@ void ListFiles::setDirectory2(const string &dic)
 	struct dirent *dp;
 	//cout << "Will look in: " << dic << endl;
 	DirectoryPointer = opendir(dic.c_str());
-	if(!DirectoryPointer)
+	if(!DirectoryPointer) {
 		return;
+	}
 	while ((dp=readdir(DirectoryPointer))&&(nrOfFiles<MAX_NR_OF_FILES-1))
 	{
 		string name = (string)(char*)dp->d_name;
@@ -132,8 +135,9 @@ void ListFiles::setDirectory2(const string &dic)
 
 string ListFiles::getFileName(int nr)
 {
-	if (startFileNr+nr<MAX_NR_OF_FILES)
+	if (startFileNr+nr<MAX_NR_OF_FILES) {
 		return filenames[startFileNr+nr];
+	}
 	else
 	{
 		return "";
@@ -145,34 +149,41 @@ bool ListFiles::fileExists(int nr)
 	string emptyString="";
 	if (startFileNr+nr<MAX_NR_OF_FILES)
 	{
-		if (filenames[startFileNr+nr]==emptyString)
+		if (filenames[startFileNr+nr]==emptyString) {
 			return false;
-		else
+		}
+		else {
 			return true;
+		}
 	}
-	else
+	else {
 		return false;
+	}
 }
 
 void ListFiles::back()
 {
-	if (startFileNr>FIRST_FILE)
+	if (startFileNr>FIRST_FILE) {
 		startFileNr = startFileNr-10;
-	if (startFileNr<FIRST_FILE)
+	}
+	if (startFileNr<FIRST_FILE) {
 		startFileNr = FIRST_FILE;
+	}
 }
 
 void ListFiles::forward()
 {
-	if (startFileNr<nrOfFiles-FIRST_FILE)
+	if (startFileNr<nrOfFiles-FIRST_FILE) {
 		startFileNr = startFileNr+10;
+	}
 }
 
 string ListFiles::getRandom()
 {
 	int numberOfFiles = nrOfFiles-FIRST_FILE+1;
-	if(numberOfFiles<1)
+	if(numberOfFiles<1) {
 		return "";
+	}
 	int select = rand()%numberOfFiles;
 	return filenames[FIRST_FILE+select];
 }

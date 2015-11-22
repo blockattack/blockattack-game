@@ -72,3 +72,8 @@ run: $(BINARY)
 
 clean:
 	rm *.o *.P Libs/*.o Libs/*.P
+
+SOURCE_FILES = $(OFILES:.o=.cpp)
+
+format:
+	astyle -t -j -y -c $(SOURCE_FILES) 

@@ -29,7 +29,7 @@ http://blockattack.sf.net
 
 TTFont::TTFont()
 {
-	font = NULL;
+	font = nullptr;
 	actualInstance = false;
 }
 
@@ -44,7 +44,7 @@ TTFont::TTFont(TTF_Font *f)
 	}
 
 
-	if(f == NULL)
+	if(f == nullptr)
 		cout << "Font was null!" << endl;
 
 	actualInstance = false; //We have not yet copied to final location
@@ -60,7 +60,7 @@ TTFont::~TTFont()
 	cout << "Closing a font" << endl;
 
 	TTF_CloseFont(font);
-	font = NULL;
+	font = nullptr;
 
 	count--;
 	if(count==0)
@@ -70,9 +70,9 @@ TTFont::~TTFont()
 //Copy constructor, you cannot copy an actual instance
 TTFont::TTFont(const TTFont &t)
 {
-	if(t.font == NULL || t.actualInstance)
+	if(t.font == nullptr || t.actualInstance)
 	{
-		font = NULL;
+		font = nullptr;
 		actualInstance = false;
 	}
 	else
@@ -91,7 +91,7 @@ int TTFont::getTextHeight()
 int TTFont::getTextWidth(string text)
 {
 	int width = 0;
-	if(TTF_SizeText(font,text.c_str(),&width,NULL)!=0)
+	if(TTF_SizeText(font,text.c_str(),&width,nullptr)!=0)
 		cout << "Failed to get text width!" << endl;
 	return width;
 }
@@ -109,7 +109,7 @@ void TTFont::writeText(string text, SDL_Surface *target, int x, int y)
 		SDL_Rect dest;
 		dest.x = x;
 		dest.y = y;
-		SDL_BlitSurface(text_surface,NULL,target,&dest);
+		SDL_BlitSurface(text_surface,nullptr,target,&dest);
 		SDL_FreeSurface(text_surface);
 	}
 }

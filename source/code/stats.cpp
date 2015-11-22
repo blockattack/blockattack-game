@@ -26,7 +26,7 @@ http://blockattack.sf.net
 
 using namespace std;
 
-Stats* Stats::instance = NULL;
+Stats* Stats::instance = nullptr;
 
 Stats::Stats()
 {
@@ -55,7 +55,7 @@ void Stats::load()
 
 Stats* Stats::getInstance()
 {
-	if(Stats::instance==NULL)
+	if(Stats::instance==nullptr)
 	{
 		Stats::instance = new Stats();
 
@@ -85,8 +85,9 @@ unsigned int Stats::getNumberOf(const string &statName)
 	{
 		return statMap[statName];
 	}
-	else
+	else {
 		return 0;
+	}
 }
 
 void Stats::addOne(const string &statName)
