@@ -33,7 +33,6 @@ http://blockattack.sf.net
 #include <string>
 #include <vector>
 
-#define MAX_NR_OF_FILES 253
 #if defined (_WIN32)
 #define FIRST_FILE 2
 #else
@@ -44,18 +43,17 @@ class ListFiles
 {
 private:
 	int startFileNr;   //The first fileto belisted
-	std::string filenames[MAX_NR_OF_FILES];
-	int nrOfFiles;
+	std::vector<std::string> filenames;
 #if defined(_WIN32)
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 #endif
-	bool isInList(const std::string &name); //The name is already in the list
+	bool isInList(const std::string& name); //The name is already in the list
 public:
 	//ListFiles();
 	//~ListFiles();
-	void setDirectory(const std::string &dictory); //Find file in BlockAttack folder
-	void setDirectory2(const std::string &dictory); //Second directory we also look in
+	void setDirectory(const std::string& dictory); //Find file in BlockAttack folder
+	void setDirectory2(const std::string& dictory); //Second directory we also look in
 	//void setDirecctoryInHome(string dictory); //Find files in home folder (it should work...)
 	std::string getFileName(int);      //Returns the filename of a file
 	bool fileExists(int);

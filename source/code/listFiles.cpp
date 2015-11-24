@@ -31,9 +31,7 @@ using namespace std;
 
 
 void ListFiles::setDirectory(const string& directory) {
-	for (int i=0; i<MAX_NR_OF_FILES; i++) {
-		filenames[i]="";
-	}
+	filenames.clear();
 #if defined(_WIN32)
 	DWORD dwError;
 	string directory2 = directory+"/*";
@@ -43,11 +41,11 @@ void ListFiles::setDirectory(const string& directory) {
 	}
 	else {
 		nrOfFiles=0;
-		filenames[nrOfFiles] = FindFileData.cFileName;
+		filenames.push_back(FindFileData.cFileName);
 		cout << "File: " << FindFileData.cFileName << endl;
 		while ((FindNextFile(hFind, &FindFileData) != 0) && FindFileData.cFileName[0]!='.' && (nrOfFiles<MAX_NR_OF_FILES-1)) {
 			nrOfFiles++;
-			filenames[nrOfFiles] = FindFileData.cFileName;
+			filenames.push_back(FindFileData.cFileName);
 			cout << "File: " << FindFileData.cFileName << endl;
 		}
 
@@ -60,17 +58,15 @@ void ListFiles::setDirectory(const string& directory) {
 #elif defined(__unix__)
 	DIR* DirectoryPointer;
 	struct dirent* dp;
-	nrOfFiles=0;
 	//cout << "Will look in: " << directory << endl;
 	DirectoryPointer = opendir(directory.c_str());
 	if (!DirectoryPointer) {
 		return;
 	}
-	while ((dp=readdir(DirectoryPointer))&&(nrOfFiles<MAX_NR_OF_FILES-1)) {
+	while (dp=readdir(DirectoryPointer)) {
 		string name = (string)(char*)dp->d_name;
 		if (!isInList(name) && name[0]!='.' ) {
-			nrOfFiles++;
-			filenames[nrOfFiles] = name;
+			filenames.push_back(name);
 		}
 	}
 	closedir(DirectoryPointer);
@@ -82,8 +78,8 @@ void ListFiles::setDirectory(const string& directory) {
 }
 
 bool ListFiles::isInList(const string& name) {
-	for (int i=0; (i<=nrOfFiles); i++) {
-		if (0==strcmp(name.c_str(),filenames[i].c_str())) {
+	for (int i=0; i< filenames.size(); i++) {
+		if (name == filenames.at(i) ) {
 			return true;
 		}
 	}
@@ -99,11 +95,10 @@ void ListFiles::setDirectory2(const string& dic) {
 	if (!DirectoryPointer) {
 		return;
 	}
-	while ((dp=readdir(DirectoryPointer))&&(nrOfFiles<MAX_NR_OF_FILES-1)) {
+	while (dp=readdir(DirectoryPointer)) {
 		string name = (string)(char*)dp->d_name;
 		if (!isInList(name) && name != "." && name != "..") {
-			nrOfFiles++;
-			filenames[nrOfFiles] = name;
+			filenames.push_back(name);
 		}
 	}
 	closedir(DirectoryPointer);
@@ -113,7 +108,7 @@ void ListFiles::setDirectory2(const string& dic) {
 }
 
 string ListFiles::getFileName(int nr) {
-	if (startFileNr+nr<MAX_NR_OF_FILES) {
+	if (startFileNr+nr<filenames.size()) {
 		return filenames[startFileNr+nr];
 	}
 	else {
@@ -123,7 +118,7 @@ string ListFiles::getFileName(int nr) {
 
 bool ListFiles::fileExists(int nr) {
 	string emptyString="";
-	if (startFileNr+nr<MAX_NR_OF_FILES) {
+	if (startFileNr+nr<filenames.size()) {
 		if (filenames[startFileNr+nr]==emptyString) {
 			return false;
 		}
@@ -146,13 +141,13 @@ void ListFiles::back() {
 }
 
 void ListFiles::forward() {
-	if (startFileNr<nrOfFiles-FIRST_FILE) {
+	if (startFileNr<filenames.size()-FIRST_FILE) {
 		startFileNr = startFileNr+10;
 	}
 }
 
 string ListFiles::getRandom() {
-	int numberOfFiles = nrOfFiles-FIRST_FILE+1;
+	int numberOfFiles = filenames.size()-FIRST_FILE+1;
 	if (numberOfFiles<1) {
 		return "";
 	}
