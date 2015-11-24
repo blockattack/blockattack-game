@@ -76,4 +76,4 @@ clean:
 SOURCE_FILES = $(OFILES:.o=.cpp)
 
 format:
-	astyle -t -j -y -c $(SOURCE_FILES) 
+	astyle -t -j -y -c -k1 -z2 -A2 --pad-header $(SOURCE_FILES) 

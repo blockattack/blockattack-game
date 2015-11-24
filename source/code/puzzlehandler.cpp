@@ -45,20 +45,17 @@ void PuzzleSetSavePath(const std::string& filepath) {
 }
 
 void PuzzleSetClear(int Level) {
-	if(puzzleCleared[Level]==false) {
+	if (puzzleCleared[Level]==false) {
 		Stats::getInstance()->addOne("puzzlesSolved");
 	}
 	puzzleCleared[Level] = true;
 	std::ofstream outfile;
 	outfile.open(puzzleSavePath.c_str(), ios::binary |ios::trunc);
-	if (!outfile)
-	{
+	if (!outfile) {
 		std::cerr << "Error writing to file: " << puzzleSavePath << endl;
 	}
-	else
-	{
-		for (int i=0; i<nrOfPuzzles; i++)
-		{
+	else {
+		for (int i=0; i<nrOfPuzzles; i++) {
 			bool tempBool = puzzleCleared[i];
 			outfile.write(reinterpret_cast<char*>(&tempBool), sizeof(bool));
 		}
@@ -67,10 +64,8 @@ void PuzzleSetClear(int Level) {
 }
 
 /*Loads all the puzzle levels*/
-int LoadPuzzleStages( )
-{
-	if (!PHYSFS_exists(((std::string)("puzzles/"+puzzleName)).c_str()))
-	{
+int LoadPuzzleStages( ) {
+	if (!PHYSFS_exists(((std::string)("puzzles/"+puzzleName)).c_str())) {
 		std::cerr << "Warning: File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
 		return -1; //file doesn't exist
 	}
@@ -80,28 +75,23 @@ int LoadPuzzleStages( )
 	if (nrOfPuzzles>maxNrOfPuzzleStages) {
 		nrOfPuzzles=maxNrOfPuzzleStages;
 	}
-	for (int k=0; (k<nrOfPuzzles) /*&&(!inFile.eof())*/ ; k++)
-	{
+	for (int k=0; (k<nrOfPuzzles) /*&&(!inFile.eof())*/ ; k++) {
 		inFile >> nrOfMovesAllowed[k];
 		for (int i=11; i>=0; i--)
-			for (int j=0; j<6; j++)
-			{
+			for (int j=0; j<6; j++) {
 				inFile >> puzzleLevels[k][j][i];
 			}
 	}
 	bool tempBool;
 	std::ifstream puzzleFile(puzzleSavePath.c_str(), std::ios::binary);
-	if (puzzleFile)
-	{
-		for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++)
-		{
+	if (puzzleFile) {
+		for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++) {
 			puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
 			puzzleCleared[i] = tempBool;
 		}
 		puzzleFile.close();
 	}
-	else
-	{
+	else {
 		tempBool = false;
 		for (int i=0; i<nrOfPuzzles; i++) {
 			puzzleCleared[i] = tempBool;

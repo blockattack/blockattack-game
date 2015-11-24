@@ -27,35 +27,33 @@ http://blockattack.sf.net
 
 //#define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
 
-TTFont::TTFont()
-{
+TTFont::TTFont() {
 	font = nullptr;
 	actualInstance = false;
 }
 
 int TTFont::count = 0;
 
-TTFont::TTFont(TTF_Font *f)
-{
-	if(!(TTF_WasInit()))
-	{
+TTFont::TTFont(TTF_Font *f) {
+	if (!(TTF_WasInit())) {
 		//Init TTF for the first time
 		TTF_Init();
 	}
 
 
-	if(f == nullptr)
+	if (f == nullptr) {
 		cout << "Font was null!" << endl;
+	}
 
 	actualInstance = false; //We have not yet copied to final location
 	font = f;
 
 }
 
-TTFont::~TTFont()
-{
-	if(!actualInstance)
+TTFont::~TTFont() {
+	if (!actualInstance) {
 		return;
+	}
 
 	cout << "Closing a font" << endl;
 
@@ -63,49 +61,43 @@ TTFont::~TTFont()
 	font = nullptr;
 
 	count--;
-	if(count==0)
+	if (count==0) {
 		TTF_Quit();
+	}
 }
 
 //Copy constructor, you cannot copy an actual instance
-TTFont::TTFont(const TTFont &t)
-{
-	if(t.font == nullptr || t.actualInstance)
-	{
+TTFont::TTFont(const TTFont &t) {
+	if (t.font == nullptr || t.actualInstance) {
 		font = nullptr;
 		actualInstance = false;
 	}
-	else
-	{
+	else {
 		font = t.font;
 		actualInstance = true;
 		count++;
 	}
 }
 
-int TTFont::getTextHeight()
-{
+int TTFont::getTextHeight() {
 	return TTF_FontHeight(font);
 }
 
-int TTFont::getTextWidth(string text)
-{
+int TTFont::getTextWidth(string text) {
 	int width = 0;
-	if(TTF_SizeText(font,text.c_str(),&width,nullptr)!=0)
+	if (TTF_SizeText(font,text.c_str(),&width,nullptr)!=0) {
 		cout << "Failed to get text width!" << endl;
+	}
 	return width;
 }
 
-void TTFont::writeText(string text, SDL_Surface *target, int x, int y)
-{
+void TTFont::writeText(string text, SDL_Surface *target, int x, int y) {
 	SDL_Surface *text_surface;
 	SDL_Color color= {255,255,255};
-	if(!(text_surface=TTF_RenderText_Solid(font,text.c_str(), color)))
-	{
+	if (!(text_surface=TTF_RenderText_Solid(font,text.c_str(), color))) {
 		cout << "Error writing text: " << TTF_GetError() << endl;
 	}
-	else
-	{
+	else {
 		SDL_Rect dest;
 		dest.x = x;
 		dest.y = y;

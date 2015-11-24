@@ -25,19 +25,15 @@ http://blockattack.sf.net
 #include "SDL_image.h"
 #include <stdexcept>
 
-namespace CppSdl
-{
+namespace CppSdl {
 
-CppSdlImageHolder::CppSdlImageHolder()
-{
+CppSdlImageHolder::CppSdlImageHolder() {
 	data = nullptr;
 }
 
-CppSdlImageHolder::CppSdlImageHolder(std::string filename)
-{
+CppSdlImageHolder::CppSdlImageHolder(std::string filename) {
 	data = IMG_Load(filename.c_str());
-	if(!data)
-	{
+	if (!data) {
 		//Here we should throw an exception
 		throw std::runtime_error(std::string("Could not read file \""+filename+"\""));
 	}
@@ -45,9 +41,8 @@ CppSdlImageHolder::CppSdlImageHolder(std::string filename)
 	OptimizeForBlit();
 }
 
-CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize)
-{
-	SDL_RWops *rw = SDL_RWFromMem (rawdata, datasize);
+CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize) {
+	SDL_RWops* rw = SDL_RWFromMem (rawdata, datasize);
 
 	//The above might fail and return null.
 	if (!rw) {
@@ -64,37 +59,32 @@ CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize)
 	OptimizeForBlit();
 }
 
-CppSdlImageHolder::~CppSdlImageHolder()
-{
+CppSdlImageHolder::~CppSdlImageHolder() {
 	MakeNull();
 }
 
-SDL_Surface* CppSdlImageHolder::GetRawDataInsecure()
-{
+SDL_Surface* CppSdlImageHolder::GetRawDataInsecure() {
 	Initialized();
 	return data;
 }
 
-Uint32 CppSdlImageHolder::GetWidth()
-{
+Uint32 CppSdlImageHolder::GetWidth() {
 	if (IsNull()) {
 		return 0;
 	}
 	return area.w;
 }
 
-Uint32 CppSdlImageHolder::GetHeight()
-{
-	if(IsNull()) {
+Uint32 CppSdlImageHolder::GetHeight() {
+	if (IsNull()) {
 		return 0;
 	}
 	return area.h;
 }
 
-void CppSdlImageHolder::PaintTo(SDL_Surface* target, int x, int y)
-{
+void CppSdlImageHolder::PaintTo(SDL_Surface* target, int x, int y) {
 	static SDL_Rect dest; //static for reuse
-	if(IsNull()) {
+	if (IsNull()) {
 		return;
 	}
 	dest.x = x;
@@ -102,11 +92,10 @@ void CppSdlImageHolder::PaintTo(SDL_Surface* target, int x, int y)
 	SDL_BlitSurface(data,&area, target,&dest);
 }
 
-void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha)
-{
-	static SDL_Surface *tmp;
+void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha) {
+	static SDL_Surface* tmp;
 	Initialized();
-	if(allowAlpha) {
+	if (allowAlpha) {
 		tmp = SDL_DisplayFormatAlpha(data);
 	}
 	else {
@@ -116,24 +105,21 @@ void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha)
 	data = tmp;
 }
 
-void CppSdlImageHolder::Initialized()
-{
-	if(data == nullptr) {
+void CppSdlImageHolder::Initialized() {
+	if (data == nullptr) {
 		throw std::runtime_error("ImageHolder used uninitialized!");
 	}
 }
 
-bool CppSdlImageHolder::IsNull()
-{
-	if(data == nullptr ) {
+bool CppSdlImageHolder::IsNull() {
+	if (data == nullptr ) {
 		return true;
 	}
 	return false;
 }
 
-void CppSdlImageHolder::MakeNull()
-{
-	if(IsNull()) {
+void CppSdlImageHolder::MakeNull() {
+	if (IsNull()) {
 		return;
 	}
 	SDL_FreeSurface(data);

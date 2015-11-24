@@ -28,19 +28,16 @@ using namespace std;
 #ifdef WIN32
 
 //Returns path to "my Documents" in windows:
-string getMyDocumentsPath1()
-{
+string getMyDocumentsPath1() {
 	TCHAR pszPath[MAX_PATH];
 	//if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
-	if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE)))
-	{
+	if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
 		// pszPath is now the path that you want
 		cout << "MyDocuments Located: " << pszPath << endl;
 		string theResult= pszPath;
 		return theResult;
 	}
-	else
-	{
+	else {
 		cout << "Warning: My Documents not found!" << endl;
 		string theResult ="";
 		return theResult;
@@ -49,8 +46,7 @@ string getMyDocumentsPath1()
 
 #endif
 
-Highscore::Highscore(int type)
-{
+Highscore::Highscore(int type) {
 #if defined(__unix__)
 	string home = getenv("HOME");
 	string filename1 = home+"/.gamesaves/blockattack/endless.dat";
@@ -58,13 +54,11 @@ Highscore::Highscore(int type)
 #elif defined(_WIN32)
 	string home = getMyDocumentsPath1();
 	string filename1, filename2;
-	if (&home!=nullptr)
-	{
+	if (&home!=nullptr) {
 		filename1 = home+"/My Games/blockattack/endless.dat";
 		filename2 = home+"/My Games/blockattack/timetrial.dat";
 	}
-	else
-	{
+	else {
 		filename1 = "endless.dat";
 		filename2 = "timetrial.dat";
 	}
@@ -80,18 +74,14 @@ Highscore::Highscore(int type)
 		filename = filename2;
 	}
 	ifstream scorefile(filename.c_str(), ios::binary);
-	if (scorefile)
-	{
-		for (int i = 0; i<top; i++)
-		{
+	if (scorefile) {
+		for (int i = 0; i<top; i++) {
 			scorefile.read(tabel[i].name,30*sizeof(char));
 			scorefile.read(reinterpret_cast<char*>(&tabel[i].score), sizeof(int));
 		}
 	}
-	else
-	{
-		for (int i = 0; i<top; i++)
-		{
+	else {
+		for (int i = 0; i<top; i++) {
 			strcpy(tabel[i].name,"Poul Sander                  \0");
 			tabel[i].score = 2000 - i*100;
 		}
@@ -100,8 +90,7 @@ Highscore::Highscore(int type)
 	writeFile();
 }
 
-void Highscore::writeFile()
-{
+void Highscore::writeFile() {
 #if defined(__unix__)
 	string home = getenv("HOME");
 	string filename1 = home+"/.gamesaves/blockattack/endless.dat";
@@ -109,13 +98,11 @@ void Highscore::writeFile()
 #elif defined(_WIN32)
 	string home = getMyDocumentsPath1();
 	string filename1, filename2;
-	if (&home!=nullptr)
-	{
+	if (&home!=nullptr) {
 		filename1 = home+"/My Games/blockattack/endless.dat";
 		filename2 = home+"/My Games/blockattack/timetrial.dat";
 	}
-	else
-	{
+	else {
 		filename1 = "endless.dat";
 		filename2 = "timetrial.dat";
 	}
@@ -132,21 +119,18 @@ void Highscore::writeFile()
 
 	ofstream outfile;
 	outfile.open(Highscore::filename.c_str(), ios::binary |ios::trunc);
-	if (!outfile)
-	{
+	if (!outfile) {
 		cout << "Error writing to file: " << filename << endl;
 		exit(1);
 	}
-	for (int i = 0; i<top; i++)
-	{
+	for (int i = 0; i<top; i++) {
 		outfile.write(tabel[i].name,30*sizeof(char));
 		outfile.write(reinterpret_cast<char*>(&tabel[i].score),sizeof(int));
 	}
 	outfile.close();
 }
 
-bool Highscore::isHighScore(int newScore)
-{
+bool Highscore::isHighScore(int newScore) {
 	if (newScore>tabel[top-1].score) {
 		return true;
 	}
@@ -155,14 +139,12 @@ bool Highscore::isHighScore(int newScore)
 	}
 }
 
-void Highscore::addScore(const string& newName, int newScore)
-{
+void Highscore::addScore(const string& newName, int newScore) {
 	int ranking = top-1;
 	while ((tabel[ranking-1].score<newScore) && (ranking != 0)) {
 		ranking--;
 	}
-	for (int i=top-1; i>ranking; i--)
-	{
+	for (int i=top-1; i>ranking; i--) {
 		tabel[i].score = tabel[i-1].score;
 		strcpy(tabel[i].name,"                            \0");
 		strcpy(tabel[i].name,tabel[i-1].name);
@@ -173,12 +155,10 @@ void Highscore::addScore(const string& newName, int newScore)
 	Highscore::writeFile();
 }
 
-int Highscore::getScoreNumber(int room)
-{
+int Highscore::getScoreNumber(int room) {
 	return tabel[room].score;
 }
 
-char* Highscore::getScoreName(int room)
-{
+char* Highscore::getScoreName(int room) {
 	return &tabel[room].name[0];
 }

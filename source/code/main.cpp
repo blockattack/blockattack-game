@@ -103,10 +103,8 @@ using namespace std;
 
 static void MakeBackground(int,int);
 
-SDL_Surface * IMG_Load2(const char* path)
-{
-	if (!PHYSFS_exists(path))
-	{
+SDL_Surface* IMG_Load2(const char* path) {
+	if (!PHYSFS_exists(path)) {
 		cerr << "Error: File not in blockattack.data: " << path << endl;
 		return nullptr; //file doesn't exist
 	}
@@ -117,12 +115,11 @@ SDL_Surface * IMG_Load2(const char* path)
 	unsigned int m_size = PHYSFS_fileLength(myfile);
 
 	// Get the file data.
-	char *m_data = new char[m_size];
+	char* m_data = new char[m_size];
 
 	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
 
-	if (length_read != (int)m_size)
-	{
+	if (length_read != (int)m_size) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -133,11 +130,10 @@ SDL_Surface * IMG_Load2(const char* path)
 	PHYSFS_close(myfile);
 
 // And this is how you load an image from a memory buffer with SDL
-	SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
 
 	//The above might fail an return null.
-	if(!rw)
-	{
+	if (!rw) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -150,10 +146,8 @@ SDL_Surface * IMG_Load2(const char* path)
 	return surface;
 }
 
-shared_ptr<CppSdl::CppSdlImageHolder> IMG_Load3(string path)
-{
-	if (!PHYSFS_exists(path.c_str()))
-	{
+shared_ptr<CppSdl::CppSdlImageHolder> IMG_Load3(string path) {
+	if (!PHYSFS_exists(path.c_str())) {
 		cerr << "Error: File not in blockattack.data: " << path << endl;
 		throw exception();
 	}
@@ -164,12 +158,11 @@ shared_ptr<CppSdl::CppSdlImageHolder> IMG_Load3(string path)
 	unsigned int m_size = PHYSFS_fileLength(myfile);
 
 	// Get the file data.
-	char *m_data = new char[m_size];
+	char* m_data = new char[m_size];
 
 	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
 
-	if (length_read != (int)m_size)
-	{
+	if (length_read != (int)m_size) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -190,10 +183,8 @@ static int InitImages();
 static string oldThemePath = "default";
 static bool loaded = false;
 
-void loadTheme(const string &themeName)
-{
-	if(loaded)
-	{
+void loadTheme(const string& themeName) {
+	if (loaded) {
 		UnloadImages();
 	}
 #if defined(__unix__)
@@ -215,7 +206,7 @@ void loadTheme(const string &themeName)
 		//If this is a theme different from the saved one. Remember it!
 		Config::getInstance()->setString("themename", themeName);
 	}
-	if(themeName.compare("default")==0 || (themeName.compare("start")==0)) {
+	if (themeName.compare("default")==0 || (themeName.compare("start")==0)) {
 		InitImages();
 		loaded =true;
 		return; //Nothing more to do
@@ -230,16 +221,13 @@ void loadTheme(const string &themeName)
 }
 
 
-long NFont_OpenFont(NFont *target, const char* path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL)
-{
-	if (!PHYSFS_exists(path))
-	{
+long NFont_OpenFont(NFont* target, const char* path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL) {
+	if (!PHYSFS_exists(path)) {
 		cerr << "Error: File not in blockattack.data: " << path << endl;
 		return -1; //file doesn't exist
 	}
 
-	if(!(TTF_WasInit()))
-	{
+	if (!(TTF_WasInit())) {
 		TTF_Init();
 	}
 
@@ -249,11 +237,10 @@ long NFont_OpenFont(NFont *target, const char* path,int ptsize, SDL_Color color,
 	unsigned int m_size = PHYSFS_fileLength(myfile);
 
 	// Get the file data.
-	char *m_data = new char[m_size];
+	char* m_data = new char[m_size];
 	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
 
-	if (length_read != (int)m_size)
-	{
+	if (length_read != (int)m_size) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -264,11 +251,10 @@ long NFont_OpenFont(NFont *target, const char* path,int ptsize, SDL_Color color,
 	PHYSFS_close(myfile);
 
 // And this is how you load from a memory buffer with SDL
-	SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
 
 	//The above might fail an return null.
-	if(!rw)
-	{
+	if (!rw) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -276,7 +262,7 @@ long NFont_OpenFont(NFont *target, const char* path,int ptsize, SDL_Color color,
 		return -2;
 	}
 
-	TTF_Font *font;
+	TTF_Font* font;
 	font=TTF_OpenFontRW(rw, 1, ptsize);
 	TTF_SetFontStyle(font,style);
 
@@ -288,10 +274,8 @@ long NFont_OpenFont(NFont *target, const char* path,int ptsize, SDL_Color color,
 }
 
 
-Mix_Music * Mix_LoadMUS2(string path)
-{
-	if (!PHYSFS_exists(path.c_str()))
-	{
+Mix_Music* Mix_LoadMUS2(string path) {
+	if (!PHYSFS_exists(path.c_str())) {
 		cerr << "Warning: File not in blockattack.data: " << path << endl;
 		return nullptr; //file doesn't exist
 	}
@@ -302,12 +286,11 @@ Mix_Music * Mix_LoadMUS2(string path)
 	unsigned int m_size = PHYSFS_fileLength(myfile);
 
 	// Get the file data.
-	char *m_data = new char[m_size];
+	char* m_data = new char[m_size];
 
 	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
 
-	if (length_read != (int)m_size)
-	{
+	if (length_read != (int)m_size) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -318,11 +301,10 @@ Mix_Music * Mix_LoadMUS2(string path)
 	PHYSFS_close(myfile);
 
 // And this is how you load from a memory buffer with SDL
-	SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
 
 	//The above might fail an return null.
-	if(!rw)
-	{
+	if (!rw) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -336,10 +318,8 @@ Mix_Music * Mix_LoadMUS2(string path)
 }
 
 
-Mix_Chunk * Mix_LoadWAV2(const char* path)
-{
-	if (!PHYSFS_exists(path))
-	{
+Mix_Chunk* Mix_LoadWAV2(const char* path) {
+	if (!PHYSFS_exists(path)) {
 		cerr << "Warning: File not in blockattack.data: " << path << endl;
 		return nullptr; //file doesn't exist
 	}
@@ -350,12 +330,11 @@ Mix_Chunk * Mix_LoadWAV2(const char* path)
 	unsigned int m_size = PHYSFS_fileLength(myfile);
 
 	// Get the file data.
-	char *m_data = new char[m_size];
+	char* m_data = new char[m_size];
 
 	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
 
-	if (length_read != (int)m_size)
-	{
+	if (length_read != (int)m_size) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -366,11 +345,10 @@ Mix_Chunk * Mix_LoadWAV2(const char* path)
 	PHYSFS_close(myfile);
 
 // And this is how you load from a memory buffer with SDL
-	SDL_RWops *rw = SDL_RWFromMem (m_data, m_size);
+	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
 
 	//The above might fail an return null.
-	if(!rw)
-	{
+	if (!rw) {
 		delete [] m_data;
 		m_data = 0;
 		PHYSFS_close(myfile);
@@ -384,8 +362,7 @@ Mix_Chunk * Mix_LoadWAV2(const char* path)
 }
 
 //Load all image files to memory
-static int InitImages()
-{
+static int InitImages() {
 	if (!((backgroundImage = IMG_Load2("gfx/background.png"))
 	        && (background = IMG_Load2("gfx/blackBackGround.png"))
 	        && (bOptions = IMG_Load2("gfx/bOptions.png"))
@@ -491,15 +468,13 @@ static int InitImages()
 		cerr << "Error: Failed to load image file: " << SDL_GetError() << endl;
 		exit(1);
 	}
-	try
-	{
+	try {
 		bNewGame = IMG_Load3("gfx/bNewGame.png");
 		mouse = IMG_Load3("gfx/mouse.png");
 		menuMarked = IMG_Load3("gfx/menu/marked.png");
 		menuUnmarked = IMG_Load3("gfx/menu/unmarked.png");
 	}
-	catch (exception &e)
-	{
+	catch (exception& e) {
 		cerr << e.what() << endl;
 		exit(1);
 	}
@@ -533,12 +508,10 @@ static int InitImages()
 	CONVERT(iLevelCheckBox);
 	CONVERT(iLevelCheckBoxMarked);
 	CONVERTA(iCheckBoxArea);
-	for (int i = 0; i<4; i++)
-	{
+	for (int i = 0; i<4; i++) {
 		CONVERTA(explosion[i]);
 	}
-	for (int i = 0; i<7; i++)
-	{
+	for (int i = 0; i<7; i++) {
 		CONVERTA(bricks[i]);
 		CONVERTA(balls[i]);
 	}
@@ -624,8 +597,7 @@ static int InitImages()
 
 
 //Loads the sound if sound present
-	if (!NoSound)
-	{
+	if (!NoSound) {
 		//And here the music:
 		bgMusic = Mix_LoadMUS2("music/bgMusic.ogg");
 		highbeatMusic = Mix_LoadMUS2("music/highbeat.ogg");
@@ -643,14 +615,11 @@ static int InitImages()
 
 
 //Unload images and fonts and sounds
-void UnloadImages()
-{
-	if(verboseLevel)
-	{
+void UnloadImages() {
+	if (verboseLevel) {
 		cout << "Unloading data..." << endl;
 	}
-	if (!NoSound) //Only unload then it has been loaded!
-	{
+	if (!NoSound) { //Only unload then it has been loaded!
 		Mix_HaltMusic();
 		Mix_FreeMusic(bgMusic);
 		Mix_FreeMusic(highbeatMusic);
@@ -742,12 +711,10 @@ void UnloadImages()
 static stringstream converter;
 
 //Function to convert numbers to string (2 diget)
-static string itoa2(int num)
-{
+static string itoa2(int num) {
 	converter.str(std::string());
 	converter.clear();
-	if(num<10)
-	{
+	if (num<10) {
 		converter << "0";
 	}
 	converter << num;
@@ -755,8 +722,7 @@ static string itoa2(int num)
 }
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
-{
+void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y) {
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
@@ -764,8 +730,7 @@ void DrawIMG(SDL_Surface *img, SDL_Surface *target, int x, int y)
 }
 
 /*Draws a part of an image on a surface of choice*/
-void DrawIMG(SDL_Surface *img, SDL_Surface * target, int x, int y, int w, int h, int x2, int y2)
-{
+void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y, int w, int h, int x2, int y2) {
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
@@ -778,15 +743,13 @@ void DrawIMG(SDL_Surface *img, SDL_Surface * target, int x, int y, int w, int h,
 }
 
 
-void NFont_Write(SDL_Surface *target,int x,int y,string text)
-{
+void NFont_Write(SDL_Surface* target,int x,int y,string text) {
 	nf_standard_blue_font.setDest(target);
 	nf_standard_blue_font.draw(x,y,text.c_str());
 	nf_standard_blue_font.setDest(screen);
 }
 
-void ResetFullscreen()
-{
+void ResetFullscreen() {
 #if defined(WIN32)
 	if (bFullscreen) {
 		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
@@ -803,8 +766,7 @@ void ResetFullscreen()
 
 
 //The small things that are faaling when you clear something
-class aBall
-{
+class aBall {
 private:
 	double x;
 	double y;
@@ -814,71 +776,60 @@ private:
 	unsigned long int lastTime;
 public:
 
-	aBall()
-	{}
+	aBall() {
+	}
 
 	//constructor:
-	aBall(int X, int Y, bool right, int coulor)
-	{
+	aBall(int X, int Y, bool right, int coulor) {
 		double tal = 1.0+((double)rand()/((double)RAND_MAX));
 		velocityY = -tal*startVelocityY;
 		lastTime = currentTime;
 		x = (double)X;
 		y = (double)Y;
 		color = coulor;
-		if (right)
-		{
+		if (right) {
 			velocityX = tal*VelocityX;
 		}
-		else
-		{
+		else {
 			velocityX = -tal*VelocityX;
 		}
 	}  //constructor
 
 	//Deconstructor
-	~aBall()
-	{
+	~aBall() {
 	}   //Deconstructor
 
-	void update()
-	{
+	void update() {
 		double timePassed = (((double)(currentTime-lastTime))/1000.0);  //time passed in seconds
 		x = x+timePassed*velocityX;
 		y = y+timePassed*velocityY;
 		velocityY = velocityY + gravity*timePassed;
-		if (y<1.0)
-		{
+		if (y<1.0) {
 			velocityY=10.0;
 		}
-		if ((velocityY>minVelocity) && (y>(double)(768-ballSize)) && (y<768.0))
-		{
+		if ((velocityY>minVelocity) && (y>(double)(768-ballSize)) && (y<768.0)) {
 			velocityY = -0.70*velocityY;
 			y = 768.0-ballSize;
 		}
 		lastTime = currentTime;
 	}
 
-	int getX()
-	{
+	int getX() {
 		return (int)x;
 	}
 
-	int getY()
-	{
+	int getY() {
 		return (int)y;
 	}
 
-	int getColor()
-	{
+	int getColor() {
 		return color;
 	}
 };  //aBall
 
 static const int maxNumberOfBalls = 6*12*2*2;
 
-class ballManeger
-{
+class ballManeger {
 public:
 	aBall ballArray[maxNumberOfBalls];
 	bool ballUsed[maxNumberOfBalls];
@@ -886,27 +837,22 @@ public:
 	aBall oldBallArray[maxNumberOfBalls];
 	bool oldBallUsed[maxNumberOfBalls];
 
-	ballManeger()
-	{
-		for (int i=0; i<maxNumberOfBalls; i++)
-		{
+	ballManeger() {
+		for (int i=0; i<maxNumberOfBalls; i++) {
 			ballUsed[i] = false;
 			oldBallUsed[i] = false;
 		}
 	}
 
 	//Adds a ball to the screen at given coordiantes, traveling right or not with color
-	int addBall(int x, int y,bool right,int color)
-	{
+	int addBall(int x, int y,bool right,int color) {
 		int ballNumber = 0;
 		//Find a free ball
-		while ((ballUsed[ballNumber])&&(ballNumber<maxNumberOfBalls))
-		{
+		while ((ballUsed[ballNumber])&&(ballNumber<maxNumberOfBalls)) {
 			ballNumber++;
 		}
 		//Could not find a free ball, return -1
-		if (ballNumber==maxNumberOfBalls)
-		{
+		if (ballNumber==maxNumberOfBalls) {
 			return -1;
 		}
 		currentTime = SDL_GetTicks();
@@ -915,24 +861,19 @@ public:
 		return 1;
 	}  //addBall
 
-	void update()
-	{
+	void update() {
 		currentTime = SDL_GetTicks();
-		for (int i = 0; i<maxNumberOfBalls; i++)
-		{
+		for (int i = 0; i<maxNumberOfBalls; i++) {
 
-			if (ballUsed[i])
-			{
+			if (ballUsed[i]) {
 				oldBallUsed[i] = true;
 				oldBallArray[i] = ballArray[i];
 				ballArray[i].update();
-				if (ballArray[i].getY()>800 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize)
-				{
+				if (ballArray[i].getY()>800 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize) {
 					ballUsed[i] = false;
 				}
 			}
-			else
-			{
+			else {
 				oldBallUsed[i] = false;
 			}
 		}
@@ -944,8 +885,7 @@ public:
 static ballManeger theBallManeger;
 
 //a explosions, non moving
-class anExplosion
-{
+class anExplosion {
 private:
 	int x;
 	int y;
@@ -957,12 +897,11 @@ private:
 	unsigned long int placeTime; //Then the explosion occored
 public:
 
-	anExplosion()
-	{}
+	anExplosion() {
+	}
 
 	//constructor:
-	anExplosion(int X, int Y)
-	{
+	anExplosion(int X, int Y) {
 		placeTime = currentTime;
 		x = X;
 		y = Y;
@@ -970,35 +909,29 @@ public:
 	}  //constructor
 
 	//Deconstructor
-	~anExplosion()
-	{
+	~anExplosion() {
 	}   //Deconstructor
 
 	//true if animation has played and object should be removed from the screen
-	bool removeMe()
-	{
+	bool removeMe() {
 		frameNumber = (currentTime-placeTime)/frameLength;
 		return (!(frameNumber<maxFrame));
 	}
 
-	int getX()
-	{
+	int getX() {
 		return (int)x;
 	}
 
-	int getY()
-	{
+	int getY() {
 		return (int)y;
 	}
 
-	int getFrame()
-	{
+	int getFrame() {
 		return frameNumber;
 	}
 };  //nExplosion
 
-class explosionManeger
-{
+class explosionManeger {
 public:
 	anExplosion explosionArray[maxNumberOfBalls];
 	bool explosionUsed[maxNumberOfBalls];
@@ -1006,24 +939,19 @@ public:
 	anExplosion oldExplosionArray[maxNumberOfBalls];
 	bool oldExplosionUsed[maxNumberOfBalls];
 
-	explosionManeger()
-	{
-		for (int i=0; i<maxNumberOfBalls; i++)
-		{
+	explosionManeger() {
+		for (int i=0; i<maxNumberOfBalls; i++) {
 			explosionUsed[i] = false;
 			oldExplosionUsed[i] = false;
 		}
 	}
 
-	int addExplosion(int x, int y)
-	{
+	int addExplosion(int x, int y) {
 		int explosionNumber = 0;
-		while ((explosionUsed[explosionNumber])&&(explosionNumber<maxNumberOfBalls))
-		{
+		while ((explosionUsed[explosionNumber])&&(explosionNumber<maxNumberOfBalls)) {
 			explosionNumber++;
 		}
-		if (explosionNumber==maxNumberOfBalls)
-		{
+		if (explosionNumber==maxNumberOfBalls) {
 			return -1;
 		}
 		currentTime = SDL_GetTicks();
@@ -1032,24 +960,19 @@ public:
 		return 1;
 	}  //addBall
 
-	void update()
-	{
+	void update() {
 		currentTime = SDL_GetTicks();
-		for (int i = 0; i<maxNumberOfBalls; i++)
-		{
+		for (int i = 0; i<maxNumberOfBalls; i++) {
 
-			if (explosionUsed[i])
-			{
+			if (explosionUsed[i]) {
 				oldExplosionUsed[i] = true;
 				oldExplosionArray[i] = explosionArray[i];
-				if (explosionArray[i].removeMe())
-				{
+				if (explosionArray[i].removeMe()) {
 					explosionArray[i].~anExplosion();
 					explosionUsed[i] = false;
 				}
 			}
-			else
-			{
+			else {
 				oldExplosionUsed[i] = false;
 			}
 		}
@@ -1061,8 +984,7 @@ public:
 static explosionManeger theExplosionManeger;
 
 //text pop-up
-class textMessage
-{
+class textMessage {
 private:
 	int x;
 	int y;
@@ -1071,12 +993,11 @@ private:
 	unsigned long int placeTime; //Then the text was placed
 public:
 
-	textMessage()
-	{}
+	textMessage() {
+	}
 
 	//constructor:
-	textMessage(int X, int Y,const char* Text,unsigned int Time)
-	{
+	textMessage(int X, int Y,const char* Text,unsigned int Time) {
 		placeTime = currentTime;
 		x = X;
 		y = Y;
@@ -1086,29 +1007,24 @@ public:
 	}  //constructor
 
 	//true if the text has expired
-	bool removeMe()
-	{
+	bool removeMe() {
 		return currentTime-placeTime>time;
 	}
 
-	int getX()
-	{
+	int getX() {
 		return x;
 	}
 
-	int getY()
-	{
+	int getY() {
 		return y;
 	}
 
-	const char* getText()
-	{
+	const char* getText() {
 		return textt;
 	}
 };  //text popup
 
-class textManeger
-{
+class textManeger {
 public:
 	textMessage textArray[maxNumberOfBalls];
 	bool textUsed[maxNumberOfBalls];
@@ -1116,24 +1032,19 @@ public:
 	textMessage oldTextArray[maxNumberOfBalls];
 	bool oldTextUsed[maxNumberOfBalls];
 
-	textManeger()
-	{
-		for (int i=0; i<maxNumberOfBalls; i++)
-		{
+	textManeger() {
+		for (int i=0; i<maxNumberOfBalls; i++) {
 			textUsed[i] = false;
 			oldTextUsed[i] = false;
 		}
 	}
 
-	int addText(int x, int y,string Text,unsigned int Time)
-	{
+	int addText(int x, int y,string Text,unsigned int Time) {
 		int textNumber = 0;
-		while ((textNumber<maxNumberOfBalls)&&((textUsed[textNumber])||(oldTextUsed[textNumber])))
-		{
+		while ((textNumber<maxNumberOfBalls)&&((textUsed[textNumber])||(oldTextUsed[textNumber]))) {
 			textNumber++;
 		}
-		if (textNumber==maxNumberOfBalls)
-		{
+		if (textNumber==maxNumberOfBalls) {
 			return -1;
 		}
 		currentTime = SDL_GetTicks();
@@ -1142,27 +1053,21 @@ public:
 		return 1;
 	}  //addText
 
-	void update()
-	{
+	void update() {
 		currentTime = SDL_GetTicks();
-		for (int i = 0; i<maxNumberOfBalls; i++)
-		{
+		for (int i = 0; i<maxNumberOfBalls; i++) {
 
-			if (textUsed[i])
-			{
-				if (!oldTextUsed[i])
-				{
+			if (textUsed[i]) {
+				if (!oldTextUsed[i]) {
 					oldTextUsed[i] = true;
 					oldTextArray[i] = textMessage(textArray[i]);
 				}
-				if (textArray[i].removeMe())
-				{
+				if (textArray[i].removeMe()) {
 					textArray[i].~textMessage();
 					textUsed[i] = false;
 				}
 			}
-			else if (oldTextUsed[i])
-			{
+			else if (oldTextUsed[i]) {
 				oldTextUsed[i] = false;
 				oldTextArray[i].~textMessage();
 			}
@@ -1178,13 +1083,11 @@ static textManeger theTextManeger;
 #include "BlockGame.hpp"
 #include "BlockGame.cpp"
 
-class BlockGameSdl : public BlockGame
-{
+class BlockGameSdl : public BlockGame {
 public:
 	SDL_Surface* sBoard;
 
-	BlockGameSdl(int tx, int ty)
-	{
+	BlockGameSdl(int tx, int ty) {
 		tmp = IMG_Load2("gfx/BackBoard.png");
 		sBoard = SDL_DisplayFormat(tmp);
 		SDL_FreeSurface(tmp);
@@ -1192,8 +1095,7 @@ public:
 		topx = tx;
 		topy = ty;
 	}
-	~BlockGameSdl()
-	{
+	~BlockGameSdl() {
 		SDL_FreeSurface(sBoard);
 	}
 
@@ -1242,7 +1144,7 @@ public:
 	}
 
 	void TimeTrialEndEvent() const  override {
-		if(!NoSound && SoundEnabled) {
+		if (!NoSound && SoundEnabled) {
 			Mix_PlayChannel(1,counterFinalChunk,0);
 		}
 	}
@@ -1254,32 +1156,25 @@ public:
 		Mix_PlayChannel(1, applause, 0);
 	}
 private:
-	void convertSurface()
-	{
+	void convertSurface() {
 		SDL_FreeSurface(sBoard);
 		sBoard = SDL_DisplayFormat(backBoard);
 	}
 	//Draws all the bricks to the board (including garbage)
-	void PaintBricks() const
-	{
+	void PaintBricks() const {
 		for (int i=0; ((i<13)&&(i<30)); i++)
-			for (int j=0; j<6; j++)
-			{
-				if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0))
-				{
+			for (int j=0; j<6; j++) {
+				if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0)) {
 					DrawIMG(bricks[board[j][i]%10], sBoard, j*bsize, bsize*12-i*bsize-pixels);
-					if ((board[j][i]/BLOCKWAIT)%10==1)
-					{
+					if ((board[j][i]/BLOCKWAIT)%10==1) {
 						DrawIMG(bomb[(ticks/BOMBTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((board[j][i]/BLOCKHANG)%10==1)
-					{
+					if ((board[j][i]/BLOCKHANG)%10==1) {
 						DrawIMG(ready[(ticks/READYTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
 
 				}
-				if ((board[j][i]/1000000)%10==1)
-				{
+				if ((board[j][i]/1000000)%10==1) {
 					int left, right, over, under;
 					int number = board[j][i];
 					if (j<1) {
@@ -1306,67 +1201,51 @@ private:
 					else {
 						under = board[j][i-1];
 					}
-					if ((left == number)&&(right == number)&&(over == number)&&(under == number))
-					{
+					if ((left == number)&&(right == number)&&(over == number)&&(under == number)) {
 						DrawIMG(garbageFill, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left != number)&&(right == number)&&(over == number)&&(under == number))
-					{
+					if ((left != number)&&(right == number)&&(over == number)&&(under == number)) {
 						DrawIMG(garbageL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left == number)&&(right != number)&&(over == number)&&(under == number))
-					{
+					if ((left == number)&&(right != number)&&(over == number)&&(under == number)) {
 						DrawIMG(garbageR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left == number)&&(right == number)&&(over != number)&&(under == number))
-					{
+					if ((left == number)&&(right == number)&&(over != number)&&(under == number)) {
 						DrawIMG(garbageT, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left == number)&&(right == number)&&(over == number)&&(under != number))
-					{
+					if ((left == number)&&(right == number)&&(over == number)&&(under != number)) {
 						DrawIMG(garbageB, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left != number)&&(right == number)&&(over != number)&&(under == number))
-					{
+					if ((left != number)&&(right == number)&&(over != number)&&(under == number)) {
 						DrawIMG(garbageTL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left != number)&&(right == number)&&(over == number)&&(under != number))
-					{
+					if ((left != number)&&(right == number)&&(over == number)&&(under != number)) {
 						DrawIMG(garbageBL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left == number)&&(right != number)&&(over != number)&&(under == number))
-					{
+					if ((left == number)&&(right != number)&&(over != number)&&(under == number)) {
 						DrawIMG(garbageTR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left == number)&&(right != number)&&(over == number)&&(under != number))
-					{
+					if ((left == number)&&(right != number)&&(over == number)&&(under != number)) {
 						DrawIMG(garbageBR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left == number)&&(right != number)&&(over != number)&&(under != number))
-					{
+					if ((left == number)&&(right != number)&&(over != number)&&(under != number)) {
 						DrawIMG(garbageMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left == number)&&(right == number)&&(over != number)&&(under != number))
-					{
+					if ((left == number)&&(right == number)&&(over != number)&&(under != number)) {
 						DrawIMG(garbageM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					if ((left != number)&&(right == number)&&(over != number)&&(under != number))
-					{
+					if ((left != number)&&(right == number)&&(over != number)&&(under != number)) {
 						DrawIMG(garbageML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
-				if ((board[j][i]/1000000)%10==2)
-				{
-					if (j==0)
-					{
+				if ((board[j][i]/1000000)%10==2) {
+					if (j==0) {
 						DrawIMG(garbageGML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					else if (j==5)
-					{
+					else if (j==5) {
 						DrawIMG(garbageGMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
-					else
-					{
+					else {
 						DrawIMG(garbageGM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
@@ -1374,10 +1253,8 @@ private:
 		const int j = 0;
 
 		int garbageSize=0;
-		for (int i=0; i<20; i++)
-		{
-			if ((board[j][i]/1000000)%10==1)
-			{
+		for (int i=0; i<20; i++) {
+			if ((board[j][i]/1000000)%10==1) {
 				int left, right, over, under;
 				int number = board[j][i];
 				if (j<1) {
@@ -1404,32 +1281,27 @@ private:
 				else {
 					under = board[j][i-1];
 				}
-				if (((left != number)&&(right == number)&&(over != number)&&(under == number))&&(garbageSize>0))
-				{
+				if (((left != number)&&(right == number)&&(over != number)&&(under == number))&&(garbageSize>0)) {
 					DrawIMG(smiley[board[j][i]%4], sBoard, 2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
 				}
-				if (!((left != number)&&(right == number)&&(over == number)&&(under == number))) //not in garbage
-				{
+				if (!((left != number)&&(right == number)&&(over == number)&&(under == number))) { //not in garbage
 					garbageSize=0;
 				}
-				else
-				{
+				else {
 					garbageSize++;
 				}
 
 			}
 		}
 		for (int i=0; i<6; i++)
-			if (board[i][0]!=-1)
-			{
+			if (board[i][0]!=-1) {
 				DrawIMG(transCover, sBoard, i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
 			}
 
 	}
 public:
 	//Draws everything
-	void DoPaintJob()
-	{
+	void DoPaintJob() {
 		DrawIMG(backBoard, sBoard, 0, 0);
 		nf_standard_blue_font.setDest(sBoard); //reset to screen at the end of this funciton!
 
@@ -1437,57 +1309,45 @@ public:
 		if (stageClear) {
 			DrawIMG(blackLine, sBoard, 0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
 		}
-		if (puzzleMode&&(!bGameOver))
-		{
+		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = "Moves left: " + itoa(MovesLeft);
 			nf_standard_blue_font.draw(5,5,strHolder.c_str());
 
 		}
-		if(puzzleMode && stageButtonStatus == SBpuzzleMode)
-		{
+		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
 			DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
-			if (Level<PuzzleGetNumberOfPuzzles()-1)
-			{
-				if(hasWonTheGame)
-				{
+			if (Level<PuzzleGetNumberOfPuzzles()-1) {
+				if (hasWonTheGame) {
 					DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
 				}
-				else
-				{
+				else {
 					DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
 				}
 			}
-			else
-			{
+			else {
 				strHolder = "Last puzzle";
 				nf_standard_blue_font.draw(5,5,strHolder.c_str());
 			}
 		}
-		if(stageClear && stageButtonStatus == SBstageClear)
-		{
+		if (stageClear && stageButtonStatus == SBstageClear) {
 			DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
-			if(Level<50-1)
-			{
-				if(hasWonTheGame)
-				{
+			if (Level<50-1) {
+				if (hasWonTheGame) {
 					DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
 				}
-				else
-				{
+				else {
 					DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
 				}
 			}
-			else
-			{
+			else {
 				strHolder = "Last stage";
 				nf_standard_blue_font.draw(5,5,strHolder.c_str());
 			}
 		}
 
 #if DEBUG
-		if (AI_Enabled&&(!bGameOver))
-		{
+		if (AI_Enabled&&(!bGameOver)) {
 			strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
 			//NFont_Write(sBoard,   5, 5, strHolder.c_str());
 			nf_standard_blue_font.draw(5,5,strHolder.c_str());
@@ -1496,16 +1356,13 @@ public:
 		if (!bGameOver) {
 			DrawIMG(cursor[(ticks/600)%2],sBoard,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
 		}
-		if (ticks<gameStartedAt)
-		{
+		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
-			if( (currentCounter!=lastCounter) && (SoundEnabled)&&(!NoSound))
-			{
+			if ( (currentCounter!=lastCounter) && (SoundEnabled)&&(!NoSound)) {
 				Mix_PlayChannel(1,counterChunk,0);
 			}
 			lastCounter = currentCounter;
-			switch (currentCounter)
-			{
+			switch (currentCounter) {
 			case 2:
 				DrawIMG(counter[2], sBoard, 2*bsize, 5*bsize);
 				break;
@@ -1519,44 +1376,33 @@ public:
 				break;
 			}
 		}
-		else
-		{
-			if(SoundEnabled&&(!NoSound)&&(timetrial)&&(ticks>gameStartedAt+10000)&&(!bGameOver))
-			{
+		else {
+			if (SoundEnabled&&(!NoSound)&&(timetrial)&&(ticks>gameStartedAt+10000)&&(!bGameOver)) {
 				int currentCounter = (ticks-(int)gameStartedAt)/1000;
-				if(currentCounter!=lastCounter)
-				{
-					if(currentCounter>115 && currentCounter<120)
-					{
+				if (currentCounter!=lastCounter) {
+					if (currentCounter>115 && currentCounter<120) {
 						Mix_PlayChannel(1,counterChunk,0);
 					}
 				}
 				lastCounter = currentCounter;
 			}
-			else
-			{
-				if( (0==lastCounter) && (SoundEnabled)&&(!NoSound))
-				{
+			else {
+				if ( (0==lastCounter) && (SoundEnabled)&&(!NoSound)) {
 					Mix_PlayChannel(1,counterFinalChunk,0);
 				}
 				lastCounter = -1;
 			}
 		}
 
-		if ((bGameOver)&&(!editorMode))
-		{
-			if (hasWonTheGame)
-			{
+		if ((bGameOver)&&(!editorMode)) {
+			if (hasWonTheGame) {
 				DrawIMG(iWinner, sBoard, 0, 5*bsize);
 			}
-			else
-			{
-				if (bDraw)
-				{
+			else {
+				if (bDraw) {
 					DrawIMG(iDraw, sBoard, 0, 5*bsize);
 				}
-				else
-				{
+				else {
 					DrawIMG(iGameOver, sBoard, 0, 5*bsize);
 				}
 			}
@@ -1565,8 +1411,7 @@ public:
 	}
 
 
-	void Update(int newtick)
-	{
+	void Update(int newtick) {
 		BlockGame::Update(newtick);
 		DoPaintJob();
 	}
@@ -1579,10 +1424,8 @@ private:
 
 
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
-void writeScreenShot()
-{
-	if(verboseLevel)
-	{
+void writeScreenShot() {
+	if (verboseLevel) {
 		cout << "Saving screenshot" << endl;
 	}
 	int rightNow = (int)time(nullptr);
@@ -1611,19 +1454,17 @@ void writeScreenShot()
 }
 
 //Function to return the name of a key, to be displayed...
-static string getKeyName(SDLKey key)
-{
+static string getKeyName(SDLKey key) {
 	string keyname(SDL_GetKeyName(key));
 	return keyname;
 }
 
-void MakeBackground(int xsize,int ysize,BlockGame &theGame, BlockGame &theGame2);
+void MakeBackground(int xsize,int ysize,BlockGame& theGame, BlockGame& theGame2);
 
 
 
 //Dialogbox
-bool OpenDialogbox(int x, int y, char *name)
-{
+bool OpenDialogbox(int x, int y, char* name) {
 	bool done = false;     //We are done!
 	bool accept = false;   //New name is accepted! (not Cancelled)
 	bool repeating = false; //The key is being held (BACKSPACE)
@@ -1634,49 +1475,40 @@ bool OpenDialogbox(int x, int y, char *name)
 	string strHolder;
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
-	while (!done && !Config::getInstance()->isShuttingDown())
-	{
+	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(dialogBox,screen,x,y);
 		NFont_Write(screen, x+40,y+76,rk.GetString());
 		strHolder = rk.GetString();
 		strHolder.erase((int)rk.CharsBeforeCursor());
 
-		if (((SDL_GetTicks()/600)%2)==1)
-		{
+		if (((SDL_GetTicks()/600)%2)==1) {
 			NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( strHolder.c_str()),y+76,"|");
 		}
 
 		SDL_Event event;
 
-		while ( SDL_PollEvent(&event) )
-		{
-			if ( event.type == SDL_QUIT )
-			{
+		while ( SDL_PollEvent(&event) ) {
+			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
 				accept = false;
 			}
 
-			if ( event.type == SDL_KEYDOWN )
-			{
-				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) )
-				{
+			if ( event.type == SDL_KEYDOWN ) {
+				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
 					done = true;
 					accept = true;
 				}
-				else if ( (event.key.keysym.sym == SDLK_ESCAPE) )
-				{
+				else if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
 					done = true;
 					accept = false;
 				}
-				else if (!(event.key.keysym.sym == SDLK_BACKSPACE))
-				{
+				else if (!(event.key.keysym.sym == SDLK_BACKSPACE)) {
 					if ((rk.ReadKey(event.key.keysym.sym))&&(SoundEnabled)&&(!NoSound)) {
 						Mix_PlayChannel(1,typingChunk,0);
 					}
 				}
-				else if ((event.key.keysym.sym == SDLK_BACKSPACE)&&(!repeating))
-				{
+				else if ((event.key.keysym.sym == SDLK_BACKSPACE)&&(!repeating)) {
 					if ((rk.ReadKey(event.key.keysym.sym))&&(SoundEnabled)&&(!NoSound)) {
 						Mix_PlayChannel(1,typingChunk,0);
 					}
@@ -1687,18 +1519,15 @@ bool OpenDialogbox(int x, int y, char *name)
 
 		}   //while(event)
 
-		if (SDL_GetTicks()>(time+repeatDelay))
-		{
+		if (SDL_GetTicks()>(time+repeatDelay)) {
 			time = SDL_GetTicks();
 			keys = SDL_GetKeyState(nullptr);
-			if ( (keys[SDLK_BACKSPACE])&&(repeating) )
-			{
+			if ( (keys[SDLK_BACKSPACE])&&(repeating) ) {
 				if ((rk.ReadKey(SDLK_BACKSPACE))&&(SoundEnabled)&&(!NoSound)) {
 					Mix_PlayChannel(1,typingChunk,0);
 				}
 			}
-			else
-			{
+			else {
 				repeating = false;
 			}
 		}
@@ -1712,8 +1541,7 @@ bool OpenDialogbox(int x, int y, char *name)
 }
 
 //Draws the highscores
-void DrawHighscores(int x, int y, bool endless)
-{
+void DrawHighscores(int x, int y, bool endless) {
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
 	if (endless) {
@@ -1722,24 +1550,19 @@ void DrawHighscores(int x, int y, bool endless)
 	else {
 		nf_standard_blue_font.draw(x+100,y+100,_("Time Trial:") );
 	}
-	for (int i =0; i<10; i++)
-	{
+	for (int i =0; i<10; i++) {
 		char playerScore[32];
 		char playerName[32];
-		if (endless)
-		{
+		if (endless) {
 			sprintf(playerScore, "%i", theTopScoresEndless.getScoreNumber(i));
 		}
-		else
-		{
+		else {
 			sprintf(playerScore, "%i", theTopScoresTimeTrial.getScoreNumber(i));
 		}
-		if (endless)
-		{
+		if (endless) {
 			strcpy(playerName,theTopScoresEndless.getScoreName(i));
 		}
-		else
-		{
+		else {
 			strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
 		}
 		nf_standard_blue_font.draw(x+420,y+150+i*35,playerScore);
@@ -1747,8 +1570,7 @@ void DrawHighscores(int x, int y, bool endless)
 	}
 }
 
-void DrawStats()
-{
+void DrawStats() {
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
 	int y = 5;
@@ -1756,8 +1578,7 @@ void DrawStats()
 	NFont_Write(screen, 10,y,_("Stats") );
 	y+=y_spacing*2;
 	NFont_Write(screen, 10,y,_("Chains") );
-	for(int i=2; i<13; i++)
-	{
+	for (int i=2; i<13; i++) {
 		y+=y_spacing;
 		NFont_Write(screen, 10,y,(itoa(i)+"X").c_str());
 		string numberAsString = itoa(Stats::getInstance()->getNumberOf("chainX"+itoa(i)));
@@ -1801,8 +1622,7 @@ void DrawStats()
 	const int x_offset = xsize/2+10;
 	y = 5+y_spacing*2;
 	NFont_Write(screen, x_offset,y, _("VS CPU (win/loss)") );
-	for(int i=0; i<7; i++)
-	{
+	for (int i=0; i<7; i++) {
 		y += y_spacing;
 		NFont_Write(screen, x_offset,y,string("AI "+itoa(i+1)).c_str());
 		numberAsString = itoa(Stats::getInstance()->getNumberOf("defeatedAI"+itoa(i)));
@@ -1812,8 +1632,7 @@ void DrawStats()
 	}
 }
 
-void OpenScoresDisplay()
-{
+void OpenScoresDisplay() {
 	int mousex,mousey;
 	bool done = false;     //We are done!
 	int page = 0;
@@ -1825,10 +1644,8 @@ void OpenScoresDisplay()
 	const int backY = ysize-buttonYsize-20;
 	const int nextX = xsize-buttonXsize-20;
 	const int nextY = backY;
-	while (!done && !Config::getInstance()->isShuttingDown())
-	{
-		switch(page)
-		{
+	while (!done && !Config::getInstance()->isShuttingDown()) {
+		switch (page) {
 		case 0:
 			//Highscores, endless
 			DrawHighscores(100,100,true);
@@ -1856,50 +1673,39 @@ void OpenScoresDisplay()
 
 		SDL_GetMouseState(&mousex,&mousey);
 
-		while ( SDL_PollEvent(&event) )
-		{
+		while ( SDL_PollEvent(&event) ) {
 
 
-			if ( event.type == SDL_QUIT )
-			{
+			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
 			}
 
-			if ( event.type == SDL_KEYDOWN )
-			{
-				if( (event.key.keysym.sym == SDLK_RIGHT))
-				{
+			if ( event.type == SDL_KEYDOWN ) {
+				if ( (event.key.keysym.sym == SDLK_RIGHT)) {
 					page++;
-					if(page>=numberOfPages)
-					{
+					if (page>=numberOfPages) {
 						page = 0;
 					}
 				}
-				else if( (event.key.keysym.sym == SDLK_LEFT))
-				{
+				else if ( (event.key.keysym.sym == SDLK_LEFT)) {
 					page--;
-					if(page<0)
-					{
+					if (page<0) {
 						page = numberOfPages-1;
 					}
 				}
-				else
-				{
+				else {
 					done = true;
 				}
 
-				if ( event.key.keysym.sym == SDLK_F9 )
-				{
+				if ( event.key.keysym.sym == SDLK_F9 ) {
 					writeScreenShot();
 				}
 
-				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) )
-				{
+				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
 					done = true;
 				}
-				else if ( (event.key.keysym.sym == SDLK_ESCAPE) )
-				{
+				else if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
 					done = true;
 				}
 			}
@@ -1907,37 +1713,30 @@ void OpenScoresDisplay()
 		}   //while(event)
 
 		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1))
-		{
+		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 			bMouseUp=true;
 		}
 
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp)
-		{
+		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 			bMouseUp = false;
 
 			//The Score button:
-			if((mousex>scoreX) && (mousex<scoreX+buttonXsize) && (mousey>scoreY) && (mousey<scoreY+buttonYsize))
-			{
+			if ((mousex>scoreX) && (mousex<scoreX+buttonXsize) && (mousey>scoreY) && (mousey<scoreY+buttonYsize)) {
 				done =true;
 			}
 
 			//The back button:
-			if((mousex>backX) && (mousex<backX+buttonXsize) && (mousey>backY) && (mousey<backY+buttonYsize))
-			{
+			if ((mousex>backX) && (mousex<backX+buttonXsize) && (mousey>backY) && (mousey<backY+buttonYsize)) {
 				page--;
-				if(page<0)
-				{
+				if (page<0) {
 					page = numberOfPages-1;
 				}
 			}
 
 			//The next button:
-			if((mousex>nextX) && (mousex<nextX+buttonXsize) && (mousey>nextY) && (mousey<nextY+buttonYsize))
-			{
+			if ((mousex>nextX) && (mousex<nextX+buttonXsize) && (mousey>nextY) && (mousey<nextY+buttonYsize)) {
 				page++;
-				if(page>=numberOfPages)
-				{
+				if (page>=numberOfPages) {
 					page = 0;
 				}
 			}
@@ -1953,14 +1752,12 @@ void OpenScoresDisplay()
 
 
 //Open a puzzle file
-bool OpenFileDialogbox(int x, int y, char *name)
-{
+bool OpenFileDialogbox(int x, int y, char* name) {
 	bool done = false;  //We are done!
 	int mousex, mousey;
 	ListFiles lf = ListFiles();
 	string folder = (string)SHAREDIR+(string)"/puzzles";
-	if(verboseLevel)
-	{
+	if (verboseLevel) {
 		cout << "Looking in " << folder << endl;
 	}
 	lf.setDirectory(folder.c_str());
@@ -1972,40 +1769,32 @@ bool OpenFileDialogbox(int x, int y, char *name)
 	DrawIMG(background,screen,0,0);
 	DrawIMG(bForward,background,x+460,y+420);
 	DrawIMG(bBack,background,x+20,y+420);
-	while (!done && !Config::getInstance()->isShuttingDown())
-	{
+	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(background,screen,0,0);
 		const int nrOfFiles = 10;
 		DrawIMG(changeButtonsBack,screen,x,y);
-		for (int i=0; i<nrOfFiles; i++)
-		{
+		for (int i=0; i<nrOfFiles; i++) {
 			NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
 		}
 
 		SDL_Event event;
 
-		while ( SDL_PollEvent(&event) )
-		{
-			if ( event.type == SDL_QUIT )
-			{
+		while ( SDL_PollEvent(&event) ) {
+			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
 			}
 
-			if ( event.type == SDL_KEYDOWN )
-			{
-				if ( (event.key.keysym.sym == SDLK_ESCAPE) )
-				{
+			if ( event.type == SDL_KEYDOWN ) {
+				if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
 					done = true;
 				}
 
-				if ( (event.key.keysym.sym == SDLK_RIGHT) )
-				{
+				if ( (event.key.keysym.sym == SDLK_RIGHT) ) {
 					lf.forward();
 				}
 
-				if ( (event.key.keysym.sym == SDLK_LEFT) )
-				{
+				if ( (event.key.keysym.sym == SDLK_LEFT) ) {
 					lf.back();
 				}
 			}
@@ -2015,33 +1804,26 @@ bool OpenFileDialogbox(int x, int y, char *name)
 		SDL_GetMouseState(&mousex,&mousey);
 
 		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1))
-		{
+		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 			bMouseUp=true;
 		}
 
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp)
-		{
+		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 			bMouseUp = false;
 
 			//The Forward Button:
-			if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
-			{
+			if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) ) {
 				lf.forward();
 			}
 
 			//The back button:
-			if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) )
-			{
+			if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) ) {
 				lf.back();
 			}
 
-			for (int i=0; i<10; i++)
-			{
-				if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) )
-				{
-					if (lf.fileExists(i))
-					{
+			for (int i=0; i<10; i++) {
+				if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) ) {
+					if (lf.fileExists(i)) {
 						strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
 						done=true; //The user have, clicked the purpose of this function is now complete
 					}
@@ -2058,20 +1840,15 @@ bool OpenFileDialogbox(int x, int y, char *name)
 
 
 //Draws the balls and explosions
-static void DrawBalls()
-{
-	for (int i = 0; i< maxNumberOfBalls; i++)
-	{
-		if (theBallManeger.ballUsed[i])
-		{
+static void DrawBalls() {
+	for (int i = 0; i< maxNumberOfBalls; i++) {
+		if (theBallManeger.ballUsed[i]) {
 			DrawIMG(balls[theBallManeger.ballArray[i].getColor()],screen,theBallManeger.ballArray[i].getX(),theBallManeger.ballArray[i].getY());
 		} //if used
-		if (theExplosionManeger.explosionUsed[i])
-		{
+		if (theExplosionManeger.explosionUsed[i]) {
 			DrawIMG(explosion[theExplosionManeger.explosionArray[i].getFrame()],screen,theExplosionManeger.explosionArray[i].getX(),theExplosionManeger.explosionArray[i].getY());
 		}
-		if (theTextManeger.textUsed[i])
-		{
+		if (theTextManeger.textUsed[i]) {
 			//cout << "Printing text: " << theTextManeger.textArray[i].getText() << endl;
 			int x = theTextManeger.textArray[i].getX()-12;
 			int y = theTextManeger.textArray[i].getY()-12;
@@ -2082,20 +1859,15 @@ static void DrawBalls()
 }    //DrawBalls
 
 //Removes the old balls
-void UndrawBalls()
-{
-	for (int i = 0; i< maxNumberOfBalls; i++)
-	{
-		if (theBallManeger.oldBallUsed[i])
-		{
+void UndrawBalls() {
+	for (int i = 0; i< maxNumberOfBalls; i++) {
+		if (theBallManeger.oldBallUsed[i]) {
 			DrawIMG(background,screen,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY(),ballSize,ballSize,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY());
 		} //if used
-		if (theExplosionManeger.oldExplosionUsed[i])
-		{
+		if (theExplosionManeger.oldExplosionUsed[i]) {
 			DrawIMG(background,screen,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY(),70,120,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY());
 		}
-		if (theTextManeger.oldTextUsed[i])
-		{
+		if (theTextManeger.oldTextUsed[i]) {
 			int x = theTextManeger.oldTextArray[i].getX()-12;
 			int y = theTextManeger.oldTextArray[i].getY()-12;
 			DrawIMG(background,screen,x,y,25,25,x,y);
@@ -2104,12 +1876,10 @@ void UndrawBalls()
 }   //UndrawBalls
 
 //draws everything
-void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *theGame2)
-{
+void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);
 	//draw background:
-	if (forceredraw != 1)
-	{
+	if (forceredraw != 1) {
 
 		UndrawBalls();
 		DrawIMG(background,screen,oldMousex,oldMousey,32,32,oldMousex,oldMousey);
@@ -2130,30 +1900,24 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 	string strHolder;
 	strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
-	if (theGame->GetAIenabled())
-	{
+	if (theGame->GetAIenabled()) {
 		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("AI") );
 	}
-	else if (editorMode)
-	{
+	else if (editorMode) {
 		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("Playing field") );
 	}
-	else if (!singlePuzzle)
-	{
+	else if (!singlePuzzle) {
 		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,player1name);
 	}
-	if (theGame->isTimeTrial())
-	{
+	if (theGame->isTimeTrial()) {
 		int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
 		int minutes;
 		int seconds;
-		if (tid>=0)
-		{
+		if (tid>=0) {
 			minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
 			seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
 		}
-		else
-		{
+		else {
 			minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
 			seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
 		}
@@ -2163,8 +1927,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 		if (theGame->isGameOver()) {
 			seconds=0;
 		}
-		if (seconds>9)
-		{
+		if (seconds>9) {
 			strHolder = itoa(minutes)+":"+itoa(seconds);
 		}
 		else {
@@ -2173,8 +1936,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 		//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
 		NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
 	}
-	else
-	{
+	else {
 		int minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
 		int seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
 		if (theGame->isGameOver()) {
@@ -2183,12 +1945,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 		if (theGame->isGameOver()) {
 			seconds=(theGame->GetGameEndedAt()/1000)%60;
 		}
-		if (seconds>9)
-		{
+		if (seconds>9) {
 			strHolder = itoa(minutes)+":"+itoa(seconds);
 		}
-		else
-		{
+		else {
 			strHolder = itoa(minutes)+":0"+itoa(seconds);
 		}
 		NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
@@ -2198,47 +1958,40 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 	//drawspeedLevel:
 	strHolder = itoa(theGame->GetSpeedLevel());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
-	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY()))
-	{
+	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY())) {
 		oldBubleX = theGame->GetTopX()+280;
 		oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
 		DrawIMG(stageBobble,screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
 	}
 	//player1 finnish, player2 start
 	//DrawIMG(boardBackBack,screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
-	if (!editorMode)
-	{
+	if (!editorMode) {
 		/*
 		 *If single player mode (and not VS)
 		 */
-		if(!twoPlayers && !theGame->isGameOver())
-		{
+		if (!twoPlayers && !theGame->isGameOver()) {
 			//Blank player2's board:
 			DrawIMG(backBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
 			//Write a description:
-			if(theGame->isTimeTrial())
-			{
+			if (theGame->isTimeTrial()) {
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
 				string infostring = _("Score as much as \npossible in 2 minutes");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
 			}
-			else if(theGame->isStageClear())
-			{
+			else if (theGame->isStageClear()) {
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
 				string infostring = _("You must clear a \nnumber of lines.\nSpeed is rapidly \nincreased.");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
 			}
-			else if(theGame->isPuzzleMode())
-			{
+			else if (theGame->isPuzzleMode()) {
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
 				string infostring = _("Clear the entire board \nwith a limited number \nof moves.");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160+32,infostring);
 			}
-			else
-			{
+			else {
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
 				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
 				string infostring = _("Score as much as \npossible. No time limit.");
@@ -2251,41 +2004,33 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 			NFont_Write(screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
 			NFont_Write(screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
 			NFont_Write(screen, theGame2->GetTopX()+7,y+120,( _("Switch: ")+getKeyName(keySettings[0].change) ).c_str() );
-			if(theGame->isPuzzleMode())
-			{
+			if (theGame->isPuzzleMode()) {
 				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Restart: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
-			else
-			{
+			else {
 				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
 		}
-		else
-		{
+		else {
 			DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
 		}
 		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
-		if (theGame2->GetAIenabled())
-		{
+		if (theGame2->GetAIenabled()) {
 			NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,_("AI") );
 		}
-		else
-		{
+		else {
 			NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
 		}
-		if (theGame2->isTimeTrial())
-		{
+		if (theGame2->isTimeTrial()) {
 			int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();
 			int minutes;
 			int seconds;
-			if (tid>=0)
-			{
+			if (tid>=0) {
 				minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
 				seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
 			}
-			else
-			{
+			else {
 				minutes = ((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))/60/1000;
 				seconds = (((abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())))%(60*1000))/1000;
 			}
@@ -2295,19 +2040,16 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 			if (theGame2->isGameOver()) {
 				seconds=0;
 			}
-			if (seconds>9)
-			{
+			if (seconds>9) {
 				strHolder = itoa(minutes)+":"+itoa(seconds);
 			}
-			else
-			{
+			else {
 				strHolder = itoa(minutes)+":0"+itoa(seconds);
 			}
 			//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
 			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
 		}
-		else
-		{
+		else {
 			int minutes = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt()))/60/1000;
 			int seconds = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt())%(60*1000))/1000;
 			if (theGame2->isGameOver()) {
@@ -2316,12 +2058,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 			if (theGame2->isGameOver()) {
 				seconds=(theGame2->GetGameEndedAt()/1000)%60;
 			}
-			if (seconds>9)
-			{
+			if (seconds>9) {
 				strHolder = itoa(minutes)+":"+itoa(seconds);
 			}
-			else
-			{
+			else {
 				strHolder = itoa(minutes)+":0"+itoa(seconds);
 			}
 			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
@@ -2338,8 +2078,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 
 #if DEBUG
 	Frames++;
-	if (SDL_GetTicks() >= Ticks + 1000)
-	{
+	if (SDL_GetTicks() >= Ticks + 1000) {
 		if (Frames > 999) {
 			Frames=999;
 		}
@@ -2357,29 +2096,25 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl *theGame, BlockGameSdl *th
 }
 
 //Generates the standard background
-static void MakeBackground(int xsize,int ysize)
-{
+static void MakeBackground(int xsize,int ysize) {
 	int w = backgroundImage->w;
 	int h = backgroundImage->h;
-	for(int i=0; i*w<xsize; i++)
-		for(int j=0; j*h<ysize; j++)
-		{
+	for (int i=0; i*w<xsize; i++)
+		for (int j=0; j*h<ysize; j++) {
 			DrawIMG(backgroundImage,background,i*w,j*h);
 		}
 	standardBackground = true;
 }
 
 //Generates the background with red board backs
-static void MakeBackground(int xsize,int ysize,BlockGameSdl *theGame, BlockGameSdl *theGame2)
-{
+static void MakeBackground(int xsize,int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	MakeBackground(xsize,ysize);
 	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
 	DrawIMG(boardBackBack,background,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
 	standardBackground = false;
 }
 
-static void MakeBackground(int xsize, int ysize, BlockGameSdl *theGame)
-{
+static void MakeBackground(int xsize, int ysize, BlockGameSdl* theGame) {
 	MakeBackground(xsize,ysize);
 	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
 	standardBackground = false;
@@ -2387,8 +2122,7 @@ static void MakeBackground(int xsize, int ysize, BlockGameSdl *theGame)
 
 
 //The function that allows the player to choose PuzzleLevel
-int PuzzleLevelSelect(int Type)
-{
+int PuzzleLevelSelect(int Type) {
 	const int xplace = 200;
 	const int yplace = 300;
 	int levelNr = 0;
@@ -2404,8 +2138,7 @@ int PuzzleLevelSelect(int Type)
 	int selected = 0;
 
 	//Loads the levels, if they havn't been loaded:
-	if(Type == 0)
-	{
+	if (Type == 0) {
 		LoadPuzzleStages();
 	}
 
@@ -2413,57 +2146,44 @@ int PuzzleLevelSelect(int Type)
 	SDL_GetTicks();
 
 	MakeBackground(xsize,ysize);
-	if(Type == 0)
-	{
+	if (Type == 0) {
 		nrOfLevels = PuzzleGetNumberOfPuzzles();
 	}
-	if(Type == 1)
-	{
+	if (Type == 1) {
 		ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
-		if (stageFile)
-		{
-			for (int i = 0; i<nrOfStageLevels; i++)
-			{
+		if (stageFile) {
+			for (int i = 0; i<nrOfStageLevels; i++) {
 				stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
 				stageCleared[i]=tempBool;
 			}
-			if(!stageFile.eof())
-			{
-				for(int i=0; i<nrOfStageLevels; i++)
-				{
+			if (!stageFile.eof()) {
+				for (int i=0; i<nrOfStageLevels; i++) {
 					tempUInt32 = 0;
-					if(!stageFile.eof())
-					{
+					if (!stageFile.eof()) {
 						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
 					}
 					stageScores[i]=tempUInt32;
 					totalScore+=tempUInt32;
 				}
-				for(int i=0; i<nrOfStageLevels; i++)
-				{
+				for (int i=0; i<nrOfStageLevels; i++) {
 					tempUInt32 = 0;
-					if(!stageFile.eof())
-					{
+					if (!stageFile.eof()) {
 						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
 					}
 					stageTimes[i]=tempUInt32;
 					totalTime += tempUInt32;
 				}
 			}
-			else
-			{
-				for(int i=0; i<nrOfStageLevels; i++)
-				{
+			else {
+				for (int i=0; i<nrOfStageLevels; i++) {
 					stageScores[i]=0;
 					stageTimes[i]=0;
 				}
 			}
 			stageFile.close();
 		}
-		else
-		{
-			for (int i=0; i<nrOfStageLevels; i++)
-			{
+		else {
+			for (int i=0; i<nrOfStageLevels; i++) {
 				stageCleared[i]= false;
 				stageScores[i]=0;
 				stageTimes[i]=0;
@@ -2472,26 +2192,22 @@ int PuzzleLevelSelect(int Type)
 		nrOfLevels = nrOfStageLevels;
 	}
 
-	while(!levelSelected)
-	{
+	while (!levelSelected) {
 		SDL_GetTicks();
 
 
 		DrawIMG(background, screen, 0, 0);
 		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
-		if(Type == 0)
-		{
+		if (Type == 0) {
 			NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
 		}
-		if(Type == 1)
-		{
+		if (Type == 1) {
 			NFont_Write(screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
 		}
 		//Now drow the fields you click in (and a V if clicked):
-		for (int i = 0; i < nrOfLevels; i++)
-		{
+		for (int i = 0; i < nrOfLevels; i++) {
 			DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-			if(i==selected) {
+			if (i==selected) {
 				DrawIMG(iLevelCheckBoxMarked,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			}
 			if (Type == 0 && PuzzleIsCleared(i)) {
@@ -2504,47 +2220,36 @@ int PuzzleLevelSelect(int Type)
 
 		SDL_Event event;
 		while ( SDL_PollEvent(&event) )
-			if ( event.type == SDL_KEYDOWN )
-			{
-				if ( event.key.keysym.sym == SDLK_ESCAPE )
-				{
+			if ( event.type == SDL_KEYDOWN ) {
+				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
 					levelNr = -1;
 					levelSelected = true;
 				}
-				if ( event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER )
-				{
+				if ( event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
 					levelNr = selected;
 					levelSelected = true;
 				}
-				if ( event.key.keysym.sym == SDLK_RIGHT )
-				{
+				if ( event.key.keysym.sym == SDLK_RIGHT ) {
 					++selected;
-					if(selected >= nrOfLevels)
-					{
+					if (selected >= nrOfLevels) {
 						selected = 0;
 					}
 				}
-				if ( event.key.keysym.sym == SDLK_LEFT )
-				{
+				if ( event.key.keysym.sym == SDLK_LEFT ) {
 					--selected;
-					if(selected < 0)
-					{
+					if (selected < 0) {
 						selected = nrOfLevels-1;
 					}
 				}
-				if ( event.key.keysym.sym == SDLK_DOWN )
-				{
+				if ( event.key.keysym.sym == SDLK_DOWN ) {
 					selected+=10;
-					if(selected >= nrOfLevels)
-					{
+					if (selected >= nrOfLevels) {
 						selected-=10;
 					}
 				}
-				if ( event.key.keysym.sym == SDLK_UP )
-				{
+				if ( event.key.keysym.sym == SDLK_UP ) {
 					selected-=10;
-					if(selected < 0)
-					{
+					if (selected < 0) {
 						selected+=10;
 					}
 				}
@@ -2553,19 +2258,16 @@ int PuzzleLevelSelect(int Type)
 		SDL_GetKeyState(nullptr);
 
 		SDL_GetMouseState(&mousex,&mousey);
-		if(mousex != oldmousex || mousey != oldmousey)
-		{
+		if (mousex != oldmousex || mousey != oldmousey) {
 			int tmpSelected = -1;
 			int j;
 			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++)
-				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92))
-				{
+				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92)) {
 					tmpSelected = j*10;
 				}
 			if (tmpSelected != -1)
 				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++)
-					if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42))
-					{
+					if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42)) {
 						tmpSelected +=k;
 						selected = tmpSelected;
 					}
@@ -2574,44 +2276,37 @@ int PuzzleLevelSelect(int Type)
 		oldmousex= mousex;
 
 		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1))
-		{
+		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 			bMouseUp=true;
 		}
 
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp)
-		{
+		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 			bMouseUp = false;
 
 			int levelClicked = -1;
 			int i;
 			for (i = 0; (i<nrOfLevels/10)||((i<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)); i++)
-				if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92))
-				{
+				if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92)) {
 					levelClicked = i*10;
 				}
 			i++;
 			if (levelClicked != -1)
 				for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
-					if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42))
-					{
+					if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42)) {
 						levelClicked +=j;
 						levelSelected = true;
 						levelNr = levelClicked;
 					}
 		}
 
-		if(Type == 1)
-		{
+		if (Type == 1) {
 			string scoreString = _("Best score: 0");
 			string timeString = _("Time used: -- : --");
 
-			if(stageScores.at(selected)>0)
-			{
+			if (stageScores.at(selected)>0) {
 				scoreString = _("Best score: ")+itoa(stageScores.at(selected));
 			}
-			if(stageTimes.at(selected)>0)
-			{
+			if (stageTimes.at(selected)>0) {
 				timeString = _("Time used: ")+itoa(stageTimes.at(selected)/1000/60)+" : "+itoa2((stageTimes.at(selected)/1000)%60);
 			}
 
@@ -2632,8 +2327,7 @@ int PuzzleLevelSelect(int Type)
 
 
 //The function that allows the player to choose Level number
-void startVsMenu()
-{
+void startVsMenu() {
 	const int xplace = 200;
 	const int yplace = 100;
 	int mousex, mousey;
@@ -2645,8 +2339,7 @@ void startVsMenu()
 	MakeBackground(xsize,ysize);
 	NFont_Write(background, 360,650, _("Press ESC to accept") );
 	DrawIMG(bBack,background,xsize/2-120/2,600);
-	do
-	{
+	do {
 		//nowTime=SDL_GetTicks();
 		DrawIMG(background, screen, 0, 0);
 		DrawIMG(changeButtonsBack,screen,xplace,yplace);
@@ -2654,84 +2347,69 @@ void startVsMenu()
 		NFont_Write(screen, xplace+300+50,yplace+20,"Player 2");
 		NFont_Write(screen, xplace+50,yplace+70,"Speed:");
 		NFont_Write(screen, xplace+50+300,yplace+70,"Speed:");
-		for (int i=0; i<5; i++)
-		{
+		for (int i=0; i<5; i++) {
 			char levelS[2]; //level string;
 			levelS[0]='1'+i;
 			levelS[1]=0;
 			NFont_Write(screen, xplace+50+i*40,yplace+110,levelS);
 			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+150);
-			if (player1Speed==i)
-			{
+			if (player1Speed==i) {
 				DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+150);
 			}
 		}
-		for (int i=0; i<5; i++)
-		{
+		for (int i=0; i<5; i++) {
 			char levelS[2]; //level string;
 			levelS[0]='1'+i;
 			levelS[1]=0;
 			NFont_Write(screen, xplace+300+50+i*40,yplace+110,levelS);
 			DrawIMG(iLevelCheckBox,screen,xplace+300+50+i*40,yplace+150);
-			if (player2Speed==i)
-			{
+			if (player2Speed==i) {
 				DrawIMG(iLevelCheck,screen,xplace+300+50+i*40,yplace+150);
 			}
 		}
 		NFont_Write(screen, xplace+50,yplace+200,"AI: ");
 		DrawIMG(iLevelCheckBox,screen,xplace+50+70,yplace+200);
-		if (player1AI)
-		{
+		if (player1AI) {
 			DrawIMG(iLevelCheck,screen,xplace+50+70,yplace+200);
 		}
 		NFont_Write(screen, xplace+50,yplace+250,"TT Handicap: ");
 		NFont_Write(screen, xplace+50+300,yplace+200,"AI: ");
 		DrawIMG(iLevelCheckBox,screen,xplace+50+70+300,yplace+200);
-		if (player2AI)
-		{
+		if (player2AI) {
 			DrawIMG(iLevelCheck,screen,xplace+50+70+300,yplace+200);
 		}
 		NFont_Write(screen, xplace+50+300,yplace+250,"TT Handicap: ");
-		for (int i=0; i<5; i++)
-		{
+		for (int i=0; i<5; i++) {
 			char levelS[2]; //level string;
 			levelS[0]='1'+i;
 			levelS[1]=0;
 			NFont_Write(screen, xplace+50+i*40,yplace+290,levelS);
 			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+330);
-			if (player1handicap==i)
-			{
+			if (player1handicap==i) {
 				DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+330);
 			}
 		}
-		for (int i=0; i<5; i++)
-		{
+		for (int i=0; i<5; i++) {
 			char levelS[2]; //level string;
 			levelS[0]='1'+i;
 			levelS[1]=0;
 			NFont_Write(screen, xplace+50+i*40+300,yplace+290,levelS);
 			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40+300,yplace+330);
-			if (player2handicap==i)
-			{
+			if (player2handicap==i) {
 				DrawIMG(iLevelCheck,screen,xplace+50+i*40+300,yplace+330);
 			}
 		}
 
 		SDL_Event event;
-		while ( SDL_PollEvent(&event) )
-		{
-			if ( event.type == SDL_KEYDOWN )
-			{
-				if ( event.key.keysym.sym == SDLK_ESCAPE )
-				{
+		while ( SDL_PollEvent(&event) ) {
+			if ( event.type == SDL_KEYDOWN ) {
+				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
 					done = true;
 				}
-				if ( event.key.keysym.sym == SDLK_RETURN )
-				{
+				if ( event.key.keysym.sym == SDLK_RETURN ) {
 					done = true;
 				}
-				if ( event.key.keysym.sym == SDLK_KP_ENTER )
-				{
+				if ( event.key.keysym.sym == SDLK_KP_ENTER ) {
 					done = true;
 				}
 			}
@@ -2742,53 +2420,40 @@ void startVsMenu()
 		SDL_GetMouseState(&mousex,&mousey);
 
 		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1))
-		{
+		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 			bMouseUp=true;
 		}
 
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp)
-		{
+		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 			bMouseUp = false;
 
-			if ((mousex>xplace+50+70)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30)&&(mousey<yplace+200+30))
-			{
+			if ((mousex>xplace+50+70)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30)&&(mousey<yplace+200+30)) {
 				player1AI=!player1AI;
 			}
-			if ((mousex>xplace+50+70+300)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30+300)&&(mousey<yplace+200+30))
-			{
+			if ((mousex>xplace+50+70+300)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30+300)&&(mousey<yplace+200+30)) {
 				player2AI=!player2AI;
 			}
-			for (int i=0; i<5; i++)
-			{
-				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+150)&&(mousey<yplace+150+30))
-				{
+			for (int i=0; i<5; i++) {
+				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+150)&&(mousey<yplace+150+30)) {
 					player1Speed=i;
 				}
 			}
-			for (int i=0; i<5; i++)
-			{
-				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+150)&&(mousey<yplace+150+30))
-				{
+			for (int i=0; i<5; i++) {
+				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+150)&&(mousey<yplace+150+30)) {
 					player2Speed=i;
 				}
 			}
-			for (int i=0; i<5; i++)
-			{
-				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+330)&&(mousey<yplace+330+30))
-				{
+			for (int i=0; i<5; i++) {
+				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+330)&&(mousey<yplace+330+30)) {
 					player1handicap=i;
 				}
 			}
-			for (int i=0; i<5; i++)
-			{
-				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+330)&&(mousey<yplace+330+30))
-				{
+			for (int i=0; i<5; i++) {
+				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+330)&&(mousey<yplace+330+30)) {
 					player2handicap=i;
 				}
 			}
-			if ((mousex>xsize/2-120/2)&&(mousex<xsize/2+120/2)&&(mousey>600)&&(mousey<640))
-			{
+			if ((mousex>xsize/2-120/2)&&(mousex<xsize/2+120/2)&&(mousey>600)&&(mousey<640)) {
 				done = true;
 			}
 		}
@@ -2804,19 +2469,15 @@ void startVsMenu()
 }
 
 //This function will promt for the user to select another file for puzzle mode
-void changePuzzleLevels()
-{
+void changePuzzleLevels() {
 	char theFileName[30];
 	strcpy(theFileName, PuzzleGetName().c_str());
-	for (int i=PuzzleGetName().length(); i<30; i++)
-	{
+	for (int i=PuzzleGetName().length(); i<30; i++) {
 		theFileName[i]=' ';
 	}
 	theFileName[29]=0;
-	if (OpenFileDialogbox(200,100,theFileName))
-	{
-		for (int i=28; ((theFileName[i]==' ')&&(i>0)); i--)
-		{
+	if (OpenFileDialogbox(200,100,theFileName)) {
+		for (int i=28; ((theFileName[i]==' ')&&(i>0)); i--) {
 			theFileName[i]=0;
 		}
 		PuzzleSetName(theFileName);
@@ -2825,12 +2486,10 @@ void changePuzzleLevels()
 		PuzzleSetSavePath(home+"/.gamesaves/blockattack/"+PuzzleGetName()+".save");
 #elif defined(_WIN32)
 		string home = getMyDocumentsPath();
-		if (&home!=nullptr)
-		{
+		if (&home!=nullptr) {
 			PuzzleSetSavePath(home+"/My Games/blockattack/"+PuzzleGetName()+".save");
 		}
-		else
-		{
+		else {
 			PuzzleSetSavePath(PuzzleGetName()+".save");
 		}
 #else
@@ -2840,11 +2499,10 @@ void changePuzzleLevels()
 
 }
 
-static BlockGameSdl *player1;
-static BlockGameSdl *player2;
+static BlockGameSdl* player1;
+static BlockGameSdl* player2;
 
-static void StartSinglePlayerEndless()
-{
+static void StartSinglePlayerEndless() {
 	//1 player - endless
 	player1->NewGame(SDL_GetTicks());
 	player1->putStartBlocks(time(0));
@@ -2854,8 +2512,7 @@ static void StartSinglePlayerEndless()
 	player2->name = player2name;
 }
 
-static void StartSinglePlayerTimeTrial()
-{
+static void StartSinglePlayerTimeTrial() {
 	player1->NewTimeTrialGame(SDL_GetTicks());
 	twoPlayers =false;
 	player2->SetGameOver();
@@ -2864,11 +2521,9 @@ static void StartSinglePlayerTimeTrial()
 	player2->name = player2name;
 }
 
-static int StartSinglePlayerPuzzle(int level)
-{
+static int StartSinglePlayerPuzzle(int level) {
 	int myLevel = PuzzleLevelSelect(0);
-	if(myLevel == -1)
-	{
+	if (myLevel == -1) {
 		return 1;
 	}
 	player1->NewPuzzleGame(myLevel,SDL_GetTicks());
@@ -2883,8 +2538,7 @@ static int StartSinglePlayerPuzzle(int level)
 }
 
 
-static void StarTwoPlayerTimeTrial()
-{
+static void StarTwoPlayerTimeTrial() {
 	player1->NewTimeTrialGame(SDL_GetTicks());
 	player2->NewTimeTrialGame(SDL_GetTicks());
 	int theTime = time(0);
@@ -2895,20 +2549,17 @@ static void StarTwoPlayerTimeTrial()
 	player2->setGameSpeed(player2Speed);
 	player1->setHandicap(player1handicap);
 	player2->setHandicap(player2handicap);
-	if(player1AI)
-	{
+	if (player1AI) {
 		player1->setAIlevel(player1AIlevel);
 	}
-	if(player2AI)
-	{
+	if (player2AI) {
 		player2->setAIlevel(player2AIlevel);
 	}
 	player1->name = player1name;
 	player2->name = player2name;
 }
 
-static void StartTwoPlayerVs()
-{
+static void StartTwoPlayerVs() {
 	//2 player - VsMode
 	player1->NewVsGame(player2,SDL_GetTicks());
 	player2->NewVsGame(player1,SDL_GetTicks());
@@ -2918,12 +2569,10 @@ static void StartTwoPlayerVs()
 	player2->setGameSpeed(player2Speed);
 	player1->setHandicap(player1handicap);
 	player2->setHandicap(player2handicap);
-	if(player1AI)
-	{
+	if (player1AI) {
 		player1->setAIlevel(player1AIlevel);
 	}
-	if(player2AI)
-	{
+	if (player2AI) {
 		player2->setAIlevel(player2AIlevel);
 	}
 	int theTime = time(0);
@@ -2934,22 +2583,18 @@ static void StartTwoPlayerVs()
 }
 
 //The main function, quite big... too big
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
 	//We first create the folder there we will save (only on UNIX systems)
 	//we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
 #if defined(__unix__)
 	//Compiler warns about unused result. The users envisonment should normally give the user all the information he needs
-	if(system("mkdir -p ~/.gamesaves/blockattack/screenshots"))
-	{
+	if (system("mkdir -p ~/.gamesaves/blockattack/screenshots")) {
 		cerr << "mkdir error creating ~/.gamesaves/blockattack/screenshots" << endl;
 	}
-	if(system("mkdir -p ~/.gamesaves/blockattack/replays"))
-	{
+	if (system("mkdir -p ~/.gamesaves/blockattack/replays")) {
 		cerr << "mkdir error creating ~/.gamesaves/blockattack/replays" << endl;
 	}
-	if(system("mkdir -p ~/.gamesaves/blockattack/puzzles"))
-	{
+	if (system("mkdir -p ~/.gamesaves/blockattack/puzzles")) {
 		cerr << "mkdir error creating ~/.gamesaves/blockattack/puzzles" << endl;
 	}
 #elif defined(_WIN32)
@@ -2970,12 +2615,10 @@ int main(int argc, char *argv[])
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
-	if (argc > 1)
-	{
+	if (argc > 1) {
 		int argumentNr = 1;
 		forceredraw = 2;
-		while (argc>argumentNr)
-		{
+		while (argc>argumentNr) {
 			const char helpString[] = "--help";
 			const char priorityString[] = "-priority";
 			const char forceRedrawString[] = "-forceredraw";
@@ -2985,8 +2628,7 @@ int main(int argc, char *argv[])
 			const char IntegratedEditor[] = "-editor";
 			const char selectTheme[] = "-theme";
 			const char verbose[] = "-v";
-			if (!(strncmp(argv[argumentNr],helpString,6)))
-			{
+			if (!(strncmp(argv[argumentNr],helpString,6))) {
 				cout << "Block Attack Help" << endl << "--help  " << _("Displays this message") <<
 				     endl << "-priority  " << _("Starts game in high priority") << endl <<
 				     "-forceredraw  " << _("Redraw the whole screen every frame, prevents garbage") << endl <<
@@ -2999,50 +2641,39 @@ int main(int argc, char *argv[])
 #endif
 				return 0;
 			}
-			if (!(strncmp(argv[argumentNr],priorityString,9)))
-			{
-				if(verboseLevel)
-				{
+			if (!(strncmp(argv[argumentNr],priorityString,9))) {
+				if (verboseLevel) {
 					cout << "Priority mode" << endl;
 				}
 				highPriority = true;
 			}
-			if (!(strncmp(argv[argumentNr],forceRedrawString,12)))
-			{
+			if (!(strncmp(argv[argumentNr],forceRedrawString,12))) {
 				forceredraw = 1;
 			}
-			if (!(strncmp(argv[argumentNr],forcepartdrawString,14)))
-			{
+			if (!(strncmp(argv[argumentNr],forcepartdrawString,14))) {
 				forceredraw = 2;
 			}
-			if (!(strncmp(argv[argumentNr],singlePuzzleString,3)))
-			{
+			if (!(strncmp(argv[argumentNr],singlePuzzleString,3))) {
 				singlePuzzle = true; //We will just have one puzzle
-				if (argv[argumentNr+1][1]!=0)
-				{
+				if (argv[argumentNr+1][1]!=0) {
 					singlePuzzleNr = (argv[argumentNr+1][1]-'0')+(argv[argumentNr+1][0]-'0')*10;
 				}
-				else
-				{
+				else {
 					singlePuzzleNr = (argv[argumentNr+1][0]-'0');
 				}
 				singlePuzzleFile = argv[argumentNr+2];
 				argumentNr+=2;
-				if(verboseLevel)
-				{
+				if (verboseLevel) {
 					cout << "SinglePuzzleMode, File: " << singlePuzzleFile << " and Level: " << singlePuzzleNr << endl;
 				}
 			}
-			if (!(strncmp(argv[argumentNr],noSoundAtAll,8)))
-			{
+			if (!(strncmp(argv[argumentNr],noSoundAtAll,8))) {
 				NoSound = true;
 			}
-			if (!(strncmp(argv[argumentNr],IntegratedEditor,7)))
-			{
+			if (!(strncmp(argv[argumentNr],IntegratedEditor,7))) {
 #if LEVELEDITOR
 				editorMode = true;
-				if(verboseLevel)
-				{
+				if (verboseLevel) {
 					cout << "Integrated Puzzle Editor Activated" << endl;
 				}
 #else
@@ -3050,17 +2681,14 @@ int main(int argc, char *argv[])
 				return -1;
 #endif
 			}
-			if(!(strncmp(argv[argumentNr],selectTheme,6)))
-			{
+			if (!(strncmp(argv[argumentNr],selectTheme,6))) {
 				argumentNr++; //Go to themename (the next argument)
-				if(verboseLevel)
-				{
+				if (verboseLevel) {
 					cout << "Theme set to \"" << argv[argumentNr] << '"' << endl;
 				}
 				Config::getInstance()->setString("themename",argv[argumentNr]);
 			}
-			if(!(strcmp(argv[argumentNr],verbose)))
-			{
+			if (!(strcmp(argv[argumentNr],verbose))) {
 				verboseLevel++;
 			}
 			argumentNr++;
@@ -3086,12 +2714,10 @@ int main(int argc, char *argv[])
 #elif defined(_WIN32)
 	string home = getMyDocumentsPath();
 	string optionsPath;
-	if (&home!=nullptr) //Null if no APPDATA dir exists (win 9x)
-	{
+	if (&home!=nullptr) { //Null if no APPDATA dir exists (win 9x)
 		optionsPath = home+"/My Games/blockattack/options.dat";
 	}
-	else
-	{
+	else {
 		optionsPath = "options.dat";
 	}
 #else
@@ -3102,13 +2728,11 @@ int main(int argc, char *argv[])
 	stageClearSavePath = home+"/.gamesaves/blockattack/stageClear.SCsave";
 	PuzzleSetSavePath(home+"/.gamesaves/blockattack/puzzle.levels.save");
 #elif defined(_WIN32)
-	if (&home!=nullptr)
-	{
+	if (&home!=nullptr) {
 		stageClearSavePath = home+"/My Games/blockattack/stageClear.SCsave";
 		PuzzleSetSavePath(home+"/My Games/blockattack/puzzle.levels.save");
 	}
-	else
-	{
+	else {
 		stageClearSavePath = "stageClear.SCsave";
 		PuzzleSetSavePath("puzzle.levels.save");
 	}
@@ -3119,8 +2743,7 @@ int main(int argc, char *argv[])
 	PuzzleSetName("puzzle.levels");
 
 	//Init SDL
-	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
-	{
+	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 		cerr << "Unable to init SDL: " << SDL_GetError() << endl;
 		exit(1);
 	}
@@ -3136,8 +2759,7 @@ int main(int argc, char *argv[])
 
 	//Open Audio
 	if (!NoSound) //If sound has not been disabled, then load the sound system
-		if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0)
-		{
+		if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
 			cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
 			     << "Sound will be disabled!" << endl;
 			NoSound = true; //Tries to stop all sound from playing/loading
@@ -3145,8 +2767,7 @@ int main(int argc, char *argv[])
 
 	SDL_WM_SetCaption("Block Attack - Rise of the Blocks", nullptr); //Sets title line
 
-	if(verboseLevel)
-	{
+	if (verboseLevel) {
 		//Copyright notice:
 		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2011 Poul Sander" << endl <<
 		     "A SDL based game (see www.libsdl.org)" << endl <<
@@ -3184,11 +2805,10 @@ int main(int argc, char *argv[])
 	strcpy(player1name, "Player 1                    \0");
 	strcpy(player2name, "Player 2                    \0");
 
-	Config *configSettings = Config::getInstance();
+	Config* configSettings = Config::getInstance();
 	//configSettings->setString("aNumber"," A string");
 	//configSettings->save();
-	if(configSettings->exists("fullscreen")) //Test if an configFile exists
-	{
+	if (configSettings->exists("fullscreen")) { //Test if an configFile exists
 		bFullscreen = (bool)configSettings->getInt("fullscreen");
 		MusicEnabled = (bool)configSettings->getInt("musicenabled");
 		SoundEnabled = (bool)configSettings->getInt("soundenabled");
@@ -3197,62 +2817,57 @@ int main(int argc, char *argv[])
 		joyplay1 = (bool)configSettings->getInt("joypad1");
 		joyplay2 = (bool)configSettings->getInt("joypad2");
 
-		if(configSettings->exists("player1keyup")) {
+		if (configSettings->exists("player1keyup")) {
 			keySettings[0].up = (SDLKey)configSettings->getInt("player1keyup");
 		}
-		if(configSettings->exists("player1keydown")) {
+		if (configSettings->exists("player1keydown")) {
 			keySettings[0].down = (SDLKey)configSettings->getInt("player1keydown");
 		}
-		if(configSettings->exists("player1keyleft")) {
+		if (configSettings->exists("player1keyleft")) {
 			keySettings[0].left = (SDLKey)configSettings->getInt("player1keyleft");
 		}
-		if(configSettings->exists("player1keyright")) {
+		if (configSettings->exists("player1keyright")) {
 			keySettings[0].right = (SDLKey)configSettings->getInt("player1keyright");
 		}
-		if(configSettings->exists("player1keychange")) {
+		if (configSettings->exists("player1keychange")) {
 			keySettings[0].change = (SDLKey)configSettings->getInt("player1keychange");
 		}
-		if(configSettings->exists("player1keypush")) {
+		if (configSettings->exists("player1keypush")) {
 			keySettings[0].push = (SDLKey)configSettings->getInt("player1keypush");
 		}
 
-		if(configSettings->exists("player2keyup")) {
+		if (configSettings->exists("player2keyup")) {
 			keySettings[2].up = (SDLKey)configSettings->getInt("player2keyup");
 		}
-		if(configSettings->exists("player2keydown")) {
+		if (configSettings->exists("player2keydown")) {
 			keySettings[2].down = (SDLKey)configSettings->getInt("player2keydown");
 		}
-		if(configSettings->exists("player2keyleft")) {
+		if (configSettings->exists("player2keyleft")) {
 			keySettings[2].left = (SDLKey)configSettings->getInt("player2keyleft");
 		}
-		if(configSettings->exists("player2keyright")) {
+		if (configSettings->exists("player2keyright")) {
 			keySettings[2].right = (SDLKey)configSettings->getInt("player2keyright");
 		}
-		if(configSettings->exists("player2keychange")) {
+		if (configSettings->exists("player2keychange")) {
 			keySettings[2].change = (SDLKey)configSettings->getInt("player2keychange");
 		}
-		if(configSettings->exists("player2keypush")) {
+		if (configSettings->exists("player2keypush")) {
 			keySettings[2].push = (SDLKey)configSettings->getInt("player2keypush");
 		}
-		if(configSettings->exists("player1name"))
-		{
+		if (configSettings->exists("player1name")) {
 			strncpy(player1name,(configSettings->getString("player1name")).c_str(),28);
 		}
-		if(configSettings->exists("player2name"))
-		{
+		if (configSettings->exists("player2name")) {
 			strncpy(player2name,(configSettings->getString("player2name")).c_str(),28);
 		}
-		if(verboseLevel)
-		{
+		if (verboseLevel) {
 			cout << "Data loaded from config file" << endl;
 		}
 	}
-	else
-	{
+	else {
 		//Reads options from file:
 		ifstream optionsFile(optionsPath.c_str(), ios::binary);
-		if (optionsFile)
-		{
+		if (optionsFile) {
 			//reads data: xsize,ysize,fullescreen, player1keys, player2keys, MusicEnabled, SoundEnabled,player1name,player2name
 			optionsFile.read(reinterpret_cast<char*>(&xsize), sizeof(int));
 			optionsFile.read(reinterpret_cast<char*>(&ysize), sizeof(int));
@@ -3274,23 +2889,19 @@ int main(int argc, char *argv[])
 			optionsFile.read(player1name, 30*sizeof(char));
 			optionsFile.read(player2name, 30*sizeof(char));
 			//mouseplay?
-			if (!optionsFile.eof())
-			{
+			if (!optionsFile.eof()) {
 				optionsFile.read(reinterpret_cast<char*>(&mouseplay1), sizeof(bool));
 				optionsFile.read(reinterpret_cast<char*>(&mouseplay2), sizeof(bool));
 				optionsFile.read(reinterpret_cast<char*>(&joyplay1),sizeof(bool));
 				optionsFile.read(reinterpret_cast<char*>(&joyplay2),sizeof(bool));
 			}
 			optionsFile.close();
-			if(verboseLevel)
-			{
+			if (verboseLevel) {
 				cout << "Data loaded from oldstyle options file" << endl;
 			}
 		}
-		else
-		{
-			if(verboseLevel)
-			{
+		else {
+			if (verboseLevel) {
 				cout << "Unable to load options file, using default values" << endl;
 			}
 		}
@@ -3299,15 +2910,13 @@ int main(int argc, char *argv[])
 #if NETWORK
 	Config::getInstance()->setDefault("portv4","42200");
 	strcpy(serverAddress, "192.168.0.2                 \0");
-	if(configSettings->exists("address0"))
-	{
+	if (configSettings->exists("address0")) {
 		strcpy(serverAddress, "                            \0");
 		strncpy(serverAddress,configSettings->getString("address0").c_str(),sizeof(serverAddress)-1);
 	}
 #endif
 
-	if (singlePuzzle)
-	{
+	if (singlePuzzle) {
 		xsize=300;
 		ysize=600;
 	}
@@ -3321,8 +2930,7 @@ int main(int argc, char *argv[])
 		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
 	}
 
-	if ( screen == nullptr )
-	{
+	if ( screen == nullptr ) {
 		cerr << "Unable to set " << xsize << "x" << ysize << " video: " << SDL_GetError() << endl;
 		exit(1);
 	}
@@ -3332,11 +2940,10 @@ int main(int argc, char *argv[])
 	//Load default theme
 	loadTheme(Config::getInstance()->getString("themename"));
 	//Now sets the icon:
-	SDL_Surface *icon = IMG_Load2("gfx/icon.png");
+	SDL_Surface* icon = IMG_Load2("gfx/icon.png");
 	SDL_WM_SetIcon(icon,nullptr);
 
-	if(verboseLevel)
-	{
+	if (verboseLevel) {
 		cout << "Images loaded" << endl;
 	}
 
@@ -3368,12 +2975,10 @@ int main(int argc, char *argv[])
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 	}
 	//Draws everything to screen
-	if (!editorMode)
-	{
+	if (!editorMode) {
 		MakeBackground(xsize,ysize,&theGame,&theGame2);
 	}
-	else
-	{
+	else {
 		MakeBackground(xsize,ysize,&theGame);
 	}
 	DrawIMG(background, screen, 0, 0);
@@ -3385,8 +2990,7 @@ int main(int argc, char *argv[])
 
 
 	//Saves options
-	if (!editorMode)
-	{
+	if (!editorMode) {
 		configSettings->setInt("fullscreen",(int)bFullscreen);
 		configSettings->setInt("musicenabled",(int)MusicEnabled);
 		configSettings->setInt("soundenabled",(int)SoundEnabled);
@@ -3419,14 +3023,12 @@ int main(int argc, char *argv[])
 	commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
 	//cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
-	if(verboseLevel)
-	{
+	if (verboseLevel) {
 		cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << endl;
 	}
 
 	ct = TimeHandler::addTime("totalTime",ct);
-	if(verboseLevel)
-	{
+	if (verboseLevel) {
 		cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
 	}
 
@@ -3444,9 +3046,8 @@ int main(int argc, char *argv[])
 }
 
 
-int runGame(int gametype, int level)
-{
-	Uint8 *keys;
+int runGame(int gametype, int level) {
+	Uint8* keys;
 	int mousex, mousey;   //Mouse coordinates
 	bScreenLocked = false;
 	theTopScoresEndless = Highscore(1);
@@ -3498,18 +3099,15 @@ int runGame(int gametype, int level)
 	Joypad joypad1 = Joypad();    //Creates a joypad
 	Joypad joypad2 = Joypad();    //Creates a joypad
 
-	if (singlePuzzle)
-	{
+	if (singlePuzzle) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 	}
 	//Draws everything to screen
-	if (!editorMode)
-	{
+	if (!editorMode) {
 		MakeBackground(xsize,ysize,&theGame,&theGame2);
 	}
-	else
-	{
+	else {
 		MakeBackground(xsize,ysize,&theGame);
 	}
 	/*DrawIMG(background, screen, 0, 0);
@@ -3517,28 +3115,22 @@ int runGame(int gametype, int level)
 	SDL_Flip(screen);*/
 	//game loop
 	int done = 0;
-	if(verboseLevel)
-	{
+	if (verboseLevel) {
 		cout << "Starting game loop" << endl;
 	}
 
 
 	bool mustsetupgame = true;
 
-	while (done == 0)
-	{
-		if(mustsetupgame)
-		{
-			switch(gametype)
-			{
+	while (done == 0) {
+		if (mustsetupgame) {
+			switch (gametype) {
 			case 1:
 				StartSinglePlayerTimeTrial();
 				break;
-			case 2:
-			{
+			case 2: {
 				int myLevel = PuzzleLevelSelect(1);
-				if(myLevel == -1)
-				{
+				if (myLevel == -1) {
 					return 1;
 				}
 				theGame.NewStageGame(myLevel,SDL_GetTicks());
@@ -3551,13 +3143,11 @@ int runGame(int gametype, int level)
 			}
 			break;
 			case 3:
-				if(StartSinglePlayerPuzzle(level))
-				{
+				if (StartSinglePlayerPuzzle(level)) {
 					return 1;
 				}
 				break;
-			case 4:
-			{
+			case 4: {
 				//1 player - Vs mode
 				int theAIlevel = level; //startSingleVs();
 				theGame.NewVsGame(&theGame2, SDL_GetTicks());
@@ -3594,14 +3184,12 @@ int runGame(int gametype, int level)
 			SDL_Delay(10);
 		}
 
-		if ((standardBackground)&&(!editorMode))
-		{
+		if ((standardBackground)&&(!editorMode)) {
 			MakeBackground(xsize,ysize,&theGame,&theGame2);
 			DrawIMG(background, screen, 0, 0);
 		}
 
-		if ((standardBackground)&&(editorMode))
-		{
+		if ((standardBackground)&&(editorMode)) {
 			DrawIMG(backgroundImage, screen, 0, 0);
 			MakeBackground(xsize,ysize,&theGame);
 			DrawIMG(background, screen, 0, 0);
@@ -3612,111 +3200,90 @@ int runGame(int gametype, int level)
 		theExplosionManeger.update();
 		theTextManeger.update();
 
-		if (!bScreenLocked)
-		{
+		if (!bScreenLocked) {
 			SDL_Event event;
 
-			while ( SDL_PollEvent(&event) )
-			{
-				if ( event.type == SDL_QUIT )
-				{
+			while ( SDL_PollEvent(&event) ) {
+				if ( event.type == SDL_QUIT ) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
 				}
 
-				if ( event.type == SDL_KEYDOWN )
-				{
-					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) )
-					{
+				if ( event.type == SDL_KEYDOWN ) {
+					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
 						done=1;
 						DrawIMG(background, screen, 0, 0);
 
 					}
-					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled()))
-					{
+					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled())) {
 						//player1:
-						if ( event.key.keysym.sym == keySettings[player1keys].up )
-						{
+						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
 							theGame.MoveCursor('N');
 							repeatingN[0]=true;
 							timeHeldP1N=SDL_GetTicks();
 							timesRepeatedP1N=0;
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].down )
-						{
+						if ( event.key.keysym.sym == keySettings[player1keys].down ) {
 							theGame.MoveCursor('S');
 							repeatingS[0]=true;
 							timeHeldP1S=SDL_GetTicks();
 							timesRepeatedP1S=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player1keys].left) )
-						{
+						if ( (event.key.keysym.sym == keySettings[player1keys].left) ) {
 							theGame.MoveCursor('W');
 							repeatingW[0]=true;
 							timeHeldP1W=SDL_GetTicks();
 							timesRepeatedP1W=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player1keys].right) )
-						{
+						if ( (event.key.keysym.sym == keySettings[player1keys].right) ) {
 							theGame.MoveCursor('E');
 							repeatingE[0]=true;
 							timeHeldP1E=SDL_GetTicks();
 							timesRepeatedP1E=0;
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].push )
-						{
+						if ( event.key.keysym.sym == keySettings[player1keys].push ) {
 							theGame.PushLine();
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].change )
-						{
+						if ( event.key.keysym.sym == keySettings[player1keys].change ) {
 							theGame.SwitchAtCursor();
 						}
 					}
-					if (!editorMode && !theGame2.GetAIenabled())
-					{
+					if (!editorMode && !theGame2.GetAIenabled()) {
 						//player2:
-						if ( event.key.keysym.sym == keySettings[player2keys].up )
-						{
+						if ( event.key.keysym.sym == keySettings[player2keys].up ) {
 							theGame2.MoveCursor('N');
 							repeatingN[1]=true;
 							timeHeldP2N=SDL_GetTicks();
 							timesRepeatedP2N=0;
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].down )
-						{
+						if ( event.key.keysym.sym == keySettings[player2keys].down ) {
 							theGame2.MoveCursor('S');
 							repeatingS[1]=true;
 							timeHeldP2S=SDL_GetTicks();
 							timesRepeatedP2S=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player2keys].left) )
-						{
+						if ( (event.key.keysym.sym == keySettings[player2keys].left) ) {
 							theGame2.MoveCursor('W');
 							repeatingW[1]=true;
 							timeHeldP2W=SDL_GetTicks();
 							timesRepeatedP2W=0;
 						}
-						if ( (event.key.keysym.sym == keySettings[player2keys].right) )
-						{
+						if ( (event.key.keysym.sym == keySettings[player2keys].right) ) {
 							theGame2.MoveCursor('E');
 							repeatingE[1]=true;
 							timeHeldP2E=SDL_GetTicks();
 							timesRepeatedP2E=0;
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].push )
-						{
+						if ( event.key.keysym.sym == keySettings[player2keys].push ) {
 							theGame2.PushLine();
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].change )
-						{
+						if ( event.key.keysym.sym == keySettings[player2keys].change ) {
 							theGame2.SwitchAtCursor();
 						}
 					}
 					//common:
-					if ((!singlePuzzle)&&(!editorMode))
-					{
-						if ( event.key.keysym.sym == SDLK_F2 )
-						{
+					if ((!singlePuzzle)&&(!editorMode)) {
+						if ( event.key.keysym.sym == SDLK_F2 ) {
 							/*#if NETWORK
 							if ((!showOptions)&&(!networkActive)){
 							#else
@@ -3727,22 +3294,18 @@ int runGame(int gametype, int level)
 							 */
 							mustsetupgame = true;
 						}
-						if ( event.key.keysym.sym == SDLK_F10 )
-						{
+						if ( event.key.keysym.sym == SDLK_F10 ) {
 							//StartReplay("/home/poul/.gamesaves/blockattack/quicksave");
 						}
-						if ( event.key.keysym.sym == SDLK_F9 )
-						{
+						if ( event.key.keysym.sym == SDLK_F9 ) {
 							writeScreenShot();
 						}
 						if ( event.key.keysym.sym == SDLK_F5 ) {
 						}
-						if ( event.key.keysym.sym == SDLK_F11 )
-						{
+						if ( event.key.keysym.sym == SDLK_F11 ) {
 						} //F11
 					}
-					if ( event.key.keysym.sym == SDLK_F12 )
-					{
+					if ( event.key.keysym.sym == SDLK_F12 ) {
 						done=1;
 					}
 				}
@@ -3757,42 +3320,34 @@ int runGame(int gametype, int level)
 //Repeating not implemented
 
 //Player 1 start
-			if (!(keys[keySettings[player1keys].up]))
-			{
+			if (!(keys[keySettings[player1keys].up])) {
 				repeatingN[0]=false;
 			}
-			while ((repeatingN[0])&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat))
-			{
+			while ((repeatingN[0])&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat)) {
 				theGame.MoveCursor('N');
 				timesRepeatedP1N++;
 			}
 
-			if (!(keys[keySettings[player1keys].down]))
-			{
+			if (!(keys[keySettings[player1keys].down])) {
 				repeatingS[0]=false;
 			}
-			while ((repeatingS[0])&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat))
-			{
+			while ((repeatingS[0])&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat)) {
 				theGame.MoveCursor('S');
 				timesRepeatedP1S++;
 			}
 
-			if (!(keys[keySettings[player1keys].left]))
-			{
+			if (!(keys[keySettings[player1keys].left])) {
 				repeatingW[0]=false;
 			}
-			while ((repeatingW[0])&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat))
-			{
+			while ((repeatingW[0])&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat)) {
 				timesRepeatedP1W++;
 				theGame.MoveCursor('W');
 			}
 
-			if (!(keys[keySettings[player1keys].right]))
-			{
+			if (!(keys[keySettings[player1keys].right])) {
 				repeatingE[0]=false;
 			}
-			while ((repeatingE[0])&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat))
-			{
+			while ((repeatingE[0])&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat)) {
 				timesRepeatedP1E++;
 				theGame.MoveCursor('E');
 			}
@@ -3800,42 +3355,34 @@ int runGame(int gametype, int level)
 //Player 1 end
 
 //Player 2 start
-			if (!(keys[keySettings[player2keys].up]))
-			{
+			if (!(keys[keySettings[player2keys].up])) {
 				repeatingN[1]=false;
 			}
-			while ((repeatingN[1])&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat))
-			{
+			while ((repeatingN[1])&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat)) {
 				theGame2.MoveCursor('N');
 				timesRepeatedP2N++;
 			}
 
-			if (!(keys[keySettings[player2keys].down]))
-			{
+			if (!(keys[keySettings[player2keys].down])) {
 				repeatingS[1]=false;
 			}
-			while ((repeatingS[1])&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat))
-			{
+			while ((repeatingS[1])&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat)) {
 				theGame2.MoveCursor('S');
 				timesRepeatedP2S++;
 			}
 
-			if (!(keys[keySettings[player2keys].left]))
-			{
+			if (!(keys[keySettings[player2keys].left])) {
 				repeatingW[1]=false;
 			}
-			while ((repeatingW[1])&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat))
-			{
+			while ((repeatingW[1])&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat)) {
 				theGame2.MoveCursor('W');
 				timesRepeatedP2W++;
 			}
 
-			if (!(keys[keySettings[player2keys].right]))
-			{
+			if (!(keys[keySettings[player2keys].right])) {
 				repeatingE[1]=false;
 			}
-			while ((repeatingE[1])&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat))
-			{
+			while ((repeatingE[1])&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat)) {
 				theGame2.MoveCursor('E');
 				timesRepeatedP2E++;
 			}
@@ -3851,170 +3398,139 @@ int runGame(int gametype, int level)
 			**********************************************************************/
 
 			//Gameplay
-			if (joyplay1||joyplay2)
-			{
-				if (joypad1.working && !theGame.GetAIenabled())
-				{
-					if (joyplay1)
-					{
+			if (joyplay1||joyplay2) {
+				if (joypad1.working && !theGame.GetAIenabled()) {
+					if (joyplay1) {
 						joypad1.update();
-						if (joypad1.up)
-						{
+						if (joypad1.up) {
 							theGame.MoveCursor('N');
 							repeatingN[0]=true;
 							timeHeldP1N=SDL_GetTicks();
 							timesRepeatedP1N=0;
 						}
-						if (joypad1.down)
-						{
+						if (joypad1.down) {
 							theGame.MoveCursor('S');
 							repeatingS[0]=true;
 							timeHeldP1S=SDL_GetTicks();
 							timesRepeatedP1S=0;
 						}
-						if (joypad1.left)
-						{
+						if (joypad1.left) {
 							theGame.MoveCursor('W');
 							repeatingW[0]=true;
 							timeHeldP1W=SDL_GetTicks();
 							timesRepeatedP1W=0;
 						}
-						if (joypad1.right)
-						{
+						if (joypad1.right) {
 							theGame.MoveCursor('E');
 							repeatingE[0]=true;
 							timeHeldP1E=SDL_GetTicks();
 							timesRepeatedP1E=0;
 						}
-						if (joypad1.but1)
-						{
+						if (joypad1.but1) {
 							theGame.SwitchAtCursor();
 						}
-						if (joypad1.but2)
-						{
+						if (joypad1.but2) {
 							theGame.PushLine();
 						}
 					}
-					else
-					{
+					else {
 						joypad1.update();
-						if (joypad1.up)
-						{
+						if (joypad1.up) {
 							theGame2.MoveCursor('N');
 							repeatingN[1]=true;
 							timeHeldP2N=SDL_GetTicks();
 							timesRepeatedP2N=0;
 						}
-						if (joypad1.down)
-						{
+						if (joypad1.down) {
 							theGame2.MoveCursor('S');
 							repeatingS[1]=true;
 							timeHeldP2S=SDL_GetTicks();
 							timesRepeatedP2S=0;
 						}
-						if (joypad1.left)
-						{
+						if (joypad1.left) {
 							theGame2.MoveCursor('W');
 							repeatingW[1]=true;
 							timeHeldP2W=SDL_GetTicks();
 							timesRepeatedP2W=0;
 						}
-						if (joypad1.right)
-						{
+						if (joypad1.right) {
 							theGame2.MoveCursor('E');
 							repeatingE[1]=true;
 							timeHeldP2E=SDL_GetTicks();
 							timesRepeatedP2E=0;
 						}
-						if (joypad1.but1)
-						{
+						if (joypad1.but1) {
 							theGame2.SwitchAtCursor();
 						}
-						if (joypad1.but2)
-						{
+						if (joypad1.but2) {
 							theGame2.PushLine();
 						}
 					}
 				}
-				if (joypad2.working && !theGame2.GetAIenabled())
-				{
-					if (!joyplay2)
-					{
+				if (joypad2.working && !theGame2.GetAIenabled()) {
+					if (!joyplay2) {
 						joypad2.update();
-						if (joypad2.up)
-						{
+						if (joypad2.up) {
 							theGame.MoveCursor('N');
 							repeatingN[0]=true;
 							timeHeldP1N=SDL_GetTicks();
 							timesRepeatedP1N=0;
 						}
-						if (joypad2.down)
-						{
+						if (joypad2.down) {
 							theGame.MoveCursor('S');
 							repeatingS[0]=true;
 							timeHeldP1S=SDL_GetTicks();
 							timesRepeatedP1S=0;
 						}
-						if (joypad2.left)
-						{
+						if (joypad2.left) {
 							theGame.MoveCursor('W');
 							repeatingW[0]=true;
 							timeHeldP1W=SDL_GetTicks();
 							timesRepeatedP1W=0;
 						}
-						if (joypad2.right)
-						{
+						if (joypad2.right) {
 							theGame.MoveCursor('E');
 							repeatingE[0]=true;
 							timeHeldP1E=SDL_GetTicks();
 							timesRepeatedP1E=0;
 						}
-						if (joypad2.but1)
-						{
+						if (joypad2.but1) {
 							theGame.SwitchAtCursor();
 						}
-						if (joypad2.but2)
-						{
+						if (joypad2.but2) {
 							theGame.PushLine();
 						}
 					}
-					else
-					{
+					else {
 						joypad2.update();
-						if (joypad2.up)
-						{
+						if (joypad2.up) {
 							theGame2.MoveCursor('N');
 							repeatingN[1]=true;
 							timeHeldP2N=SDL_GetTicks();
 							timesRepeatedP2N=0;
 						}
-						if (joypad2.down)
-						{
+						if (joypad2.down) {
 							theGame2.MoveCursor('S');
 							repeatingS[1]=true;
 							timeHeldP2S=SDL_GetTicks();
 							timesRepeatedP2S=0;
 						}
-						if (joypad2.left)
-						{
+						if (joypad2.left) {
 							theGame2.MoveCursor('W');
 							repeatingW[1]=true;
 							timeHeldP2W=SDL_GetTicks();
 							timesRepeatedP2W=0;
 						}
-						if (joypad2.right)
-						{
+						if (joypad2.right) {
 							theGame2.MoveCursor('E');
 							repeatingE[1]=true;
 							timeHeldP2E=SDL_GetTicks();
 							timesRepeatedP2E=0;
 						}
-						if (joypad2.but1)
-						{
+						if (joypad2.but1) {
 							theGame2.SwitchAtCursor();
 						}
-						if (joypad2.but2)
-						{
+						if (joypad2.but2) {
 							theGame2.PushLine();
 						}
 					}
@@ -4035,62 +3551,50 @@ int runGame(int gametype, int level)
 			********************************************************************/
 
 			if ((mouseplay1)&&( ( (!editorMode)&&(!theGame.GetAIenabled()) ) ||(editorModeTest))) //player 1
-				if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
-				{
+				if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600)) {
 					int yLine, xLine;
 					yLine = ((100+600)-(mousey-100+theGame.GetPixels()))/50;
 					xLine = (mousex-50+25)/50;
 					yLine-=2;
 					xLine-=1;
-					if ((yLine>10)&&(theGame.GetTowerHeight()<12))
-					{
+					if ((yLine>10)&&(theGame.GetTowerHeight()<12)) {
 						yLine=10;
 					}
-					if (((theGame.GetPixels()==50)||(theGame.GetPixels()==0)) && (yLine>11))
-					{
+					if (((theGame.GetPixels()==50)||(theGame.GetPixels()==0)) && (yLine>11)) {
 						yLine=11;
 					}
-					if (yLine<0)
-					{
+					if (yLine<0) {
 						yLine=0;
 					}
-					if (xLine<0)
-					{
+					if (xLine<0) {
 						xLine=0;
 					}
-					if (xLine>4)
-					{
+					if (xLine>4) {
 						xLine=4;
 					}
 					theGame.MoveCursorTo(xLine,yLine);
 				}
 
 			if ((mouseplay2)&&(!editorMode)&&(!theGame2.GetAIenabled())) //player 2
-				if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
-				{
+				if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600)) {
 					int yLine, xLine;
 					yLine = ((100+600)-(mousey-100+theGame2.GetPixels()))/50;
 					xLine = (mousex-(xsize-500)+25)/50;
 					yLine-=2;
 					xLine-=1;
-					if ((yLine>10)&&(theGame2.GetTowerHeight()<12))
-					{
+					if ((yLine>10)&&(theGame2.GetTowerHeight()<12)) {
 						yLine=10;
 					}
-					if (((theGame2.GetPixels()==50)||(theGame2.GetPixels()==0)) && (yLine>11))
-					{
+					if (((theGame2.GetPixels()==50)||(theGame2.GetPixels()==0)) && (yLine>11)) {
 						yLine=11;
 					}
-					if (yLine<0)
-					{
+					if (yLine<0) {
 						yLine=0;
 					}
-					if (xLine<0)
-					{
+					if (xLine<0) {
 						xLine=0;
 					}
-					if (xLine>4)
-					{
+					if (xLine>4) {
 						xLine=4;
 					}
 					theGame2.MoveCursorTo(xLine,yLine);
@@ -4101,22 +3605,18 @@ int runGame(int gametype, int level)
 			********************************************************************/
 
 			// If the mouse button is released, make bMouseUp equal true
-			if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1))
-			{
+			if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 				bMouseUp=true;
 			}
 
 			// If the mouse button 2 is released, make bMouseUp2 equal true
-			if ((SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(3))!=SDL_BUTTON(3))
-			{
+			if ((SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(3))!=SDL_BUTTON(3)) {
 				bMouseUp2=true;
 			}
 
-			if ((!singlePuzzle)&&(!editorMode))
-			{
+			if ((!singlePuzzle)&&(!editorMode)) {
 				//read mouse events
-				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp)
-				{
+				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 					bMouseUp = false;
 					DrawIMG(background, screen, 0, 0);
 
@@ -4126,13 +3626,11 @@ int runGame(int gametype, int level)
 					********************************************************************/
 					{
 						if (mouseplay1 && !theGame.GetAIenabled()) //player 1
-							if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600))
-							{
+							if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600)) {
 								theGame.SwitchAtCursor();
 							}
 						if (mouseplay2 && !theGame2.GetAIenabled()) //player 2
-							if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600))
-							{
+							if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600)) {
 								theGame2.SwitchAtCursor();
 							}
 					}
@@ -4140,17 +3638,15 @@ int runGame(int gametype, int level)
 					**************** Here ends mouse play *******************************
 					********************************************************************/
 
-					if(stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
+					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
 					        &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
-					        &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize))
-					{
+					        &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
 						theGame.nextLevel(SDL_GetTicks());
 					}
-					if(stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
+					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
 					        &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
-					        &&(mousey > theGame.GetTopY()+cordRetryButton.y)&&(mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize))
-					{
+					        &&(mousey > theGame.GetTopY()+cordRetryButton.y)&&(mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {
 						//Clicked the retry button
 						theGame.retryLevel(SDL_GetTicks());
 					}
@@ -4160,8 +3656,7 @@ int runGame(int gametype, int level)
 				}
 
 				//Mouse button 2:
-				if ((SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(3))==SDL_BUTTON(3) && bMouseUp2)
-				{
+				if ((SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(3))==SDL_BUTTON(3) && bMouseUp2) {
 					bMouseUp2=false; //The button is pressed
 					/********************************************************************
 					**************** Here comes mouse play ******************************
@@ -4184,35 +3679,28 @@ int runGame(int gametype, int level)
 					********************************************************************/
 				}
 			} //if !singlePuzzle
-			else
-			{
+			else {
 
 			}
 		} //if !bScreenBocked;
 
 
 		//Sees if music is stopped and if music is enabled
-		if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled)&&(!bNearDeath))
-		{
+		if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled)&&(!bNearDeath)) {
 			// then starts playing it.
 			Mix_VolumeMusic(MIX_MAX_VOLUME);
 			Mix_PlayMusic(bgMusic, -1); //music loop
 		}
 
-		if(bNearDeath!=bNearDeathPrev)
-		{
-			if(bNearDeath)
-			{
-				if(!NoSound &&(MusicEnabled))
-				{
+		if (bNearDeath!=bNearDeathPrev) {
+			if (bNearDeath) {
+				if (!NoSound &&(MusicEnabled)) {
 					Mix_VolumeMusic(MIX_MAX_VOLUME);
 					Mix_PlayMusic(highbeatMusic, 1);
 				}
 			}
-			else
-			{
-				if(!NoSound &&(MusicEnabled))
-				{
+			else {
+				if (!NoSound &&(MusicEnabled)) {
 					Mix_VolumeMusic(MIX_MAX_VOLUME);
 					Mix_PlayMusic(bgMusic, -1);
 				}
@@ -4232,32 +3720,25 @@ int runGame(int gametype, int level)
 #if NETWORK
 		if (!networkPlay)
 #endif
-			if (twoPlayers)
-			{
-				if ((theGame.isGameOver()) && (theGame2.isGameOver()))
-				{
-					if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap())
-					{
+			if (twoPlayers) {
+				if ((theGame.isGameOver()) && (theGame2.isGameOver())) {
+					if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap()) {
 						theGame.setPlayerWon();
 					}
-					else if (theGame.GetScore()+theGame.GetHandicap()<theGame2.GetScore()+theGame2.GetHandicap())
-					{
+					else if (theGame.GetScore()+theGame.GetHandicap()<theGame2.GetScore()+theGame2.GetHandicap()) {
 						theGame2.setPlayerWon();
 					}
-					else
-					{
+					else {
 						theGame.setDraw();
 						theGame2.setDraw();
 					}
 					//twoPlayers = false;
 				}
-				if ((theGame.isGameOver()) && (!theGame2.isGameOver()))
-				{
+				if ((theGame.isGameOver()) && (!theGame2.isGameOver())) {
 					theGame2.setPlayerWon();
 					//twoPlayers = false;
 				}
-				if ((!theGame.isGameOver()) && (theGame2.isGameOver()))
-				{
+				if ((!theGame.isGameOver()) && (theGame2.isGameOver())) {
 					theGame.setPlayerWon();
 					//twoPlayers = false;
 				}

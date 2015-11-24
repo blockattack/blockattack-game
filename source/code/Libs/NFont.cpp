@@ -38,15 +38,13 @@ NFont::AnimData NFont::data;
 #define MAX(a,b) (a > b? a : b)
 
 // Static setters
-void NFont::setAnimData(void* data)
-{
+void NFont::setAnimData(void* data) {
 	NFont::data.userVar = data;
 }
 
-void NFont::setBuffer(unsigned int size)
-{
+void NFont::setBuffer(unsigned int size) {
 	delete[] buffer;
-	if(size > 0) {
+	if (size > 0) {
 		buffer = new char[size];
 	}
 	else {
@@ -56,19 +54,17 @@ void NFont::setBuffer(unsigned int size)
 
 
 // Static functions
-char* NFont::copyString(const char* c)
-{
-	if(c == NULL) {
+char* NFont::copyString(const char* c) {
+	if (c == NULL) {
 		return NULL;
 	}
 
 	int count = 0;
-	for(; c[count] != '\0'; count++);
+	for (; c[count] != '\0'; count++);
 
 	char* result = new char[count+1];
 
-	for(int i = 0; i < count; i++)
-	{
+	for (int i = 0; i < count; i++) {
 		result[i] = c[i];
 	}
 
@@ -76,20 +72,18 @@ char* NFont::copyString(const char* c)
 	return result;
 }
 
-Uint32 NFont::getPixel(SDL_Surface *Surface, int x, int y)  // No Alpha?
-{
+Uint32 NFont::getPixel(SDL_Surface* Surface, int x, int y) { // No Alpha?
 	Uint8* bits;
 	Uint32 bpp;
 
-	if(x < 0 || x >= Surface->w) {
+	if (x < 0 || x >= Surface->w) {
 		return 0;    // Best I could do for errors
 	}
 
 	bpp = Surface->format->BytesPerPixel;
 	bits = ((Uint8*)Surface->pixels) + y*Surface->pitch + x*bpp;
 
-	switch (bpp)
-	{
+	switch (bpp) {
 	case 1:
 		return *((Uint8*)Surface->pixels + y * Surface->pitch + x);
 		break;
@@ -112,8 +106,7 @@ Uint32 NFont::getPixel(SDL_Surface *Surface, int x, int y)  // No Alpha?
 	return 0;  // Best I could do for errors
 }
 
-SDL_Rect NFont::rectUnion(const SDL_Rect& A, const SDL_Rect& B)
-{
+SDL_Rect NFont::rectUnion(const SDL_Rect& A, const SDL_Rect& B) {
 	Sint16 x,x2,y,y2;
 	x = MIN(A.x, B.x);
 	y = MIN(A.y, B.y);
@@ -123,15 +116,13 @@ SDL_Rect NFont::rectUnion(const SDL_Rect& A, const SDL_Rect& B)
 	return result;
 }
 
-SDL_Surface* NFont::copySurface(SDL_Surface *Surface)
-{
+SDL_Surface* NFont::copySurface(SDL_Surface* Surface) {
 	return SDL_ConvertSurface(Surface, Surface->format, Surface->flags);
 }
 
-SDL_Surface* NFont::verticalGradient(SDL_Surface* targetSurface, Uint32 top, Uint32 bottom, int heightAdjust)
-{
+SDL_Surface* NFont::verticalGradient(SDL_Surface* targetSurface, Uint32 top, Uint32 bottom, int heightAdjust) {
 	SDL_Surface* surface = targetSurface;
-	if(surface == NULL) {
+	if (surface == NULL) {
 		return NULL;
 	}
 
@@ -151,10 +142,8 @@ SDL_Surface* NFont::verticalGradient(SDL_Surface* targetSurface, Uint32 top, Uin
 	Uint32 color;
 	int temp;
 
-	for (int x = 0, y = 0; y < surface->h; x++)
-	{
-		if (x >= surface->w)
-		{
+	for (int x = 0, y = 0; y < surface->h; x++) {
+		if (x >= surface->w) {
 			x = 0;
 			y++;
 
@@ -165,8 +154,7 @@ SDL_Surface* NFont::verticalGradient(SDL_Surface* targetSurface, Uint32 top, Uin
 
 		ratio = (y - 2)/float(surface->h - heightAdjust);  // the neg 3s are for full color at top and bottom
 
-		if(!useCK)
-		{
+		if (!useCK) {
 			color = getPixel(surface, x, y);
 			SDL_GetRGBA(color, surface->format, &r, &g, &b, &a);  // just getting alpha
 		}
@@ -188,38 +176,35 @@ SDL_Surface* NFont::verticalGradient(SDL_Surface* targetSurface, Uint32 top, Uin
 		color = SDL_MapRGBA(surface->format, r, g, b, a);
 
 
-		if(useCK)
-		{
-			if(getPixel(surface, x, y) == colorkey) {
+		if (useCK) {
+			if (getPixel(surface, x, y) == colorkey) {
 				continue;
 			}
-			if(color == colorkey) {
+			if (color == colorkey) {
 				color == 0? color++ : color--;
 			}
 		}
 
 		// make sure it isn't pink
-		if(color == SDL_MapRGBA(surface->format, 0xFF, 0, 0xFF, a)) {
+		if (color == SDL_MapRGBA(surface->format, 0xFF, 0, 0xFF, a)) {
 			color--;
 		}
-		if(getPixel(surface, x, y) == SDL_MapRGBA(surface->format, 0xFF, 0, 0xFF, SDL_ALPHA_OPAQUE)) {
+		if (getPixel(surface, x, y) == SDL_MapRGBA(surface->format, 0xFF, 0, 0xFF, SDL_ALPHA_OPAQUE)) {
 			continue;
 		}
 
 		int bpp = surface->format->BytesPerPixel;
-		Uint8* bits = ((Uint8 *)surface->pixels) + y*surface->pitch + x*bpp;
+		Uint8* bits = ((Uint8*)surface->pixels) + y*surface->pitch + x*bpp;
 
 		/* Set the pixel */
-		switch(bpp)
-		{
+		switch (bpp) {
 		case 1:
-			*((Uint8 *)(bits)) = (Uint8)color;
+			*((Uint8*)(bits)) = (Uint8)color;
 			break;
 		case 2:
-			*((Uint16 *)(bits)) = (Uint16)color;
+			*((Uint16*)(bits)) = (Uint16)color;
 			break;
-		case 3:   /* Format/endian independent */
-		{
+		case 3: { /* Format/endian independent */
 			r = (color >> surface->format->Rshift) & 0xFF;
 			g = (color >> surface->format->Gshift) & 0xFF;
 			b = (color >> surface->format->Bshift) & 0xFF;
@@ -229,7 +214,7 @@ SDL_Surface* NFont::verticalGradient(SDL_Surface* targetSurface, Uint32 top, Uin
 		}
 		break;
 		case 4:
-			*((Uint32 *)(bits)) = (Uint32)color;
+			*((Uint32*)(bits)) = (Uint32)color;
 			break;
 		}
 
@@ -239,74 +224,62 @@ SDL_Surface* NFont::verticalGradient(SDL_Surface* targetSurface, Uint32 top, Uin
 
 
 // Constructors
-NFont::NFont()
-{
+NFont::NFont() {
 	init();
 }
 
-NFont::NFont(SDL_Surface* src)
-{
+NFont::NFont(SDL_Surface* src) {
 	init();
 	load(src);
 }
 
-NFont::NFont(SDL_Surface* dest, SDL_Surface* src)
-{
+NFont::NFont(SDL_Surface* dest, SDL_Surface* src) {
 	init();
 	load(src);
 	setDest(dest);
 }
 
 #ifdef NFONT_USE_TTF
-NFont::NFont(TTF_Font* ttf, SDL_Color fg)
-{
+NFont::NFont(TTF_Font* ttf, SDL_Color fg) {
 	init();
 	load(ttf, fg);
 }
-NFont::NFont(TTF_Font* ttf, SDL_Color fg, SDL_Color bg)
-{
+NFont::NFont(TTF_Font* ttf, SDL_Color fg, SDL_Color bg) {
 	init();
 	load(ttf, fg, bg);
 }
-NFont::NFont(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style)
-{
+NFont::NFont(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style) {
 	init();
 	load(filename_ttf, pointSize, fg, style);
 }
-NFont::NFont(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style)
-{
+NFont::NFont(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style) {
 	init();
 	load(filename_ttf, pointSize, fg, bg, style);
 }
 
-NFont::NFont(SDL_Surface* dest, TTF_Font* ttf, SDL_Color fg)
-{
+NFont::NFont(SDL_Surface* dest, TTF_Font* ttf, SDL_Color fg) {
 	init();
 	load(ttf, fg);
 	setDest(dest);
 }
-NFont::NFont(SDL_Surface* dest, TTF_Font* ttf, SDL_Color fg, SDL_Color bg)
-{
+NFont::NFont(SDL_Surface* dest, TTF_Font* ttf, SDL_Color fg, SDL_Color bg) {
 	init();
 	load(ttf, fg, bg);
 	setDest(dest);
 }
-NFont::NFont(SDL_Surface* dest, const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style)
-{
+NFont::NFont(SDL_Surface* dest, const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style) {
 	init();
 	load(filename_ttf, pointSize, fg, style);
 	setDest(dest);
 }
-NFont::NFont(SDL_Surface* dest, const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style)
-{
+NFont::NFont(SDL_Surface* dest, const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style) {
 	init();
 	load(filename_ttf, pointSize, fg, bg, style);
 	setDest(dest);
 }
 #endif
 
-void NFont::init()
-{
+void NFont::init() {
 	src = NULL;
 	dest = NULL;
 
@@ -322,21 +295,19 @@ void NFont::init()
 	lineSpacing = 0;
 	letterSpacing = 0;
 
-	if(buffer == NULL) {
+	if (buffer == NULL) {
 		buffer = new char[1024];
 	}
 }
 
-NFont::~NFont()
-{}
+NFont::~NFont() {
+}
 
 
 // Loading
-bool NFont::load(SDL_Surface* FontSurface)
-{
+bool NFont::load(SDL_Surface* FontSurface) {
 	src = FontSurface;
-	if (src == NULL)
-	{
+	if (src == NULL) {
 		printf("\n ERROR: NFont given a NULL surface\n");
 		return false;
 	}
@@ -344,8 +315,7 @@ bool NFont::load(SDL_Surface* FontSurface)
 	int x = 1, i = 0;
 
 	// memset would be faster
-	for(int j = 0; j < 256; j++)
-	{
+	for (int j = 0; j < 256; j++) {
 		charWidth[j] = 0;
 		charPos[j] = 0;
 	}
@@ -357,17 +327,15 @@ bool NFont::load(SDL_Surface* FontSurface)
 	maxWidth = 0;
 
 	// Get the character positions and widths
-	while (x < src->w)
-	{
-		if(getPixel(src, x, 0) != pixel)
-		{
+	while (x < src->w) {
+		if (getPixel(src, x, 0) != pixel) {
 			charPos[i] = x;
 			charWidth[i] = x;
-			while(x < src->w && getPixel(src, x, 0) != pixel) {
+			while (x < src->w && getPixel(src, x, 0) != pixel) {
 				x++;
 			}
 			charWidth[i] = x - charWidth[i];
-			if(charWidth[i] > maxWidth) {
+			if (charWidth[i] > maxWidth) {
 				maxWidth = charWidth[i];
 			}
 			i++;
@@ -385,13 +353,10 @@ bool NFont::load(SDL_Surface* FontSurface)
 
 	// Get the max ascent
 	j = 1;
-	while(j < baseline && j < src->h)
-	{
+	while (j < baseline && j < src->h) {
 		x = 0;
-		while(x < src->w)
-		{
-			if(getPixel(src, x, j) != pixel)
-			{
+		while (x < src->w) {
+			if (getPixel(src, x, j) != pixel) {
 				ascent = baseline - j;
 				j = src->h;
 				break;
@@ -403,13 +368,10 @@ bool NFont::load(SDL_Surface* FontSurface)
 
 	// Get the max descent
 	j = src->h - 1;
-	while(j > 0 && j > baseline)
-	{
+	while (j > 0 && j > baseline) {
 		x = 0;
-		while(x < src->w)
-		{
-			if(getPixel(src, x, j) != pixel)
-			{
+		while (x < src->w) {
+			if (getPixel(src, x, j) != pixel) {
 				descent = j - baseline+1;
 				j = 0;
 				break;
@@ -423,8 +385,7 @@ bool NFont::load(SDL_Surface* FontSurface)
 	height = ascent + descent;
 
 
-	if((src->flags & SDL_SRCALPHA) != SDL_SRCALPHA)
-	{
+	if ((src->flags & SDL_SRCALPHA) != SDL_SRCALPHA) {
 		pixel = getPixel(src, 0, src->h - 1);
 		SDL_UnlockSurface(src);
 		SDL_SetColorKey(src, SDL_SRCCOLORKEY, pixel);
@@ -436,16 +397,14 @@ bool NFont::load(SDL_Surface* FontSurface)
 	return true;
 }
 
-bool NFont::load(SDL_Surface* destSurface, SDL_Surface* FontSurface)
-{
+bool NFont::load(SDL_Surface* destSurface, SDL_Surface* FontSurface) {
 	setDest(destSurface);
 	return load(FontSurface);
 }
 
 #ifdef NFONT_USE_TTF
-bool NFont::load(TTF_Font* ttf, SDL_Color fg, SDL_Color bg)
-{
-	if(ttf == NULL) {
+bool NFont::load(TTF_Font* ttf, SDL_Color fg, SDL_Color bg) {
+	if (ttf == NULL) {
 		return false;
 	}
 	SDL_Surface* surfs[127 - 33];
@@ -454,8 +413,7 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg, SDL_Color bg)
 
 	char buff[2];
 	buff[1] = '\0';
-	for(int i = 0; i < 127 - 33; i++)
-	{
+	for (int i = 0; i < 127 - 33; i++) {
 		buff[0] = i + 33;
 		surfs[i] = TTF_RenderText_Shaded(ttf, buff, fg, bg);
 		width += surfs[i]->w;
@@ -475,8 +433,7 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg, SDL_Color bg)
 
 	int x = 1;
 	SDL_Rect dest = {static_cast<Sint16>(x), 0, 0, 0};
-	for(int i = 0; i < 127 - 33; i++)
-	{
+	for (int i = 0; i < 127 - 33; i++) {
 		pixel.x = line.x = x-1;
 		SDL_FillRect(result, &line, bgcolor);
 		SDL_FillRect(result, &pixel, pink);
@@ -496,9 +453,8 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg, SDL_Color bg)
 }
 
 
-bool NFont::load(TTF_Font* ttf, SDL_Color fg)
-{
-	if(ttf == NULL) {
+bool NFont::load(TTF_Font* ttf, SDL_Color fg) {
+	if (ttf == NULL) {
 		return false;
 	}
 	SDL_Surface* surfs[127 - 33];
@@ -507,8 +463,7 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg)
 
 	char buff[2];
 	buff[1] = '\0';
-	for(int i = 0; i < 127 - 33; i++)
-	{
+	for (int i = 0; i < 127 - 33; i++) {
 		buff[0] = i + 33;
 		surfs[i] = TTF_RenderText_Blended(ttf, buff, fg);
 		width += surfs[i]->w;
@@ -528,8 +483,7 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg)
 
 	int x = 1;
 	SDL_Rect dest = {static_cast<Sint16>(x), 0, 0, 0};
-	for(int i = 0; i < 127 - 33; i++)
-	{
+	for (int i = 0; i < 127 - 33; i++) {
 		pixel.x = x-1;
 		SDL_FillRect(result, &pixel, pink);
 
@@ -550,18 +504,15 @@ bool NFont::load(TTF_Font* ttf, SDL_Color fg)
 }
 
 
-bool NFont::load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style)
-{
-	if(!TTF_WasInit() && TTF_Init() < 0)
-	{
+bool NFont::load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style) {
+	if (!TTF_WasInit() && TTF_Init() < 0) {
 		printf("Unable to initialize SDL_ttf: %s \n", TTF_GetError());
 		return false;
 	}
 
 	TTF_Font* ttf = TTF_OpenFont(filename_ttf, pointSize);
 
-	if(ttf == NULL)
-	{
+	if (ttf == NULL) {
 		printf("Unable to load TrueType font: %s \n", TTF_GetError());
 		return false;
 	}
@@ -571,18 +522,15 @@ bool NFont::load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int s
 	return result;
 }
 
-bool NFont::load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style)
-{
-	if(!TTF_WasInit() && TTF_Init() < 0)
-	{
+bool NFont::load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style) {
+	if (!TTF_WasInit() && TTF_Init() < 0) {
 		printf("Unable to initialize SDL_ttf: %s \n", TTF_GetError());
 		return false;
 	}
 
 	TTF_Font* ttf = TTF_OpenFont(filename_ttf, pointSize);
 
-	if(ttf == NULL)
-	{
+	if (ttf == NULL) {
 		printf("Unable to load TrueType font: %s \n", TTF_GetError());
 		return false;
 	}
@@ -596,22 +544,20 @@ bool NFont::load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_C
 
 
 
-void NFont::freeSurface()
-{
+void NFont::freeSurface() {
 	SDL_FreeSurface(src);
 }
 
 
 
 // Drawing
-SDL_Rect NFont::drawToSurface(int x, int y, const char* text) const
-{
+SDL_Rect NFont::drawToSurface(int x, int y, const char* text) const {
 	const char* c = text;
 	unsigned char num;
 	SDL_Rect srcRect, dstRect, copyS, copyD;
 	data.dirtyRect = makeRect(x, y, 0, 0);
 
-	if(c == NULL || src == NULL || dest == NULL) {
+	if (c == NULL || src == NULL || dest == NULL) {
 		return data.dirtyRect;
 	}
 
@@ -622,34 +568,31 @@ SDL_Rect NFont::drawToSurface(int x, int y, const char* text) const
 
 	int newlineX = x;
 
-	for(; *c != '\0'; c++)
-	{
-		if(*c == '\n')
-		{
+	for (; *c != '\0'; c++) {
+		if (*c == '\n') {
 			dstRect.x = newlineX;
 			dstRect.y += height + lineSpacing;
 			continue;
 		}
 
-		if (*c == ' ')
-		{
+		if (*c == ' ') {
 			dstRect.x += charWidth[0] + letterSpacing;
 			continue;
 		}
 		unsigned char ctest = (unsigned char)(*c);
 		// Skip bad characters
-		if(ctest < 33 || (ctest > 126 && ctest < 161)) {
+		if (ctest < 33 || (ctest > 126 && ctest < 161)) {
 			continue;
 		}
-		if(dstRect.x >= dest->w) {
+		if (dstRect.x >= dest->w) {
 			continue;
 		}
-		if(dstRect.y >= dest->h) {
+		if (dstRect.y >= dest->h) {
 			continue;
 		}
 
 		num = ctest - 33;  // Get array index
-		if(num > 126) { // shift the extended characters down to the correct index
+		if (num > 126) { // shift the extended characters down to the correct index
 			num -= 34;
 		}
 		srcRect.x = charPos[num];
@@ -657,7 +600,7 @@ SDL_Rect NFont::drawToSurface(int x, int y, const char* text) const
 		copyS = srcRect;
 		copyD = dstRect;
 		SDL_BlitSurface(src, &srcRect, dest, &dstRect);
-		if(data.dirtyRect.w == 0 || data.dirtyRect.h == 0) {
+		if (data.dirtyRect.w == 0 || data.dirtyRect.h == 0) {
 			data.dirtyRect = dstRect;
 		}
 		else {
@@ -672,8 +615,7 @@ SDL_Rect NFont::drawToSurface(int x, int y, const char* text) const
 	return data.dirtyRect;
 }
 
-SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const
-{
+SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const {
 	data.font = this;
 	data.dest = dest;
 	data.src = src;
@@ -698,7 +640,7 @@ SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const
 	unsigned char num;
 	SDL_Rect srcRect, dstRect, copyS, copyD;
 
-	if(c == NULL || src == NULL || dest == NULL) {
+	if (c == NULL || src == NULL || dest == NULL) {
 		return makeRect(x,y,0,0);
 	}
 
@@ -707,13 +649,11 @@ SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const
 	dstRect.x = x;
 	dstRect.y = y;
 
-	for(; *c != '\0'; c++)
-	{
+	for (; *c != '\0'; c++) {
 		data.index++;
 		data.letterNum++;
 
-		if(*c == '\n')
-		{
+		if (*c == '\n') {
 			data.letterNum = 1;
 			data.wordNum = 1;
 			data.lineNum++;
@@ -722,8 +662,7 @@ SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const
 			y += height + lineSpacing;
 			continue;
 		}
-		if (*c == ' ')
-		{
+		if (*c == ' ') {
 			data.letterNum = 1;
 			data.wordNum++;
 
@@ -732,13 +671,13 @@ SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const
 		}
 		unsigned char ctest = (unsigned char)(*c);
 		// Skip bad characters
-		if(ctest < 33 || (ctest > 126 && ctest < 161)) {
+		if (ctest < 33 || (ctest > 126 && ctest < 161)) {
 			continue;
 		}
 		//if(x >= dest->w) // This shouldn't be used with position control
 		//    continue;
 		num = ctest - 33;
-		if(num > 126) { // shift the extended characters down to the array index
+		if (num > 126) { // shift the extended characters down to the array index
 			num -= 34;
 		}
 		srcRect.x = charPos[num];
@@ -756,7 +695,7 @@ SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const
 		copyS = srcRect;
 		copyD = dstRect;
 		SDL_BlitSurface(src, &srcRect, dest, &dstRect);
-		if(data.dirtyRect.w == 0 || data.dirtyRect.h == 0) {
+		if (data.dirtyRect.w == 0 || data.dirtyRect.h == 0) {
 			data.dirtyRect = dstRect;
 		}
 		else {
@@ -774,9 +713,8 @@ SDL_Rect NFont::drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const
 	return data.dirtyRect;
 }
 
-SDL_Rect NFont::draw(int x, int y, const char* formatted_text, ...) const
-{
-	if(formatted_text == NULL) {
+SDL_Rect NFont::draw(int x, int y, const char* formatted_text, ...) const {
+	if (formatted_text == NULL) {
 		return makeRect(x, y, 0, 0);
 	}
 
@@ -788,9 +726,8 @@ SDL_Rect NFont::draw(int x, int y, const char* formatted_text, ...) const
 	return drawToSurface(x, y, buffer);
 }
 
-SDL_Rect NFont::drawCenter(int x, int y, const char* formatted_text, ...) const
-{
-	if(formatted_text == NULL) {
+SDL_Rect NFont::drawCenter(int x, int y, const char* formatted_text, ...) const {
+	if (formatted_text == NULL) {
 		return makeRect(x, y, 0, 0);
 	}
 
@@ -804,10 +741,8 @@ SDL_Rect NFont::drawCenter(int x, int y, const char* formatted_text, ...) const
 
 	// Go through str, when you find a \n, replace it with \0 and print it
 	// then move down, back, and continue.
-	for(char* c = str; *c != '\0';)
-	{
-		if(*c == '\n')
-		{
+	for (char* c = str; *c != '\0';) {
+		if (*c == '\n') {
 			*c = '\0';
 			drawToSurface(x - getWidth("%s", str)/2, y, str);
 			*c = '\n';
@@ -826,9 +761,8 @@ SDL_Rect NFont::drawCenter(int x, int y, const char* formatted_text, ...) const
 	return drawToSurface(x - getWidth("%s", s)/2, y, s);
 }
 
-SDL_Rect NFont::drawRight(int x, int y, const char* formatted_text, ...) const
-{
-	if(formatted_text == NULL) {
+SDL_Rect NFont::drawRight(int x, int y, const char* formatted_text, ...) const {
+	if (formatted_text == NULL) {
 		return makeRect(x, y, 0, 0);
 	}
 
@@ -840,10 +774,8 @@ SDL_Rect NFont::drawRight(int x, int y, const char* formatted_text, ...) const
 	char* str = copyString(buffer);
 	char* del = str;
 
-	for(char* c = str; *c != '\0';)
-	{
-		if(*c == '\n')
-		{
+	for (char* c = str; *c != '\0';) {
+		if (*c == '\n') {
 			*c = '\0';
 			drawToSurface(x - getWidth("%s", str), y, str);
 			*c = '\n';
@@ -862,8 +794,7 @@ SDL_Rect NFont::drawRight(int x, int y, const char* formatted_text, ...) const
 	return drawToSurface(x - getWidth("%s", s), y, s);
 }
 
-SDL_Rect NFont::drawPos(int x, int y, NFont::AnimFn posFn, const char* text, ...) const
-{
+SDL_Rect NFont::drawPos(int x, int y, NFont::AnimFn posFn, const char* text, ...) const {
 	va_list lst;
 	va_start(lst, text);
 	vsprintf(buffer, text, lst);
@@ -872,8 +803,7 @@ SDL_Rect NFont::drawPos(int x, int y, NFont::AnimFn posFn, const char* text, ...
 	return drawToSurfacePos(x, y, posFn);
 }
 
-SDL_Rect NFont::drawAll(int x, int y, NFont::AnimFn allFn, const char* text, ...) const
-{
+SDL_Rect NFont::drawAll(int x, int y, NFont::AnimFn allFn, const char* text, ...) const {
 	va_list lst;
 	va_start(lst, text);
 	vsprintf(buffer, text, lst);
@@ -887,19 +817,16 @@ SDL_Rect NFont::drawAll(int x, int y, NFont::AnimFn allFn, const char* text, ...
 
 
 // Getters
-SDL_Surface* NFont::getDest() const
-{
+SDL_Surface* NFont::getDest() const {
 	return dest;
 }
 
-SDL_Surface* NFont::getSurface() const
-{
+SDL_Surface* NFont::getSurface() const {
 	return src;
 }
 
-int NFont::getHeight(const char* formatted_text, ...) const
-{
-	if(formatted_text == NULL) {
+int NFont::getHeight(const char* formatted_text, ...) const {
+	if (formatted_text == NULL) {
 		return height;
 	}
 
@@ -911,9 +838,8 @@ int NFont::getHeight(const char* formatted_text, ...) const
 	int numLines = 1;
 	const char* c;
 
-	for (c = buffer; *c != '\0'; c++)
-	{
-		if(*c == '\n') {
+	for (c = buffer; *c != '\0'; c++) {
+		if (*c == '\n') {
 			numLines++;
 		}
 	}
@@ -922,8 +848,7 @@ int NFont::getHeight(const char* formatted_text, ...) const
 	return height*numLines + lineSpacing*(numLines - 1);  //height*numLines;
 }
 
-int NFont::getWidth(const char* formatted_text, ...) const
-{
+int NFont::getWidth(const char* formatted_text, ...) const {
 	if (formatted_text == NULL) {
 		return 0;
 	}
@@ -938,18 +863,15 @@ int NFont::getWidth(const char* formatted_text, ...) const
 	int width = 0;
 	int bigWidth = 0;  // Allows for multi-line strings
 
-	for (c = buffer; *c != '\0'; c++)
-	{
+	for (c = buffer; *c != '\0'; c++) {
 		charnum = (unsigned char)(*c) - 33;
 
 		// skip spaces and nonprintable characters
-		if(*c == '\n')
-		{
+		if (*c == '\n') {
 			bigWidth = bigWidth >= width? bigWidth : width;
 			width = 0;
 		}
-		else if (*c == ' ' || charnum > 222)
-		{
+		else if (*c == ' ' || charnum > 222) {
 			width += charWidth[0];
 			continue;
 		}
@@ -961,10 +883,9 @@ int NFont::getWidth(const char* formatted_text, ...) const
 	return bigWidth;
 }
 
-int NFont::getAscent(const char character) const
-{
+int NFont::getAscent(const char character) const {
 	unsigned char test = (unsigned char)character;
-	if(test < 33 || test > 222 || (test > 126 && test < 161)) {
+	if (test < 33 || test > 222 || (test > 126 && test < 161)) {
 		return 0;
 	}
 	unsigned char num = (unsigned char)character - 33;
@@ -972,13 +893,10 @@ int NFont::getAscent(const char character) const
 	int x = charPos[num];
 	int i, j = 1, result = 0;
 	Uint32 pixel = getPixel(src, 0, src->h - 1); // bg pixel
-	while(j < baseline && j < src->h)
-	{
+	while (j < baseline && j < src->h) {
 		i = charPos[num];
-		while(i < x + charWidth[num])
-		{
-			if(getPixel(src, i, j) != pixel)
-			{
+		while (i < x + charWidth[num]) {
+			if (getPixel(src, i, j) != pixel) {
 				result = baseline - j;
 				j = src->h;
 				break;
@@ -990,9 +908,8 @@ int NFont::getAscent(const char character) const
 	return result;
 }
 
-int NFont::getAscent(const char* formatted_text, ...) const
-{
-	if(formatted_text == NULL) {
+int NFont::getAscent(const char* formatted_text, ...) const {
+	if (formatted_text == NULL) {
 		return ascent;
 	}
 
@@ -1004,20 +921,18 @@ int NFont::getAscent(const char* formatted_text, ...) const
 	int max = 0;
 	const char* c = buffer;
 
-	for (; *c != '\0'; c++)
-	{
+	for (; *c != '\0'; c++) {
 		int asc = getAscent(*c);
-		if(asc > max) {
+		if (asc > max) {
 			max = asc;
 		}
 	}
 	return max;
 }
 
-int NFont::getDescent(const char character) const
-{
+int NFont::getDescent(const char character) const {
 	unsigned char test = (unsigned char)character;
-	if(test < 33 || test > 222 || (test > 126 && test < 161)) {
+	if (test < 33 || test > 222 || (test > 126 && test < 161)) {
 		return 0;
 	}
 	unsigned char num = (unsigned char)character - 33;
@@ -1025,13 +940,10 @@ int NFont::getDescent(const char character) const
 	int x = charPos[num];
 	int i, j = src->h - 1, result = 0;
 	Uint32 pixel = getPixel(src, 0, src->h - 1); // bg pixel
-	while(j > 0 && j > baseline)
-	{
+	while (j > 0 && j > baseline) {
 		i = charPos[num];
-		while(i < x + charWidth[num])
-		{
-			if(getPixel(src, i, j) != pixel)
-			{
+		while (i < x + charWidth[num]) {
+			if (getPixel(src, i, j) != pixel) {
 				result = j - baseline;
 				j = 0;
 				break;
@@ -1043,9 +955,8 @@ int NFont::getDescent(const char character) const
 	return result;
 }
 
-int NFont::getDescent(const char* formatted_text, ...) const
-{
-	if(formatted_text == NULL) {
+int NFont::getDescent(const char* formatted_text, ...) const {
+	if (formatted_text == NULL) {
 		return descent;
 	}
 
@@ -1057,33 +968,28 @@ int NFont::getDescent(const char* formatted_text, ...) const
 	int max = 0;
 	const char* c = buffer;
 
-	for (; *c != '\0'; c++)
-	{
+	for (; *c != '\0'; c++) {
 		int des = getDescent(*c);
-		if(des > max) {
+		if (des > max) {
 			max = des;
 		}
 	}
 	return max;
 }
 
-int NFont::getSpacing() const
-{
+int NFont::getSpacing() const {
 	return letterSpacing;
 }
 
-int NFont::getLineSpacing() const
-{
+int NFont::getLineSpacing() const {
 	return lineSpacing;
 }
 
-int NFont::getBaseline() const
-{
+int NFont::getBaseline() const {
 	return baseline;
 }
 
-int NFont::getMaxWidth() const
-{
+int NFont::getMaxWidth() const {
 	return maxWidth;
 }
 
@@ -1092,45 +998,36 @@ int NFont::getMaxWidth() const
 
 
 // Setters
-void NFont::setSpacing(int LetterSpacing)
-{
+void NFont::setSpacing(int LetterSpacing) {
 	letterSpacing = LetterSpacing;
 }
 
-void NFont::setLineSpacing(int LineSpacing)
-{
+void NFont::setLineSpacing(int LineSpacing) {
 	lineSpacing = LineSpacing;
 }
 
-void NFont::setDest(SDL_Surface* Dest)
-{
+void NFont::setDest(SDL_Surface* Dest) {
 	dest = Dest;
 }
 
-int NFont::setBaseline(int Baseline)
-{
-	if(Baseline >= 0) {
+int NFont::setBaseline(int Baseline) {
+	if (Baseline >= 0) {
 		baseline = Baseline;
 	}
-	else
-	{
+	else {
 		// Get the baseline by checking a, b, and c and averaging their lowest y-value.
 		// Is there a better way?
 		Uint32 pixel = getPixel(src, 0, src->h - 1);
 		int heightSum = 0;
 		int x, i, j;
-		for(unsigned char avgChar = 64; avgChar < 67; avgChar++)
-		{
+		for (unsigned char avgChar = 64; avgChar < 67; avgChar++) {
 			x = charPos[avgChar];
 
 			j = src->h - 1;
-			while(j > 0)
-			{
+			while (j > 0) {
 				i = x;
-				while(i - x < charWidth[64])
-				{
-					if(getPixel(src, i, j) != pixel)
-					{
+				while (i - x < charWidth[64]) {
+					if (getPixel(src, i, j) != pixel) {
 						heightSum += j;
 						j = 0;
 						break;

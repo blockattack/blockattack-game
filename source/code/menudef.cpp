@@ -32,14 +32,12 @@ using namespace std;
 extern int verboseLevel;
 
 //Menu
-static void PrintHi(Button* b)
-{
+static void PrintHi(Button* b) {
 	cout << "Hi" <<endl;
 }
 
 //Stores the controls
-struct control
-{
+struct control {
 	SDLKey up;
 	SDLKey down;
 	SDLKey left;
@@ -48,50 +46,43 @@ struct control
 	SDLKey push;
 };
 
-bool OpenDialogbox(int x, int y, char *name);
+bool OpenDialogbox(int x, int y, char* name);
 void OpenScoresDisplay();
 extern control keySettings[3];
 
 //Function to return the name of a key, to be displayed...
-static string getKeyName(SDLKey key)
-{
+static string getKeyName(SDLKey key) {
 	string keyname(SDL_GetKeyName(key));
-	if(verboseLevel) {
+	if (verboseLevel) {
 		cout << key << " translated to " << keyname << endl;
 	}
 	return keyname;
 }
 
-class Button_changekey : public Button
-{
+class Button_changekey : public Button {
 private:
-	SDLKey *m_key2change;
+	SDLKey* m_key2change;
 	string m_keyname;
 public:
-	Button_changekey(SDLKey *key, string keyname);
+	Button_changekey(SDLKey* key, string keyname);
 	void doAction();
 };
 
 
-Button_changekey::Button_changekey(SDLKey* key, string keyname)
-{
+Button_changekey::Button_changekey(SDLKey* key, string keyname) {
 	m_key2change = key;
 	m_keyname = keyname;
 	setLabel(m_keyname+" : "+getKeyName(*m_key2change));
 }
 
-void Button_changekey::doAction()
-{
+void Button_changekey::doAction() {
 	SDL_Event event;
 
 	bool finnish = false;
-	while (!finnish)
-	{
+	while (!finnish) {
 		SDL_Delay(10);
-		while ( SDL_PollEvent(&event) )
-		{
-			if (event.type == SDL_KEYDOWN)
-			{
+		while ( SDL_PollEvent(&event) ) {
+			if (event.type == SDL_KEYDOWN) {
 				if (event.key.keysym.sym != SDLK_ESCAPE) {
 					*m_key2change = event.key.keysym.sym;
 				}
@@ -102,98 +93,81 @@ void Button_changekey::doAction()
 	setLabel(m_keyname+" : "+getKeyName(*m_key2change));
 }
 
-void InitMenues()
-{
+void InitMenues() {
 	standardButton.setSurfaces(menuMarked,menuUnmarked);
 	standardButton.thefont = nf_scoreboard_font;
 }
 
 void runGame(int gametype,int level);
 
-static void runSinglePlayerEndless(Button* b)
-{
+static void runSinglePlayerEndless(Button* b) {
 	runGame(0,0);
 }
 
-static void runSinglePlayerTimeTrial(Button* b)
-{
+static void runSinglePlayerTimeTrial(Button* b) {
 	runGame(1,0);
 }
 
-static void runStageClear(Button* b)
-{
+static void runStageClear(Button* b) {
 	runGame(2,0);
 }
 
-static void runSinglePlayerPuzzle(Button* b)
-{
+static void runSinglePlayerPuzzle(Button* b) {
 	runGame(3,0);
 }
 
-static void runSinglePlayerVs(Button* b)
-{
+static void runSinglePlayerVs(Button* b) {
 	runGame(4,b->iGeneric1);
 }
 
-static void runTwoPlayerTimeTrial(Button* b)
-{
+static void runTwoPlayerTimeTrial(Button* b) {
 	runGame(10,0);
 }
 
-static void runTwoPlayerVs(Button* b)
-{
+static void runTwoPlayerVs(Button* b) {
 	runGame(11,0);
 }
 
-static void runHostGame(Button* b)
-{
+static void runHostGame(Button* b) {
 	runGame(12,0);
 }
 
-static void runJoinGame(Button* b)
-{
+static void runJoinGame(Button* b) {
 	runGame(13,0);
 }
 
-static void buttonActionMusic(Button* b)
-{
+static void buttonActionMusic(Button* b) {
 	MusicEnabled = !MusicEnabled;
 	b->setLabel(MusicEnabled? "Music: On" : "Music: Off");
 }
 
-static void buttonActionSound(Button* b)
-{
+static void buttonActionSound(Button* b) {
 	SoundEnabled = !SoundEnabled;
 	b->setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
 }
 
-static void buttonActionFullscreen(Button* b)
-{
+static void buttonActionFullscreen(Button* b) {
 	bFullscreen = !bFullscreen;
 	b->setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
 	ResetFullscreen();
 }
 
-static void buttonActionPlayer1Name(Button *b)
-{
+static void buttonActionPlayer1Name(Button* b) {
 	if (OpenDialogbox(200,100,player1name)) {
 		return;    //must save if true
 	}
 }
 
-static void buttonActionPlayer2Name(Button *b)
-{
+static void buttonActionPlayer2Name(Button* b) {
 	if (OpenDialogbox(200,100,player2name)) {
 		return;    //must save if true
 	}
 }
 
-static void buttonActionPortChange(Button *b)
-{
+static void buttonActionPortChange(Button* b) {
 	char port[30];
 	snprintf(port,sizeof(port),"%i",Config::getInstance()->getInt("portv4") );
-	if (OpenDialogbox(200,100,port) && atoi(port))
-	{
+	if (OpenDialogbox(200,100,port) && atoi(port)) {
 		Config::getInstance()->setInt("portv4",atoi(port));
 		boost::format f(_("Port: %1%") );
 		f % port;
@@ -201,12 +175,10 @@ static void buttonActionPortChange(Button *b)
 	}
 }
 
-static void buttonActionIpChange(Button *b)
-{
+static void buttonActionIpChange(Button* b) {
 	char ip[30];
 	snprintf(ip,sizeof(ip),"%s",Config::getInstance()->getString("address0").c_str() );
-	if (OpenDialogbox(200,100,ip))
-	{
+	if (OpenDialogbox(200,100,ip)) {
 		Config::getInstance()->setString("address0",ip);
 		boost::format f(_("Address: %1%") );
 		f % ip;
@@ -214,13 +186,11 @@ static void buttonActionIpChange(Button *b)
 	}
 }
 
-static void buttonActionHighscores(Button *b)
-{
+static void buttonActionHighscores(Button* b) {
 	OpenScoresDisplay();
 }
 
-static void ChangeKeysMenu(long playernumber)
-{
+static void ChangeKeysMenu(long playernumber) {
 	Menu km(&screen,_("Change key bindings"),true);
 	Button_changekey bLeft(&keySettings[playernumber].left,_("Left") );
 	Button_changekey bRight(&keySettings[playernumber].right,_("Right") );
@@ -237,18 +207,15 @@ static void ChangeKeysMenu(long playernumber)
 	km.run();
 }
 
-static void ChangeKeysMenu1(Button *b)
-{
+static void ChangeKeysMenu1(Button* b) {
 	ChangeKeysMenu(0);
 }
 
-static void ChangeKeysMenu2(Button *b)
-{
+static void ChangeKeysMenu2(Button* b) {
 	ChangeKeysMenu(2);
 }
 
-static void ConfigureMenu(Button *b)
-{
+static void ConfigureMenu(Button* b) {
 	Menu cm(&screen,_("Configuration"),true);
 	Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
 	Button bPlayer1Keys, bPlayer2Keys;
@@ -276,8 +243,7 @@ static void ConfigureMenu(Button *b)
 	cm.run();
 }
 
-static void SinglePlayerVsMenu(Button *b)
-{
+static void SinglePlayerVsMenu(Button* b) {
 	Menu spvs(&screen,_("Single player VS"),true);
 	Button d1,d2,d3,d4,d5,d6,d7;
 	d1.setAction(runSinglePlayerVs);
@@ -318,8 +284,7 @@ static void SinglePlayerVsMenu(Button *b)
 	spvs.run();
 }
 
-static void MultiplayerMenu(Button *b)
-{
+static void MultiplayerMenu(Button* b) {
 	Menu mm(&screen,_("Multiplayer"),true);
 	Button bTT, bVs, bNet;
 	bTT.setLabel(_("Two player - time trial"));
@@ -331,8 +296,7 @@ static void MultiplayerMenu(Button *b)
 	mm.run();
 }
 
-void MainMenu()
-{
+void MainMenu() {
 	InitMenues();
 	Menu m(&screen,_("Block Attack - Rise of the blocks"),false);
 	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bMulti, bConfigure,bHighscore;

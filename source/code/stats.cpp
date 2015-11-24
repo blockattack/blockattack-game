@@ -28,22 +28,18 @@ using namespace std;
 
 Stats* Stats::instance = nullptr;
 
-Stats::Stats()
-{
+Stats::Stats() {
 	statMap.clear();
 	load();
 }
 
-void Stats::load()
-{
+void Stats::load() {
 	string filename = getPathToSaveFiles()+"/statsFile";
 	ifstream inFile(filename.c_str());
 	string key;
 	char value[MAX_VAR_LENGTH];
-	if(inFile)
-	{
-		while(!inFile.eof())
-		{
+	if (inFile) {
+		while (!inFile.eof()) {
 			inFile >> key; // The key is first on line
 			inFile.get(); //Take the space
 			inFile.getline(value,MAX_VAR_LENGTH); //The rest of the line is the value.
@@ -53,36 +49,29 @@ void Stats::load()
 	}
 }
 
-Stats* Stats::getInstance()
-{
-	if(Stats::instance==nullptr)
-	{
+Stats* Stats::getInstance() {
+	if (Stats::instance==nullptr) {
 		Stats::instance = new Stats();
 
 	}
 	return Stats::instance;
 }
 
-void Stats::save()
-{
+void Stats::save() {
 	string filename = getPathToSaveFiles()+"/statsFile";
 	ofstream outFile(filename.c_str(),ios::trunc);
 
-	if(outFile)
-	{
+	if (outFile) {
 		//outFile << statMap.size() << endl;
 		map<string,unsigned int>::iterator iter;
-		for(iter = statMap.begin(); iter != statMap.end(); iter++)
-		{
+		for (iter = statMap.begin(); iter != statMap.end(); iter++) {
 			outFile << iter->first << " " << iter->second << endl;
 		}
 	}
 }
 
-unsigned int Stats::getNumberOf(const string &statName)
-{
-	if(exists(statName))
-	{
+unsigned int Stats::getNumberOf(const string& statName) {
+	if (exists(statName)) {
 		return statMap[statName];
 	}
 	else {
@@ -90,21 +79,17 @@ unsigned int Stats::getNumberOf(const string &statName)
 	}
 }
 
-void Stats::addOne(const string &statName)
-{
+void Stats::addOne(const string& statName) {
 	map<string,unsigned int>::iterator iter = statMap.find(statName);
-	if(iter == statMap.end())
-	{
+	if (iter == statMap.end()) {
 		statMap[statName] = 1;
 	}
-	else
-	{
+	else {
 		iter->second++;
 	}
 }
 
-bool Stats::exists(const string &statName)
-{
+bool Stats::exists(const string& statName) {
 	//Using that 'find' returns an iterator to the end of the map if not found
 	return statMap.find(statName) != statMap.end();
 }

@@ -30,16 +30,14 @@ using boost::format;
 static stringstream converter;
 
 //Function to convert numbers to string
-string itoa(int num)
-{
+string itoa(int num) {
 	converter.str(std::string());
 	converter.clear();
 	converter << num;
 	return converter.str();
 }
 
-string double2str(double num)
-{
+string double2str(double num) {
 	converter.str(std::string());
 	converter.clear();
 	converter << num;
@@ -51,18 +49,15 @@ string double2str(double num)
  * if the string is not a double then 0.0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-double str2double(const string &str2parse)
-{
-	try
-	{
+double str2double(const string& str2parse) {
+	try {
 		converter.clear();
 		converter.str(str2parse);
 		double val = 0.0;
 		converter >> val;
 		return val;
 	}
-	catch(ios_base::failure &f)
-	{
+	catch (ios_base::failure& f) {
 		return 0.0;
 	}
 }
@@ -72,30 +67,25 @@ double str2double(const string &str2parse)
  * if the string is not an int then 0 is returned instead of throing an error
  * in that way this function will always return a useable value.
  */
-int str2int(const string &str2parse)
-{
-	try
-	{
+int str2int(const string& str2parse) {
+	try {
 		converter.clear();
 		converter.str(str2parse);
 		int val = 0;
 		converter >> val;
 		return val;
 	}
-	catch(ios_base::failure &f)
-	{
+	catch (ios_base::failure& f) {
 		return 0;
 	}
 }
 
 #ifdef WIN32
 //Returns path to "my Documents" in windows:
-string getMyDocumentsPath()
-{
+string getMyDocumentsPath() {
 	TCHAR pszPath[MAX_PATH];
 	//if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
-	if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, pszPath)))
-	{
+	if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, pszPath))) {
 		// pszPath is now the path that you want
 #if DEBUG
 		cout << "MyDocuments Located: " << pszPath << endl;
@@ -103,8 +93,7 @@ string getMyDocumentsPath()
 		string theResult= pszPath;
 		return theResult;
 	}
-	else
-	{
+	else {
 		cout << "Warning: My Documents not found!" << endl;
 		string theResult ="";
 		return theResult;
@@ -119,8 +108,7 @@ string getMyDocumentsPath()
  * In Windows it is My Documents/My Games
  * Consider changing this for Vista that has a special save games folder
  */
-string getPathToSaveFiles()
-{
+string getPathToSaveFiles() {
 #ifdef __unix__
 	return (string)getenv("HOME")+(string)"/.gamesaves/"+GAMENAME;
 #elif WIN32
@@ -133,8 +121,7 @@ string getPathToSaveFiles()
 /**
  * Takes a number of milliseconds and returns the value in commonTime format.
  */
-commonTime TimeHandler::ms2ct(unsigned int milliseconds)
-{
+commonTime TimeHandler::ms2ct(unsigned int milliseconds) {
 	commonTime ct;
 	ct.days = 0;
 	unsigned int time = milliseconds;
@@ -146,8 +133,7 @@ commonTime TimeHandler::ms2ct(unsigned int milliseconds)
 	return ct;
 }
 
-commonTime TimeHandler::getTime(const string &name)
-{
+commonTime TimeHandler::getTime(const string& name) {
 	commonTime ct;
 	ct.days = Config::getInstance()->getInt(name+"Days");
 	ct.hours = Config::getInstance()->getInt(name+"Hours");
@@ -160,8 +146,7 @@ commonTime TimeHandler::getTime(const string &name)
  * Returns the total runtime with toAdd added but without writing it to config file.
  * Used for stats
  */
-commonTime TimeHandler::peekTime(const string &name, const commonTime &toAdd)
-{
+commonTime TimeHandler::peekTime(const string& name, const commonTime& toAdd) {
 	commonTime ct = getTime(name);
 
 	ct.seconds +=toAdd.seconds;
@@ -184,8 +169,7 @@ commonTime TimeHandler::peekTime(const string &name, const commonTime &toAdd)
  * Same as peekTotalTime but writes the time to the config file.
  * Should only be called only once! when the program shuts down
  */
-commonTime TimeHandler::addTime(const string &name, const commonTime &toAdd)
-{
+commonTime TimeHandler::addTime(const string& name, const commonTime& toAdd) {
 	commonTime ct = peekTime(name,toAdd);
 
 	Config::getInstance()->setInt(name+"Days",ct.days);
@@ -197,26 +181,22 @@ commonTime TimeHandler::addTime(const string &name, const commonTime &toAdd)
 
 Config* Config::instance = 0;
 
-Config::Config()
-{
+Config::Config() {
 	configMap.clear();
 	load();
 	shuttingDown = 0; // Not shutting down
 }
 
-void Config::load()
-{
+void Config::load() {
 	string filename = getPathToSaveFiles()+"/configFile";
 	ifstream inFile(filename.c_str());
 	string key;
 	string previuskey;
 	char value[MAX_VAR_LENGTH];
-	if(inFile)
-	{
-		while(!inFile.eof())
-		{
+	if (inFile) {
+		while (!inFile.eof()) {
 			inFile >> key;
-			if(key==previuskey) { //the last entry will be read 2 times if a linebreak is missing in the end
+			if (key==previuskey) { //the last entry will be read 2 times if a linebreak is missing in the end
 				continue;
 			}
 			previuskey = key;
@@ -231,26 +211,21 @@ void Config::load()
 	}
 }
 
-Config* Config::getInstance()
-{
-	if(Config::instance==0)
-	{
+Config* Config::getInstance() {
+	if (Config::instance==0) {
 		Config::instance = new Config();
 
 	}
 	return Config::instance;
 }
 
-void Config::save()
-{
+void Config::save() {
 	string filename = getPathToSaveFiles()+"/configFile";
 	ofstream outFile(filename.c_str(),ios::trunc);
 
-	if(outFile)
-	{
+	if (outFile) {
 		map<string,string>::iterator iter;
-		for(iter = configMap.begin(); iter != configMap.end(); iter++)
-		{
+		for (iter = configMap.begin(); iter != configMap.end(); iter++) {
 			outFile << iter->first << " " << iter->second << endl;
 		}
 		outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
@@ -259,49 +234,40 @@ void Config::save()
 	outFile.close();
 }
 
-bool Config::exists(const string &varName) const
-{
+bool Config::exists(const string& varName) const {
 	//Using that find returns an iterator to the end of the map if not found
 	return configMap.find(varName) != configMap.end();
 }
 
-void Config::setDefault(const string &varName,const string &content)
-{
-	if(exists(varName)) {
+void Config::setDefault(const string& varName,const string& content) {
+	if (exists(varName)) {
 		return;    //Already exists do not change
 	}
 	setString(varName,content);
 }
 
-void Config::setShuttingDown(long shuttingDown)
-{
+void Config::setShuttingDown(long shuttingDown) {
 	this->shuttingDown = shuttingDown;
 }
 
-long Config::isShuttingDown() const
-{
+long Config::isShuttingDown() const {
 	return shuttingDown;
 }
 
-void Config::setString(const string &varName, const string &content)
-{
+void Config::setString(const string& varName, const string& content) {
 	configMap[varName] = content;
 }
 
-void Config::setInt(const string &varName, int content)
-{
+void Config::setInt(const string& varName, int content) {
 	configMap[varName] = itoa(content);
 }
 
-void Config::setValue(const string &varName,double content)
-{
+void Config::setValue(const string& varName,double content) {
 	configMap[varName] = double2str(content);
 }
 
-string Config::getString(const string &varName)
-{
-	if(exists(varName))
-	{
+string Config::getString(const string& varName) {
+	if (exists(varName)) {
 		return configMap[varName];
 	}
 	else {
@@ -309,10 +275,8 @@ string Config::getString(const string &varName)
 	}
 }
 
-int Config::getInt(const string &varName)
-{
-	if(exists(varName))
-	{
+int Config::getInt(const string& varName) {
+	if (exists(varName)) {
 		return str2int(configMap[varName]);
 	}
 	else {
@@ -320,10 +284,8 @@ int Config::getInt(const string &varName)
 	}
 }
 
-double Config::getValue(const string &varName)
-{
-	if(exists(varName))
-	{
+double Config::getValue(const string& varName) {
+	if (exists(varName)) {
 		return str2double(configMap[varName]);
 	}
 	else {
