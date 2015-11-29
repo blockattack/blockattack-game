@@ -26,11 +26,8 @@ http://blockattack.sf.net
 #include "MenuSystem.h"
 #include "common.h"
 #include "CppSdlImageHolder.hpp"
+#include "global.hpp"
 
-extern std::shared_ptr<CppSdl::CppSdlImageHolder> mouse;
-extern SDL_Surface* backgroundImage;
-extern bool highPriority;
-extern int verboseLevel;
 int mousex;
 int mousey;
 

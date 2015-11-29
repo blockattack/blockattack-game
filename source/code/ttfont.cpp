@@ -23,10 +23,6 @@ http://blockattack.sf.net
 
 #include "ttfont.h"
 
-//extern SDL_Surface *tmp;
-
-//#define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
-
 TTFont::TTFont() {
 	font = nullptr;
 	actualInstance = false;

@@ -29,8 +29,6 @@ http://blockattack.sf.net
 
 using namespace std;
 
-extern int verboseLevel;
-
 //Menu
 static void PrintHi(Button* b) {
 	cout << "Hi" <<endl;
