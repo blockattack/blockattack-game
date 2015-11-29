@@ -1215,13 +1215,6 @@ void BlockGame::PushLineInternal() {
 	}
 
 	if ((TowerHeight>12) && (!puzzleMode)&&(!bGameOver)&&(chain==0)) {
-		if ((!vsMode)&&(theTopScoresEndless.isHighScore(score))&&(!AI_Enabled)) {
-			EndlessHighscoreEvent();
-			theTopScoresEndless.addScore(name, score);
-			if (verboseLevel) {
-				cout << "New high score!" << endl;
-			}
-		}
 		SetGameOver();
 	}
 
@@ -1840,18 +1833,6 @@ void BlockGame::Update() {
 		if ((timetrial) && (!bGameOver) && (nowTime>gameStartedAt+2*60*1000)) {
 			SetGameOver();
 			TimeTrialEndEvent();
-			if ((theTopScoresTimeTrial.isHighScore(score))&&(!AI_Enabled)) {
-				theTopScoresTimeTrial.addScore(name, score);
-				//new highscore
-				//Also check if it is better than the best result so far.
-				string checkFilename = getPathToSaveFiles() + "/bestTTresult";
-				ifstream inFile(checkFilename.c_str());
-				Uint32 bestResult = 3000; //Never accept a best result under 3000
-				if (inFile) {
-					inFile >> bestResult;
-					inFile.close();
-				}
-			}
 		}
 	}
 }

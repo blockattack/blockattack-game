@@ -141,16 +141,14 @@ bool Highscore::isHighScore(int newScore) {
 
 void Highscore::addScore(const string& newName, int newScore) {
 	int ranking = top-1;
-	while ((tabel[ranking-1].score<newScore) && (ranking != 0)) {
+	while ( (ranking != 0) && (tabel[ranking-1].score<newScore)) {
 		ranking--;
 	}
 	for (int i=top-1; i>ranking; i--) {
 		tabel[i].score = tabel[i-1].score;
-		strcpy(tabel[i].name,"                            \0");
 		strcpy(tabel[i].name,tabel[i-1].name);
 	}
 	tabel[ranking].score = newScore;
-	strcpy(tabel[ranking].name,"                            \0");
 	snprintf(tabel[ranking].name, sizeof(tabel[ranking].name), "%s", newName.c_str());
 	Highscore::writeFile();
 }

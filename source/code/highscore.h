@@ -44,6 +44,7 @@ struct record
 	int score;
 };
 
+
 class Highscore
 {
 private:

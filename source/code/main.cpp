@@ -2502,6 +2502,10 @@ void changePuzzleLevels() {
 static BlockGameSdl* player1;
 static BlockGameSdl* player2;
 
+static bool registerEndlessHighscore = false;
+static bool registerTTHighscorePlayer1 = false;
+static bool registerTTHighscorePlayer2 = false;
+
 static void StartSinglePlayerEndless() {
 	//1 player - endless
 	player1->NewGame(SDL_GetTicks());
@@ -2510,6 +2514,7 @@ static void StartSinglePlayerEndless() {
 	player2->SetGameOver();
 	player1->name = player1name;
 	player2->name = player2name;
+	registerEndlessHighscore = true;
 }
 
 static void StartSinglePlayerTimeTrial() {
@@ -2519,6 +2524,7 @@ static void StartSinglePlayerTimeTrial() {
 	//vsMode = false;
 	player1->name = player1name;
 	player2->name = player2name;
+	registerTTHighscorePlayer1 = true;
 }
 
 static int StartSinglePlayerPuzzle(int level) {
@@ -2549,11 +2555,15 @@ static void StarTwoPlayerTimeTrial() {
 	player2->setGameSpeed(player2Speed);
 	player1->setHandicap(player1handicap);
 	player2->setHandicap(player2handicap);
+	registerTTHighscorePlayer1 = true;
+	registerTTHighscorePlayer2 = true;
 	if (player1AI) {
 		player1->setAIlevel(player1AIlevel);
+		registerTTHighscorePlayer1 = false;
 	}
 	if (player2AI) {
 		player2->setAIlevel(player2AIlevel);
+		registerTTHighscorePlayer2 = false;
 	}
 	player1->name = player1name;
 	player2->name = player2name;
@@ -3121,9 +3131,13 @@ int runGame(int gametype, int level) {
 
 
 	bool mustsetupgame = true;
+	
 
 	while (done == 0) {
 		if (mustsetupgame) {
+			registerEndlessHighscore = false;
+			registerTTHighscorePlayer1 = false;
+			registerTTHighscorePlayer2 = false;
 			switch (gametype) {
 			case 1:
 				StartSinglePlayerTimeTrial();
@@ -3743,6 +3757,20 @@ int runGame(int gametype, int level) {
 					//twoPlayers = false;
 				}
 			}
+		
+		if (theGame.isGameOver() && registerTTHighscorePlayer1) {
+			registerTTHighscorePlayer1 = false;
+			theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
+		}
+		if (theGame2.isGameOver() && registerTTHighscorePlayer2) {
+			registerTTHighscorePlayer2 = false;
+			theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
+		}
+		if (theGame.isGameOver() && registerEndlessHighscore) {
+			registerEndlessHighscore = false;
+			theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
+			theGame.EndlessHighscoreEvent();
+		}
 
 		//Once evrything has been checked, update graphics
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
