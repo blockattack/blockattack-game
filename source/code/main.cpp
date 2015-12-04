@@ -23,6 +23,7 @@ http://blockattack.sf.net
 
 #include "common.h"
 #include "global.hpp"
+#include "scopeHelpers.hpp"
 
 #include <string.h>
 
@@ -561,7 +562,6 @@ static int InitImages() {
 	CONVERTA(bSaveToFile);
 	CONVERTA(bTestPuzzle);
 #endif
-
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
 	memset(&nf_button_color,0,sizeof(SDL_Color));
 	nf_button_color.b = 255;
@@ -1467,14 +1467,13 @@ void MakeBackground(int xsize,int ysize,BlockGame& theGame, BlockGame& theGame2)
 bool OpenDialogbox(int x, int y, char* name) {
 	bool done = false;     //We are done!
 	bool accept = false;   //New name is accepted! (not Cancelled)
-	bool repeating = false; //The key is being held (BACKSPACE)
-	const int repeatDelay = 200;    //Repeating
 	unsigned long time = 0;
 	ReadKeyboard rk = ReadKeyboard(name);
 	Uint8* keys;
 	string strHolder;
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
+	SDLUnicodeScope unicodeScope;
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(dialogBox,screen,x,y);
 		NFont_Write(screen, x+40,y+76,rk.GetString());
@@ -1504,39 +1503,25 @@ bool OpenDialogbox(int x, int y, char* name) {
 					accept = false;
 				}
 				else if (!(event.key.keysym.sym == SDLK_BACKSPACE)) {
-					if ((rk.ReadKey(event.key.keysym.sym))&&(SoundEnabled)&&(!NoSound)) {
+					if ((rk.ReadKey(event.key.keysym))&&(SoundEnabled)&&(!NoSound)) {
 						Mix_PlayChannel(1,typingChunk,0);
 					}
 				}
-				else if ((event.key.keysym.sym == SDLK_BACKSPACE)&&(!repeating)) {
-					if ((rk.ReadKey(event.key.keysym.sym))&&(SoundEnabled)&&(!NoSound)) {
+				else if (event.key.keysym.sym == SDLK_BACKSPACE) {
+					if ((rk.ReadKey(event.key.keysym))&&(SoundEnabled)&&(!NoSound)) {
 						Mix_PlayChannel(1,typingChunk,0);
 					}
-					repeating = true;
-					time=SDL_GetTicks();
 				}
 			}
 
 		}   //while(event)
-
-		if (SDL_GetTicks()>(time+repeatDelay)) {
-			time = SDL_GetTicks();
-			keys = SDL_GetKeyState(nullptr);
-			if ( (keys[SDLK_BACKSPACE])&&(repeating) ) {
-				if ((rk.ReadKey(SDLK_BACKSPACE))&&(SoundEnabled)&&(!NoSound)) {
-					Mix_PlayChannel(1,typingChunk,0);
-				}
-			}
-			else {
-				repeating = false;
-			}
-		}
 
 		SDL_Flip(screen); //Update screen
 	}   //while(!done)
 	strcpy(name,rk.GetString());
 	bScreenLocked = false;
 	showDialog = false;
+	unicodeScope.Release();
 	return accept;
 }
 

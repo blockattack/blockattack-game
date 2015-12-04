@@ -88,6 +88,20 @@ void ReadKeyboard::removeChar() {
 	}
 }
 
+bool ReadKeyboard::ReadKey(const SDL_keysym& key) {
+	if ( 
+			(key.unicode >= 'a' && key.unicode <= 'z') ||
+			(key.unicode >= '0' && key.unicode <= '9') || 
+			(key.unicode >= 'A' && key.unicode <= 'Z')) {
+		ReadKeyboard::putchar(key.unicode);
+		return true;
+	}
+	if (key.unicode == '.' || key.unicode == ',') {
+		ReadKeyboard::putchar('.');
+	}
+	return ReadKey(key.sym);
+}
+
 bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 	if (keyPressed == SDLK_SPACE) {
 		ReadKeyboard::putchar(' ');
@@ -125,240 +139,6 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 		position++;
 		return true;
 	}
-	char charToPut;
-	if (keyPressed)
-		switch (keyPressed) {
-		case SDLK_a:
-			charToPut = 'a';
-			break;
-		case SDLK_b:
-			charToPut = 'b';
-			break;
-		case SDLK_c:
-			charToPut = 'c';
-			break;
-		case SDLK_d:
-			charToPut = 'd';
-			break;
-		case SDLK_e:
-			charToPut = 'e';
-			break;
-		case SDLK_f:
-			charToPut = 'f';
-			break;
-		case SDLK_g:
-			charToPut = 'g';
-			break;
-		case SDLK_h:
-			charToPut = 'h';
-			break;
-		case SDLK_i:
-			charToPut = 'i';
-			break;
-		case SDLK_j:
-			charToPut = 'j';
-			break;
-		case SDLK_k:
-			charToPut = 'k';
-			break;
-		case SDLK_l:
-			charToPut = 'l';
-			break;
-		case SDLK_m:
-			charToPut = 'm';
-			break;
-		case SDLK_n:
-			charToPut = 'n';
-			break;
-		case SDLK_o:
-			charToPut = 'o';
-			break;
-		case SDLK_p:
-			charToPut = 'p';
-			break;
-		case SDLK_q:
-			charToPut = 'q';
-			break;
-		case SDLK_r:
-			charToPut = 'r';
-			break;
-		case SDLK_s:
-			charToPut = 's';
-			break;
-		case SDLK_t:
-			charToPut = 't';
-			break;
-		case SDLK_u:
-			charToPut = 'u';
-			break;
-		case SDLK_v:
-			charToPut = 'v';
-			break;
-		case SDLK_w:
-			charToPut = 'w';
-			break;
-		case SDLK_x:
-			charToPut = 'x';
-			break;
-		case SDLK_y:
-			charToPut = 'y';
-			break;
-		case SDLK_z:
-			charToPut = 'z';
-			break;
-		case SDLK_0:
-			charToPut = '0';
-			break;
-		case SDLK_1:
-			charToPut = '1';
-			break;
-		case SDLK_2:
-			charToPut = '2';
-			break;
-		case SDLK_3:
-			charToPut = '3';
-			break;
-		case SDLK_4:
-			charToPut = '4';
-			break;
-		case SDLK_5:
-			charToPut = '5';
-			break;
-		case SDLK_6:
-			charToPut = '6';
-			break;
-		case SDLK_7:
-			charToPut = '7';
-			break;
-		case SDLK_8:
-			charToPut = '8';
-			break;
-		case SDLK_9:
-			charToPut = '9';
-			break;
-		case SDLK_KP0:
-			charToPut = '0';
-			break;
-		case SDLK_KP1:
-			charToPut = '1';
-			break;
-		case SDLK_KP2:
-			charToPut = '2';
-			break;
-		case SDLK_KP3:
-			charToPut = '3';
-			break;
-		case SDLK_KP4:
-			charToPut = '4';
-			break;
-		case SDLK_KP5:
-			charToPut = '5';
-			break;
-		case SDLK_KP6:
-			charToPut = '6';
-			break;
-		case SDLK_KP7:
-			charToPut = '7';
-			break;
-		case SDLK_KP8:
-			charToPut = '8';
-			break;
-		case SDLK_KP9:
-			charToPut = '9';
-			break;
-		case SDLK_KP_PERIOD:
-		case SDLK_PERIOD:
-			charToPut='.';
-			break;
-		default:
-			return false;
-		}
-	if ((keys[SDLK_LSHIFT]) || (keys[SDLK_RSHIFT])) {
-		switch (charToPut) {
-		case 'a':
-			charToPut = 'A';
-			break;
-		case 'b':
-			charToPut = 'B';
-			break;
-		case 'c':
-			charToPut = 'C';
-			break;
-		case 'd':
-			charToPut = 'D';
-			break;
-		case 'e':
-			charToPut = 'E';
-			break;
-		case 'f':
-			charToPut = 'F';
-			break;
-		case 'g':
-			charToPut = 'G';
-			break;
-		case 'h':
-			charToPut = 'H';
-			break;
-		case 'i':
-			charToPut = 'I';
-			break;
-		case 'j':
-			charToPut = 'J';
-			break;
-		case 'k':
-			charToPut = 'K';
-			break;
-		case 'l':
-			charToPut = 'L';
-			break;
-		case 'm':
-			charToPut = 'M';
-			break;
-		case 'n':
-			charToPut = 'N';
-			break;
-		case 'o':
-			charToPut = 'O';
-			break;
-		case 'p':
-			charToPut = 'P';
-			break;
-		case 'q':
-			charToPut = 'Q';
-			break;
-		case 'r':
-			charToPut = 'R';
-			break;
-		case 's':
-			charToPut = 'S';
-			break;
-		case 't':
-			charToPut = 'T';
-			break;
-		case 'u':
-			charToPut = 'U';
-			break;
-		case 'v':
-			charToPut = 'V';
-			break;
-		case 'w':
-			charToPut = 'W';
-			break;
-		case 'x':
-			charToPut = 'X';
-			break;
-		case 'y':
-			charToPut = 'Y';
-			break;
-		case 'z':
-			charToPut = 'Z';
-			break;
-
-		default:
-			charToPut = charToPut;
-		}
-	}
-	ReadKeyboard::putchar(charToPut);
 	return true;
 }
 
