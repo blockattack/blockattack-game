@@ -173,11 +173,11 @@ static char serverAddress[30];
 #endif
 
 //other ball constants:
-static const double gravity = 200.8; //acceleration
-static const double startVelocityY = 50.0;
-static const double VelocityX = 50.0;
-static const int ballSize = 16;
-static const double minVelocity = 200.0;
+const double gravity = 200.8; //acceleration
+const double startVelocityY = 50.0;
+const double VelocityX = 50.0;
+const int ballSize = 16;
+const double minVelocity = 200.0;
 
 //global settings (reset everytime the game starts)
 static Uint8 player1Speed=0;

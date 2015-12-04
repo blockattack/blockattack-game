@@ -29,17 +29,12 @@ http://blockattack.sf.net
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "version 1.4.2 BETA"
+#define VERSION_NUMBER "version 1.5.0 BETA"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
 #ifndef DEBUG
 #define DEBUG 0
-#endif
-
-//Build-in level editor is still experimental!
-#ifndef LEVELEDITOR
-#define LEVELEDITOR 0
 #endif
 
 #define WITH_SDL 1
@@ -88,9 +83,6 @@ http://blockattack.sf.net
 #include "joypad.h"         //Used for joypads
 #include "listFiles.h"      //Used to show files on screen
 #include "stats.h"          //Saves general stats 
-#if LEVELEDITOR
-#include "editor/editorMain.hpp" //The level editor
-#endif
 //#include "uploadReplay.h"   //Takes care of everything libcurl related
 
 #include "common.h"
@@ -442,22 +434,6 @@ static int InitImages() {
 	        && (smiley[3] = IMG_Load2("gfx/smileys/3.png"))
 	        //new in 1.3.2
 	        && (transCover = IMG_Load2("gfx/transCover.png"))
-#if LEVELEDITOR
-	        && (bCreateFile = IMG_Load2("gfx/editor/bCreateFile.png"))
-	        && (bDeletePuzzle = IMG_Load2("gfx/editor/bDeletePuzzle.png"))
-	        && (bLoadFile = IMG_Load2("gfx/editor/bLoadFile.png"))
-	        && (bMoveBack = IMG_Load2("gfx/editor/bMoveBack.png"))
-	        && (bMoveDown = IMG_Load2("gfx/editor/bMoveDown.png"))
-	        && (bMoveForward = IMG_Load2("gfx/editor/bMoveForward.png"))
-	        && (bMoveLeft = IMG_Load2("gfx/editor/bMoveLeft.png"))
-	        && (bMoveRight = IMG_Load2("gfx/editor/bMoveRight.png"))
-	        && (bMoveUp = IMG_Load2("gfx/editor/bMoveUp.png"))
-	        && (bNewPuzzle = IMG_Load2("gfx/editor/bNewPuzzle.png"))
-	        && (bSaveFileAs = IMG_Load2("gfx/editor/bSaveFileAs.png"))
-	        && (bSavePuzzle = IMG_Load2("gfx/editor/bSavePuzzle.png"))
-	        && (bSaveToFile = IMG_Load2("gfx/editor/bSaveToFile.png"))
-	        && (bTestPuzzle = IMG_Load2("gfx/editor/bTestPuzzle.png"))
-#endif
 	        //end new in 1.3.2
 	        //new in 1.4.0
 	        && (bSkip = IMG_Load2("gfx/bBlank.png"))
@@ -545,23 +521,6 @@ static int InitImages() {
 	bNewGame->OptimizeForBlit(true);
 	CONVERTA(stageBobble);
 	CONVERTA(transCover);
-	//Editor:
-#if LEVELEDITOR
-	CONVERTA(bCreateFile);
-	CONVERTA(bDeletePuzzle);
-	CONVERTA(bLoadFile);
-	CONVERTA(bMoveBack);
-	CONVERTA(bMoveDown);
-	CONVERTA(bMoveForward);
-	CONVERTA(bMoveLeft);
-	CONVERTA(bMoveRight);
-	CONVERTA(bMoveUp);
-	CONVERTA(bNewPuzzle);
-	CONVERTA(bSaveFileAs);
-	CONVERTA(bSavePuzzle);
-	CONVERTA(bSaveToFile);
-	CONVERTA(bTestPuzzle);
-#endif
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
 	memset(&nf_button_color,0,sizeof(SDL_Color));
 	nf_button_color.b = 255;
@@ -699,14 +658,6 @@ void UnloadImages() {
 	bNewGame->MakeNull();
 }
 
-//Function to convert numbers to string
-/*string itoa(int num)
-{
-    stringstream converter;
-    converter << num;
-    return converter.str();
-}*/
-
 
 static stringstream converter;
 
@@ -743,9 +694,9 @@ void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y, int w, int h, 
 }
 
 
-void NFont_Write(SDL_Surface* target,int x,int y,string text) {
+void NFont_Write(SDL_Surface* target, int x, int y, const string& text) {
 	nf_standard_blue_font.setDest(target);
-	nf_standard_blue_font.draw(x,y,text.c_str());
+	nf_standard_blue_font.draw(x, y, text.c_str());
 	nf_standard_blue_font.setDest(screen);
 }
 
@@ -794,10 +745,6 @@ public:
 			velocityX = -tal*VelocityX;
 		}
 	}  //constructor
-
-	//Deconstructor
-	~aBall() {
-	}   //Deconstructor
 
 	void update() {
 		double timePassed = (((double)(currentTime-lastTime))/1000.0);  //time passed in seconds
@@ -907,10 +854,6 @@ public:
 		y = Y;
 		frameNumber=0;
 	}  //constructor
-
-	//Deconstructor
-	~anExplosion() {
-	}   //Deconstructor
 
 	//true if animation has played and object should be removed from the screen
 	bool removeMe() {
@@ -1111,7 +1054,7 @@ public:
 	}
 
 	void AddBall(int x, int y, bool right, int color) const  override {
-		theBallManeger.addBall(topx+40+x*bsize, topy+bsize*12-y*bsize, left, color);
+		theBallManeger.addBall(topx+40+x*bsize, topy+bsize*12-y*bsize, right, color);
 	}
 
 	void AddExplosion(int x, int y) const  override {
@@ -1467,9 +1410,7 @@ void MakeBackground(int xsize,int ysize,BlockGame& theGame, BlockGame& theGame2)
 bool OpenDialogbox(int x, int y, char* name) {
 	bool done = false;     //We are done!
 	bool accept = false;   //New name is accepted! (not Cancelled)
-	unsigned long time = 0;
 	ReadKeyboard rk = ReadKeyboard(name);
-	Uint8* keys;
 	string strHolder;
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
@@ -2620,7 +2561,6 @@ int main(int argc, char* argv[]) {
 			const char forcepartdrawString[] = "-forcepartdraw";
 			const char singlePuzzleString[] = "-SP";
 			const char noSoundAtAll[] = "-nosound";
-			const char IntegratedEditor[] = "-editor";
 			const char selectTheme[] = "-theme";
 			const char verbose[] = "-v";
 			if (!(strncmp(argv[argumentNr],helpString,6))) {
@@ -2629,8 +2569,7 @@ int main(int argc, char* argv[]) {
 				     "-forceredraw  " << _("Redraw the whole screen every frame, prevents garbage") << endl <<
 				     "-forcepartdraw  " << _("Only draw what is changed, sometimes cause garbage") << endl <<
 				     "-nosound  " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl <<
-				     "-theme <" << _("THEMENAME") << ">  " << _("Changes to the theme <THEMENAME> on startup") << endl <<
-				     "-editor  " << _("Starts the build-in editor (not yet integrated)") << endl;
+				     "-theme <" << _("THEMENAME") << ">  " << _("Changes to the theme <THEMENAME> on startup") << endl;
 #ifdef WIN32
 				system("Pause");
 #endif
@@ -2664,17 +2603,6 @@ int main(int argc, char* argv[]) {
 			}
 			if (!(strncmp(argv[argumentNr],noSoundAtAll,8))) {
 				NoSound = true;
-			}
-			if (!(strncmp(argv[argumentNr],IntegratedEditor,7))) {
-#if LEVELEDITOR
-				editorMode = true;
-				if (verboseLevel) {
-					cout << "Integrated Puzzle Editor Activated" << endl;
-				}
-#else
-				cout << "Integrated Puzzle Editor was disabled at compile time" << endl;
-				return -1;
-#endif
 			}
 			if (!(strncmp(argv[argumentNr],selectTheme,6))) {
 				argumentNr++; //Go to themename (the next argument)
