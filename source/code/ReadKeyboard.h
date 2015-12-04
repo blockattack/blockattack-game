@@ -26,12 +26,13 @@ Added to project 5/11-2004
 */
 
 #include "SDL.h"
+#include <string>
 
 class ReadKeyboard
 {
 private:
-	int length, maxLength, position;
-	char textstring[30];
+	int maxLength, position;
+	std::string text_string;
 	void putchar(char);
 	void removeChar();
 public:

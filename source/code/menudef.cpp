@@ -44,7 +44,7 @@ struct control {
 	SDLKey push;
 };
 
-bool OpenDialogbox(int x, int y, char* name);
+bool OpenDialogbox(int x, int y, std::string& name);
 void OpenScoresDisplay();
 extern control keySettings[3];
 
@@ -163,10 +163,9 @@ static void buttonActionPlayer2Name(Button* b) {
 }
 
 static void buttonActionPortChange(Button* b) {
-	char port[30];
-	snprintf(port,sizeof(port),"%i",Config::getInstance()->getInt("portv4") );
-	if (OpenDialogbox(200,100,port) && atoi(port)) {
-		Config::getInstance()->setInt("portv4",atoi(port));
+	string port = Config::getInstance()->getString("portv4");
+	if (OpenDialogbox(200,100,port) && atoi(port.c_str())) {
+		Config::getInstance()->setInt("portv4",atoi(port.c_str()));
 		boost::format f(_("Port: %1%") );
 		f % port;
 		b->setLabel(f.str());
@@ -174,8 +173,7 @@ static void buttonActionPortChange(Button* b) {
 }
 
 static void buttonActionIpChange(Button* b) {
-	char ip[30];
-	snprintf(ip,sizeof(ip),"%s",Config::getInstance()->getString("address0").c_str() );
+	string ip = Config::getInstance()->getString("address0");
 	if (OpenDialogbox(200,100,ip)) {
 		Config::getInstance()->setString("address0",ip);
 		boost::format f(_("Address: %1%") );

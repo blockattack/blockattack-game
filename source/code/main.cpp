@@ -1404,10 +1404,10 @@ void MakeBackground(int xsize,int ysize,BlockGame& theGame, BlockGame& theGame2)
 
 
 //Dialogbox
-bool OpenDialogbox(int x, int y, char* name) {
+bool OpenDialogbox(int x, int y, std::string& name) {
 	bool done = false;     //We are done!
 	bool accept = false;   //New name is accepted! (not Cancelled)
-	ReadKeyboard rk = ReadKeyboard(name);
+	ReadKeyboard rk = ReadKeyboard(name.c_str());
 	string strHolder;
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
@@ -1456,7 +1456,7 @@ bool OpenDialogbox(int x, int y, char* name) {
 
 		SDL_Flip(screen); //Update screen
 	}   //while(!done)
-	strcpy(name,rk.GetString());
+	name = rk.GetString();
 	bScreenLocked = false;
 	showDialog = false;
 	unicodeScope.Release();
@@ -2722,8 +2722,8 @@ int main(int argc, char* argv[]) {
 	player1keys=0;
 	player2keys=2;
 
-	strcpy(player1name, "Player 1                    \0");
-	strcpy(player2name, "Player 2                    \0");
+	player1name = "Player 1";
+	player2name = "Player 2";
 
 	Config* configSettings = Config::getInstance();
 	//configSettings->setString("aNumber"," A string");
@@ -2775,55 +2775,18 @@ int main(int argc, char* argv[]) {
 			keySettings[2].push = (SDLKey)configSettings->getInt("player2keypush");
 		}
 		if (configSettings->exists("player1name")) {
-			strncpy(player1name,(configSettings->getString("player1name")).c_str(),28);
+			player1name = configSettings->getString("player1name");
 		}
 		if (configSettings->exists("player2name")) {
-			strncpy(player2name,(configSettings->getString("player2name")).c_str(),28);
+			player2name = configSettings->getString("player2name");
 		}
 		if (verboseLevel) {
 			cout << "Data loaded from config file" << endl;
 		}
 	}
 	else {
-		//Reads options from file:
-		ifstream optionsFile(optionsPath.c_str(), ios::binary);
-		if (optionsFile) {
-			//reads data: xsize,ysize,fullescreen, player1keys, player2keys, MusicEnabled, SoundEnabled,player1name,player2name
-			optionsFile.read(reinterpret_cast<char*>(&xsize), sizeof(int));
-			optionsFile.read(reinterpret_cast<char*>(&ysize), sizeof(int));
-			optionsFile.read(reinterpret_cast<char*>(&bFullscreen), sizeof(bool));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[0].up), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[0].down), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[0].left), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[0].right), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[0].change), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[0].push), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[2].up), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[2].down), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[2].left), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[2].right), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[2].change), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&keySettings[2].push), sizeof(SDLKey));
-			optionsFile.read(reinterpret_cast<char*>(&MusicEnabled), sizeof(bool));
-			optionsFile.read(reinterpret_cast<char*>(&SoundEnabled), sizeof(bool));
-			optionsFile.read(player1name, 30*sizeof(char));
-			optionsFile.read(player2name, 30*sizeof(char));
-			//mouseplay?
-			if (!optionsFile.eof()) {
-				optionsFile.read(reinterpret_cast<char*>(&mouseplay1), sizeof(bool));
-				optionsFile.read(reinterpret_cast<char*>(&mouseplay2), sizeof(bool));
-				optionsFile.read(reinterpret_cast<char*>(&joyplay1),sizeof(bool));
-				optionsFile.read(reinterpret_cast<char*>(&joyplay2),sizeof(bool));
-			}
-			optionsFile.close();
-			if (verboseLevel) {
-				cout << "Data loaded from oldstyle options file" << endl;
-			}
-		}
-		else {
-			if (verboseLevel) {
-				cout << "Unable to load options file, using default values" << endl;
-			}
+		if (verboseLevel) {
+			cout << "Unable to load options file, using default values" << endl;
 		}
 	}
 

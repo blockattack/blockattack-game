@@ -27,10 +27,8 @@ http://blockattack.sf.net
 using namespace std;
 
 ReadKeyboard::ReadKeyboard(void) {
-	length = 0;
 	maxLength = 16;
 	position = 0;
-	strcpy(textstring,"                             ");
 }
 
 ReadKeyboard::~ReadKeyboard(void) {
@@ -41,50 +39,24 @@ Uint8 ReadKeyboard::CharsBeforeCursor() {
 }
 
 ReadKeyboard::ReadKeyboard(const char* oldName) {
-	length = 0;
 	maxLength = 16;
 	position = 0;
-	strcpy(textstring,"                             ");
-	strncpy(textstring,oldName,strlen(oldName));
-	char charecter = textstring[maxLength+1];
-	int i = maxLength+1;
-	while ((charecter == ' ') && (i>0)) {
-		i--;
-		charecter = textstring[i];
-	}
-	if (i>0) {
-		length = i+1;
-	}
-	else if (charecter == ' ') {
-		length = 0;
-	}
-	else {
-		length = 1;
-	}
-	position = length;
-
+	text_string = oldName;
+	position = text_string.length();
 }
 
 
 void ReadKeyboard::putchar(char thing) {
-	if (length < maxLength) {
-		for (int i = 28; i>position; i--) {
-			textstring[i]=textstring[i-1];
-		}
-		textstring[position] = thing;
-		length++;
+	if (text_string.length() < maxLength) {
+		text_string.insert(text_string.begin()+position, thing);
 		position++;
 	}
 }
 
 
 void ReadKeyboard::removeChar() {
-	for (int i = position; i<28; i++) {
-		textstring[i]=textstring[i+1];
-	}
-	textstring[28]=' ';
-	if (length>0) {
-		length--;
+	if (position < text_string.length()) {
+		text_string.erase(position);
 	}
 }
 
@@ -108,7 +80,7 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 		return true;
 	}
 	if (keyPressed == SDLK_DELETE) {
-		if ((length>0)&& (position<length)) {
+		if ((text_string.length()>0)&& (position<text_string.length())) {
 			ReadKeyboard::removeChar();
 		}
 		return true;
@@ -126,14 +98,14 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 		return true;
 	}
 	if (keyPressed == SDLK_END) {
-		position=length;
+		position=text_string.length();
 		return true;
 	}
 	if ((keyPressed == SDLK_LEFT) && (position>0)) {
 		position--;
 		return true;
 	}
-	if ((keyPressed == SDLK_RIGHT) && (position<length)) {
+	if ((keyPressed == SDLK_RIGHT) && (position<text_string.length())) {
 		position++;
 		return true;
 	}
@@ -141,6 +113,5 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 }
 
 const char* ReadKeyboard::GetString() {
-	textstring[29]='\0';
-	return &textstring[0];
+	return text_string.c_str();
 }

@@ -197,8 +197,8 @@ static int ysize = 768;
 static const int bsize = 50;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
-char player1name[30];
-char player2name[30];
+std::string player1name;
+std::string player2name;
 
 //paths
 static std::string stageClearSavePath;
