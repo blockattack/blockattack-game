@@ -911,7 +911,6 @@ public:
 				oldExplosionUsed[i] = true;
 				oldExplosionArray[i] = explosionArray[i];
 				if (explosionArray[i].removeMe()) {
-					explosionArray[i].~anExplosion();
 					explosionUsed[i] = false;
 				}
 			}
@@ -1006,13 +1005,11 @@ public:
 					oldTextArray[i] = textMessage(textArray[i]);
 				}
 				if (textArray[i].removeMe()) {
-					textArray[i].~textMessage();
 					textUsed[i] = false;
 				}
 			}
 			else if (oldTextUsed[i]) {
 				oldTextUsed[i] = false;
-				oldTextArray[i].~textMessage();
 			}
 		}
 	} //update
@@ -1374,13 +1371,13 @@ void writeScreenShot() {
 	int rightNow = (int)time(nullptr);
 	/*#if defined(__unix__)
 	    char buf[514];
-	    sprintf( buf, "%s/.gamesaves/blockattack/screenshots/screenshot%i.bmp", getenv("HOME"), rightNow );
+	    snprintf( buf, sizeof(buf), "%s/.gamesaves/blockattack/screenshots/screenshot%i.bmp", getenv("HOME"), rightNow );
 	#elif defined(__win32__)
 	    char buf[MAX_PATH];
-	    sprintf( buf, "%s\\My Games\\blockattack\\screenshots\\screenshot%i.bmp", (getMyDocumentsPath()).c_str(), rightNow );
+	    snprintf( buf, sizeof(buf), "%s\\My Games\\blockattack\\screenshots\\screenshot%i.bmp", (getMyDocumentsPath()).c_str(), rightNow );
 	#else
 	    char buf[MAX_PATH];
-	    sprintf( buf, "screenshot%i.bmp", rightNow );
+	    snprintf( buf, sizeof(buf), "screenshot%i.bmp", rightNow );
 	#endif*/
 #if defined(__unix__)
 	string buf = (string)getenv("HOME")+"/.gamesaves/blockattack/screenshots/screenshot"+itoa(rightNow)+".bmp";
@@ -1480,10 +1477,10 @@ void DrawHighscores(int x, int y, bool endless) {
 		char playerScore[32];
 		char playerName[32];
 		if (endless) {
-			sprintf(playerScore, "%i", theTopScoresEndless.getScoreNumber(i));
+			snprintf(playerScore, sizeof(playerScore), "%i", theTopScoresEndless.getScoreNumber(i));
 		}
 		else {
-			sprintf(playerScore, "%i", theTopScoresTimeTrial.getScoreNumber(i));
+			snprintf(playerScore, sizeof(playerScore), "%i", theTopScoresTimeTrial.getScoreNumber(i));
 		}
 		if (endless) {
 			strcpy(playerName,theTopScoresEndless.getScoreName(i));
@@ -2008,7 +2005,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		if (Frames > 999) {
 			Frames=999;
 		}
-		sprintf(FPS, "%lu fps", Frames);
+		snprintf(FPS, sizeof(FPS), "%lu fps", Frames);
 		Frames = 0;
 		Ticks = SDL_GetTicks();
 	}
@@ -2563,8 +2560,8 @@ int main(int argc, char* argv[]) {
 			const char noSoundAtAll[] = "-nosound";
 			const char selectTheme[] = "-theme";
 			const char verbose[] = "-v";
-			if (!(strncmp(argv[argumentNr],helpString,6))) {
-				cout << "Block Attack Help" << endl << "--help  " << _("Displays this message") <<
+			if (strequals(argv[argumentNr],helpString)) {
+				cout << "Block Attack Help" << endl << helpString << "  " << _("Displays this message") <<
 				     endl << "-priority  " << _("Starts game in high priority") << endl <<
 				     "-forceredraw  " << _("Redraw the whole screen every frame, prevents garbage") << endl <<
 				     "-forcepartdraw  " << _("Only draw what is changed, sometimes cause garbage") << endl <<
@@ -2575,19 +2572,19 @@ int main(int argc, char* argv[]) {
 #endif
 				return 0;
 			}
-			if (!(strncmp(argv[argumentNr],priorityString,9))) {
+			if (strequals(argv[argumentNr],priorityString)) {
 				if (verboseLevel) {
 					cout << "Priority mode" << endl;
 				}
 				highPriority = true;
 			}
-			if (!(strncmp(argv[argumentNr],forceRedrawString,12))) {
+			if (strequals(argv[argumentNr],forceRedrawString)) {
 				forceredraw = 1;
 			}
-			if (!(strncmp(argv[argumentNr],forcepartdrawString,14))) {
+			if (strequals(argv[argumentNr],forcepartdrawString)) {
 				forceredraw = 2;
 			}
-			if (!(strncmp(argv[argumentNr],singlePuzzleString,3))) {
+			if (strequals(argv[argumentNr],singlePuzzleString)) {
 				singlePuzzle = true; //We will just have one puzzle
 				if (argv[argumentNr+1][1]!=0) {
 					singlePuzzleNr = (argv[argumentNr+1][1]-'0')+(argv[argumentNr+1][0]-'0')*10;
@@ -2601,17 +2598,17 @@ int main(int argc, char* argv[]) {
 					cout << "SinglePuzzleMode, File: " << singlePuzzleFile << " and Level: " << singlePuzzleNr << endl;
 				}
 			}
-			if (!(strncmp(argv[argumentNr],noSoundAtAll,8))) {
+			if (strequals(argv[argumentNr],noSoundAtAll)) {
 				NoSound = true;
 			}
-			if (!(strncmp(argv[argumentNr],selectTheme,6))) {
+			if (strequals(argv[argumentNr],selectTheme)) {
 				argumentNr++; //Go to themename (the next argument)
 				if (verboseLevel) {
 					cout << "Theme set to \"" << argv[argumentNr] << '"' << endl;
 				}
 				Config::getInstance()->setString("themename",argv[argumentNr]);
 			}
-			if (!(strcmp(argv[argumentNr],verbose))) {
+			if (strequals(argv[argumentNr],verbose)) {
 				verboseLevel++;
 			}
 			argumentNr++;
@@ -2945,7 +2942,6 @@ int main(int argc, char* argv[]) {
 	//int hours, mins, secs,
 	commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
-	//cout << "Block Attack - Rise of the Blocks ran for: " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
 	if (verboseLevel) {
 		cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << endl;
 	}

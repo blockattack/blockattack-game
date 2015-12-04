@@ -63,6 +63,7 @@ std::string itoa(int num) __attribute__((const));
 
 std::string getPathToSaveFiles() __attribute__((pure));
 
+bool strequals(const char* a, const char* b);
 
 /**
  * str2int parses a string and returns an int with the value of the string.

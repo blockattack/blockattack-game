@@ -29,7 +29,7 @@ private:
 	int oldStatus;
 public:
 	SDLUnicodeScope() {
-		oldStatus = SDL_EnableUNICODE(1);
+		oldStatus = SDL_EnableUNICODE(SDL_ENABLE);
 	}
 	
 	void Release() {

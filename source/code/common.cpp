@@ -23,6 +23,7 @@ http://blockattack.sf.net
 
 #include "common.h"
 #include <sstream>
+#include <cstring>
 
 using namespace std;
 using boost::format;
@@ -42,6 +43,10 @@ string double2str(double num) {
 	converter.clear();
 	converter << num;
 	return converter.str();
+}
+
+bool strequals(const char* a, const char* b) {
+	return strcmp(a,b) == 0;
 }
 
 /**
