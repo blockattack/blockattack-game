@@ -696,7 +696,7 @@ void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y, int w, int h, 
 
 void NFont_Write(SDL_Surface* target, int x, int y, const string& text) {
 	nf_standard_blue_font.setDest(target);
-	nf_standard_blue_font.draw(x, y, text.c_str());
+	nf_standard_blue_font.draw(x, y, "%s", text.c_str());
 	nf_standard_blue_font.setDest(screen);
 }
 
@@ -1252,7 +1252,7 @@ public:
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = "Moves left: " + itoa(MovesLeft);
-			nf_standard_blue_font.draw(5,5,strHolder.c_str());
+			nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
@@ -1267,7 +1267,7 @@ public:
 			}
 			else {
 				strHolder = "Last puzzle";
-				nf_standard_blue_font.draw(5,5,strHolder.c_str());
+				nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
@@ -1282,7 +1282,7 @@ public:
 			}
 			else {
 				strHolder = "Last stage";
-				nf_standard_blue_font.draw(5,5,strHolder.c_str());
+				nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
 			}
 		}
 
@@ -1290,7 +1290,7 @@ public:
 		if (AI_Enabled&&(!bGameOver)) {
 			strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
 			//NFont_Write(sBoard,   5, 5, strHolder.c_str());
-			nf_standard_blue_font.draw(5,5,strHolder.c_str());
+			nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
 		}
 #endif
 		if (!bGameOver) {
@@ -1419,7 +1419,7 @@ bool OpenDialogbox(int x, int y, char* name) {
 		strHolder.erase((int)rk.CharsBeforeCursor());
 
 		if (((SDL_GetTicks()/600)%2)==1) {
-			NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( strHolder.c_str()),y+76,"|");
+			NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
 		}
 
 		SDL_Event event;
@@ -1468,10 +1468,10 @@ void DrawHighscores(int x, int y, bool endless) {
 	MakeBackground(xsize,ysize);
 	DrawIMG(background,screen,0,0);
 	if (endless) {
-		nf_standard_blue_font.draw(x+100,y+100,_("Endless:") );
+		nf_standard_blue_font.draw(x+100,y+100, "%s",_("Endless:") );
 	}
 	else {
-		nf_standard_blue_font.draw(x+100,y+100,_("Time Trial:") );
+		nf_standard_blue_font.draw(x+100,y+100, "%s",_("Time Trial:") );
 	}
 	for (int i =0; i<10; i++) {
 		char playerScore[32];
@@ -1488,8 +1488,8 @@ void DrawHighscores(int x, int y, bool endless) {
 		else {
 			strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
 		}
-		nf_standard_blue_font.draw(x+420,y+150+i*35,playerScore);
-		nf_standard_blue_font.draw(x+60,y+150+i*35,playerName);
+		nf_standard_blue_font.draw(x+420,y+150+i*35, "%s",playerScore);
+		nf_standard_blue_font.draw(x+60,y+150+i*35, "%s",playerName);
 	}
 }
 
@@ -1589,7 +1589,7 @@ void OpenScoresDisplay() {
 
 		//Draw page number
 		string pageXofY = (boost::format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
-		NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
+		NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
 
 		SDL_Delay(10);
 		SDL_Event event;
@@ -1776,7 +1776,7 @@ static void DrawBalls() {
 			int x = theTextManeger.textArray[i].getX()-12;
 			int y = theTextManeger.textArray[i].getY()-12;
 			DrawIMG(iChainBack,screen,x,y);
-			nf_standard_small_font.drawCenter(x+12,y+7,theTextManeger.textArray[i].getText());
+			nf_standard_small_font.drawCenter(x+12,y+7, "%s",theTextManeger.textArray[i].getText());
 		}
 	} //for
 }    //DrawBalls

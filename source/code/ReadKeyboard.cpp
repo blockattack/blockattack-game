@@ -121,8 +121,6 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 		}
 		return false;
 	}
-	Uint8* keys;
-	keys = SDL_GetKeyState(nullptr);
 	if (keyPressed == SDLK_HOME) {
 		position=0;
 		return true;

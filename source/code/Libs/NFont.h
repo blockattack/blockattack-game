@@ -191,24 +191,24 @@ public:
 	void freeSurface();
 
 	// Drawing
-	SDL_Rect draw(int x, int y, const char* formatted_text, ...) const;
-	SDL_Rect drawCenter(int x, int y, const char* formatted_text, ...) const;
-	SDL_Rect drawRight(int x, int y, const char* formatted_text, ...) const;
-	SDL_Rect drawPos(int x, int y, NFont::AnimFn posFn, const char* text, ...) const;
-	SDL_Rect drawAll(int x, int y, NFont::AnimFn allFn, const char* text, ...) const;
+	SDL_Rect draw(int x, int y, const char* formatted_text, ...) const __attribute__ ((format (printf, 4, 5)));
+	SDL_Rect drawCenter(int x, int y, const char* formatted_text, ...) const __attribute__ ((format (printf, 4, 5)));
+	SDL_Rect drawRight(int x, int y, const char* formatted_text, ...) const __attribute__ ((format (printf, 4, 5)));
+	SDL_Rect drawPos(int x, int y, NFont::AnimFn posFn, const char* text, ...) const __attribute__ ((format (printf, 5, 6)));
+	SDL_Rect drawAll(int x, int y, NFont::AnimFn allFn, const char* text, ...) const __attribute__ ((format (printf, 5, 6)));
 
 	// Getters
 	SDL_Surface* getDest() const;
 	SDL_Surface* getSurface() const;
-	int getHeight(const char* formatted_text = NULL, ...) const;
-	int getWidth(const char* formatted_text, ...) const;
+	int getHeight(const char* formatted_text = NULL, ...) const __attribute__ ((format (printf, 2, 3)));
+	int getWidth(const char* formatted_text, ...) const __attribute__ ((format (printf, 2, 3)));
 	int getSpacing() const;
 	int getLineSpacing() const;
 	int getBaseline() const;
 	int getAscent(const char character) const;
-	int getAscent(const char* formatted_text = NULL, ...) const;
+	int getAscent(const char* formatted_text = NULL, ...) const __attribute__ ((format (printf, 2, 3)));
 	int getDescent(const char character) const;
-	int getDescent(const char* formatted_text = NULL, ...) const;
+	int getDescent(const char* formatted_text = NULL, ...) const __attribute__ ((format (printf, 2, 3)));
 	int getMaxWidth() const;
 
 	// Setters

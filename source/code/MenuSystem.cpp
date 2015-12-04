@@ -106,7 +106,7 @@ void Button::drawTo(SDL_Surface** surface) {
 		gfx->unmarked->PaintTo(*surface,x,y);
 	}
 	gfx->thefont.setDest(*surface);
-	gfx->thefont.drawCenter(x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont.getHeight(label.c_str())/2,label.c_str());
+	gfx->thefont.drawCenter(x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont.getHeight("%s", label.c_str())/2, "%s", label.c_str());
 }
 
 void Button::setPopOnRun(bool popOnRun) {
@@ -132,7 +132,7 @@ void Menu::drawSelf() {
 		(*it)->drawTo(&screen);
 	}
 	exit.drawTo(&screen);
-	standardButton.thefont.draw(50,50,title.c_str());
+	standardButton.thefont.draw(50, 50, "%s", title.c_str());
 	mouse->PaintTo(screen,mousex,mousey);
 }
 
