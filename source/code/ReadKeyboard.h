@@ -31,7 +31,8 @@ Added to project 5/11-2004
 class ReadKeyboard
 {
 private:
-	int maxLength, position;
+	int maxLength;
+	std::string::iterator position;
 	std::string text_string;
 	void putchar(char);
 	void removeChar();

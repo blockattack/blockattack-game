@@ -28,34 +28,33 @@ using namespace std;
 
 ReadKeyboard::ReadKeyboard(void) {
 	maxLength = 16;
-	position = 0;
+	position = text_string.begin();
 }
 
 ReadKeyboard::~ReadKeyboard(void) {
 }
 
 Uint8 ReadKeyboard::CharsBeforeCursor() {
-	return position;
+	return std::distance(text_string.begin(), position);
 }
 
 ReadKeyboard::ReadKeyboard(const char* oldName) {
 	maxLength = 16;
-	position = 0;
 	text_string = oldName;
-	position = text_string.length();
+	position = text_string.end();
 }
 
 
 void ReadKeyboard::putchar(char thing) {
 	if (text_string.length() < maxLength) {
-		text_string.insert(text_string.begin()+position, thing);
+		text_string.insert(position, thing);
 		position++;
 	}
 }
 
 
 void ReadKeyboard::removeChar() {
-	if (position < text_string.length()) {
+	if (position < text_string.end()) {
 		text_string.erase(position);
 	}
 }
@@ -80,13 +79,13 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 		return true;
 	}
 	if (keyPressed == SDLK_DELETE) {
-		if ((text_string.length()>0)&& (position<text_string.length())) {
+		if ((text_string.length()>0)&& (position<text_string.end())) {
 			ReadKeyboard::removeChar();
 		}
 		return true;
 	}
 	if (keyPressed == SDLK_BACKSPACE) {
-		if (position>0) {
+		if (position>text_string.begin()) {
 			position--;
 			ReadKeyboard::removeChar();
 			return true;
@@ -94,18 +93,18 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 		return false;
 	}
 	if (keyPressed == SDLK_HOME) {
-		position=0;
+		position = text_string.begin();
 		return true;
 	}
 	if (keyPressed == SDLK_END) {
-		position=text_string.length();
+		position=text_string.end();
 		return true;
 	}
-	if ((keyPressed == SDLK_LEFT) && (position>0)) {
+	if ((keyPressed == SDLK_LEFT) && (position>text_string.begin())) {
 		position--;
 		return true;
 	}
-	if ((keyPressed == SDLK_RIGHT) && (position<text_string.length())) {
+	if ((keyPressed == SDLK_RIGHT) && (position<text_string.end())) {
 		position++;
 		return true;
 	}
