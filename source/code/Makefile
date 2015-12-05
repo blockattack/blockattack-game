@@ -10,13 +10,13 @@ ifdef CROSS
 CXX=$(CROSS)g++
 endif
 
-BASE_CFLAGS=-c $(shell $(CROSS)sdl-config --cflags) -std=c++11
+BASE_CFLAGS=-c $(shell $(CROSS)sdl2-config --cflags) -std=c++11
 
 ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell $(CROSS)sdl-config --libs) -lSDL_ttf $(shell $(CROSS)pkg-config SDL_image SDL_mixer --libs) 
+BASE_LIBS=$(shell $(CROSS)sdl2-config --libs) -lSDL_ttf $(shell $(CROSS)pkg-config SDL_image SDL_mixer --libs) 
 
 #For developement only 
 ifndef DEBUG

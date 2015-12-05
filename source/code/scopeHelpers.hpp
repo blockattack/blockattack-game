@@ -24,20 +24,19 @@ http://www.blockattack.net
 #ifndef SCOPEHELPERS_HPP
 #define	SCOPEHELPERS_HPP
 
-class SDLUnicodeScope {
-private:
-	int oldStatus;
+#include "common.h"
+
+
+class SDL_RendererHolder {
+	SDL_Renderer* ptr;
 public:
-	SDLUnicodeScope() {
-		oldStatus = SDL_EnableUNICODE(SDL_ENABLE);
+	SDL_RendererHolder(SDL_Renderer* input) {
+		dieOnNullptr(input, "Failed to get render");
+		ptr = input;
 	}
 	
-	void Release() {
-		SDL_EnableUNICODE(oldStatus);
-	}
-	
-	~SDLUnicodeScope() {
-		Release();
+	~SDL_RendererHolder() {
+		SDL_DestroyRenderer(ptr);
 	}
 };
 

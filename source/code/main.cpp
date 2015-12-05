@@ -39,9 +39,6 @@ http://blockattack.sf.net
 
 #define WITH_SDL 1
 
-//Macros to convert surfaces (ffor faster drawing)
-#define CONVERT(n) tmp = SDL_DisplayFormat(n); SDL_FreeSurface(n); n = tmp
-#define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
 
 #include <iostream>
 #include <stdlib.h>
@@ -214,7 +211,7 @@ void loadTheme(const string& themeName) {
 }
 
 
-long NFont_OpenFont(NFont* target, const char* path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL) {
+long NFont_OpenFont(SDL_Renderer* dest, NFont* target, const char* path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL) {
 	if (!PHYSFS_exists(path)) {
 		cerr << "Error: File not in blockattack.data: " << path << endl;
 		return -1; //file doesn't exist
@@ -257,9 +254,9 @@ long NFont_OpenFont(NFont* target, const char* path,int ptsize, SDL_Color color,
 
 	TTF_Font* font;
 	font=TTF_OpenFontRW(rw, 1, ptsize);
-	TTF_SetFontStyle(font,style);
+	TTF_SetFontStyle(font, style);
 
-	target->load(font,color);
+	target->load(dest, font, color);
 
 	TTF_CloseFont(font); //Once loaded we don't care anymore!
 
@@ -305,7 +302,7 @@ Mix_Music* Mix_LoadMUS2(string path) {
 		return nullptr;
 	}
 
-	Mix_Music* ret = Mix_LoadMUS_RW(rw);
+	Mix_Music* ret = Mix_LoadMUS_RW(rw, SDL_TRUE);
 
 	return ret;
 }
@@ -456,71 +453,6 @@ static int InitImages() {
 		exit(1);
 	}
 
-
-	//Prepare for fast blittering!
-	CONVERT(background);
-	CONVERT(backgroundImage);
-	CONVERT(bOptions);
-	CONVERTA(bConfigure);
-	CONVERTA(bSelectPuzzle);
-	CONVERTA(bSkip);
-	CONVERTA(bRetry);
-	CONVERTA(bNext);
-	CONVERT(bHighScore);
-	CONVERTA(boardBackBack);
-	CONVERT(backBoard);
-	CONVERT(blackLine);
-	CONVERTA(changeButtonsBack);
-	CONVERTA(cursor[0]);
-	CONVERTA(cursor[1]);
-	CONVERTA(counter[0]);
-	CONVERTA(counter[1]);
-	CONVERTA(counter[2]);
-	CONVERT(bOn);
-	CONVERT(bOff);
-	CONVERT(b1024);
-	CONVERTA(dialogBox);
-//	CONVERTA(fileDialogBox);
-	CONVERTA(iLevelCheck);
-	CONVERT(iLevelCheckBox);
-	CONVERT(iLevelCheckBoxMarked);
-	CONVERTA(iCheckBoxArea);
-	for (int i = 0; i<4; i++) {
-		CONVERTA(explosion[i]);
-	}
-	for (int i = 0; i<7; i++) {
-		CONVERTA(bricks[i]);
-		CONVERTA(balls[i]);
-	}
-	CONVERTA(crossover);
-	CONVERTA(garbageTL);
-	CONVERTA(garbageT);
-	CONVERTA(garbageTR);
-	CONVERTA(garbageR);
-	CONVERTA(garbageBR);
-	CONVERTA(garbageB);
-	CONVERTA(garbageBL);
-	CONVERTA(garbageL);
-	CONVERTA(garbageFill);
-	CONVERTA(garbageML);
-	CONVERTA(garbageMR);
-	CONVERTA(garbageM);
-	CONVERTA(garbageGML);
-	CONVERTA(garbageGMR);
-	CONVERTA(garbageGM);
-	CONVERTA(smiley[0]);
-	CONVERTA(smiley[1]);
-	CONVERTA(smiley[2]);
-	CONVERTA(smiley[3]);
-	CONVERTA(iWinner);
-	CONVERTA(iDraw);
-	CONVERTA(iLoser);
-	CONVERTA(iChainBack);
-	CONVERTA(iGameOver);
-	mouse->OptimizeForBlit(true);
-	bNewGame->OptimizeForBlit(true);
-	CONVERTA(stageBobble);
-	CONVERTA(transCover);
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
 	memset(&nf_button_color,0,sizeof(SDL_Color));
 	nf_button_color.b = 255;
@@ -532,14 +464,11 @@ static int InitImages() {
 	nf_standard_small_color.b = 0;
 	nf_standard_small_color.g = 0;
 	nf_standard_small_color.r = 200;
-	NFont_OpenFont(&nf_button_font,"fonts/FreeSerif.ttf",24,nf_button_color);
-	nf_button_font.setDest(screen);
-	NFont_OpenFont(&nf_standard_blue_font,"fonts/FreeSerif.ttf",30,nf_standard_blue_color);
-	nf_standard_blue_font.setDest(screen);
-	NFont_OpenFont(&nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
-	nf_standard_small_font.setDest(screen);
-	NFont_OpenFont(&nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color);
-	nf_scoreboard_font.setDest(boardBackBack);
+	NFont_OpenFont(screen, &nf_button_font,"fonts/FreeSerif.ttf",24,nf_button_color);
+	NFont_OpenFont(screen, &nf_standard_blue_font,"fonts/FreeSerif.ttf",30,nf_standard_blue_color);
+	NFont_OpenFont(screen, &nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
+	SDL_RendererHolder backbackRenderer();
+	NFont_OpenFont(screen, &nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color); //should draw to boardBackBack
 	nf_scoreboard_font.draw(370,148,_("Score:") );
 	nf_scoreboard_font.draw(370,197,_("Time:") );
 	nf_scoreboard_font.draw(370,246,_("Chain:") );
@@ -2685,7 +2614,7 @@ int main(int argc, char* argv[]) {
 			NoSound = true; //Tries to stop all sound from playing/loading
 		}
 
-	SDL_WM_SetCaption("Block Attack - Rise of the Blocks", nullptr); //Sets title line
+	//SDL_WM_SetCaption("Block Attack - Rise of the Blocks", nullptr); //Sets title line
 
 	if (verboseLevel) {
 		//Copyright notice:
@@ -2805,18 +2734,21 @@ int main(int argc, char* argv[]) {
 	}
 
 
+	// "Block Attack - Rise of the Blocks"
 	//Open video
+	int createWindowParams = 0;
 	if ((bFullscreen)&&(!singlePuzzle)) {
-		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
+		createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
-	else {
-		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
-	}
-
-	if ( screen == nullptr ) {
-		cerr << "Unable to set " << xsize << "x" << ysize << " video: " << SDL_GetError() << endl;
-		exit(1);
-	}
+	
+	SDL_Window *sdlWindow = SDL_CreateWindow("Block Attack - Rise of the BlocksMy Game Window",
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              xsize, ysize,
+                              createWindowParams );
+	dieOnNullptr(sdlWindow, "Unable to create window");
+	SDL_Renderer *renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+	dieOnNullptr(renderer, "Unable to create render");
 
 	//Init the file system abstraction layer
 	PHYSFS_init(argv[0]);

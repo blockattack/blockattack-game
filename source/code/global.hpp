@@ -39,7 +39,7 @@ extern bool SoundEnabled;			//true if sound effects is enabled
 extern bool bFullscreen;			//true if game is running fullscreen
 extern std::string player1name;
 extern std::string player2name;
-extern SDL_Surface *screen;        //The whole screen;
+extern SDL_Renderer *screen;        //The whole screen;
 extern std::shared_ptr<CppSdl::CppSdlImageHolder> mouse;
 extern SDL_Surface* backgroundImage;
 extern bool highPriority;

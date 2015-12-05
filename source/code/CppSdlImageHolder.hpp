@@ -77,7 +77,6 @@ public:
 	 * @param y vertical placement on destination surface
 	 */
 	void PaintTo(SDL_Surface *target, int x, int y);
-	void OptimizeForBlit(bool allowAlpha = true);
 	/**
 	 * Tests if there are data in the object
 	 * @return true if where are data in the object

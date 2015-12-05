@@ -92,18 +92,6 @@ void CppSdlImageHolder::PaintTo(SDL_Surface* target, int x, int y) {
 	SDL_BlitSurface(data,&area, target,&dest);
 }
 
-void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha) {
-	static SDL_Surface* tmp;
-	Initialized();
-	if (allowAlpha) {
-		tmp = SDL_DisplayFormatAlpha(data);
-	}
-	else {
-		tmp = SDL_DisplayFormat(data);
-	}
-	SDL_FreeSurface(data);
-	data = tmp;
-}
 
 void CppSdlImageHolder::Initialized() {
 	if (data == nullptr) {

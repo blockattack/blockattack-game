@@ -54,7 +54,7 @@ static SDL_Surface *iChainBack;
 static SDL_Surface *bHighScore;    //The High Score botton
 static SDL_Surface *blackLine;		//The seperator in stage clear
 static SDL_Surface *stageBobble;	//The bobble instage clear
-SDL_Surface *screen;        //The whole screen;
+SDL_Renderer *screen;        //The whole screen;
 static SDL_Surface *iGameOver;     //The gameOver image
 static SDL_Surface *iWinner;		//the "winner" image
 static SDL_Surface *iDraw;			//the "draw" image
@@ -239,12 +239,12 @@ bool joyplay2=false;    //Player two uses the joypad
 //Stores the controls
 struct control
 {
-	SDLKey up;
-	SDLKey down;
-	SDLKey left;
-	SDLKey right;
-	SDLKey change;
-	SDLKey push;
+	SDL_Keycode up;
+	SDL_Keycode down;
+	SDL_Keycode left;
+	SDL_Keycode right;
+	SDL_Keycode change;
+	SDL_Keycode push;
 };
 
 control keySettings[3];	//array to hold the controls (default and two custom)

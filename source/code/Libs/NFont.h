@@ -1,56 +1,15 @@
-
-// Define this here or in your project settings if you want to use the SDL_ttf features.
-#define NFONT_USE_TTF
-
 /*
-NFont v2.0.0: A bitmap font class for SDL
-by Jonathan Dearborn 2-4-10
-(class originally adapted from Florian Hufsky)
-
-Requires:
-    SDL ("SDL.h") [www.libsdl.org]
-
-Optionally Requires:
-    SDL_ttf ("SDL_ttf.h") [www.libsdl.org]
-
-Notes:
-    NFont is a bitmap font class with text-block alignment, full
-    support for the newline character ('\n'), animation, and extended ASCII
-    support.  It accepts SDL_Surfaces so that any image format you can load
-    can be used as an NFont.
-
-    NFont has the ability to animate the font in two ways: It's position or
-    it's everything.  By using drawPos(), you can use a function you create
-    to handle the final positions of the drawn characters.  With drawAll(),
-    you can handle everything that the font does (please use my
-    drawToSurface() function as a reference).
-
-    Internally, NFont uses a pointer (SDL_Surface*) to handle the destination
-    surface.  You have to set the destination before the font can be used.  Be
-    aware that you will need to use setDest() if you replace the memory that
-    it points to (like when using screen = SDL_SetVideoMode()).
-
-    NFont can use standard SFont bitmaps or extended bitmaps.  The standard bitmaps
-    have the following characters (ASCII 33-126) separated by pink (255, 0, 255) pixels in the topmost
-    row:
-    ! " # $ % & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; < = > ? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ _ ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~
-
-    And the extended bitmaps have these (ASCII 161-255):
-    ! " # $ % & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; < = > ? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ _ ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~ � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � � �
-
-    NFont can also load SDL_ttf fonts.  Define NFONT_USE_TTF before including
-    NFont.h to use the flexibility of NFont with TrueType fonts.
-
-    If you come up with something cool using NFont, I'd love to hear about it.
-    Any comments can be sent to GrimFang4 [at] gmail [dot] com
+NFont v4.0.0: A font class for SDL and SDL_Renderer
+by Jonathan Dearborn
+Dedicated to the memory of Florian Hufsky
 
 License:
     The short:
-    Use it however you'd like, but keep the copyright and license notice
+    Use it however you'd like, but keep the copyright and license notice 
     whenever these files or parts of them are distributed in uncompiled form.
-
+    
     The long:
-Copyright (c) 2010 Jonathan Dearborn
+Copyright (c) 2014 Jonathan Dearborn
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -69,153 +28,275 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
 */
 
 #ifndef _NFONT_H__
 #define _NFONT_H__
 
 #include "SDL.h"
+
+#if defined(FC_USE_SDL_GPU) && !defined(NFONT_USE_SDL_GPU)
+#define NFONT_USE_SDL_GPU
+#endif
+
+#ifdef NFONT_USE_SDL_GPU
+    #include "SDL_gpu.h"
+#endif
+
 #include "stdarg.h"
 
-#ifdef NFONT_USE_TTF
-#include "SDL_ttf.h"
+// Let's pretend this exists...
+#ifndef TTF_STYLE_OUTLINE
+    #define TTF_STYLE_OUTLINE	16
 #endif
 
-class NFont
+struct FC_Font;
+
+typedef struct _TTF_Font TTF_Font;
+
+#if defined(NFONT_DLL) || defined(NFONT_DLL_EXPORT)
+	#ifdef NFONT_DLL_EXPORT
+	#define NFONT_EXPORT __declspec(dllexport)
+	#else
+	#define NFONT_EXPORT __declspec(dllimport)
+	#endif
+#else
+	#define NFONT_EXPORT
+#endif
+
+class NFONT_EXPORT NFont
 {
-public:
+  public:
 
-	// Nested struct
-	struct AnimData
-	{
-		const NFont* font;
+	class NFONT_EXPORT Color
+    {
+        public:
+        
+        Uint8 r, g, b, a;
+        
+        Color();
+        Color(Uint8 r, Uint8 g, Uint8 b);
+        Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+        Color(const SDL_Color& color);
+        
+        Color& rgb(Uint8 R, Uint8 G, Uint8 B);
+        Color& rgba(Uint8 R, Uint8 G, Uint8 B, Uint8 A);
+        Color& color(const SDL_Color& color);
+        
+        SDL_Color to_SDL_Color() const;
+    };
+    
+	class NFONT_EXPORT Rectf
+    {
+        public:
+        float x, y;
+        float w, h;
+        
+        Rectf();
+        Rectf(float x, float y);
+        Rectf(float x, float y, float w, float h);
+        Rectf(const SDL_Rect& rect);
+        
+        SDL_Rect to_SDL_Rect() const;
+        
+        #ifdef NFONT_USE_SDL_GPU
+        Rectf(const GPU_Rect& rect);
+        GPU_Rect to_GPU_Rect() const;
+        #endif
+    };
 
-		SDL_Surface* dest;
-		SDL_Surface* src;
-		char* text;  // Buffer for efficient drawing
-		int height;
-		const int* charPos;
-		const int* charWidth;
-		int maxX;
+    
+    enum AlignEnum {LEFT, CENTER, RIGHT};
+    enum FilterEnum {NEAREST, LINEAR};
+    
+	class NFONT_EXPORT Scale
+    {
+        public:
+        
+        float x;
+        float y;
+        
+        enum ScaleTypeEnum {NEAREST};
+        ScaleTypeEnum type;
+        
+        Scale()
+            : x(1.0f), y(1.0f), type(NEAREST)
+        {}
+        Scale(float xy)
+            : x(xy), y(xy), type(NEAREST)
+        {}
+        Scale(float xy, ScaleTypeEnum type)
+            : x(xy), y(xy), type(type)
+        {}
+        Scale(float x, float y)
+            : x(x), y(y), type(NEAREST)
+        {}
+        Scale(float x, float y, ScaleTypeEnum type)
+            : x(x), y(y), type(type)
+        {}
+    };
+    
+	class NFONT_EXPORT Effect
+    {
+        public:
+        AlignEnum alignment;
+        Scale scale;
+        bool use_color;
+        Color color;
+        
+        Effect()
+            : alignment(LEFT), use_color(false), color(255, 255, 255, 255)
+        {}
+        
+        Effect(const Scale& scale)
+            : alignment(LEFT), scale(scale), use_color(false), color(255, 255, 255, 255)
+        {}
+        Effect(AlignEnum alignment)
+            : alignment(alignment), use_color(false), color(255, 255, 255, 255)
+        {}
+        Effect(const Color& color)
+            : alignment(LEFT), use_color(true), color(color)
+        {}
+        
+        Effect(AlignEnum alignment, const Scale& scale)
+            : alignment(alignment), scale(scale), use_color(false), color(255, 255, 255, 255)
+        {}
+        Effect(AlignEnum alignment, const Color& color)
+            : alignment(alignment), use_color(true), color(color)
+        {}
+        Effect(const Scale& scale, const Color& color)
+            : alignment(LEFT), scale(scale), use_color(true), color(color)
+        {}
+        Effect(AlignEnum alignment, const Scale& scale, const Color& color)
+            : alignment(alignment), scale(scale), use_color(true), color(color)
+        {}
+    };
+    
+    
+    // Constructors
+    NFont();
+    NFont(const NFont& font);
+    #ifdef NFONT_USE_SDL_GPU
+    NFont(SDL_Surface* src);
+    NFont(TTF_Font* ttf);
+    NFont(TTF_Font* ttf, const NFont::Color& color);
+    NFont(const char* filename_ttf, Uint32 pointSize);
+    NFont(const char* filename_ttf, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    NFont(SDL_RWops* file_rwops_ttf, Uint8 own_rwops, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    #else
+    NFont(SDL_Renderer* renderer, SDL_Surface* src);
+    NFont(SDL_Renderer* renderer, TTF_Font* ttf);
+    NFont(SDL_Renderer* renderer, TTF_Font* ttf, const NFont::Color& color);
+    NFont(SDL_Renderer* renderer, const char* filename_ttf, Uint32 pointSize);
+    NFont(SDL_Renderer* renderer, const char* filename_ttf, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    NFont(SDL_Renderer* renderer, SDL_RWops* file_rwops_ttf, Uint8 own_rwops, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    #endif
+    
+    ~NFont();
+    
+    NFont& operator=(const NFont& font);
 
-		int index;
-		int letterNum;
-		int wordNum;
-		int lineNum;
-		int startX;
-		int startY;
-		void* userVar;
+    // Loading
+    void setLoadingString(const char* str);
+    
+    #ifdef NFONT_USE_SDL_GPU
+    bool load(SDL_Surface* FontSurface);
+    bool load(TTF_Font* ttf);
+    bool load(TTF_Font* ttf, const NFont::Color& color);
+    bool load(const char* filename_ttf, Uint32 pointSize);
+    bool load(const char* filename_ttf, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    bool load(SDL_RWops* file_rwops_ttf, Uint8 own_rwops, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    #else
+    bool load(SDL_Renderer* renderer, SDL_Surface* FontSurface);
+    bool load(SDL_Renderer* renderer, TTF_Font* ttf);
+    bool load(SDL_Renderer* renderer, TTF_Font* ttf, const NFont::Color& color);
+    bool load(SDL_Renderer* renderer, const char* filename_ttf, Uint32 pointSize);
+    bool load(SDL_Renderer* renderer, const char* filename_ttf, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    bool load(SDL_Renderer* renderer, SDL_RWops* file_rwops_ttf, Uint8 own_rwops, Uint32 pointSize, const NFont::Color& color, int style = 0);
+    #endif
+    
+    void free();
 
-		SDL_Rect dirtyRect;
-	};
-
-	// Function pointer
-	typedef void (*AnimFn)(int&, int&, AnimData&);
-
-protected:
-
-
-	SDL_Surface* src;  // bitmap source of characters
-	SDL_Surface* dest; // Destination to blit to
-
-	int height;
-
-	int maxWidth;
-	int baseline;
-	int ascent;
-	int descent;
-
-	int lineSpacing;
-	int letterSpacing;
-
-	int charPos[256];
-	int charWidth[256];
-	int maxPos;
-
-	void init();
-
-	SDL_Rect drawToSurface(int x, int y, const char* text) const;
-	SDL_Rect drawToSurfacePos(int x, int y, NFont::AnimFn posFn) const;
-
-	// Static variables
-	static char* buffer;  // Buffer for efficient drawing
-	static AnimData data;  // Data is wrapped in a struct so it can all be passed to
-	// the function pointers for animation
-
-public:
-
-	// Static functions
-	static char* copyString(const char* c);
-	static Uint32 getPixel(SDL_Surface *Surface, int x, int y);
-	static inline SDL_Rect makeRect(Sint16 x, Sint16 y, Uint16 w, Uint16 h)
-	{
-		SDL_Rect r = {x, y, w, h};
-		return r;
-	}
-	static SDL_Rect rectUnion(const SDL_Rect& A, const SDL_Rect& B);
-	static SDL_Surface* copySurface(SDL_Surface *Surface);
-	static SDL_Surface* verticalGradient(SDL_Surface* targetSurface, Uint32 topColor, Uint32 bottomColor, int heightAdjust = 0);
-
-	// Static accessors
-	static void setAnimData(void* data);
-	static void setBuffer(unsigned int size);
-
-	// Constructors
-	NFont();
-	NFont(SDL_Surface* src);
-	NFont(SDL_Surface* dest, SDL_Surface* src);
-#ifdef NFONT_USE_TTF
-	NFont(TTF_Font* ttf, SDL_Color fg);  // Alpha bg
-	NFont(TTF_Font* ttf, SDL_Color fg, SDL_Color bg);
-	NFont(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style = TTF_STYLE_NORMAL);  // Alpha bg
-	NFont(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style = TTF_STYLE_NORMAL);
-	NFont(SDL_Surface* dest, TTF_Font* ttf, SDL_Color fg);  // Alpha bg
-	NFont(SDL_Surface* dest, TTF_Font* ttf, SDL_Color fg, SDL_Color bg);
-	NFont(SDL_Surface* dest, const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style = TTF_STYLE_NORMAL);  // Alpha bg
-	NFont(SDL_Surface* dest, const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style = TTF_STYLE_NORMAL);
-#endif
-
-	~NFont();
-
-	// Loading
-	bool load(SDL_Surface* FontSurface);
-	bool load(SDL_Surface* destSurface, SDL_Surface* FontSurface);
-#ifdef NFONT_USE_TTF
-	bool load(TTF_Font* ttf, SDL_Color fg);  // Alpha bg
-	bool load(TTF_Font* ttf, SDL_Color fg, SDL_Color bg);
-	bool load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, int style = TTF_STYLE_NORMAL);  // Alpha bg
-	bool load(const char* filename_ttf, Uint32 pointSize, SDL_Color fg, SDL_Color bg, int style = TTF_STYLE_NORMAL);
-#endif
-
-	void freeSurface();
-
-	// Drawing
-	SDL_Rect draw(int x, int y, const char* formatted_text, ...) const __attribute__ ((format (printf, 4, 5)));
-	SDL_Rect drawCenter(int x, int y, const char* formatted_text, ...) const __attribute__ ((format (printf, 4, 5)));
-	SDL_Rect drawRight(int x, int y, const char* formatted_text, ...) const __attribute__ ((format (printf, 4, 5)));
-	SDL_Rect drawPos(int x, int y, NFont::AnimFn posFn, const char* text, ...) const __attribute__ ((format (printf, 5, 6)));
-	SDL_Rect drawAll(int x, int y, NFont::AnimFn allFn, const char* text, ...) const __attribute__ ((format (printf, 5, 6)));
-
-	// Getters
-	SDL_Surface* getDest() const;
-	SDL_Surface* getSurface() const;
-	int getHeight(const char* formatted_text = NULL, ...) const __attribute__ ((format (printf, 2, 3)));
-	int getWidth(const char* formatted_text, ...) const __attribute__ ((format (printf, 2, 3)));
-	int getSpacing() const;
-	int getLineSpacing() const;
-	int getBaseline() const;
-	int getAscent(const char character) const;
-	int getAscent(const char* formatted_text = NULL, ...) const __attribute__ ((format (printf, 2, 3)));
-	int getDescent(const char character) const;
-	int getDescent(const char* formatted_text = NULL, ...) const __attribute__ ((format (printf, 2, 3)));
-	int getMaxWidth() const;
-
-	// Setters
-	void setDest(SDL_Surface* Dest);
-	void setSpacing(int LetterSpacing);
-	void setLineSpacing(int LineSpacing);
-	int setBaseline(int Baseline = -1);
+    // Drawing
+    #ifdef NFONT_USE_SDL_GPU
+    Rectf draw(GPU_Target* dest, float x, float y, const char* formatted_text, ...);
+    Rectf draw(GPU_Target* dest, float x, float y, AlignEnum align, const char* formatted_text, ...);
+    Rectf draw(GPU_Target* dest, float x, float y, const Scale& scale, const char* formatted_text, ...);
+    Rectf draw(GPU_Target* dest, float x, float y, const Color& color, const char* formatted_text, ...);
+    Rectf draw(GPU_Target* dest, float x, float y, const Effect& effect, const char* formatted_text, ...);
+    
+    Rectf drawBox(GPU_Target* dest, const Rectf& box, const char* formatted_text, ...);
+    Rectf drawBox(GPU_Target* dest, const Rectf& box, AlignEnum align, const char* formatted_text, ...);
+    Rectf drawBox(GPU_Target* dest, const Rectf& box, const Scale& scale, const char* formatted_text, ...);
+    Rectf drawBox(GPU_Target* dest, const Rectf& box, const Color& color, const char* formatted_text, ...);
+    Rectf drawBox(GPU_Target* dest, const Rectf& box, const Effect& effect, const char* formatted_text, ...);
+    
+    Rectf drawColumn(GPU_Target* dest, float x, float y, Uint16 width, const char* formatted_text, ...);
+    Rectf drawColumn(GPU_Target* dest, float x, float y, Uint16 width, AlignEnum align, const char* formatted_text, ...);
+    Rectf drawColumn(GPU_Target* dest, float x, float y, Uint16 width, const Scale& scale, const char* formatted_text, ...);
+    Rectf drawColumn(GPU_Target* dest, float x, float y, Uint16 width, const Color& color, const char* formatted_text, ...);
+    Rectf drawColumn(GPU_Target* dest, float x, float y, Uint16 width, const Effect& effect, const char* formatted_text, ...);
+    #else
+    Rectf draw(SDL_Renderer* dest, float x, float y, const char* formatted_text, ...);
+    Rectf draw(SDL_Renderer* dest, float x, float y, AlignEnum align, const char* formatted_text, ...);
+    Rectf draw(SDL_Renderer* dest, float x, float y, const Scale& scale, const char* formatted_text, ...);
+    Rectf draw(SDL_Renderer* dest, float x, float y, const Color& color, const char* formatted_text, ...);
+    Rectf draw(SDL_Renderer* dest, float x, float y, const Effect& effect, const char* formatted_text, ...);
+    
+    Rectf drawBox(SDL_Renderer* dest, const Rectf& box, const char* formatted_text, ...);
+    Rectf drawBox(SDL_Renderer* dest, const Rectf& box, AlignEnum align, const char* formatted_text, ...);
+    Rectf drawBox(SDL_Renderer* dest, const Rectf& box, const Scale& scale, const char* formatted_text, ...);
+    Rectf drawBox(SDL_Renderer* dest, const Rectf& box, const Color& color, const char* formatted_text, ...);
+    Rectf drawBox(SDL_Renderer* dest, const Rectf& box, const Effect& effect, const char* formatted_text, ...);
+    
+    Rectf drawColumn(SDL_Renderer* dest, float x, float y, Uint16 width, const char* formatted_text, ...);
+    Rectf drawColumn(SDL_Renderer* dest, float x, float y, Uint16 width, AlignEnum align, const char* formatted_text, ...);
+    Rectf drawColumn(SDL_Renderer* dest, float x, float y, Uint16 width, const Scale& scale, const char* formatted_text, ...);
+    Rectf drawColumn(SDL_Renderer* dest, float x, float y, Uint16 width, const Color& color, const char* formatted_text, ...);
+    Rectf drawColumn(SDL_Renderer* dest, float x, float y, Uint16 width, const Effect& effect, const char* formatted_text, ...);
+    #endif
+    
+    // Getters
+    #ifdef NFONT_USE_SDL_GPU
+    GPU_Image* getImage() const;
+    #else
+    SDL_Texture* getImage() const;
+    #endif
+    SDL_Surface* getSurface() const;
+    FilterEnum getFilterMode() const;
+    Uint16 getHeight() const;
+    Uint16 getHeight(const char* formatted_text, ...) const;
+    Uint16 getWidth(const char* formatted_text, ...);
+    Rectf getCharacterOffset(Uint16 position_index, int column_width, const char* formatted_text, ...);
+    Uint16 getColumnHeight(Uint16 width, const char* formatted_text, ...);
+    int getSpacing() const;
+    int getLineSpacing() const;
+    Uint16 getBaseline() const;
+    int getAscent() const;
+    int getAscent(const char character);
+    int getAscent(const char* formatted_text, ...);
+    int getDescent() const;
+    int getDescent(const char character);
+    int getDescent(const char* formatted_text, ...);
+    Uint16 getMaxWidth() const;
+    Color getDefaultColor() const;
+    
+    // Setters
+    void setFilterMode(FilterEnum filter);
+    void setSpacing(int LetterSpacing);
+    void setLineSpacing(int LineSpacing);
+    void setBaseline();
+    void setBaseline(Uint16 Baseline);
+    void setDefaultColor(const Color& color);
+    
+    void enableTTFOwnership();
+    
+  private:
+    
+    static char* buffer;
+    FC_Font* font;
+    
+    void init();  // Common constructor
 
 };
 
