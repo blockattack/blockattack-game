@@ -94,7 +94,6 @@ http://blockattack.sf.net
 
 using namespace std;
 
-static void MakeBackground(int,int);
 
 SDL_Surface* IMG_Load2(const char* path) {
 	if (!PHYSFS_exists(path)) {
@@ -357,7 +356,6 @@ Mix_Chunk* Mix_LoadWAV2(const char* path) {
 //Load all image files to memory
 static int InitImages() {
 	if (!((backgroundImage = IMG_Load2("gfx/background.png"))
-	        && (background = IMG_Load2("gfx/blackBackGround.png"))
 	        && (bOptions = IMG_Load2("gfx/bOptions.png"))
 	        && (bConfigure = IMG_Load2("gfx/bConfigure.png"))
 	        && (bSelectPuzzle = IMG_Load2("gfx/bSelectPuzzle.png"))
@@ -458,7 +456,6 @@ static int InitImages() {
 
 
 	//Prepare for fast blittering!
-	CONVERT(background);
 	CONVERT(backgroundImage);
 	CONVERT(bOptions);
 	CONVERTA(bConfigure);
@@ -593,7 +590,6 @@ void UnloadImages() {
 	//I think this will crash, at least it happend to me...
 	//Chrashes no more. Caused by an undocumented double free
 	SDL_FreeSurface(backgroundImage);
-	SDL_FreeSurface(background);
 	SDL_FreeSurface(bOptions);
 	SDL_FreeSurface(bConfigure);
 	SDL_FreeSurface(bSelectPuzzle);
@@ -1238,6 +1234,7 @@ private:
 public:
 	//Draws everything
 	void DoPaintJob() {
+		DrawIMG(boardBackBack,screen,this->GetTopX()-60,this->GetTopY()-68);
 		DrawImgBoard(backBoard,  0, 0);
 		nf_standard_blue_font.setDest(screen); //reset to screen at the end of this funciton!
 
@@ -1394,9 +1391,6 @@ static string getKeyName(SDLKey key) {
 	return keyname;
 }
 
-void MakeBackground(int xsize,int ysize,BlockGame& theGame, BlockGame& theGame2);
-
-
 
 //Dialogbox
 bool OpenDialogbox(int x, int y, std::string& name) {
@@ -1404,8 +1398,7 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 	bool accept = false;   //New name is accepted! (not Cancelled)
 	ReadKeyboard rk = ReadKeyboard(name.c_str());
 	string strHolder;
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
+	DrawIMG(backgroundImage,screen,0,0);
 	SDLUnicodeScope unicodeScope;
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(dialogBox,screen,x,y);
@@ -1460,8 +1453,7 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 
 //Draws the highscores
 void DrawHighscores(int x, int y, bool endless) {
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
+	DrawIMG(backgroundImage,screen,0,0);
 	if (endless) {
 		nf_standard_blue_font.draw(x+100,y+100, "%s",_("Endless:") );
 	}
@@ -1489,8 +1481,7 @@ void DrawHighscores(int x, int y, bool endless) {
 }
 
 void DrawStats() {
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
+	DrawIMG(backgroundImage,screen,0,0);
 	int y = 5;
 	const int y_spacing = 30;
 	NFont_Write(screen, 10,y,_("Stats") );
@@ -1683,12 +1674,10 @@ bool OpenFileDialogbox(int x, int y, char* name) {
 	string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles";
 	lf.setDirectory2(homeFolder.c_str());
 #endif
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
-	DrawIMG(bForward,background,x+460,y+420);
-	DrawIMG(bBack,background,x+20,y+420);
 	while (!done && !Config::getInstance()->isShuttingDown()) {
-		DrawIMG(background,screen,0,0);
+		DrawIMG(backgroundImage,screen,0,0);
+		DrawIMG(bForward,screen,x+460,y+420);
+		DrawIMG(bBack,screen,x+20,y+420);
 		const int nrOfFiles = 10;
 		DrawIMG(changeButtonsBack,screen,x,y);
 		for (int i=0; i<nrOfFiles; i++) {
@@ -1780,8 +1769,9 @@ static void DrawBalls() {
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);
-	DrawIMG(background,screen,0,0);
+	DrawIMG(backgroundImage,screen,0,0);
 	theGame->DoPaintJob();
+	theGame2->DoPaintJob();
 	string strHolder;
 	strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
@@ -1896,9 +1886,6 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
 		}
-		else {
-			theGame2->DoPaintJob();
-		}
 		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
 		if (theGame2->GetAIenabled()) {
@@ -1980,32 +1967,6 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 
 }
 
-//Generates the standard background
-static void MakeBackground(int xsize,int ysize) {
-	int w = backgroundImage->w;
-	int h = backgroundImage->h;
-	for (int i=0; i*w<xsize; i++)
-		for (int j=0; j*h<ysize; j++) {
-			DrawIMG(backgroundImage,background,i*w,j*h);
-		}
-	standardBackground = true;
-}
-
-//Generates the background with red board backs
-static void MakeBackground(int xsize,int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
-	MakeBackground(xsize,ysize);
-	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
-	DrawIMG(boardBackBack,background,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
-	standardBackground = false;
-}
-
-static void MakeBackground(int xsize, int ysize, BlockGameSdl* theGame) {
-	MakeBackground(xsize,ysize);
-	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
-	standardBackground = false;
-}
-
-
 //The function that allows the player to choose PuzzleLevel
 int PuzzleLevelSelect(int Type) {
 	const int xplace = 200;
@@ -2030,7 +1991,6 @@ int PuzzleLevelSelect(int Type) {
 	//Keeps track of background;
 	SDL_GetTicks();
 
-	MakeBackground(xsize,ysize);
 	if (Type == 0) {
 		nrOfLevels = PuzzleGetNumberOfPuzzles();
 	}
@@ -2081,7 +2041,7 @@ int PuzzleLevelSelect(int Type) {
 		SDL_GetTicks();
 
 
-		DrawIMG(background, screen, 0, 0);
+		DrawIMG(backgroundImage, screen, 0, 0);
 		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
 		if (Type == 0) {
 			NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
@@ -2206,7 +2166,7 @@ int PuzzleLevelSelect(int Type) {
 		SDL_Flip(screen); //draws it all to the screen
 
 	}
-	DrawIMG(background, screen, 0, 0);
+	DrawIMG(backgroundImage, screen, 0, 0);
 	return levelNr;
 }
 
@@ -2218,15 +2178,11 @@ void startVsMenu() {
 	int mousex, mousey;
 	bool done = false;
 
-	//Keeps track of background;
-	//int nowTime=SDL_GetTicks();
-
-	MakeBackground(xsize,ysize);
-	NFont_Write(background, 360,650, _("Press ESC to accept") );
-	DrawIMG(bBack,background,xsize/2-120/2,600);
 	do {
 		//nowTime=SDL_GetTicks();
-		DrawIMG(background, screen, 0, 0);
+		DrawIMG(backgroundImage, screen, 0, 0);
+		NFont_Write(screen, 360,650, _("Press ESC to accept") );
+		DrawIMG(bBack,screen,xsize/2-120/2,600);
 		DrawIMG(changeButtonsBack,screen,xplace,yplace);
 		NFont_Write(screen, xplace+50,yplace+20,"Player 1");
 		NFont_Write(screen, xplace+300+50,yplace+20,"Player 2");
@@ -2350,7 +2306,7 @@ void startVsMenu() {
 
 	}
 	while (!done && !Config::getInstance()->isShuttingDown());
-	DrawIMG(background, screen, 0, 0);
+	DrawIMG(backgroundImage, screen, 0, 0);
 }
 
 //This function will promt for the user to select another file for puzzle mode
@@ -2418,8 +2374,7 @@ static int StartSinglePlayerPuzzle(int level) {
 		return 1;
 	}
 	player1->NewPuzzleGame(myLevel,SDL_GetTicks());
-	MakeBackground(xsize,ysize,player1,player2);
-	DrawIMG(background, screen, 0, 0);
+	DrawIMG(backgroundImage, screen, 0, 0);
 	twoPlayers = false;
 	player2->SetGameOver();
 	//vsMode = true;
@@ -2806,14 +2761,7 @@ int main(int argc, char* argv[]) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 	}
-	//Draws everything to screen
-	if (!editorMode) {
-		MakeBackground(xsize,ysize,&theGame,&theGame2);
-	}
-	else {
-		MakeBackground(xsize,ysize,&theGame);
-	}
-	DrawIMG(background, screen, 0, 0);
+	DrawIMG(backgroundImage, screen, 0, 0);
 	DrawEverything(xsize,ysize,&theGame,&theGame2);
 	SDL_Flip(screen);
 	//game loop
@@ -2934,16 +2882,6 @@ int runGame(int gametype, int level) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 	}
-	//Draws everything to screen
-	if (!editorMode) {
-		MakeBackground(xsize,ysize,&theGame,&theGame2);
-	}
-	else {
-		MakeBackground(xsize,ysize,&theGame);
-	}
-	/*DrawIMG(background, screen, 0, 0);
-	DrawEverything(xsize,ysize,&theGame,&theGame2);
-	SDL_Flip(screen);*/
 	//game loop
 	int done = 0;
 	if (verboseLevel) {
@@ -2969,8 +2907,7 @@ int runGame(int gametype, int level) {
 					return 1;
 				}
 				theGame.NewStageGame(myLevel,SDL_GetTicks());
-				MakeBackground(xsize,ysize,&theGame,&theGame2);
-				DrawIMG(background, screen, 0, 0);
+				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers =false;
 				theGame2.SetGameOver();
 				theGame.name = player1name;
@@ -2987,8 +2924,7 @@ int runGame(int gametype, int level) {
 				int theAIlevel = level; //startSingleVs();
 				theGame.NewVsGame(&theGame2, SDL_GetTicks());
 				theGame2.NewVsGame(&theGame, SDL_GetTicks());
-				MakeBackground(xsize,ysize,&theGame,&theGame2);
-				DrawIMG(background, screen, 0, 0);
+				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
 				theGame2.setAIlevel((Uint8)theAIlevel);
 				int theTime = time(0);
@@ -3010,7 +2946,7 @@ int runGame(int gametype, int level) {
 				break;
 			};
 			mustsetupgame = false;
-			DrawIMG(background, screen, 0, 0);
+			DrawIMG(backgroundImage, screen, 0, 0);
 			DrawEverything(xsize,ysize,&theGame,&theGame2);
 			SDL_Flip(screen);
 		}
@@ -3018,17 +2954,7 @@ int runGame(int gametype, int level) {
 		if (!(highPriority)) {
 			SDL_Delay(1);
 		}
-
-		if ((standardBackground)&&(!editorMode)) {
-			MakeBackground(xsize,ysize,&theGame,&theGame2);
-			DrawIMG(background, screen, 0, 0);
-		}
-
-		if ((standardBackground)&&(editorMode)) {
-			DrawIMG(backgroundImage, screen, 0, 0);
-			MakeBackground(xsize,ysize,&theGame);
-			DrawIMG(background, screen, 0, 0);
-		}
+		DrawIMG(backgroundImage, screen, 0, 0);
 
 		//updates the balls and explosions:
 		theBallManeger.update();
@@ -3047,7 +2973,7 @@ int runGame(int gametype, int level) {
 				if ( event.type == SDL_KEYDOWN ) {
 					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
 						done=1;
-						DrawIMG(background, screen, 0, 0);
+						DrawIMG(backgroundImage, screen, 0, 0);
 
 					}
 					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled())) {
@@ -3453,7 +3379,7 @@ int runGame(int gametype, int level) {
 				//read mouse events
 				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 					bMouseUp = false;
-					DrawIMG(background, screen, 0, 0);
+					DrawIMG(backgroundImage, screen, 0, 0);
 
 
 					/********************************************************************

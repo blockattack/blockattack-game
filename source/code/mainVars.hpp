@@ -36,7 +36,6 @@ http://blockattack.sf.net
 const char sharedir[] = SHAREDIR;
 
 //All graphic in the game (as pointers):
-static SDL_Surface *background;    //Stores background
 SDL_Surface *backgroundImage; //Stores the background image
 static SDL_Surface *backBoard;     //Stores the background to the board
 static std::shared_ptr<CppSdl::CppSdlImageHolder> bNewGame;      //The New Game botton
