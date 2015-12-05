@@ -11,6 +11,7 @@ A Tetris Attack Clone under the GPL.
   * libenet
   * libphysfs
   * libboost (only needed for compiling)
+  * libutfcpp (only needed for compiling)
 
 # Building
 To build do:

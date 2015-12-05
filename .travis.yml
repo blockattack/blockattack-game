@@ -16,6 +16,7 @@ addons:
     - libphysfs-dev
     - libboost1.55-dev
     - scons
+    - libutfcpp-dev
 
 cache:
   apt: true

@@ -22,7 +22,7 @@ http://blockattack.sf.net
 */
 
 #include "ReadKeyboard.h"
-
+#include "utf8.h"
 
 using namespace std;
 
@@ -48,14 +48,16 @@ ReadKeyboard::ReadKeyboard(const char* oldName) {
 void ReadKeyboard::putchar(char thing) {
 	if (text_string.length() < maxLength) {
 		text_string.insert(position, thing);
-		position++;
+		utf8::advance(position, 1, text_string.end());
 	}
 }
 
 
 void ReadKeyboard::removeChar() {
 	if (position < text_string.end()) {
-		text_string.erase(position);
+		string::iterator endChar= position;
+		utf8::advance(endChar, 1, text_string.end());
+		text_string.erase(position, endChar);
 	}
 }
 
@@ -86,7 +88,7 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 	}
 	if (keyPressed == SDLK_BACKSPACE) {
 		if (position>text_string.begin()) {
-			position--;
+			utf8::prior(position, text_string.begin());
 			ReadKeyboard::removeChar();
 			return true;
 		}
@@ -101,11 +103,11 @@ bool ReadKeyboard::ReadKey(SDLKey keyPressed) {
 		return true;
 	}
 	if ((keyPressed == SDLK_LEFT) && (position>text_string.begin())) {
-		position--;
+		utf8::prior(position, text_string.begin());
 		return true;
 	}
 	if ((keyPressed == SDLK_RIGHT) && (position<text_string.end())) {
-		position++;
+		utf8::next(position, text_string.end());
 		return true;
 	}
 	return true;
