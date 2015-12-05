@@ -1,4 +1,7 @@
 #! /bin/bash
+# Travis runs Ubuntu 12.04 and misses libutfcpp-dev.
+cp source/misc/travis_help/utf8_v2_3_4/source/utf8.h source/code/
+cp -r source/misc/travis_help/utf8_v2_3_4/source/utf8 source/code/
 make -C source/code -f Makefile
 make clean
 ./packdata.sh
