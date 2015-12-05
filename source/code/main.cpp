@@ -680,6 +680,36 @@ void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y) {
 	SDL_BlitSurface(img, nullptr, target, &dest);
 }
 
+void DrawIMG_Bounded(SDL_Surface* img, SDL_Surface* target, int x, int y, int minx, int miny, int maxx, int maxy) {
+	SDL_Rect dest;
+	dest.x = x;
+	dest.y = y;
+	if (dest.x >= minx && dest.y >= miny && dest.x + img->w <= maxx && dest.y + img->h <= maxy) {
+		SDL_BlitSurface(img, nullptr, target, &dest);
+		return;
+	}
+	SDL_Rect dest2;
+	dest2.x = 0;
+	dest2.y = 0;
+	dest2.w = img->w;
+	dest2.h = img->h;
+	if (dest.x < minx) {
+		dest2.x += minx-dest.x;
+		dest.x = minx;
+	}
+	if (dest.y < miny) {
+		dest2.y += miny-dest.y;
+		dest.y = miny;
+	}
+	if (dest.y+dest2.h > maxy) {
+		dest2.h -= (dest.y+dest2.h - maxy);
+	}
+	if (dest.x+dest2.w > maxx) {
+		dest2.w -= (dest.x+dest2.w - maxx);
+	}
+	SDL_BlitSurface(img, &dest2, target, &dest);
+}
+
 /*Draws a part of an image on a surface of choice*/
 void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y, int w, int h, int x2, int y2) {
 	SDL_Rect dest;
@@ -995,18 +1025,17 @@ static textManeger theTextManeger;
 
 class BlockGameSdl : public BlockGame {
 public:
-	SDL_Surface* sBoard;
-
 	BlockGameSdl(int tx, int ty) {
-		tmp = IMG_Load2("gfx/BackBoard.png");
-		sBoard = SDL_DisplayFormat(tmp);
-		SDL_FreeSurface(tmp);
-		//BlockGame::BlockGame(tx,ty);
 		topx = tx;
 		topy = ty;
 	}
-	~BlockGameSdl() {
-		SDL_FreeSurface(sBoard);
+	
+	void DrawImgBoard(SDL_Surface* img, int x, int y) const {
+		DrawIMG(img, screen, x+topx, y+topy);
+	}
+	
+	void DrawImgBoardBounded(SDL_Surface* img, int x, int y) const {
+		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard->w, topy + backBoard->h);
 	}
 
 	int GetTopX() const {
@@ -1066,21 +1095,17 @@ public:
 		Mix_PlayChannel(1, applause, 0);
 	}
 private:
-	void convertSurface() {
-		SDL_FreeSurface(sBoard);
-		sBoard = SDL_DisplayFormat(backBoard);
-	}
 	//Draws all the bricks to the board (including garbage)
 	void PaintBricks() const {
 		for (int i=0; ((i<13)&&(i<30)); i++)
 			for (int j=0; j<6; j++) {
 				if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0)) {
-					DrawIMG(bricks[board[j][i]%10], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+					DrawImgBoardBounded(bricks[board[j][i]%10],  j*bsize, bsize*12-i*bsize-pixels);
 					if ((board[j][i]/BLOCKWAIT)%10==1) {
-						DrawIMG(bomb[(ticks/BOMBTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoard(bomb[(ticks/BOMBTIME)%2],  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((board[j][i]/BLOCKHANG)%10==1) {
-						DrawIMG(ready[(ticks/READYTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(ready[(ticks/READYTIME)%2],  j*bsize, bsize*12-i*bsize-pixels);
 					}
 
 				}
@@ -1112,51 +1137,51 @@ private:
 						under = board[j][i-1];
 					}
 					if ((left == number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawIMG(garbageFill, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageFill,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawIMG(garbageL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageL,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over == number)&&(under == number)) {
-						DrawIMG(garbageR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawIMG(garbageT, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageT,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawIMG(garbageB, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageB,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawIMG(garbageTL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageTL,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawIMG(garbageBL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageBL,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over != number)&&(under == number)) {
-						DrawIMG(garbageTR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageTR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over == number)&&(under != number)) {
-						DrawIMG(garbageBR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageBR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over != number)&&(under != number)) {
-						DrawIMG(garbageMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageMR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawIMG(garbageM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageM,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawIMG(garbageML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageML,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
 				if ((board[j][i]/1000000)%10==2) {
 					if (j==0) {
-						DrawIMG(garbageGML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageGML,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					else if (j==5) {
-						DrawIMG(garbageGMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageGMR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					else {
-						DrawIMG(garbageGM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageGM,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
 			}
@@ -1192,7 +1217,7 @@ private:
 					under = board[j][i-1];
 				}
 				if (((left != number)&&(right == number)&&(over != number)&&(under == number))&&(garbageSize>0)) {
-					DrawIMG(smiley[board[j][i]%4], sBoard, 2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
+					DrawImgBoardBounded(smiley[board[j][i]%4],  2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
 				}
 				if (!((left != number)&&(right == number)&&(over == number)&&(under == number))) { //not in garbage
 					garbageSize=0;
@@ -1205,7 +1230,7 @@ private:
 		}
 		for (int i=0; i<6; i++) {
 			if (board[i][0]!=-1) {
-				DrawIMG(transCover, sBoard, i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
+				DrawImgBoardBounded(transCover,  i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
 			}
 		}
 
@@ -1213,59 +1238,59 @@ private:
 public:
 	//Draws everything
 	void DoPaintJob() {
-		DrawIMG(backBoard, sBoard, 0, 0);
-		nf_standard_blue_font.setDest(sBoard); //reset to screen at the end of this funciton!
+		DrawImgBoard(backBoard,  0, 0);
+		nf_standard_blue_font.setDest(screen); //reset to screen at the end of this funciton!
 
 		PaintBricks();
 		if (stageClear) {
-			DrawIMG(blackLine, sBoard, 0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
+			DrawImgBoard(blackLine,  0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
 		}
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = "Moves left: " + itoa(MovesLeft);
-			nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+			nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
-			DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
+			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
 			if (Level<PuzzleGetNumberOfPuzzles()-1) {
 				if (hasWonTheGame) {
-					DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
 				}
 				else {
-					DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
 				}
 			}
 			else {
 				strHolder = "Last puzzle";
-				nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+				nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
-			DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
+			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
 			if (Level<50-1) {
 				if (hasWonTheGame) {
-					DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
 				}
 				else {
-					DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
 				}
 			}
 			else {
 				strHolder = "Last stage";
-				nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+				nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 
 #if DEBUG
 		if (AI_Enabled&&(!bGameOver)) {
 			strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
-			//NFont_Write(sBoard,   5, 5, strHolder.c_str());
-			nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+			//NFont_Write(   5, 5, strHolder.c_str());
+			nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 		}
 #endif
 		if (!bGameOver) {
-			DrawIMG(cursor[(ticks/600)%2],sBoard,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
+			DrawImgBoard(cursor[(ticks/600)%2],cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
 		}
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
@@ -1275,13 +1300,13 @@ public:
 			lastCounter = currentCounter;
 			switch (currentCounter) {
 			case 2:
-				DrawIMG(counter[2], sBoard, 2*bsize, 5*bsize);
+				DrawImgBoard(counter[2],  2*bsize, 5*bsize);
 				break;
 			case 1:
-				DrawIMG(counter[1], sBoard, 2*bsize, 5*bsize);
+				DrawImgBoard(counter[1],  2*bsize, 5*bsize);
 				break;
 			case 0:
-				DrawIMG(counter[0], sBoard, 2*bsize, 5*bsize);
+				DrawImgBoard(counter[0],  2*bsize, 5*bsize);
 				break;
 			default:
 				break;
@@ -1307,14 +1332,14 @@ public:
 
 		if ((bGameOver)&&(!editorMode)) {
 			if (hasWonTheGame) {
-				DrawIMG(iWinner, sBoard, 0, 5*bsize);
+				DrawImgBoard(iWinner,  0, 5*bsize);
 			}
 			else {
 				if (bDraw) {
-					DrawIMG(iDraw, sBoard, 0, 5*bsize);
+					DrawImgBoard(iDraw,  0, 5*bsize);
 				}
 				else {
-					DrawIMG(iGameOver, sBoard, 0, 5*bsize);
+					DrawImgBoard(iGameOver,  0, 5*bsize);
 				}
 			}
 		}
@@ -1324,7 +1349,6 @@ public:
 
 	void Update(int newtick) {
 		BlockGame::Update(newtick);
-		DoPaintJob();
 	}
 
 private:
@@ -1757,7 +1781,7 @@ static void DrawBalls() {
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);
 	DrawIMG(background,screen,0,0);
-	DrawIMG(theGame->sBoard,screen,theGame->GetTopX(),theGame->GetTopY());
+	theGame->DoPaintJob();
 	string strHolder;
 	strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
@@ -1873,7 +1897,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			}
 		}
 		else {
-			DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
+			theGame2->DoPaintJob();
 		}
 		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
@@ -2770,8 +2794,6 @@ int main(int argc, char* argv[]) {
 	    theGame2.GetTopY()=10000;
 	    theGame2.GetTopX()=10000;
 	}*/
-	theGame.DoPaintJob();           //Makes sure what there is something to paint
-	theGame2.DoPaintJob();
 	theGame.SetGameOver();      //sets the game over in the beginning
 	theGame2.SetGameOver();
 
