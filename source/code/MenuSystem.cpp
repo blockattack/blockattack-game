@@ -95,17 +95,17 @@ void Button::doAction() {
 	cerr << "Warning: button \"" << label << "\" has no action assigned!";
 }
 
-void Button::drawTo(SDL_Surface** surface) {
+void Button::drawToScreen() {
 #if DEBUG
 	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
 #endif
 	if (marked) {
-		gfx->marked->PaintTo(*surface,x,y);
+		gfx->marked->PaintTo(screen, x, y);
 	}
 	else {
-		gfx->unmarked->PaintTo(*surface,x,y);
+		gfx->unmarked->PaintTo(screen,x,y);
 	}
-	gfx->thefont.setDest(*surface);
+	gfx->thefont.setDest(screen);
 	gfx->thefont.drawCenter(x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont.getHeight("%s", label.c_str())/2, "%s", label.c_str());
 }
 
@@ -129,9 +129,9 @@ void Menu::drawSelf() {
 	DrawIMG(backgroundImage,screen,0,0);
 	vector<Button*>::iterator it;
 	for (it = buttons.begin(); it < buttons.end(); it++) {
-		(*it)->drawTo(&screen);
+		(*it)->drawToScreen();
 	}
-	exit.drawTo(&screen);
+	exit.drawToScreen();
 	standardButton.thefont.draw(50, 50, "%s", title.c_str());
 	mouse->PaintTo(screen,mousex,mousey);
 }
@@ -171,15 +171,15 @@ void Menu::addButton(Button* b) {
 	placeButtons();
 }
 
-Menu::Menu(SDL_Surface** screen) {
-	this->screen = *screen;
+Menu::Menu(SDL_Surface* screen) {
+	this->screen = screen;
 	buttons = vector<Button*>(10);
 	isSubmenu = true;
 	exit.setLabel( _("Back") );
 }
 
-Menu::Menu(SDL_Surface** screen,bool submenu) {
-	this->screen = *screen;
+Menu::Menu(SDL_Surface* screen,bool submenu) {
+	this->screen = screen;
 	buttons = vector<Button*>(0);
 	isSubmenu = submenu;
 	if (isSubmenu) {
@@ -190,8 +190,8 @@ Menu::Menu(SDL_Surface** screen,bool submenu) {
 	}
 }
 
-Menu::Menu(SDL_Surface** screen, const string& title, bool submenu) {
-	this->screen = *screen;
+Menu::Menu(SDL_Surface* screen, const string& title, bool submenu) {
+	this->screen = screen;
 	buttons = vector<Button*>(0);
 	isSubmenu = submenu;
 	this->title = title;
