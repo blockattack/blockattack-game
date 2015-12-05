@@ -34,7 +34,7 @@ http://blockattack.sf.net
 
 //If DEBUG is defined: AI info and FPS will be written to screen
 #ifndef DEBUG
-#define DEBUG 0
+#define DEBUG 1
 #endif
 
 #define WITH_SDL 1
@@ -780,14 +780,10 @@ class ballManeger {
 public:
 	aBall ballArray[maxNumberOfBalls];
 	bool ballUsed[maxNumberOfBalls];
-	//The old ball information is also saved so balls can be deleted!
-	aBall oldBallArray[maxNumberOfBalls];
-	bool oldBallUsed[maxNumberOfBalls];
 
 	ballManeger() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			ballUsed[i] = false;
-			oldBallUsed[i] = false;
 		}
 	}
 
@@ -813,15 +809,10 @@ public:
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
 			if (ballUsed[i]) {
-				oldBallUsed[i] = true;
-				oldBallArray[i] = ballArray[i];
 				ballArray[i].update();
 				if (ballArray[i].getY()>800 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize) {
 					ballUsed[i] = false;
 				}
-			}
-			else {
-				oldBallUsed[i] = false;
 			}
 		}
 	} //update
@@ -878,14 +869,10 @@ class explosionManeger {
 public:
 	anExplosion explosionArray[maxNumberOfBalls];
 	bool explosionUsed[maxNumberOfBalls];
-	//The old explosion information is also saved so explosions can be deleted!
-	anExplosion oldExplosionArray[maxNumberOfBalls];
-	bool oldExplosionUsed[maxNumberOfBalls];
 
 	explosionManeger() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			explosionUsed[i] = false;
-			oldExplosionUsed[i] = false;
 		}
 	}
 
@@ -908,14 +895,9 @@ public:
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
 			if (explosionUsed[i]) {
-				oldExplosionUsed[i] = true;
-				oldExplosionArray[i] = explosionArray[i];
 				if (explosionArray[i].removeMe()) {
 					explosionUsed[i] = false;
 				}
-			}
-			else {
-				oldExplosionUsed[i] = false;
 			}
 		}
 	} //update
@@ -930,7 +912,7 @@ class textMessage {
 private:
 	int x;
 	int y;
-	char textt[10];
+	string textt;
 	unsigned long int time;
 	unsigned long int placeTime; //Then the text was placed
 public:
@@ -943,8 +925,7 @@ public:
 		placeTime = currentTime;
 		x = X;
 		y = Y;
-		strncpy(textt,Text,10);
-		textt[9]=0;
+		textt = Text;
 		time = Time;
 	}  //constructor
 
@@ -962,7 +943,7 @@ public:
 	}
 
 	const char* getText() {
-		return textt;
+		return textt.c_str();
 	}
 };  //text popup
 
@@ -970,20 +951,16 @@ class textManeger {
 public:
 	textMessage textArray[maxNumberOfBalls];
 	bool textUsed[maxNumberOfBalls];
-	//The old text information is also saved so text can be deleted!
-	textMessage oldTextArray[maxNumberOfBalls];
-	bool oldTextUsed[maxNumberOfBalls];
 
 	textManeger() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			textUsed[i] = false;
-			oldTextUsed[i] = false;
 		}
 	}
 
 	int addText(int x, int y,string Text,unsigned int Time) {
 		int textNumber = 0;
-		while ((textNumber<maxNumberOfBalls)&&((textUsed[textNumber])||(oldTextUsed[textNumber]))) {
+		while (textNumber<maxNumberOfBalls && textUsed[textNumber]) {
 			textNumber++;
 		}
 		if (textNumber==maxNumberOfBalls) {
@@ -1000,16 +977,9 @@ public:
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
 			if (textUsed[i]) {
-				if (!oldTextUsed[i]) {
-					oldTextUsed[i] = true;
-					oldTextArray[i] = textMessage(textArray[i]);
-				}
 				if (textArray[i].removeMe()) {
 					textUsed[i] = false;
 				}
-			}
-			else if (oldTextUsed[i]) {
-				oldTextUsed[i] = false;
 			}
 		}
 	} //update
@@ -1233,10 +1203,11 @@ private:
 
 			}
 		}
-		for (int i=0; i<6; i++)
+		for (int i=0; i<6; i++) {
 			if (board[i][0]!=-1) {
 				DrawIMG(transCover, sBoard, i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
 			}
+		}
 
 	}
 public:
@@ -1591,7 +1562,7 @@ void OpenScoresDisplay() {
 		string pageXofY = (boost::format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
 		NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
 
-		SDL_Delay(10);
+		SDL_Delay(1);
 		SDL_Event event;
 
 		SDL_GetMouseState(&mousex,&mousey);
@@ -1781,44 +1752,11 @@ static void DrawBalls() {
 	} //for
 }    //DrawBalls
 
-//Removes the old balls
-void UndrawBalls() {
-	for (int i = 0; i< maxNumberOfBalls; i++) {
-		if (theBallManeger.oldBallUsed[i]) {
-			DrawIMG(background,screen,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY(),ballSize,ballSize,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY());
-		} //if used
-		if (theExplosionManeger.oldExplosionUsed[i]) {
-			DrawIMG(background,screen,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY(),70,120,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY());
-		}
-		if (theTextManeger.oldTextUsed[i]) {
-			int x = theTextManeger.oldTextArray[i].getX()-12;
-			int y = theTextManeger.oldTextArray[i].getY()-12;
-			DrawIMG(background,screen,x,y,25,25,x,y);
-		}
-	} //for
-}   //UndrawBalls
 
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);
-	//draw background:
-	if (forceredraw != 1) {
-
-		UndrawBalls();
-		DrawIMG(background,screen,oldMousex,oldMousey,32,32,oldMousex,oldMousey);
-		DrawIMG(background,screen,oldBubleX,oldBubleY,140,50,oldBubleX,oldBubleY);
-
-
-		DrawIMG(background,screen,350,200,120,200,350,200);
-		DrawIMG(background,screen,830,200,120,200,830,200);
-		DrawIMG(background,screen,800,0,140,50,800,0);
-
-		DrawIMG(background,screen,50,60,300,50,50,60);
-		DrawIMG(background,screen,510,60,300,50,510,60);
-	}
-	else {
-		DrawIMG(background,screen,0,0);
-	}
+	DrawIMG(background,screen,0,0);
 	DrawIMG(theGame->sBoard,screen,theGame->GetTopX(),theGame->GetTopY());
 	string strHolder;
 	strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
@@ -2011,7 +1949,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	}
 
 	//NFont_Write(screen, 800,4,FPS);
-	nf_standard_blue_font.draw(800,4,FPS);
+	nf_standard_blue_font.draw(800, 4, "%s", FPS);
 #endif
 
 	//SDL_Flip(screen); Update screen is now called outside DrawEvrything, bacause the mouse needs to be painted
@@ -2384,7 +2322,7 @@ void startVsMenu() {
 		//DrawIMG(mouse,screen,mousex,mousey);
 		mouse->PaintTo(screen,mousex,mousey);
 		SDL_Flip(screen); //draws it all to the screen
-		SDL_Delay(10);
+		SDL_Delay(1);
 
 	}
 	while (!done && !Config::getInstance()->isShuttingDown());
@@ -2550,12 +2488,9 @@ int main(int argc, char* argv[]) {
 	textdomain (PACKAGE);
 	if (argc > 1) {
 		int argumentNr = 1;
-		forceredraw = 2;
 		while (argc>argumentNr) {
 			const char helpString[] = "--help";
 			const char priorityString[] = "-priority";
-			const char forceRedrawString[] = "-forceredraw";
-			const char forcepartdrawString[] = "-forcepartdraw";
 			const char singlePuzzleString[] = "-SP";
 			const char noSoundAtAll[] = "-nosound";
 			const char selectTheme[] = "-theme";
@@ -2563,8 +2498,6 @@ int main(int argc, char* argv[]) {
 			if (strequals(argv[argumentNr],helpString)) {
 				cout << "Block Attack Help" << endl << helpString << "  " << _("Displays this message") <<
 				     endl << "-priority  " << _("Starts game in high priority") << endl <<
-				     "-forceredraw  " << _("Redraw the whole screen every frame, prevents garbage") << endl <<
-				     "-forcepartdraw  " << _("Only draw what is changed, sometimes cause garbage") << endl <<
 				     "-nosound  " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl <<
 				     "-theme <" << _("THEMENAME") << ">  " << _("Changes to the theme <THEMENAME> on startup") << endl;
 #ifdef WIN32
@@ -2577,12 +2510,6 @@ int main(int argc, char* argv[]) {
 					cout << "Priority mode" << endl;
 				}
 				highPriority = true;
-			}
-			if (strequals(argv[argumentNr],forceRedrawString)) {
-				forceredraw = 1;
-			}
-			if (strequals(argv[argumentNr],forcepartdrawString)) {
-				forceredraw = 2;
 			}
 			if (strequals(argv[argumentNr],singlePuzzleString)) {
 				singlePuzzle = true; //We will just have one puzzle
@@ -3067,7 +2994,7 @@ int runGame(int gametype, int level) {
 		}
 
 		if (!(highPriority)) {
-			SDL_Delay(10);
+			SDL_Delay(1);
 		}
 
 		if ((standardBackground)&&(!editorMode)) {

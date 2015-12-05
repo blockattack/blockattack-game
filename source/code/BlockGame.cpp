@@ -457,13 +457,11 @@ void BlockGame::putStartBlocks() {
 }
 
 void BlockGame::putStartBlocks(Uint32 n) {
-#if DEBUG
-	cout << n << ":" << f.str() << endl;
-#endif
-	for (int i=0; i<7; i++)
+	for (int i=0; i<7; i++) {
 		for (int j=0; j<30; j++) {
 			board[i][j] = -1;
 		}
+	}
 	nextRandomNumber = n;
 	int choice = rand2()%3; //Pick a random layout
 	switch (choice) {

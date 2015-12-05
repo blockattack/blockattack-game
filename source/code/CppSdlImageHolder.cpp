@@ -89,7 +89,7 @@ void CppSdlImageHolder::PaintTo(SDL_Surface* target, int x, int y) {
 	}
 	dest.x = x;
 	dest.y = y;
-	SDL_BlitSurface(data,&area, target,&dest);
+	SDL_BlitSurface(data, &area, target,&dest);
 }
 
 void CppSdlImageHolder::OptimizeForBlit(bool allowAlpha) {
