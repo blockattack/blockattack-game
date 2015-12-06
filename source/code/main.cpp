@@ -536,19 +536,7 @@ static int InitImages() {
 	NFont_OpenFont(&nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
 	nf_standard_small_font.setDest(screen);
 	NFont_OpenFont(&nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color);
-	nf_scoreboard_font.setDest(boardBackBack);
-	nf_scoreboard_font.draw(370,148,_("Score:") );
-	nf_scoreboard_font.draw(370,197,_("Time:") );
-	nf_scoreboard_font.draw(370,246,_("Chain:") );
-	nf_scoreboard_font.draw(370,295,_("Speed:") );
-	nf_button_font.setDest(bRetry);
-	nf_button_font.drawCenter(60,10,_("Retry"));
-	nf_button_font.setDest(bNext);
-	nf_button_font.drawCenter(60,10,_("Next"));
-	nf_button_font.setDest(bSkip);
-	nf_button_font.drawCenter(60,10,_("Skip"));
-	nf_button_font.setDest(bBack);
-	nf_button_font.drawCenter(60,10,_("Back"));
+	nf_scoreboard_font.setDest(screen);
 	nf_button_font.setDest(screen);
 
 
@@ -1033,6 +1021,10 @@ public:
 	void DrawImgBoardBounded(SDL_Surface* img, int x, int y) const {
 		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard->w, topy + backBoard->h);
 	}
+	
+	void PrintTextCenteredBoard(int x, int y, const char* text) {
+		nf_button_font.drawCenter(x+topx+60, y+topy+10, "%s", text);
+	}
 
 	int GetTopX() const {
 		return topx;
@@ -1235,6 +1227,11 @@ public:
 	//Draws everything
 	void DoPaintJob() {
 		DrawIMG(boardBackBack,screen,this->GetTopX()-60,this->GetTopY()-68);
+		
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
 		DrawImgBoard(backBoard,  0, 0);
 		nf_standard_blue_font.setDest(screen); //reset to screen at the end of this funciton!
 
@@ -1250,12 +1247,15 @@ public:
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
 			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
+			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
 			if (Level<PuzzleGetNumberOfPuzzles()-1) {
 				if (hasWonTheGame) {
 					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
 				}
 				else {
 					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Skip"));
 				}
 			}
 			else {
@@ -1265,12 +1265,15 @@ public:
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
 			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
+			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
 			if (Level<50-1) {
 				if (hasWonTheGame) {
 					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
 				}
 				else {
 					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Skip"));
 				}
 			}
 			else {
@@ -1571,7 +1574,9 @@ void OpenScoresDisplay() {
 		//Draw buttons:
 		DrawIMG(bHighScore,screen,scoreX,scoreY);
 		DrawIMG(bBack,screen,backX,backY);
+		nf_button_font.drawCenter(backX+60,backY+10,_("Back"));
 		DrawIMG(bNext,screen,nextX,nextY);
+		nf_button_font.drawCenter(nextX+60,nextY+10,_("Next"));
 
 		//Draw page number
 		string pageXofY = (boost::format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
@@ -1677,7 +1682,9 @@ bool OpenFileDialogbox(int x, int y, char* name) {
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(backgroundImage,screen,0,0);
 		DrawIMG(bForward,screen,x+460,y+420);
+		nf_button_font.drawCenter(x+20+60, y+420+10, _("Forward"));
 		DrawIMG(bBack,screen,x+20,y+420);
+		nf_button_font.drawCenter(x+20+60, y+420+10, _("Back"));
 		const int nrOfFiles = 10;
 		DrawIMG(changeButtonsBack,screen,x,y);
 		for (int i=0; i<nrOfFiles; i++) {
@@ -2168,145 +2175,6 @@ int PuzzleLevelSelect(int Type) {
 	}
 	DrawIMG(backgroundImage, screen, 0, 0);
 	return levelNr;
-}
-
-
-//The function that allows the player to choose Level number
-void startVsMenu() {
-	const int xplace = 200;
-	const int yplace = 100;
-	int mousex, mousey;
-	bool done = false;
-
-	do {
-		//nowTime=SDL_GetTicks();
-		DrawIMG(backgroundImage, screen, 0, 0);
-		NFont_Write(screen, 360,650, _("Press ESC to accept") );
-		DrawIMG(bBack,screen,xsize/2-120/2,600);
-		DrawIMG(changeButtonsBack,screen,xplace,yplace);
-		NFont_Write(screen, xplace+50,yplace+20,"Player 1");
-		NFont_Write(screen, xplace+300+50,yplace+20,"Player 2");
-		NFont_Write(screen, xplace+50,yplace+70,"Speed:");
-		NFont_Write(screen, xplace+50+300,yplace+70,"Speed:");
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+50+i*40,yplace+110,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+150);
-			if (player1Speed==i) {
-				DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+150);
-			}
-		}
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+300+50+i*40,yplace+110,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+300+50+i*40,yplace+150);
-			if (player2Speed==i) {
-				DrawIMG(iLevelCheck,screen,xplace+300+50+i*40,yplace+150);
-			}
-		}
-		NFont_Write(screen, xplace+50,yplace+200,"AI: ");
-		DrawIMG(iLevelCheckBox,screen,xplace+50+70,yplace+200);
-		if (player1AI) {
-			DrawIMG(iLevelCheck,screen,xplace+50+70,yplace+200);
-		}
-		NFont_Write(screen, xplace+50,yplace+250,"TT Handicap: ");
-		NFont_Write(screen, xplace+50+300,yplace+200,"AI: ");
-		DrawIMG(iLevelCheckBox,screen,xplace+50+70+300,yplace+200);
-		if (player2AI) {
-			DrawIMG(iLevelCheck,screen,xplace+50+70+300,yplace+200);
-		}
-		NFont_Write(screen, xplace+50+300,yplace+250,"TT Handicap: ");
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+50+i*40,yplace+290,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+330);
-			if (player1handicap==i) {
-				DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+330);
-			}
-		}
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+50+i*40+300,yplace+290,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40+300,yplace+330);
-			if (player2handicap==i) {
-				DrawIMG(iLevelCheck,screen,xplace+50+i*40+300,yplace+330);
-			}
-		}
-
-		SDL_Event event;
-		while ( SDL_PollEvent(&event) ) {
-			if ( event.type == SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
-					done = true;
-				}
-				if ( event.key.keysym.sym == SDLK_RETURN ) {
-					done = true;
-				}
-				if ( event.key.keysym.sym == SDLK_KP_ENTER ) {
-					done = true;
-				}
-			}
-		}
-
-		SDL_GetKeyState(nullptr);
-
-		SDL_GetMouseState(&mousex,&mousey);
-
-		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
-			bMouseUp=true;
-		}
-
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-			bMouseUp = false;
-
-			if ((mousex>xplace+50+70)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30)&&(mousey<yplace+200+30)) {
-				player1AI=!player1AI;
-			}
-			if ((mousex>xplace+50+70+300)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30+300)&&(mousey<yplace+200+30)) {
-				player2AI=!player2AI;
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+150)&&(mousey<yplace+150+30)) {
-					player1Speed=i;
-				}
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+150)&&(mousey<yplace+150+30)) {
-					player2Speed=i;
-				}
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+330)&&(mousey<yplace+330+30)) {
-					player1handicap=i;
-				}
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+330)&&(mousey<yplace+330+30)) {
-					player2handicap=i;
-				}
-			}
-			if ((mousex>xsize/2-120/2)&&(mousex<xsize/2+120/2)&&(mousey>600)&&(mousey<640)) {
-				done = true;
-			}
-		}
-
-		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse->PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen); //draws it all to the screen
-		SDL_Delay(1);
-
-	}
-	while (!done && !Config::getInstance()->isShuttingDown());
-	DrawIMG(backgroundImage, screen, 0, 0);
 }
 
 //This function will promt for the user to select another file for puzzle mode
