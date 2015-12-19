@@ -187,7 +187,7 @@ static void buttonActionHighscores(Button* b) {
 }
 
 static void ChangeKeysMenu(long playernumber) {
-	Menu km(&screen,_("Change key bindings"),true);
+	Menu km(screen,_("Change key bindings"),true);
 	Button_changekey bLeft(&keySettings[playernumber].left,_("Left") );
 	Button_changekey bRight(&keySettings[playernumber].right,_("Right") );
 	Button_changekey bUp(&keySettings[playernumber].up,_("Up") );
@@ -212,7 +212,7 @@ static void ChangeKeysMenu2(Button* b) {
 }
 
 static void ConfigureMenu(Button* b) {
-	Menu cm(&screen,_("Configuration"),true);
+	Menu cm(screen,_("Configuration"),true);
 	Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
 	Button bPlayer1Keys, bPlayer2Keys;
 	bMusic.setLabel(MusicEnabled? _("Music: On") : _("Music: Off") );
@@ -240,7 +240,7 @@ static void ConfigureMenu(Button* b) {
 }
 
 static void SinglePlayerVsMenu(Button* b) {
-	Menu spvs(&screen,_("Single player VS"),true);
+	Menu spvs(screen,_("Single player VS"),true);
 	Button d1,d2,d3,d4,d5,d6,d7;
 	d1.setAction(runSinglePlayerVs);
 	d2.setAction(runSinglePlayerVs);
@@ -281,7 +281,7 @@ static void SinglePlayerVsMenu(Button* b) {
 }
 
 static void MultiplayerMenu(Button* b) {
-	Menu mm(&screen,_("Multiplayer"),true);
+	Menu mm(screen,_("Multiplayer"),true);
 	Button bTT, bVs, bNet;
 	bTT.setLabel(_("Two player - time trial"));
 	bTT.setAction(runTwoPlayerTimeTrial);
@@ -294,7 +294,7 @@ static void MultiplayerMenu(Button* b) {
 
 void MainMenu() {
 	InitMenues();
-	Menu m(&screen,_("Block Attack - Rise of the blocks"),false);
+	Menu m(screen,_("Block Attack - Rise of the blocks"),false);
 	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bMulti, bConfigure,bHighscore;
 	bHi.setLabel(_("Single player - endless") );
 	bHi.setAction(runSinglePlayerEndless);

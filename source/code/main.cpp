@@ -34,7 +34,7 @@ http://blockattack.sf.net
 
 //If DEBUG is defined: AI info and FPS will be written to screen
 #ifndef DEBUG
-#define DEBUG 0
+#define DEBUG 1
 #endif
 
 #define WITH_SDL 1
@@ -91,7 +91,6 @@ http://blockattack.sf.net
 
 using namespace std;
 
-static void MakeBackground(int,int);
 
 SDL_Surface* IMG_Load2(const char* path) {
 	if (!PHYSFS_exists(path)) {
@@ -354,7 +353,6 @@ Mix_Chunk* Mix_LoadWAV2(const char* path) {
 //Load all image files to memory
 static int InitImages() {
 	if (!((backgroundImage = IMG_Load2("gfx/background.png"))
-	        && (background = IMG_Load2("gfx/blackBackGround.png"))
 	        && (bOptions = IMG_Load2("gfx/bOptions.png"))
 	        && (bConfigure = IMG_Load2("gfx/bConfigure.png"))
 	        && (bSelectPuzzle = IMG_Load2("gfx/bSelectPuzzle.png"))
@@ -452,7 +450,7 @@ static int InitImages() {
 		cerr << e.what() << endl;
 		exit(1);
 	}
-
+	
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
 	memset(&nf_button_color,0,sizeof(SDL_Color));
 	nf_button_color.b = 255;
@@ -467,21 +465,7 @@ static int InitImages() {
 	NFont_OpenFont(screen, &nf_button_font,"fonts/FreeSerif.ttf",24,nf_button_color);
 	NFont_OpenFont(screen, &nf_standard_blue_font,"fonts/FreeSerif.ttf",30,nf_standard_blue_color);
 	NFont_OpenFont(screen, &nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
-	SDL_RendererHolder backbackRenderer();
 	NFont_OpenFont(screen, &nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color); //should draw to boardBackBack
-	nf_scoreboard_font.draw(370,148,_("Score:") );
-	nf_scoreboard_font.draw(370,197,_("Time:") );
-	nf_scoreboard_font.draw(370,246,_("Chain:") );
-	nf_scoreboard_font.draw(370,295,_("Speed:") );
-	nf_button_font.setDest(bRetry);
-	nf_button_font.drawCenter(60,10,_("Retry"));
-	nf_button_font.setDest(bNext);
-	nf_button_font.drawCenter(60,10,_("Next"));
-	nf_button_font.setDest(bSkip);
-	nf_button_font.drawCenter(60,10,_("Skip"));
-	nf_button_font.setDest(bBack);
-	nf_button_font.drawCenter(60,10,_("Back"));
-	nf_button_font.setDest(screen);
 
 
 //Loads the sound if sound present
@@ -522,7 +506,6 @@ void UnloadImages() {
 	//I think this will crash, at least it happend to me...
 	//Chrashes no more. Caused by an undocumented double free
 	SDL_FreeSurface(backgroundImage);
-	SDL_FreeSurface(background);
 	SDL_FreeSurface(bOptions);
 	SDL_FreeSurface(bConfigure);
 	SDL_FreeSurface(bSelectPuzzle);
@@ -602,15 +585,48 @@ static string itoa2(int num) {
 }
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y) {
+void DrawIMG(SDL_Texture* img, SDL_Renderer* target, int x, int y) {
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
-	SDL_BlitSurface(img, nullptr, target, &dest);
+	dest.w = img->;
+	dest.h = SHAPE_SIZE;
+
+	SDL_RenderCopy(target, img, nullptr, &dest);
+}
+
+void DrawIMG_Bounded(SDL_Texture* img, Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
+	SDL_Rect dest;
+	dest.x = x;
+	dest.y = y;
+	if (dest.x >= minx && dest.y >= miny && dest.x + img->w <= maxx && dest.y + img->h <= maxy) {
+		SDL_BlitSurface(img, nullptr, target, &dest);
+		return;
+	}
+	SDL_Rect dest2;
+	dest2.x = 0;
+	dest2.y = 0;
+	dest2.w = img->w;
+	dest2.h = img->h;
+	if (dest.x < minx) {
+		dest2.x += minx-dest.x;
+		dest.x = minx;
+	}
+	if (dest.y < miny) {
+		dest2.y += miny-dest.y;
+		dest.y = miny;
+	}
+	if (dest.y+dest2.h > maxy) {
+		dest2.h -= (dest.y+dest2.h - maxy);
+	}
+	if (dest.x+dest2.w > maxx) {
+		dest2.w -= (dest.x+dest2.w - maxx);
+	}
+	SDL_BlitSurface(img, &dest2, target, &dest);
 }
 
 /*Draws a part of an image on a surface of choice*/
-void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y, int w, int h, int x2, int y2) {
+void DrawIMG(SDL_Texture* img, Renderer* target, int x, int y, int w, int h, int x2, int y2) {
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
@@ -623,10 +639,8 @@ void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y, int w, int h, 
 }
 
 
-void NFont_Write(SDL_Surface* target, int x, int y, const string& text) {
-	nf_standard_blue_font.setDest(target);
-	nf_standard_blue_font.draw(x, y, "%s", text.c_str());
-	nf_standard_blue_font.setDest(screen);
+void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
+	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
 
 void ResetFullscreen() {
@@ -639,7 +653,8 @@ void ResetFullscreen() {
 	}
 	DrawIMG(background, screen, 0, 0);
 #else
-	SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
+	//TODO: Find SDL2 alternative
+	//SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
 #endif
 	SDL_ShowCursor(SDL_DISABLE);
 }
@@ -709,14 +724,10 @@ class ballManeger {
 public:
 	aBall ballArray[maxNumberOfBalls];
 	bool ballUsed[maxNumberOfBalls];
-	//The old ball information is also saved so balls can be deleted!
-	aBall oldBallArray[maxNumberOfBalls];
-	bool oldBallUsed[maxNumberOfBalls];
 
 	ballManeger() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			ballUsed[i] = false;
-			oldBallUsed[i] = false;
 		}
 	}
 
@@ -742,15 +753,10 @@ public:
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
 			if (ballUsed[i]) {
-				oldBallUsed[i] = true;
-				oldBallArray[i] = ballArray[i];
 				ballArray[i].update();
 				if (ballArray[i].getY()>800 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize) {
 					ballUsed[i] = false;
 				}
-			}
-			else {
-				oldBallUsed[i] = false;
 			}
 		}
 	} //update
@@ -807,14 +813,10 @@ class explosionManeger {
 public:
 	anExplosion explosionArray[maxNumberOfBalls];
 	bool explosionUsed[maxNumberOfBalls];
-	//The old explosion information is also saved so explosions can be deleted!
-	anExplosion oldExplosionArray[maxNumberOfBalls];
-	bool oldExplosionUsed[maxNumberOfBalls];
 
 	explosionManeger() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			explosionUsed[i] = false;
-			oldExplosionUsed[i] = false;
 		}
 	}
 
@@ -837,14 +839,9 @@ public:
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
 			if (explosionUsed[i]) {
-				oldExplosionUsed[i] = true;
-				oldExplosionArray[i] = explosionArray[i];
 				if (explosionArray[i].removeMe()) {
 					explosionUsed[i] = false;
 				}
-			}
-			else {
-				oldExplosionUsed[i] = false;
 			}
 		}
 	} //update
@@ -859,7 +856,7 @@ class textMessage {
 private:
 	int x;
 	int y;
-	char textt[10];
+	string textt;
 	unsigned long int time;
 	unsigned long int placeTime; //Then the text was placed
 public:
@@ -872,8 +869,7 @@ public:
 		placeTime = currentTime;
 		x = X;
 		y = Y;
-		strncpy(textt,Text,10);
-		textt[9]=0;
+		textt = Text;
 		time = Time;
 	}  //constructor
 
@@ -891,7 +887,7 @@ public:
 	}
 
 	const char* getText() {
-		return textt;
+		return textt.c_str();
 	}
 };  //text popup
 
@@ -899,20 +895,16 @@ class textManeger {
 public:
 	textMessage textArray[maxNumberOfBalls];
 	bool textUsed[maxNumberOfBalls];
-	//The old text information is also saved so text can be deleted!
-	textMessage oldTextArray[maxNumberOfBalls];
-	bool oldTextUsed[maxNumberOfBalls];
 
 	textManeger() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			textUsed[i] = false;
-			oldTextUsed[i] = false;
 		}
 	}
 
 	int addText(int x, int y,string Text,unsigned int Time) {
 		int textNumber = 0;
-		while ((textNumber<maxNumberOfBalls)&&((textUsed[textNumber])||(oldTextUsed[textNumber]))) {
+		while (textNumber<maxNumberOfBalls && textUsed[textNumber]) {
 			textNumber++;
 		}
 		if (textNumber==maxNumberOfBalls) {
@@ -929,16 +921,9 @@ public:
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
 			if (textUsed[i]) {
-				if (!oldTextUsed[i]) {
-					oldTextUsed[i] = true;
-					oldTextArray[i] = textMessage(textArray[i]);
-				}
 				if (textArray[i].removeMe()) {
 					textUsed[i] = false;
 				}
-			}
-			else if (oldTextUsed[i]) {
-				oldTextUsed[i] = false;
 			}
 		}
 	} //update
@@ -954,18 +939,21 @@ static textManeger theTextManeger;
 
 class BlockGameSdl : public BlockGame {
 public:
-	SDL_Surface* sBoard;
-
 	BlockGameSdl(int tx, int ty) {
-		tmp = IMG_Load2("gfx/BackBoard.png");
-		sBoard = SDL_DisplayFormat(tmp);
-		SDL_FreeSurface(tmp);
-		//BlockGame::BlockGame(tx,ty);
 		topx = tx;
 		topy = ty;
 	}
-	~BlockGameSdl() {
-		SDL_FreeSurface(sBoard);
+	
+	void DrawImgBoard(SDL_Surface* img, int x, int y) const {
+		DrawIMG(img, screen, x+topx, y+topy);
+	}
+	
+	void DrawImgBoardBounded(SDL_Surface* img, int x, int y) const {
+		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard->w, topy + backBoard->h);
+	}
+	
+	void PrintTextCenteredBoard(int x, int y, const char* text) {
+		nf_button_font.drawCenter(x+topx+60, y+topy+10, "%s", text);
 	}
 
 	int GetTopX() const {
@@ -1025,21 +1013,17 @@ public:
 		Mix_PlayChannel(1, applause, 0);
 	}
 private:
-	void convertSurface() {
-		SDL_FreeSurface(sBoard);
-		sBoard = SDL_DisplayFormat(backBoard);
-	}
 	//Draws all the bricks to the board (including garbage)
 	void PaintBricks() const {
 		for (int i=0; ((i<13)&&(i<30)); i++)
 			for (int j=0; j<6; j++) {
 				if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0)) {
-					DrawIMG(bricks[board[j][i]%10], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+					DrawImgBoardBounded(bricks[board[j][i]%10],  j*bsize, bsize*12-i*bsize-pixels);
 					if ((board[j][i]/BLOCKWAIT)%10==1) {
-						DrawIMG(bomb[(ticks/BOMBTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoard(bomb[(ticks/BOMBTIME)%2],  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((board[j][i]/BLOCKHANG)%10==1) {
-						DrawIMG(ready[(ticks/READYTIME)%2], sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(ready[(ticks/READYTIME)%2],  j*bsize, bsize*12-i*bsize-pixels);
 					}
 
 				}
@@ -1071,51 +1055,51 @@ private:
 						under = board[j][i-1];
 					}
 					if ((left == number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawIMG(garbageFill, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageFill,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawIMG(garbageL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageL,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over == number)&&(under == number)) {
-						DrawIMG(garbageR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawIMG(garbageT, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageT,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawIMG(garbageB, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageB,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawIMG(garbageTL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageTL,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawIMG(garbageBL, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageBL,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over != number)&&(under == number)) {
-						DrawIMG(garbageTR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageTR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over == number)&&(under != number)) {
-						DrawIMG(garbageBR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageBR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over != number)&&(under != number)) {
-						DrawIMG(garbageMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageMR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawIMG(garbageM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageM,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawIMG(garbageML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageML,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
 				if ((board[j][i]/1000000)%10==2) {
 					if (j==0) {
-						DrawIMG(garbageGML, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageGML,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					else if (j==5) {
-						DrawIMG(garbageGMR, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageGMR,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					else {
-						DrawIMG(garbageGM, sBoard, j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(garbageGM,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
 			}
@@ -1151,7 +1135,7 @@ private:
 					under = board[j][i-1];
 				}
 				if (((left != number)&&(right == number)&&(over != number)&&(under == number))&&(garbageSize>0)) {
-					DrawIMG(smiley[board[j][i]%4], sBoard, 2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
+					DrawImgBoardBounded(smiley[board[j][i]%4],  2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
 				}
 				if (!((left != number)&&(right == number)&&(over == number)&&(under == number))) { //not in garbage
 					garbageSize=0;
@@ -1162,68 +1146,81 @@ private:
 
 			}
 		}
-		for (int i=0; i<6; i++)
+		for (int i=0; i<6; i++) {
 			if (board[i][0]!=-1) {
-				DrawIMG(transCover, sBoard, i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
+				DrawImgBoardBounded(transCover,  i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
 			}
+		}
 
 	}
 public:
 	//Draws everything
 	void DoPaintJob() {
-		DrawIMG(backBoard, sBoard, 0, 0);
-		nf_standard_blue_font.setDest(sBoard); //reset to screen at the end of this funciton!
+		DrawIMG(boardBackBack,screen,this->GetTopX()-60,this->GetTopY()-68);
+		
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
+		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
+		DrawImgBoard(backBoard,  0, 0);
+		nf_standard_blue_font.setDest(screen); //reset to screen at the end of this funciton!
 
 		PaintBricks();
 		if (stageClear) {
-			DrawIMG(blackLine, sBoard, 0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
+			DrawImgBoard(blackLine,  0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
 		}
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = "Moves left: " + itoa(MovesLeft);
-			nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+			nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
-			DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
+			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
+			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
 			if (Level<PuzzleGetNumberOfPuzzles()-1) {
 				if (hasWonTheGame) {
-					DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
 				}
 				else {
-					DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Skip"));
 				}
 			}
 			else {
 				strHolder = "Last puzzle";
-				nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+				nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
-			DrawIMG(bRetry,sBoard, cordRetryButton.x, cordRetryButton.y);
+			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
+			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
 			if (Level<50-1) {
 				if (hasWonTheGame) {
-					DrawIMG(bNext,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
 				}
 				else {
-					DrawIMG(bSkip,sBoard,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Skip"));
 				}
 			}
 			else {
 				strHolder = "Last stage";
-				nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+				nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 
 #if DEBUG
 		if (AI_Enabled&&(!bGameOver)) {
 			strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
-			//NFont_Write(sBoard,   5, 5, strHolder.c_str());
-			nf_standard_blue_font.draw(5,5, "%s",strHolder.c_str());
+			//NFont_Write(   5, 5, strHolder.c_str());
+			nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
 		}
 #endif
 		if (!bGameOver) {
-			DrawIMG(cursor[(ticks/600)%2],sBoard,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
+			DrawImgBoard(cursor[(ticks/600)%2],cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
 		}
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
@@ -1233,13 +1230,13 @@ public:
 			lastCounter = currentCounter;
 			switch (currentCounter) {
 			case 2:
-				DrawIMG(counter[2], sBoard, 2*bsize, 5*bsize);
+				DrawImgBoard(counter[2],  2*bsize, 5*bsize);
 				break;
 			case 1:
-				DrawIMG(counter[1], sBoard, 2*bsize, 5*bsize);
+				DrawImgBoard(counter[1],  2*bsize, 5*bsize);
 				break;
 			case 0:
-				DrawIMG(counter[0], sBoard, 2*bsize, 5*bsize);
+				DrawImgBoard(counter[0],  2*bsize, 5*bsize);
 				break;
 			default:
 				break;
@@ -1265,14 +1262,14 @@ public:
 
 		if ((bGameOver)&&(!editorMode)) {
 			if (hasWonTheGame) {
-				DrawIMG(iWinner, sBoard, 0, 5*bsize);
+				DrawImgBoard(iWinner,  0, 5*bsize);
 			}
 			else {
 				if (bDraw) {
-					DrawIMG(iDraw, sBoard, 0, 5*bsize);
+					DrawImgBoard(iDraw,  0, 5*bsize);
 				}
 				else {
-					DrawIMG(iGameOver, sBoard, 0, 5*bsize);
+					DrawImgBoard(iGameOver,  0, 5*bsize);
 				}
 			}
 		}
@@ -1282,7 +1279,6 @@ public:
 
 	void Update(int newtick) {
 		BlockGame::Update(newtick);
-		DoPaintJob();
 	}
 
 private:
@@ -1328,9 +1324,6 @@ static string getKeyName(SDLKey key) {
 	return keyname;
 }
 
-void MakeBackground(int xsize,int ysize,BlockGame& theGame, BlockGame& theGame2);
-
-
 
 //Dialogbox
 bool OpenDialogbox(int x, int y, std::string& name) {
@@ -1338,8 +1331,7 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 	bool accept = false;   //New name is accepted! (not Cancelled)
 	ReadKeyboard rk = ReadKeyboard(name.c_str());
 	string strHolder;
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
+	DrawIMG(backgroundImage,screen,0,0);
 	SDLUnicodeScope unicodeScope;
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(dialogBox,screen,x,y);
@@ -1394,8 +1386,7 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 
 //Draws the highscores
 void DrawHighscores(int x, int y, bool endless) {
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
+	DrawIMG(backgroundImage,screen,0,0);
 	if (endless) {
 		nf_standard_blue_font.draw(x+100,y+100, "%s",_("Endless:") );
 	}
@@ -1423,8 +1414,7 @@ void DrawHighscores(int x, int y, bool endless) {
 }
 
 void DrawStats() {
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
+	DrawIMG(backgroundImage,screen,0,0);
 	int y = 5;
 	const int y_spacing = 30;
 	NFont_Write(screen, 10,y,_("Stats") );
@@ -1514,13 +1504,15 @@ void OpenScoresDisplay() {
 		//Draw buttons:
 		DrawIMG(bHighScore,screen,scoreX,scoreY);
 		DrawIMG(bBack,screen,backX,backY);
+		nf_button_font.drawCenter(backX+60,backY+10,_("Back"));
 		DrawIMG(bNext,screen,nextX,nextY);
+		nf_button_font.drawCenter(nextX+60,nextY+10,_("Next"));
 
 		//Draw page number
 		string pageXofY = (boost::format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
 		NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
 
-		SDL_Delay(10);
+		SDL_Delay(1);
 		SDL_Event event;
 
 		SDL_GetMouseState(&mousex,&mousey);
@@ -1617,12 +1609,12 @@ bool OpenFileDialogbox(int x, int y, char* name) {
 	string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles";
 	lf.setDirectory2(homeFolder.c_str());
 #endif
-	MakeBackground(xsize,ysize);
-	DrawIMG(background,screen,0,0);
-	DrawIMG(bForward,background,x+460,y+420);
-	DrawIMG(bBack,background,x+20,y+420);
 	while (!done && !Config::getInstance()->isShuttingDown()) {
-		DrawIMG(background,screen,0,0);
+		DrawIMG(backgroundImage,screen,0,0);
+		DrawIMG(bForward,screen,x+460,y+420);
+		nf_button_font.drawCenter(x+20+60, y+420+10, _("Forward"));
+		DrawIMG(bBack,screen,x+20,y+420);
+		nf_button_font.drawCenter(x+20+60, y+420+10, _("Back"));
 		const int nrOfFiles = 10;
 		DrawIMG(changeButtonsBack,screen,x,y);
 		for (int i=0; i<nrOfFiles; i++) {
@@ -1710,45 +1702,13 @@ static void DrawBalls() {
 	} //for
 }    //DrawBalls
 
-//Removes the old balls
-void UndrawBalls() {
-	for (int i = 0; i< maxNumberOfBalls; i++) {
-		if (theBallManeger.oldBallUsed[i]) {
-			DrawIMG(background,screen,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY(),ballSize,ballSize,theBallManeger.oldBallArray[i].getX(),theBallManeger.oldBallArray[i].getY());
-		} //if used
-		if (theExplosionManeger.oldExplosionUsed[i]) {
-			DrawIMG(background,screen,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY(),70,120,theExplosionManeger.oldExplosionArray[i].getX(),theExplosionManeger.oldExplosionArray[i].getY());
-		}
-		if (theTextManeger.oldTextUsed[i]) {
-			int x = theTextManeger.oldTextArray[i].getX()-12;
-			int y = theTextManeger.oldTextArray[i].getY()-12;
-			DrawIMG(background,screen,x,y,25,25,x,y);
-		}
-	} //for
-}   //UndrawBalls
 
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);
-	//draw background:
-	if (forceredraw != 1) {
-
-		UndrawBalls();
-		DrawIMG(background,screen,oldMousex,oldMousey,32,32,oldMousex,oldMousey);
-		DrawIMG(background,screen,oldBubleX,oldBubleY,140,50,oldBubleX,oldBubleY);
-
-
-		DrawIMG(background,screen,350,200,120,200,350,200);
-		DrawIMG(background,screen,830,200,120,200,830,200);
-		DrawIMG(background,screen,800,0,140,50,800,0);
-
-		DrawIMG(background,screen,50,60,300,50,50,60);
-		DrawIMG(background,screen,510,60,300,50,510,60);
-	}
-	else {
-		DrawIMG(background,screen,0,0);
-	}
-	DrawIMG(theGame->sBoard,screen,theGame->GetTopX(),theGame->GetTopY());
+	DrawIMG(backgroundImage,screen,0,0);
+	theGame->DoPaintJob();
+	theGame2->DoPaintJob();
 	string strHolder;
 	strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
@@ -1863,9 +1823,6 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
 		}
-		else {
-			DrawIMG(theGame2->sBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
-		}
 		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
 		if (theGame2->GetAIenabled()) {
@@ -1940,38 +1897,12 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	}
 
 	//NFont_Write(screen, 800,4,FPS);
-	nf_standard_blue_font.draw(800,4,FPS);
+	nf_standard_blue_font.draw(800, 4, "%s", FPS);
 #endif
 
 	//SDL_Flip(screen); Update screen is now called outside DrawEvrything, bacause the mouse needs to be painted
 
 }
-
-//Generates the standard background
-static void MakeBackground(int xsize,int ysize) {
-	int w = backgroundImage->w;
-	int h = backgroundImage->h;
-	for (int i=0; i*w<xsize; i++)
-		for (int j=0; j*h<ysize; j++) {
-			DrawIMG(backgroundImage,background,i*w,j*h);
-		}
-	standardBackground = true;
-}
-
-//Generates the background with red board backs
-static void MakeBackground(int xsize,int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
-	MakeBackground(xsize,ysize);
-	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
-	DrawIMG(boardBackBack,background,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
-	standardBackground = false;
-}
-
-static void MakeBackground(int xsize, int ysize, BlockGameSdl* theGame) {
-	MakeBackground(xsize,ysize);
-	DrawIMG(boardBackBack,background,theGame->GetTopX()-60,theGame->GetTopY()-68);
-	standardBackground = false;
-}
-
 
 //The function that allows the player to choose PuzzleLevel
 int PuzzleLevelSelect(int Type) {
@@ -1997,7 +1928,6 @@ int PuzzleLevelSelect(int Type) {
 	//Keeps track of background;
 	SDL_GetTicks();
 
-	MakeBackground(xsize,ysize);
 	if (Type == 0) {
 		nrOfLevels = PuzzleGetNumberOfPuzzles();
 	}
@@ -2048,7 +1978,7 @@ int PuzzleLevelSelect(int Type) {
 		SDL_GetTicks();
 
 
-		DrawIMG(background, screen, 0, 0);
+		DrawIMG(backgroundImage, screen, 0, 0);
 		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
 		if (Type == 0) {
 			NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
@@ -2173,151 +2103,8 @@ int PuzzleLevelSelect(int Type) {
 		SDL_Flip(screen); //draws it all to the screen
 
 	}
-	DrawIMG(background, screen, 0, 0);
+	DrawIMG(backgroundImage, screen, 0, 0);
 	return levelNr;
-}
-
-
-//The function that allows the player to choose Level number
-void startVsMenu() {
-	const int xplace = 200;
-	const int yplace = 100;
-	int mousex, mousey;
-	bool done = false;
-
-	//Keeps track of background;
-	//int nowTime=SDL_GetTicks();
-
-	MakeBackground(xsize,ysize);
-	NFont_Write(background, 360,650, _("Press ESC to accept") );
-	DrawIMG(bBack,background,xsize/2-120/2,600);
-	do {
-		//nowTime=SDL_GetTicks();
-		DrawIMG(background, screen, 0, 0);
-		DrawIMG(changeButtonsBack,screen,xplace,yplace);
-		NFont_Write(screen, xplace+50,yplace+20,"Player 1");
-		NFont_Write(screen, xplace+300+50,yplace+20,"Player 2");
-		NFont_Write(screen, xplace+50,yplace+70,"Speed:");
-		NFont_Write(screen, xplace+50+300,yplace+70,"Speed:");
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+50+i*40,yplace+110,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+150);
-			if (player1Speed==i) {
-				DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+150);
-			}
-		}
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+300+50+i*40,yplace+110,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+300+50+i*40,yplace+150);
-			if (player2Speed==i) {
-				DrawIMG(iLevelCheck,screen,xplace+300+50+i*40,yplace+150);
-			}
-		}
-		NFont_Write(screen, xplace+50,yplace+200,"AI: ");
-		DrawIMG(iLevelCheckBox,screen,xplace+50+70,yplace+200);
-		if (player1AI) {
-			DrawIMG(iLevelCheck,screen,xplace+50+70,yplace+200);
-		}
-		NFont_Write(screen, xplace+50,yplace+250,"TT Handicap: ");
-		NFont_Write(screen, xplace+50+300,yplace+200,"AI: ");
-		DrawIMG(iLevelCheckBox,screen,xplace+50+70+300,yplace+200);
-		if (player2AI) {
-			DrawIMG(iLevelCheck,screen,xplace+50+70+300,yplace+200);
-		}
-		NFont_Write(screen, xplace+50+300,yplace+250,"TT Handicap: ");
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+50+i*40,yplace+290,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40,yplace+330);
-			if (player1handicap==i) {
-				DrawIMG(iLevelCheck,screen,xplace+50+i*40,yplace+330);
-			}
-		}
-		for (int i=0; i<5; i++) {
-			char levelS[2]; //level string;
-			levelS[0]='1'+i;
-			levelS[1]=0;
-			NFont_Write(screen, xplace+50+i*40+300,yplace+290,levelS);
-			DrawIMG(iLevelCheckBox,screen,xplace+50+i*40+300,yplace+330);
-			if (player2handicap==i) {
-				DrawIMG(iLevelCheck,screen,xplace+50+i*40+300,yplace+330);
-			}
-		}
-
-		SDL_Event event;
-		while ( SDL_PollEvent(&event) ) {
-			if ( event.type == SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
-					done = true;
-				}
-				if ( event.key.keysym.sym == SDLK_RETURN ) {
-					done = true;
-				}
-				if ( event.key.keysym.sym == SDLK_KP_ENTER ) {
-					done = true;
-				}
-			}
-		}
-
-		SDL_GetKeyState(nullptr);
-
-		SDL_GetMouseState(&mousex,&mousey);
-
-		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
-			bMouseUp=true;
-		}
-
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-			bMouseUp = false;
-
-			if ((mousex>xplace+50+70)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30)&&(mousey<yplace+200+30)) {
-				player1AI=!player1AI;
-			}
-			if ((mousex>xplace+50+70+300)&&(mousey>yplace+200)&&(mousex<xplace+50+70+30+300)&&(mousey<yplace+200+30)) {
-				player2AI=!player2AI;
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+150)&&(mousey<yplace+150+30)) {
-					player1Speed=i;
-				}
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+150)&&(mousey<yplace+150+30)) {
-					player2Speed=i;
-				}
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40)&&(mousex<xplace+50+i*40+30)&&(mousey>yplace+330)&&(mousey<yplace+330+30)) {
-					player1handicap=i;
-				}
-			}
-			for (int i=0; i<5; i++) {
-				if ((mousex>xplace+50+i*40+300)&&(mousex<xplace+50+i*40+30+300)&&(mousey>yplace+330)&&(mousey<yplace+330+30)) {
-					player2handicap=i;
-				}
-			}
-			if ((mousex>xsize/2-120/2)&&(mousex<xsize/2+120/2)&&(mousey>600)&&(mousey<640)) {
-				done = true;
-			}
-		}
-
-		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse->PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen); //draws it all to the screen
-		SDL_Delay(10);
-
-	}
-	while (!done && !Config::getInstance()->isShuttingDown());
-	DrawIMG(background, screen, 0, 0);
 }
 
 //This function will promt for the user to select another file for puzzle mode
@@ -2385,8 +2172,7 @@ static int StartSinglePlayerPuzzle(int level) {
 		return 1;
 	}
 	player1->NewPuzzleGame(myLevel,SDL_GetTicks());
-	MakeBackground(xsize,ysize,player1,player2);
-	DrawIMG(background, screen, 0, 0);
+	DrawIMG(backgroundImage, screen, 0, 0);
 	twoPlayers = false;
 	player2->SetGameOver();
 	//vsMode = true;
@@ -2479,12 +2265,9 @@ int main(int argc, char* argv[]) {
 	textdomain (PACKAGE);
 	if (argc > 1) {
 		int argumentNr = 1;
-		forceredraw = 2;
 		while (argc>argumentNr) {
 			const char helpString[] = "--help";
 			const char priorityString[] = "-priority";
-			const char forceRedrawString[] = "-forceredraw";
-			const char forcepartdrawString[] = "-forcepartdraw";
 			const char singlePuzzleString[] = "-SP";
 			const char noSoundAtAll[] = "-nosound";
 			const char selectTheme[] = "-theme";
@@ -2492,8 +2275,6 @@ int main(int argc, char* argv[]) {
 			if (strequals(argv[argumentNr],helpString)) {
 				cout << "Block Attack Help" << endl << helpString << "  " << _("Displays this message") <<
 				     endl << "-priority  " << _("Starts game in high priority") << endl <<
-				     "-forceredraw  " << _("Redraw the whole screen every frame, prevents garbage") << endl <<
-				     "-forcepartdraw  " << _("Only draw what is changed, sometimes cause garbage") << endl <<
 				     "-nosound  " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl <<
 				     "-theme <" << _("THEMENAME") << ">  " << _("Changes to the theme <THEMENAME> on startup") << endl;
 #ifdef WIN32
@@ -2506,12 +2287,6 @@ int main(int argc, char* argv[]) {
 					cout << "Priority mode" << endl;
 				}
 				highPriority = true;
-			}
-			if (strequals(argv[argumentNr],forceRedrawString)) {
-				forceredraw = 1;
-			}
-			if (strequals(argv[argumentNr],forcepartdrawString)) {
-				forceredraw = 2;
 			}
 			if (strequals(argv[argumentNr],singlePuzzleString)) {
 				singlePuzzle = true; //We will just have one puzzle
@@ -2775,8 +2550,6 @@ int main(int argc, char* argv[]) {
 	    theGame2.GetTopY()=10000;
 	    theGame2.GetTopX()=10000;
 	}*/
-	theGame.DoPaintJob();           //Makes sure what there is something to paint
-	theGame2.DoPaintJob();
 	theGame.SetGameOver();      //sets the game over in the beginning
 	theGame2.SetGameOver();
 
@@ -2789,14 +2562,7 @@ int main(int argc, char* argv[]) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 	}
-	//Draws everything to screen
-	if (!editorMode) {
-		MakeBackground(xsize,ysize,&theGame,&theGame2);
-	}
-	else {
-		MakeBackground(xsize,ysize,&theGame);
-	}
-	DrawIMG(background, screen, 0, 0);
+	DrawIMG(backgroundImage, screen, 0, 0);
 	DrawEverything(xsize,ysize,&theGame,&theGame2);
 	SDL_Flip(screen);
 	//game loop
@@ -2917,16 +2683,6 @@ int runGame(int gametype, int level) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 	}
-	//Draws everything to screen
-	if (!editorMode) {
-		MakeBackground(xsize,ysize,&theGame,&theGame2);
-	}
-	else {
-		MakeBackground(xsize,ysize,&theGame);
-	}
-	/*DrawIMG(background, screen, 0, 0);
-	DrawEverything(xsize,ysize,&theGame,&theGame2);
-	SDL_Flip(screen);*/
 	//game loop
 	int done = 0;
 	if (verboseLevel) {
@@ -2952,8 +2708,7 @@ int runGame(int gametype, int level) {
 					return 1;
 				}
 				theGame.NewStageGame(myLevel,SDL_GetTicks());
-				MakeBackground(xsize,ysize,&theGame,&theGame2);
-				DrawIMG(background, screen, 0, 0);
+				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers =false;
 				theGame2.SetGameOver();
 				theGame.name = player1name;
@@ -2970,8 +2725,7 @@ int runGame(int gametype, int level) {
 				int theAIlevel = level; //startSingleVs();
 				theGame.NewVsGame(&theGame2, SDL_GetTicks());
 				theGame2.NewVsGame(&theGame, SDL_GetTicks());
-				MakeBackground(xsize,ysize,&theGame,&theGame2);
-				DrawIMG(background, screen, 0, 0);
+				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
 				theGame2.setAIlevel((Uint8)theAIlevel);
 				int theTime = time(0);
@@ -2993,25 +2747,15 @@ int runGame(int gametype, int level) {
 				break;
 			};
 			mustsetupgame = false;
-			DrawIMG(background, screen, 0, 0);
+			DrawIMG(backgroundImage, screen, 0, 0);
 			DrawEverything(xsize,ysize,&theGame,&theGame2);
 			SDL_Flip(screen);
 		}
 
 		if (!(highPriority)) {
-			SDL_Delay(10);
+			SDL_Delay(1);
 		}
-
-		if ((standardBackground)&&(!editorMode)) {
-			MakeBackground(xsize,ysize,&theGame,&theGame2);
-			DrawIMG(background, screen, 0, 0);
-		}
-
-		if ((standardBackground)&&(editorMode)) {
-			DrawIMG(backgroundImage, screen, 0, 0);
-			MakeBackground(xsize,ysize,&theGame);
-			DrawIMG(background, screen, 0, 0);
-		}
+		DrawIMG(backgroundImage, screen, 0, 0);
 
 		//updates the balls and explosions:
 		theBallManeger.update();
@@ -3030,7 +2774,7 @@ int runGame(int gametype, int level) {
 				if ( event.type == SDL_KEYDOWN ) {
 					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
 						done=1;
-						DrawIMG(background, screen, 0, 0);
+						DrawIMG(backgroundImage, screen, 0, 0);
 
 					}
 					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled())) {
@@ -3436,7 +3180,7 @@ int runGame(int gametype, int level) {
 				//read mouse events
 				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 					bMouseUp = false;
-					DrawIMG(background, screen, 0, 0);
+					DrawIMG(backgroundImage, screen, 0, 0);
 
 
 					/********************************************************************

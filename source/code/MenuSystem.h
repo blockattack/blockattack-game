@@ -82,7 +82,7 @@ public:
 
 	bool isClicked(int x,int y); //Returns true if (x,y) is within the borders of the button
 	virtual void doAction(); //Run the callback function
-	void drawTo(SDL_Surface **surface);
+	void drawToScreen(void);
 	void setPopOnRun(bool popOnRun);
 	bool isPopOnRun() const;
 	void setGfx(ButtonGfx* gfx); //Draws to screen
@@ -111,9 +111,9 @@ private:
 public:
 	//numberOfItems is the expected numberOfItems for vector initialization
 	//SubMenu is true by default
-	Menu(SDL_Surface **screen,bool isSubmenu);
-	Menu(SDL_Surface **screen);
-	Menu(SDL_Surface **screen, const std::string& title, bool isSubmenu);
+	Menu(SDL_Surface *screen,bool isSubmenu);
+	Menu(SDL_Surface *screen);
+	Menu(SDL_Surface *screen, const std::string& title, bool isSubmenu);
 
 	//Add a button to the menu
 	void addButton(Button *b);
