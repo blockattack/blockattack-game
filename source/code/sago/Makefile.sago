@@ -1,0 +1,4 @@
+
+
+SAGO_BASE_LIBS+= -lphysfs -ljsoncpp
+SAGO_O_FILES+= sago/SagoDataHolder.o sago/SagoSprite.o sago/SagoSpriteHolder.o sago/SagoMisc.o
