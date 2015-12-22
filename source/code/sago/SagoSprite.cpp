@@ -27,12 +27,16 @@
 namespace sago {
 
 struct SagoSprite::SagoSpriteData {
-	SDL_Texture* tex;
+	SDL_Texture* tex = nullptr;
 	SDL_Rect imgCord;
 	SDL_Rect origin = {};
 	int aniFrames = 0;
 	int aniFrameTime = 0;
 };
+
+SagoSprite::SagoSprite() {
+	data = new SagoSpriteData();
+}
 
 SagoSprite::SagoSprite(const SagoDataHolder& texHolder, const std::string& texture,const SDL_Rect& initImage,const int animationFrames, const int animationFrameLength) {
 	data = new SagoSpriteData();
@@ -42,13 +46,20 @@ SagoSprite::SagoSprite(const SagoDataHolder& texHolder, const std::string& textu
 	data->aniFrameTime = animationFrameLength;
 }
 
+SagoSprite::SagoSprite(const SagoSprite& base) : data(new SagoSpriteData(*other.data)) {
+	
+}
 
+SagoSprite& operator=(const SagoSprite& base) {
+	*data = *other.data;
+    return *this;
+}
 
 SagoSprite::~SagoSprite() {
 	delete data;
 }
 
-void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, float x, float y) const {
+void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) const {
 	SDL_Rect rect = data->imgCord;
 	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
 	SDL_Rect pos = rect;
@@ -57,7 +68,7 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, float x, float y) 
 	SDL_RenderCopy(target, data->tex, &rect, &pos);
 }
 
-void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, float x, float y, const SDL_Rect& part) const {
+void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part) const {
 	SDL_Rect rect = data->imgCord;
 	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
 	rect.x += part.x;
@@ -67,6 +78,52 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, float x, float y, 
 	SDL_Rect pos = rect;
 	pos.x = x;
 	pos.y = y;
+	SDL_RenderCopy(target, data->tex, &rect, &pos);
+}
+
+void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const {
+	SDL_Rect rect = data->imgCord;
+	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
+	SDL_Rect pos = rect;
+	pos.x = x;
+	pos.y = y;
+	if (pos.x > bounds.x+bounds.w) {
+		return;
+	}
+	if (pos.y > bounds.y+bounds.h) {
+		return;
+	}
+	if (pos.x+pos.w < bounds.x) {
+		return;
+	}
+	if (pos.y+pos.h < bounds.y) {
+		return;
+	}
+	if (pos.x < bounds.x) {
+		Sint16 absDiff = bounds.x-pos.x;
+		pos.x+=absDiff;
+		rect.x+=absDiff;
+		pos.w-=absDiff;
+		rect.w-=absDiff;
+	}
+	if (pos.y < bounds.y) {
+		Sint16 absDiff = bounds.y-pos.y;
+		pos.y+=absDiff;
+		rect.y+=absDiff;
+		pos.h-=absDiff;
+		rect.h-=absDiff;
+	}
+	if (pos.x+pos.w > bounds.x+bounds.w) {
+		Sint16 absDiff = pos.x+pos.w-(bounds.x+bounds.w);
+		pos.w -= absDiff;
+		rect.w -= absDiff;
+	}
+	if (pos.y+pos.h > bounds.y+bounds.h) {
+		Sint16 absDiff = pos.y+pos.h-(bounds.y+bounds.h);
+		pos.h -= absDiff;
+		rect.h -= absDiff;
+	}
+
 	SDL_RenderCopy(target, data->tex, &rect, &pos);
 }
 

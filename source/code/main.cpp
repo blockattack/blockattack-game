@@ -39,7 +39,7 @@ http://blockattack.sf.net
 
 #define WITH_SDL 1
 
-
+#include "sago/SagoSpriteHolder.hpp"
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>           //Used for srand()
@@ -585,48 +585,21 @@ static string itoa2(int num) {
 }
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-void DrawIMG(SDL_Texture* img, SDL_Renderer* target, int x, int y) {
-	SDL_Rect dest;
-	dest.x = x;
-	dest.y = y;
-	dest.w = img->;
-	dest.h = SHAPE_SIZE;
-
-	SDL_RenderCopy(target, img, nullptr, &dest);
+void DrawIMG(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int y) {
+	sprite.Draw(target,1,x,y);
 }
 
-void DrawIMG_Bounded(SDL_Texture* img, Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
-	SDL_Rect dest;
-	dest.x = x;
-	dest.y = y;
-	if (dest.x >= minx && dest.y >= miny && dest.x + img->w <= maxx && dest.y + img->h <= maxy) {
-		SDL_BlitSurface(img, nullptr, target, &dest);
-		return;
-	}
-	SDL_Rect dest2;
-	dest2.x = 0;
-	dest2.y = 0;
-	dest2.w = img->w;
-	dest2.h = img->h;
-	if (dest.x < minx) {
-		dest2.x += minx-dest.x;
-		dest.x = minx;
-	}
-	if (dest.y < miny) {
-		dest2.y += miny-dest.y;
-		dest.y = miny;
-	}
-	if (dest.y+dest2.h > maxy) {
-		dest2.h -= (dest.y+dest2.h - maxy);
-	}
-	if (dest.x+dest2.w > maxx) {
-		dest2.w -= (dest.x+dest2.w - maxx);
-	}
-	SDL_BlitSurface(img, &dest2, target, &dest);
+void DrawIMG_Bounded(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
+	SDL_Rect bounds;
+	bounds.x = minx;
+	bounds.y = miny;
+	bounds.w = maxx-minx;
+	bounds.h = maxy-miny;
+	sprite.DrawBounded(target,1,x,y,bounds);
 }
 
 /*Draws a part of an image on a surface of choice*/
-void DrawIMG(SDL_Texture* img, Renderer* target, int x, int y, int w, int h, int x2, int y2) {
+/*void DrawIMG(sago::SagoSprite &sprite, Renderer* target, int x, int y, int w, int h, int x2, int y2) {
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
@@ -635,8 +608,9 @@ void DrawIMG(SDL_Texture* img, Renderer* target, int x, int y, int w, int h, int
 	dest2.y = y2;
 	dest2.w = w;
 	dest2.h = h;
-	SDL_BlitSurface(img, &dest2, target, &dest);
-}
+	sprite.Draw()
+	
+}*/
 
 
 void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
@@ -944,16 +918,16 @@ public:
 		topy = ty;
 	}
 	
-	void DrawImgBoard(SDL_Surface* img, int x, int y) const {
+	void DrawImgBoard(sago::SagoSprite& img, int x, int y) const {
 		DrawIMG(img, screen, x+topx, y+topy);
 	}
 	
-	void DrawImgBoardBounded(SDL_Surface* img, int x, int y) const {
+	void DrawImgBoardBounded(sago::SagoSprite& img, int x, int y) const {
 		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard->w, topy + backBoard->h);
 	}
 	
 	void PrintTextCenteredBoard(int x, int y, const char* text) {
-		nf_button_font.drawCenter(x+topx+60, y+topy+10, "%s", text);
+		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::CENTER, "%s", text);
 	}
 
 	int GetTopX() const {
