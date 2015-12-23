@@ -15,7 +15,7 @@
 },
 
 "backboard" :  {
-	"texture" : "backboard",
+	"texture" : "back_board",
 	"topx" : 0,
 	"topy" : 0,
 	"height" : 600,
@@ -35,7 +35,7 @@
 },
 
 "bexit" : {
-	"texture" : "bexit",
+	"texture" : "b_exit",
 	"topx" : 0,
 	"topy" : 0,
 	"height" : 100,
@@ -115,7 +115,7 @@
 },
 
 "block_trans" : {
-	"texture" : "transover",
+	"texture" : "trans_cover",
 	"topx" : 0,
 	"topy" : 0,
 	"height" : 50,
@@ -145,7 +145,7 @@
 },
 
 "boardbackback" : {
-	"texture" : "boardbackback",
+	"texture" : "board_back_back",
 	"topx" : 0,
 	"topy" : 0,
 	"height" : 699,

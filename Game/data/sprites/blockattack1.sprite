@@ -244,15 +244,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"cursor" : {
-	"texture" : "cursor",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 58,
-	"width" : 216,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "dialogbox" : {
 	"texture" : "dialogbox",
  	"topx" : 0,

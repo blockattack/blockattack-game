@@ -18,11 +18,11 @@ ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell $(CROSS)sdl2-config --libs) -lSDL_ttf $(shell $(CROSS)pkg-config SDL_image SDL_mixer --libs) $(SAGO_BASE_LIBS)
+BASE_LIBS=$(shell $(CROSS)sdl2-config --libs) -lSDL2_ttf $(shell $(CROSS)pkg-config SDL2_image SDL2_mixer --libs) $(SAGO_BASE_LIBS)
 
 #For developement only 
 ifndef DEBUG
-DEBUG=0
+DEBUG=1
 endif
 
 ifndef NETWORK

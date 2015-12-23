@@ -136,58 +136,6 @@ void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 }
 
 
-long NFont_OpenFont(SDL_Renderer* dest, NFont* target, const char* path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL) {
-	if (!PHYSFS_exists(path)) {
-		cerr << "Error: File not in blockattack.data: " << path << endl;
-		return -1; //file doesn't exist
-	}
-
-	if (!(TTF_WasInit())) {
-		TTF_Init();
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path);
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return -3;
-	}
-
-	PHYSFS_close(myfile);
-
-// And this is how you load from a memory buffer with SDL
-	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
-
-	//The above might fail an return null.
-	if (!rw) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return -2;
-	}
-
-	TTF_Font* font;
-	font=TTF_OpenFontRW(rw, 1, ptsize);
-	TTF_SetFontStyle(font, style);
-
-	target->load(dest, font, color);
-
-	TTF_CloseFont(font); //Once loaded we don't care anymore!
-
-	return 0;
-}
-
 
 Mix_Music* Mix_LoadMUS2(string path) {
 	if (!PHYSFS_exists(path.c_str())) {
@@ -346,6 +294,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	mouse = holder.GetSprite("mouse");
 	menuMarked = holder.GetSprite("menu_marked");
 	menuUnmarked = holder.GetSprite("menu_unmarked");
+	backBoard = holder.GetSprite("back_board");
 	
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
 	memset(&nf_button_color,0,sizeof(SDL_Color));
@@ -358,11 +307,10 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	nf_standard_small_color.b = 0;
 	nf_standard_small_color.g = 0;
 	nf_standard_small_color.r = 200;
-	NFont_OpenFont(screen, &nf_button_font,"fonts/FreeSerif.ttf",24,nf_button_color);
-	NFont_OpenFont(screen, &nf_standard_blue_font,"fonts/FreeSerif.ttf",30,nf_standard_blue_color);
-	NFont_OpenFont(screen, &nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
-	NFont_OpenFont(screen, &nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color); //should draw to boardBackBack
-
+	nf_button_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
+	nf_standard_blue_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
+	nf_standard_small_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
+	nf_scoreboard_font.load(screen, holder.GetDataHolder().getFontPtr("penguinattack", 20), nf_button_color);
 
 //Loads the sound if sound present
 	if (!NoSound) {
@@ -405,7 +353,7 @@ static string itoa2(int num) {
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 void DrawIMG(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int y) {
-	sprite.Draw(target,1,x,y);
+	sprite.Draw(target, SDL_GetTicks() ,x,y);
 }
 
 void DrawIMG_Bounded(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
@@ -414,7 +362,7 @@ void DrawIMG_Bounded(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int 
 	bounds.y = miny;
 	bounds.w = maxx-minx;
 	bounds.h = maxy-miny;
-	sprite.DrawBounded(target,1,x,y,bounds);
+	sprite.DrawBounded(target, SDL_GetTicks(),x,y,bounds);
 }
 
 /*Draws a part of an image on a surface of choice*/
@@ -2159,6 +2107,7 @@ int main(int argc, char* argv[]) {
 		cerr << "Unable to init SDL: " << SDL_GetError() << endl;
 		exit(1);
 	}
+	TTF_Init();
 	atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
 
 	SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
@@ -2312,7 +2261,7 @@ int main(int argc, char* argv[]) {
 	dieOnNullptr(sdlWindow, "Unable to create window");
 	SDL_Renderer *renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 	dieOnNullptr(renderer, "Unable to create render");
-
+	screen = renderer;
 	//Init the file system abstraction layer
 	PHYSFS_init(argv[0]);
 	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
@@ -2320,6 +2269,7 @@ int main(int argc, char* argv[]) {
 	sago::SagoDataHolder d(renderer);
 	sago::SagoSpriteHolder spriteholder(d);
 	loadTheme(spriteholder, Config::getInstance()->getString("themename"));
+	
 	//Now sets the icon:
 	//SDL_Surface* icon = IMG_Load2("gfx/icon.png");
 	//SDL_WM_SetIcon(icon,nullptr);

@@ -82,6 +82,7 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 	std::string path = "textures/"+textureName+".png";
 	if (!PHYSFS_exists(path.c_str())) {
 		std::cerr << "getTextureFailed - Texture does not exists: " << path << std::endl;
+		exit(1);
 		return ret;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
