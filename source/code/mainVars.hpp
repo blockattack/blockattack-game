@@ -60,6 +60,7 @@ static sago::SagoSprite iGameOver;     //The gameOver image
 static sago::SagoSprite iWinner;		//the "winner" image
 static sago::SagoSprite iDraw;			//the "draw" image
 static sago::SagoSprite iLoser;		//the "loser" image
+static sago::SagoSprite iChainFrame;
 //Animations:
 static sago::SagoSprite cursor;    //The animated cursor
 static sago::SagoSprite bomb;

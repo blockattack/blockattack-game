@@ -166,7 +166,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	iWinner = holder.GetSprite("i_winner");
 	iDraw = holder.GetSprite("i_draw");
 	iLoser = holder.GetSprite("i_loser");
-	//iChainFrame = holder.GetSprite("chain_frame");
+	iChainFrame = holder.GetSprite("chain_frame");
 	dialogBox = holder.GetSprite("dialogbox");
 	iLevelCheck = holder.GetSprite("i_level_check");
 	iLevelCheckBox = holder.GetSprite("i_level_check_box");
@@ -1332,7 +1332,7 @@ static void DrawBalls() {
 			//cout << "Printing text: " << theTextManeger.textArray[i].getText() << endl;
 			int x = theTextManeger.textArray[i].getX()-12;
 			int y = theTextManeger.textArray[i].getY()-12;
-			//DrawIMG(iChainBack,screen,x,y);
+			DrawIMG(iChainFrame,screen,x,y);
 			
 			nf_standard_small_font.draw(screen, x+12,y+7, NFont::CENTER, "%s",theTextManeger.textArray[i].getText());
 		}
