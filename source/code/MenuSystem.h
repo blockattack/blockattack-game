@@ -44,7 +44,7 @@ struct ButtonGfx
 	int xsize;
 	int ysize;
 	//A TTFont used for writing the label on the buttons
-	NFont thefont;
+	NFont* thefont;
 	void setSurfaces(sago::SagoSprite& marked, sago::SagoSprite& unmarked);
 };
 

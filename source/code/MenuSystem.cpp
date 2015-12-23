@@ -97,7 +97,7 @@ void Button::drawToScreen() {
 	else {
 		gfx->unmarked.Draw(screen, SDL_GetTicks(), x, y);
 	}
-	gfx->thefont.draw(screen, x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont.getHeight("%s", label.c_str())/2, NFont::CENTER, "%s", label.c_str());
+	gfx->thefont->draw(screen, x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont->getHeight("%s", label.c_str())/2, NFont::CENTER, "%s", label.c_str());
 }
 
 void Button::setPopOnRun(bool popOnRun) {
@@ -123,7 +123,7 @@ void Menu::drawSelf() {
 		(*it)->drawToScreen();
 	}
 	exit.drawToScreen();
-	standardButton.thefont.draw(screen, 50, 50, "%s", title.c_str());
+	standardButton.thefont->draw(screen, 50, 50, "%s", title.c_str());
 	mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 }
 

@@ -149,7 +149,6 @@ static bool bNearDeathPrev;                    //Near death status last time che
 bool bFullscreen;			//true if game is running fullscreen
 static bool puzzleLoaded;          //true if the puzzle levels have been loaded
 static bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
-static bool standardBackground;
 bool highPriority;
 
 static bool editorMode = false;

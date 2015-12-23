@@ -301,12 +301,15 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	nf_button_color.b = 255;
 	nf_button_color.g = 255;
 	nf_button_color.r = 255;
+	nf_button_color.a = 255;
 	nf_standard_blue_color.b = 255;
 	nf_standard_blue_color.g = 0;
 	nf_standard_blue_color.r = 0;
+	nf_standard_blue_color.a = 255;
 	nf_standard_small_color.b = 0;
 	nf_standard_small_color.g = 0;
 	nf_standard_small_color.r = 200;
+	nf_standard_small_color.a = 255;
 	nf_button_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
 	nf_standard_blue_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
 	nf_standard_small_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
