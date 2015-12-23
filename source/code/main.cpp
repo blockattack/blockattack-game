@@ -136,94 +136,6 @@ void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 }
 
 
-
-Mix_Music* Mix_LoadMUS2(string path) {
-	if (!PHYSFS_exists(path.c_str())) {
-		cerr << "Warning: File not in blockattack.data: " << path << endl;
-		return nullptr; //file doesn't exist
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	PHYSFS_close(myfile);
-
-// And this is how you load from a memory buffer with SDL
-	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
-
-	//The above might fail an return null.
-	if (!rw) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	Mix_Music* ret = Mix_LoadMUS_RW(rw, SDL_TRUE);
-
-	return ret;
-}
-
-
-Mix_Chunk* Mix_LoadWAV2(const char* path) {
-	if (!PHYSFS_exists(path)) {
-		cerr << "Warning: File not in blockattack.data: " << path << endl;
-		return nullptr; //file doesn't exist
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path);
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	PHYSFS_close(myfile);
-
-// And this is how you load from a memory buffer with SDL
-	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
-
-	//The above might fail an return null.
-	if (!rw) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	Mix_Chunk* ret = Mix_LoadWAV_RW(rw,true); //the second argument tells the function to three RWops
-
-	return ret;
-}
-
 //Load all image files to memory
 static int InitImages(sago::SagoSpriteHolder& holder) {
 	bricks[0] = holder.GetSprite("blue");
@@ -318,16 +230,16 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 //Loads the sound if sound present
 	if (!NoSound) {
 		//And here the music:
-		bgMusic = Mix_LoadMUS2("music/bgMusic.ogg");
-		highbeatMusic = Mix_LoadMUS2("music/highbeat.ogg");
+		bgMusic = holder.GetDataHolder().getMusicPtr("bgmusic");
+		highbeatMusic = holder.GetDataHolder().getMusicPtr("highbeat");
 		//the music... we just hope it exists, else the user won't hear anything
 		//Same goes for the sounds
-		boing = Mix_LoadWAV2("sound/pop.ogg");
-		applause = Mix_LoadWAV2("sound/applause.ogg");
-		photoClick = Mix_LoadWAV2("sound/cameraclick.ogg");
-		typingChunk = Mix_LoadWAV2("sound/typing.ogg");
-		counterChunk = Mix_LoadWAV2("sound/counter.ogg");
-		counterFinalChunk = Mix_LoadWAV2("sound/counterFinal.ogg");
+		boing = holder.GetDataHolder().getSoundPtr("pop");
+		applause = holder.GetDataHolder().getSoundPtr("applause");
+		photoClick = holder.GetDataHolder().getSoundPtr("cameraclick");
+		typingChunk = holder.GetDataHolder().getSoundPtr("typing");
+		counterChunk = holder.GetDataHolder().getSoundPtr("counter_final");
+		counterFinalChunk = holder.GetDataHolder().getSoundPtr("counter_final");
 	} //All sound has been loaded or not
 	return 0;
 } //InitImages()
