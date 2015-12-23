@@ -251,9 +251,9 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	cursor = holder.GetSprite("cursor");
 	ready = holder.GetSprite("ready");
 	explosion[0] = holder.GetSprite("explosion0");
-	explosion[2] = holder.GetSprite("explosion1");
-	explosion[3] = holder.GetSprite("explosion2");
-	explosion[4] = holder.GetSprite("explosion3");
+	explosion[1] = holder.GetSprite("explosion1");
+	explosion[2] = holder.GetSprite("explosion2");
+	explosion[3] = holder.GetSprite("explosion3");
 	counter[0] = holder.GetSprite("counter_1");
 	counter[1] = holder.GetSprite("counter_2");
 	counter[2] = holder.GetSprite("counter_3");
@@ -2381,30 +2381,6 @@ int runGame(int gametype, int level) {
 	bool weWhereConnected = false;
 	bool bNearDeath = false;                        //Play music faster or louder while tru
 
-	//Things used for repeating keystrokes:
-	bool repeatingS[2] = {false,false};
-	bool repeatingW[2] = {false,false};
-	bool repeatingN[2] = {false,false};
-	bool repeatingE[2] = {false,false};
-	const int startRepeat = 200;
-	const int repeatDelay = 100;    //Repeating
-	unsigned long timeHeldP1N = 0;
-	unsigned long timeHeldP1S = 0;
-	unsigned long timeHeldP1E = 0;
-	unsigned long timeHeldP1W = 0;
-	unsigned long timeHeldP2N = 0;
-	unsigned long timeHeldP2S = 0;
-	unsigned long timeHeldP2E = 0;
-	unsigned long timeHeldP2W = 0;
-	unsigned long timesRepeatedP1N = 0;
-	unsigned long timesRepeatedP1S = 0;
-	unsigned long timesRepeatedP1E = 0;
-	unsigned long timesRepeatedP1W = 0;
-	unsigned long timesRepeatedP2N = 0;
-	unsigned long timesRepeatedP2S = 0;
-	unsigned long timesRepeatedP2E = 0;
-	unsigned long timesRepeatedP2W = 0;
-
 	theBallManeger = ballManeger();
 	theExplosionManeger = explosionManeger();
 	BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
@@ -2525,27 +2501,15 @@ int runGame(int gametype, int level) {
 						//player1:
 						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
 							theGame.MoveCursor('N');
-							repeatingN[0]=true;
-							timeHeldP1N=SDL_GetTicks();
-							timesRepeatedP1N=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].down ) {
 							theGame.MoveCursor('S');
-							repeatingS[0]=true;
-							timeHeldP1S=SDL_GetTicks();
-							timesRepeatedP1S=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].left) ) {
 							theGame.MoveCursor('W');
-							repeatingW[0]=true;
-							timeHeldP1W=SDL_GetTicks();
-							timesRepeatedP1W=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].right) ) {
 							theGame.MoveCursor('E');
-							repeatingE[0]=true;
-							timeHeldP1E=SDL_GetTicks();
-							timesRepeatedP1E=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].push ) {
 							theGame.PushLine();
@@ -2558,27 +2522,15 @@ int runGame(int gametype, int level) {
 						//player2:
 						if ( event.key.keysym.sym == keySettings[player2keys].up ) {
 							theGame2.MoveCursor('N');
-							repeatingN[1]=true;
-							timeHeldP2N=SDL_GetTicks();
-							timesRepeatedP2N=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].down ) {
 							theGame2.MoveCursor('S');
-							repeatingS[1]=true;
-							timeHeldP2S=SDL_GetTicks();
-							timesRepeatedP2S=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].left) ) {
 							theGame2.MoveCursor('W');
-							repeatingW[1]=true;
-							timeHeldP2W=SDL_GetTicks();
-							timesRepeatedP2W=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].right) ) {
 							theGame2.MoveCursor('E');
-							repeatingE[1]=true;
-							timeHeldP2E=SDL_GetTicks();
-							timesRepeatedP2E=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].push ) {
 							theGame2.PushLine();
@@ -2618,88 +2570,6 @@ int runGame(int gametype, int level) {
 			} //while event PollEvent - read keys
 
 			/**********************************************************************
-			**************************** Repeating start **************************
-			**********************************************************************/
-
-			keys = SDL_GetKeyboardState(nullptr);
-//Also the joysticks:
-//Repeating not implemented
-
-//Player 1 start
-			if (!(keys[keySettings[player1keys].up])) {
-				repeatingN[0]=false;
-			}
-			while ((repeatingN[0])&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat)) {
-				theGame.MoveCursor('N');
-				timesRepeatedP1N++;
-			}
-
-			if (!(keys[keySettings[player1keys].down])) {
-				repeatingS[0]=false;
-			}
-			while ((repeatingS[0])&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat)) {
-				theGame.MoveCursor('S');
-				timesRepeatedP1S++;
-			}
-
-			if (!(keys[keySettings[player1keys].left])) {
-				repeatingW[0]=false;
-			}
-			while ((repeatingW[0])&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat)) {
-				timesRepeatedP1W++;
-				theGame.MoveCursor('W');
-			}
-
-			if (!(keys[keySettings[player1keys].right])) {
-				repeatingE[0]=false;
-			}
-			while ((repeatingE[0])&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat)) {
-				timesRepeatedP1E++;
-				theGame.MoveCursor('E');
-			}
-
-//Player 1 end
-
-//Player 2 start
-			if (!(keys[keySettings[player2keys].up])) {
-				repeatingN[1]=false;
-			}
-			while ((repeatingN[1])&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('N');
-				timesRepeatedP2N++;
-			}
-
-			if (!(keys[keySettings[player2keys].down])) {
-				repeatingS[1]=false;
-			}
-			while ((repeatingS[1])&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('S');
-				timesRepeatedP2S++;
-			}
-
-			if (!(keys[keySettings[player2keys].left])) {
-				repeatingW[1]=false;
-			}
-			while ((repeatingW[1])&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('W');
-				timesRepeatedP2W++;
-			}
-
-			if (!(keys[keySettings[player2keys].right])) {
-				repeatingE[1]=false;
-			}
-			while ((repeatingE[1])&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('E');
-				timesRepeatedP2E++;
-			}
-
-//Player 2 end
-
-			/**********************************************************************
-			**************************** Repeating end ****************************
-			**********************************************************************/
-
-			/**********************************************************************
 			***************************** Joypad start ****************************
 			**********************************************************************/
 
@@ -2710,27 +2580,15 @@ int runGame(int gametype, int level) {
 						joypad1.update();
 						if (joypad1.up) {
 							theGame.MoveCursor('N');
-							repeatingN[0]=true;
-							timeHeldP1N=SDL_GetTicks();
-							timesRepeatedP1N=0;
 						}
 						if (joypad1.down) {
 							theGame.MoveCursor('S');
-							repeatingS[0]=true;
-							timeHeldP1S=SDL_GetTicks();
-							timesRepeatedP1S=0;
 						}
 						if (joypad1.left) {
 							theGame.MoveCursor('W');
-							repeatingW[0]=true;
-							timeHeldP1W=SDL_GetTicks();
-							timesRepeatedP1W=0;
 						}
 						if (joypad1.right) {
 							theGame.MoveCursor('E');
-							repeatingE[0]=true;
-							timeHeldP1E=SDL_GetTicks();
-							timesRepeatedP1E=0;
 						}
 						if (joypad1.but1) {
 							theGame.SwitchAtCursor();
@@ -2743,27 +2601,15 @@ int runGame(int gametype, int level) {
 						joypad1.update();
 						if (joypad1.up) {
 							theGame2.MoveCursor('N');
-							repeatingN[1]=true;
-							timeHeldP2N=SDL_GetTicks();
-							timesRepeatedP2N=0;
 						}
 						if (joypad1.down) {
 							theGame2.MoveCursor('S');
-							repeatingS[1]=true;
-							timeHeldP2S=SDL_GetTicks();
-							timesRepeatedP2S=0;
 						}
 						if (joypad1.left) {
 							theGame2.MoveCursor('W');
-							repeatingW[1]=true;
-							timeHeldP2W=SDL_GetTicks();
-							timesRepeatedP2W=0;
 						}
 						if (joypad1.right) {
 							theGame2.MoveCursor('E');
-							repeatingE[1]=true;
-							timeHeldP2E=SDL_GetTicks();
-							timesRepeatedP2E=0;
 						}
 						if (joypad1.but1) {
 							theGame2.SwitchAtCursor();
@@ -2778,27 +2624,15 @@ int runGame(int gametype, int level) {
 						joypad2.update();
 						if (joypad2.up) {
 							theGame.MoveCursor('N');
-							repeatingN[0]=true;
-							timeHeldP1N=SDL_GetTicks();
-							timesRepeatedP1N=0;
 						}
 						if (joypad2.down) {
 							theGame.MoveCursor('S');
-							repeatingS[0]=true;
-							timeHeldP1S=SDL_GetTicks();
-							timesRepeatedP1S=0;
 						}
 						if (joypad2.left) {
 							theGame.MoveCursor('W');
-							repeatingW[0]=true;
-							timeHeldP1W=SDL_GetTicks();
-							timesRepeatedP1W=0;
 						}
 						if (joypad2.right) {
 							theGame.MoveCursor('E');
-							repeatingE[0]=true;
-							timeHeldP1E=SDL_GetTicks();
-							timesRepeatedP1E=0;
 						}
 						if (joypad2.but1) {
 							theGame.SwitchAtCursor();
@@ -2811,27 +2645,15 @@ int runGame(int gametype, int level) {
 						joypad2.update();
 						if (joypad2.up) {
 							theGame2.MoveCursor('N');
-							repeatingN[1]=true;
-							timeHeldP2N=SDL_GetTicks();
-							timesRepeatedP2N=0;
 						}
 						if (joypad2.down) {
 							theGame2.MoveCursor('S');
-							repeatingS[1]=true;
-							timeHeldP2S=SDL_GetTicks();
-							timesRepeatedP2S=0;
 						}
 						if (joypad2.left) {
 							theGame2.MoveCursor('W');
-							repeatingW[1]=true;
-							timeHeldP2W=SDL_GetTicks();
-							timesRepeatedP2W=0;
 						}
 						if (joypad2.right) {
 							theGame2.MoveCursor('E');
-							repeatingE[1]=true;
-							timeHeldP2E=SDL_GetTicks();
-							timesRepeatedP2E=0;
 						}
 						if (joypad2.but1) {
 							theGame2.SwitchAtCursor();
@@ -2846,9 +2668,6 @@ int runGame(int gametype, int level) {
 			/**********************************************************************
 			***************************** Joypad end ******************************
 			**********************************************************************/
-
-
-			SDL_GetKeyboardState(nullptr);
 
 			SDL_GetMouseState(&mousex,&mousey);
 
