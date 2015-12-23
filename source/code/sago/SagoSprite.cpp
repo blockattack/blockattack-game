@@ -46,12 +46,12 @@ SagoSprite::SagoSprite(const SagoDataHolder& texHolder, const std::string& textu
 	data->aniFrameTime = animationFrameLength;
 }
 
-SagoSprite::SagoSprite(const SagoSprite& base) : data(new SagoSpriteData(*other.data)) {
+SagoSprite::SagoSprite(const SagoSprite& base) : data(new SagoSpriteData(*base.data)) {
 	
 }
 
-SagoSprite& operator=(const SagoSprite& base) {
-	*data = *other.data;
+SagoSprite& SagoSprite::operator=(const SagoSprite& base) {
+	*data = *base.data;
     return *this;
 }
 
@@ -129,6 +129,13 @@ void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int 
 
 void SagoSprite::SetOrigin(const SDL_Rect& newOrigin) {
 	data->origin = newOrigin;
+}
+
+int SagoSprite::GetWidth() const {
+	return data->imgCord.w;
+}
+int SagoSprite::GetHeight() const {
+	return data->imgCord.h;
 }
 
 }  //namespace sago

@@ -38,7 +38,6 @@ CppSdlImageHolder::CppSdlImageHolder(std::string filename) {
 		throw std::runtime_error(std::string("Could not read file \""+filename+"\""));
 	}
 	SDL_GetClipRect(data,&area);
-	OptimizeForBlit();
 }
 
 CppSdlImageHolder::CppSdlImageHolder(char* rawdata, int datasize) {

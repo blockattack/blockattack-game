@@ -47,7 +47,7 @@ ReadKeyboard::ReadKeyboard(const char* oldName) {
 
 void ReadKeyboard::putchar(const std::string& thing) {
 	if (text_string.length() < maxLength) {
-		text_string.insert(position, thing);
+//		text_string.insert(position, thing);
 		utf8::advance(position, 1, text_string.end());
 	}
 }
@@ -62,7 +62,8 @@ void ReadKeyboard::removeChar() {
 }
 
 bool ReadKeyboard::ReadKey(const SDL_Event& key) {
-	if ( 
+	return false;
+	/*if ( 
 			(key.unicode >= 'a' && key.unicode <= 'z') ||
 			(key.unicode >= '0' && key.unicode <= '9') || 
 			(key.unicode >= 'A' && key.unicode <= 'Z')) {
@@ -72,10 +73,12 @@ bool ReadKeyboard::ReadKey(const SDL_Event& key) {
 	if (key.unicode == '.' || key.unicode == ',') {
 		ReadKeyboard::putchar('.');
 	}
-	return ReadKey(key.sym);
+	return ReadKey(key.sym);*/
 }
 
 bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
+	return false;
+	/*
 	if (keyPressed == SDLK_SPACE) {
 		ReadKeyboard::putchar(' ');
 		return true;
@@ -110,7 +113,7 @@ bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
 		utf8::next(position, text_string.end());
 		return true;
 	}
-	return true;
+	return true;*/
 }
 
 const char* ReadKeyboard::GetString() {

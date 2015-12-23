@@ -36,12 +36,12 @@ static void PrintHi(Button* b) {
 
 //Stores the controls
 struct control {
-	SDLKey up;
-	SDLKey down;
-	SDLKey left;
-	SDLKey right;
-	SDLKey change;
-	SDLKey push;
+	SDL_Keycode up;
+	SDL_Keycode down;
+	SDL_Keycode left;
+	SDL_Keycode right;
+	SDL_Keycode change;
+	SDL_Keycode push;
 };
 
 bool OpenDialogbox(int x, int y, std::string& name);
@@ -49,7 +49,7 @@ void OpenScoresDisplay();
 extern control keySettings[3];
 
 //Function to return the name of a key, to be displayed...
-static string getKeyName(SDLKey key) {
+static string getKeyName(SDL_Keycode key) {
 	string keyname(SDL_GetKeyName(key));
 	if (verboseLevel) {
 		cout << key << " translated to " << keyname << endl;
@@ -59,15 +59,15 @@ static string getKeyName(SDLKey key) {
 
 class Button_changekey : public Button {
 private:
-	SDLKey* m_key2change;
+	SDL_Keycode* m_key2change;
 	string m_keyname;
 public:
-	Button_changekey(SDLKey* key, string keyname);
+	Button_changekey(SDL_Keycode* key, string keyname);
 	void doAction();
 };
 
 
-Button_changekey::Button_changekey(SDLKey* key, string keyname) {
+Button_changekey::Button_changekey(SDL_Keycode* key, string keyname) {
 	m_key2change = key;
 	m_keyname = keyname;
 	setLabel(m_keyname+" : "+getKeyName(*m_key2change));

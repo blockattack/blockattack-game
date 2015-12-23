@@ -66,6 +66,8 @@ public:
 	void SetOrigin(const SDL_Rect& newOrigin);
 	SagoSprite(const SagoSprite& base);
     SagoSprite& operator=(const SagoSprite& base);
+	int GetWidth() const;
+	int GetHeight() const;
 	virtual ~SagoSprite();
 private:
 	struct SagoSpriteData;

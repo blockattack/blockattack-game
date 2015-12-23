@@ -30,21 +30,22 @@ http://blockattack.sf.net
 #include <vector>
 #include "Libs/NFont.h"
 #include "CppSdlImageHolder.hpp"
+#include "sago/SagoSprite.hpp"
 #include <memory>
 
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
 struct ButtonGfx
 {
 	//Holds the graphic for a button that is selected
-	std::shared_ptr<CppSdl::CppSdlImageHolder> marked;
+	sago::SagoSprite marked;
 	//Holds the graphic for a button that is not selected
-	std::shared_ptr<CppSdl::CppSdlImageHolder> unmarked;
+	sago::SagoSprite unmarked;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize;
 	int ysize;
 	//A TTFont used for writing the label on the buttons
 	NFont thefont;
-	void setSurfaces(std::shared_ptr<CppSdl::CppSdlImageHolder> marked, std::shared_ptr<CppSdl::CppSdlImageHolder> unmarked);
+	void setSurfaces(sago::SagoSprite& marked, sago::SagoSprite& unmarked);
 };
 
 extern ButtonGfx standardButton;
@@ -101,7 +102,7 @@ private:
 	bool isSubmenu; //True if the menu is a submenu
 	int marked; //The index of the marked button (for keyboard up/down)
 	bool running; //The menu is running. The menu will terminate then this is false
-	SDL_Surface *screen; //Pointer to the screen to draw to
+	SDL_Renderer *screen; //Pointer to the screen to draw to
 	std::string title;
 //        SDL_Surface *background; //Pointer to the background image
 
@@ -111,9 +112,9 @@ private:
 public:
 	//numberOfItems is the expected numberOfItems for vector initialization
 	//SubMenu is true by default
-	Menu(SDL_Surface *screen,bool isSubmenu);
-	Menu(SDL_Surface *screen);
-	Menu(SDL_Surface *screen, const std::string& title, bool isSubmenu);
+	Menu(SDL_Renderer *screen,bool isSubmenu);
+	Menu(SDL_Renderer *screen);
+	Menu(SDL_Renderer *screen, const std::string& title, bool isSubmenu);
 
 	//Add a button to the menu
 	void addButton(Button *b);
