@@ -208,9 +208,6 @@ static int oldMousex, oldMousey;
 //Old Stage Clear Buble
 static int oldBubleX, oldBubleY;
 
-//bool doublebuf = false; //if true, screen is double buffered
-static char forceredraw = 1; //If 1: always redraw, if 2: rarely redraw
-
 static bool singlePuzzle = false; //if true we are just in a little 300x600 window
 static int singlePuzzleNr = 0;
 static std::string singlePuzzleFile;

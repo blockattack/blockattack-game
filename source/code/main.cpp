@@ -92,16 +92,11 @@ http://blockattack.sf.net
 using namespace std;
 
 
-static void UnloadImages();
 static int InitImages(sago::SagoSpriteHolder& holder);
 
 static string oldThemePath = "default";
-static bool loaded = false;
 
 void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
-	if (loaded) {
-		UnloadImages();
-	}
 #if defined(__unix__)
 	string home = (string)getenv("HOME")+(string)"/.gamesaves/blockattack";
 #elif defined(_WIN32)
@@ -123,7 +118,6 @@ void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 	}
 	if (themeName.compare("default")==0 || (themeName.compare("start")==0)) {
 		InitImages(holder);
-		loaded =true;
 		return; //Nothing more to do
 	}
 	oldThemePath = "themes/"+themeName;
@@ -132,7 +126,6 @@ void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 	PHYSFS_addToSearchPath((home+(string)"/"+oldThemePath).c_str(), 0);
 #endif
 	InitImages(holder);
-	loaded = true;
 }
 
 
@@ -243,14 +236,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	} //All sound has been loaded or not
 	return 0;
 } //InitImages()
-
-
-//Unload images and fonts and sounds
-void UnloadImages() {
-	if (verboseLevel) {
-		cout << "Unloading data..." << endl;
-	}
-}
 
 
 static stringstream converter;
@@ -2272,10 +2257,6 @@ int main(int argc, char* argv[]) {
 
 	Config::getInstance()->save();
 
-	//Frees memory from music and fonts
-	//This is done after writing of configurations and stats since it often crashes the program :(
-	UnloadImages();
-
 	//Close file system Apstraction layer!
 	PHYSFS_deinit();
 	return 0;
@@ -2283,7 +2264,6 @@ int main(int argc, char* argv[]) {
 
 
 int runGame(int gametype, int level) {
-	const Uint8* keys;
 	int mousex, mousey;   //Mouse coordinates
 	bScreenLocked = false;
 	theTopScoresEndless = Highscore(1);
