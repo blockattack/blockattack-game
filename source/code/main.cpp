@@ -265,20 +265,6 @@ void DrawIMG_Bounded(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int 
 	sprite.DrawBounded(target, SDL_GetTicks(),x,y,bounds);
 }
 
-/*Draws a part of an image on a surface of choice*/
-/*void DrawIMG(sago::SagoSprite &sprite, Renderer* target, int x, int y, int w, int h, int x2, int y2) {
-	SDL_Rect dest;
-	dest.x = x;
-	dest.y = y;
-	SDL_Rect dest2;
-	dest2.x = x2;
-	dest2.y = y2;
-	dest2.w = w;
-	dest2.h = h;
-	sprite.Draw()
-	
-}*/
-
 
 void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
 	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
