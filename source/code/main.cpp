@@ -54,7 +54,6 @@ http://blockattack.sf.net
 //#include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"
 #include <vector>
-#include <SDL/SDL_timer.h>
 #include <SDL/SDL_video.h>
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
