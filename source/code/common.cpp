@@ -92,7 +92,7 @@ int str2int(const string& str2parse) {
 	}
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 //Returns path to "my Documents" in windows:
 string getMyDocumentsPath() {
 	TCHAR pszPath[MAX_PATH];
@@ -123,7 +123,7 @@ string getMyDocumentsPath() {
 string getPathToSaveFiles() {
 #ifdef __unix__
 	return (string)getenv("HOME")+(string)"/.gamesaves/"+GAMENAME;
-#elif WIN32
+#elif _WIN32
 	return getMyDocumentsPath()+(string)"/My Games/"+GAMENAME;
 #else
 	return ".";

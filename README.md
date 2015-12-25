@@ -4,7 +4,7 @@ A Tetris Attack Clone under the GPL.
 
 # Dependencies
   * A version of g++ with C++11 support. Tested on g++-4.9
-  * libSDL
+  * libSDL2
   * libSDL2_image
   * libSDL2_mixer
   * libSDL2_ttf

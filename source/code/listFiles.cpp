@@ -40,11 +40,9 @@ void ListFiles::setDirectory(const string& directory) {
 		cout << "Invalid file handle. Error is " << GetLastError() << endl;
 	}
 	else {
-		nrOfFiles=0;
 		filenames.push_back(FindFileData.cFileName);
 		cout << "File: " << FindFileData.cFileName << endl;
-		while ((FindNextFile(hFind, &FindFileData) != 0) && FindFileData.cFileName[0]!='.' && (nrOfFiles<MAX_NR_OF_FILES-1)) {
-			nrOfFiles++;
+		while ((FindNextFile(hFind, &FindFileData) != 0) && FindFileData.cFileName[0]!='.') {
 			filenames.push_back(FindFileData.cFileName);
 			cout << "File: " << FindFileData.cFileName << endl;
 		}

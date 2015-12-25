@@ -29,7 +29,7 @@
 #include <vector>
 #include <physfs.h>
 #include <memory>
-#include <SDL/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 namespace sago {
 
@@ -42,10 +42,6 @@ struct SagoDataHolder::SagoDataHolderData {
 	std::vector<std::unique_ptr<char[]>> dataToFree;
 	SDL_Renderer* renderer = nullptr;
 };
-
-namespace {
-std::mutex mutex_texture_load;
-}  //anonymous namespace
 
 SagoDataHolder::SagoDataHolder(SDL_Renderer* renderer) {
 	data = new SagoDataHolderData();
@@ -74,7 +70,6 @@ SagoDataHolder::~SagoDataHolder() {
 }
 
 SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const {
-	std::lock_guard<std::mutex> guard(mutex_texture_load);
 	SDL_Texture* ret = data->textures[textureName];
 	if (ret) {
 		return ret;
@@ -117,7 +112,6 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 }
 
 TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) const {
-	std::lock_guard<std::mutex> guard(mutex_texture_load);
 	TTF_Font* ret = data->fonts[fontName][ptsize];
 	if (ret) {
 		return ret;
@@ -159,7 +153,6 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 }
 
 Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
-	std::lock_guard<std::mutex> guard(mutex_texture_load);
 	Mix_Music* ret = data->music[musicName];
 	if (ret) {
 		return ret;
@@ -200,7 +193,6 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 
 
 Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
-	std::lock_guard<std::mutex> guard(mutex_texture_load);
 	Mix_Chunk* ret = data->sounds[soundName];
 	if (ret) {
 		return ret;

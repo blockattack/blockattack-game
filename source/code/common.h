@@ -44,7 +44,7 @@ http://blockattack.sf.net
 #include <stdlib.h>
 #include <libintl.h>
 #include <boost/format.hpp>
-#ifdef WIN32
+#if defined(_WIN32) 
 #include "windows.h"
 #include "shlobj.h"
 #endif
@@ -83,8 +83,8 @@ void dieOnNullptr(bool, const char* msg);
  */
 double str2double(const std::string &str2parse) __attribute__((const));
 
-#ifdef WIN32
-string getMyDocumentsPath();
+#if defined(_WIN32)
+std::string getMyDocumentsPath();
 #endif
 
 class TimeHandler

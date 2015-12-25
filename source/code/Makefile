@@ -18,7 +18,7 @@ ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell $(CROSS)sdl2-config --libs) -lSDL2_ttf $(shell $(CROSS)pkg-config SDL2_image SDL2_mixer --libs) $(SAGO_BASE_LIBS)
+BASE_LIBS=$(shell $(CROSS)sdl2-config --libs) $(shell $(CROSS)pkg-config SDL2_image SDL2_mixer SDL2_ttf --libs) $(SAGO_BASE_LIBS)
 
 #For developement only 
 ifndef DEBUG
@@ -43,11 +43,16 @@ else
 BASE_CFLAGS += -DNETWORK=0
 endif
 
+ifeq ($(CROSS),i686-w64-mingw32.static-)
+BASE_LIBS += -lws2_32
+endif
+
+
 BASE_LIBS += -lphysfs
 
 OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o common.o stats.o Libs/NFont.o Libs/SDL_FontCache.o MenuSystem.o menudef.o puzzlehandler.o ${SAGO_O_FILES}
 
-ifeq ($(CROSS),i686-pc-mingw32-)
+ifeq ($(CROSS),i686-w64-mingw32.static-)
 OFILES += winicon.res
 BINARY := $(BINARY).exe
 endif
@@ -73,7 +78,7 @@ run: $(BINARY)
 	cd $(GAMEDIR) && ./blockattack
 
 clean:
-	rm *.o *.P Libs/*.o Libs/*.P ; true
+	rm *.o *.P Libs/*.o Libs/*.P sago/*.o sago/*.P ; true
 
 SOURCE_FILES = $(OFILES:.o=.cpp)
 

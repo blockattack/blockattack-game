@@ -56,7 +56,6 @@ http://blockattack.sf.net
 #include <vector>
 #include <SDL/SDL_timer.h>
 #include <SDL/SDL_video.h>
-#include <SDL/SDL_ttf.h>
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
 #include <memory>
@@ -270,14 +269,15 @@ void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
 }
 
 void ResetFullscreen() {
-#if defined(WIN32)
-	if (bFullscreen) {
+#if defined(_WIN32)
+/*	if (bFullscreen) {
 		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
 	}
 	else {
 		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
 	}
 	DrawIMG(background, screen, 0, 0);
+*/
 #else
 	//TODO: Find SDL2 alternative
 	//SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
@@ -1748,12 +1748,7 @@ void changePuzzleLevels() {
 		PuzzleSetSavePath(home+"/.gamesaves/blockattack/"+PuzzleGetName()+".save");
 #elif defined(_WIN32)
 		string home = getMyDocumentsPath();
-		if (&home!=nullptr) {
-			PuzzleSetSavePath(home+"/My Games/blockattack/"+PuzzleGetName()+".save");
-		}
-		else {
-			PuzzleSetSavePath(PuzzleGetName()+".save");
-		}
+		PuzzleSetSavePath(home+"/My Games/blockattack/"+PuzzleGetName()+".save");
 #else
 		PuzzleSetSavePath(PuzzleGetName()+".save");
 #endif
