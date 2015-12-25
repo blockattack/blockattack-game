@@ -7,6 +7,11 @@ Import('*')
 src = Split("""main.cpp
 highscore.cpp
 Libs/NFont.cpp
+Libs/SDL_FontCache.cpp
+sago/SagoDataHolder.cpp  
+sago/SagoMisc.cpp  
+sago/SagoSprite.cpp  
+sago/SagoSpriteHolder.cpp
 ReadKeyboard.cpp
 joypad.cpp
 listFiles.cpp
@@ -14,13 +19,12 @@ stats.cpp
 common.cpp
 MenuSystem.cpp
 menudef.cpp
-puzzlehandler.cpp
-CppSdlImageHolder.cpp""")
+puzzlehandler.cpp""")
 
 # Modify Build Environment #
-env.ParseConfig('sdl-config --cflags --libs')
+env.ParseConfig('sdl2-config --cflags --libs')
 env.Append(CPPDEFINES = [('SHAREDIR', '\\"$sharedir\\"')])
-env.Append(LIBS = ['SDL', 'enet','SDL_image','SDL_mixer','SDL_ttf','physfs'])
+env.Append(LIBS = ['SDL2', 'enet','SDL2_image','SDL2_mixer','SDL2_ttf','physfs','jsoncpp'])
 env.Append(LIBPATH = ['/usr/lib'])
 
 # Compile Executable #

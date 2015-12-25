@@ -5,13 +5,15 @@ http://blockattack.sf.net
 Gonéri Le Bouder
 Done some work for making it work with SHAREDIR and all Scons scripts 
 
-Contains SFont - SDL Font Library by
-Karl Bartel <karlb@gmx.net>
+Jonathan Dearborn
+NFont library
 
 Jordà Polo
 Two patches
 
 A lot of the 1.4.0 graphics is by
 Iwan Gabovitch aka qubodup
+
+This does not cover non-embedded libraries. 
 
 Detailed auther information regarding media can be found in the blockattack.data zip-file

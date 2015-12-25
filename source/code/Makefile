@@ -2,6 +2,8 @@ GAMEDIR=../../Game/
 
 BINARY=$(GAMEDIR)blockattack
 
+-include sago/Makefile.sago
+
 ifndef CC
 CC=gcc
 endif
@@ -10,17 +12,17 @@ ifdef CROSS
 CXX=$(CROSS)g++
 endif
 
-BASE_CFLAGS=-c $(shell $(CROSS)sdl-config --cflags) -std=c++11
+BASE_CFLAGS=-c $(shell $(CROSS)sdl2-config --cflags) -std=c++11
 
 ifndef BUILDDIR
 BUILDDIR=build
 endif
 
-BASE_LIBS=$(shell $(CROSS)sdl-config --libs) -lSDL_ttf $(shell $(CROSS)pkg-config SDL_image SDL_mixer --libs) 
+BASE_LIBS=$(shell $(CROSS)sdl2-config --libs) -lSDL2_ttf $(shell $(CROSS)pkg-config SDL2_image SDL2_mixer --libs) $(SAGO_BASE_LIBS)
 
 #For developement only 
 ifndef DEBUG
-DEBUG=0
+DEBUG=1
 endif
 
 ifndef NETWORK
@@ -29,7 +31,7 @@ endif
 
 #Compile with debug information or optimized.
 ifeq ($(DEBUG),1)
-BASE_CFLAGS += -g -DDEBUG=1 -Wall
+BASE_CFLAGS += -g -DDEBUG=1 -Wall -Wno-sign-compare
 else
 BASE_CFLAGS += -O3 
 endif
@@ -43,7 +45,7 @@ endif
 
 BASE_LIBS += -lphysfs
 
-OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o common.o stats.o CppSdlImageHolder.o Libs/NFont.o MenuSystem.o menudef.o puzzlehandler.o
+OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o common.o stats.o Libs/NFont.o Libs/SDL_FontCache.o MenuSystem.o menudef.o puzzlehandler.o ${SAGO_O_FILES}
 
 ifeq ($(CROSS),i686-pc-mingw32-)
 OFILES += winicon.res
@@ -71,7 +73,7 @@ run: $(BINARY)
 	cd $(GAMEDIR) && ./blockattack
 
 clean:
-	rm *.o *.P Libs/*.o Libs/*.P
+	rm *.o *.P Libs/*.o Libs/*.P ; true
 
 SOURCE_FILES = $(OFILES:.o=.cpp)
 

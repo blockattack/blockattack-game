@@ -8,14 +8,14 @@ addons:
     packages:
     - g++-4.9
     - build-essential
-    - libsdl1.2-dev
-    - libsdl-image1.2-dev
-    - libsdl-mixer1.2-dev
-    - libsdl-ttf2.0-dev
+    - libsdl2-dev
+    - libsdl2-image-dev
+    - libsdl2-mixer-dev
+    - libsdl2-ttf-dev
     - libenet-dev
     - libphysfs-dev
     - libboost1.55-dev
-    - scons
+    - libjsoncpp-dev
 
 cache:
   apt: true

@@ -74,6 +74,8 @@ int str2int(const std::string &str2parse) __attribute__((const));
 
 std::string double2str(double num) __attribute__((const));
 
+void dieOnNullptr(bool, const char* msg);
+
 /**
  * str2double parses a string and returns a double with the value of the string.
  * if the string is not a double then 0.0 is returned instead of throing an error

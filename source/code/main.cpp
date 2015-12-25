@@ -39,10 +39,7 @@ http://blockattack.sf.net
 
 #define WITH_SDL 1
 
-//Macros to convert surfaces (ffor faster drawing)
-#define CONVERT(n) tmp = SDL_DisplayFormat(n); SDL_FreeSurface(n); n = tmp
-#define CONVERTA(n) tmp = SDL_DisplayFormatAlpha(n); SDL_FreeSurface(n); n = tmp
-
+#include "sago/SagoSpriteHolder.hpp"
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>           //Used for srand()
@@ -60,7 +57,6 @@ http://blockattack.sf.net
 #include <SDL/SDL_timer.h>
 #include <SDL/SDL_video.h>
 #include <SDL/SDL_ttf.h>
-#include "CppSdlImageHolder.hpp"
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
 #include <memory>
@@ -95,90 +91,11 @@ http://blockattack.sf.net
 using namespace std;
 
 
-SDL_Surface* IMG_Load2(const char* path) {
-	if (!PHYSFS_exists(path)) {
-		cerr << "Error: File not in blockattack.data: " << path << endl;
-		return nullptr; //file doesn't exist
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path);
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	PHYSFS_close(myfile);
-
-// And this is how you load an image from a memory buffer with SDL
-	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
-
-	//The above might fail an return null.
-	if (!rw) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	SDL_Surface* surface = IMG_Load_RW(rw,true); //the second argument tells the function to three RWops
-
-	return surface;
-}
-
-shared_ptr<CppSdl::CppSdlImageHolder> IMG_Load3(string path) {
-	if (!PHYSFS_exists(path.c_str())) {
-		cerr << "Error: File not in blockattack.data: " << path << endl;
-		throw exception();
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		throw exception();
-	}
-
-	PHYSFS_close(myfile);
-
-	shared_ptr<CppSdl::CppSdlImageHolder> surface(new CppSdl::CppSdlImageHolder(m_data, m_size));
-
-	return surface;
-}
-
-static void UnloadImages();
-static int InitImages();
+static int InitImages(sago::SagoSpriteHolder& holder);
 
 static string oldThemePath = "default";
-static bool loaded = false;
 
-void loadTheme(const string& themeName) {
-	if (loaded) {
-		UnloadImages();
-	}
+void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 #if defined(__unix__)
 	string home = (string)getenv("HOME")+(string)"/.gamesaves/blockattack";
 #elif defined(_WIN32)
@@ -189,7 +106,7 @@ void loadTheme(const string& themeName) {
 	//Look in blockattack.data
 	PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
 	//Look in folder
-	PHYSFS_addToSearchPath(PHYSFS_getBaseDir(), 1);
+	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
 	//Look in home folder
 #if defined(__unix__) || defined(_WIN32)
 	PHYSFS_addToSearchPath(home.c_str(), 1);
@@ -199,8 +116,7 @@ void loadTheme(const string& themeName) {
 		Config::getInstance()->setString("themename", themeName);
 	}
 	if (themeName.compare("default")==0 || (themeName.compare("start")==0)) {
-		InitImages();
-		loaded =true;
+		InitImages(holder);
 		return; //Nothing more to do
 	}
 	oldThemePath = "themes/"+themeName;
@@ -208,439 +124,117 @@ void loadTheme(const string& themeName) {
 #if defined(__unix__) || defined(_WIN32)
 	PHYSFS_addToSearchPath((home+(string)"/"+oldThemePath).c_str(), 0);
 #endif
-	InitImages();
-	loaded = true;
+	InitImages(holder);
 }
 
-
-long NFont_OpenFont(NFont* target, const char* path,int ptsize, SDL_Color color, int style=TTF_STYLE_NORMAL) {
-	if (!PHYSFS_exists(path)) {
-		cerr << "Error: File not in blockattack.data: " << path << endl;
-		return -1; //file doesn't exist
-	}
-
-	if (!(TTF_WasInit())) {
-		TTF_Init();
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path);
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return -3;
-	}
-
-	PHYSFS_close(myfile);
-
-// And this is how you load from a memory buffer with SDL
-	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
-
-	//The above might fail an return null.
-	if (!rw) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return -2;
-	}
-
-	TTF_Font* font;
-	font=TTF_OpenFontRW(rw, 1, ptsize);
-	TTF_SetFontStyle(font,style);
-
-	target->load(font,color);
-
-	TTF_CloseFont(font); //Once loaded we don't care anymore!
-
-	return 0;
-}
-
-
-Mix_Music* Mix_LoadMUS2(string path) {
-	if (!PHYSFS_exists(path.c_str())) {
-		cerr << "Warning: File not in blockattack.data: " << path << endl;
-		return nullptr; //file doesn't exist
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	PHYSFS_close(myfile);
-
-// And this is how you load from a memory buffer with SDL
-	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
-
-	//The above might fail an return null.
-	if (!rw) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	Mix_Music* ret = Mix_LoadMUS_RW(rw);
-
-	return ret;
-}
-
-
-Mix_Chunk* Mix_LoadWAV2(const char* path) {
-	if (!PHYSFS_exists(path)) {
-		cerr << "Warning: File not in blockattack.data: " << path << endl;
-		return nullptr; //file doesn't exist
-	}
-
-	PHYSFS_file* myfile = PHYSFS_openRead(path);
-
-	// Get the lenght of the file
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-
-	// Get the file data.
-	char* m_data = new char[m_size];
-
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
-
-	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	PHYSFS_close(myfile);
-
-// And this is how you load from a memory buffer with SDL
-	SDL_RWops* rw = SDL_RWFromMem (m_data, m_size);
-
-	//The above might fail an return null.
-	if (!rw) {
-		delete [] m_data;
-		m_data = 0;
-		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file!" << endl;
-		return nullptr;
-	}
-
-	Mix_Chunk* ret = Mix_LoadWAV_RW(rw,true); //the second argument tells the function to three RWops
-
-	return ret;
-}
 
 //Load all image files to memory
-static int InitImages() {
-	if (!((backgroundImage = IMG_Load2("gfx/background.png"))
-	        && (bOptions = IMG_Load2("gfx/bOptions.png"))
-	        && (bConfigure = IMG_Load2("gfx/bConfigure.png"))
-	        && (bSelectPuzzle = IMG_Load2("gfx/bSelectPuzzle.png"))
-	        && (bHighScore = IMG_Load2("gfx/bHighScore.png"))
-	        && (bBack = IMG_Load2("gfx/bBlank.png"))
-	        && (bForward = IMG_Load2("gfx/bForward.png"))
-	        && (blackLine = IMG_Load2("gfx/blackLine.png"))
-	        && (stageBobble = IMG_Load2("gfx/iStageClearLimit.png"))
-	        && (bricks[0] = IMG_Load2("gfx/bricks/blue.png"))
-	        && (bricks[1] = IMG_Load2("gfx/bricks/green.png"))
-	        && (bricks[2] = IMG_Load2("gfx/bricks/purple.png"))
-	        && (bricks[3] = IMG_Load2("gfx/bricks/red.png"))
-	        && (bricks[4] = IMG_Load2("gfx/bricks/turkish.png"))
-	        && (bricks[5] = IMG_Load2("gfx/bricks/yellow.png"))
-	        && (bricks[6] = IMG_Load2("gfx/bricks/grey.png"))
-	        && (crossover = IMG_Load2("gfx/crossover.png"))
-	        && (balls[0] = IMG_Load2("gfx/balls/ballBlue.png"))
-	        && (balls[1] = IMG_Load2("gfx/balls/ballGreen.png"))
-	        && (balls[2] = IMG_Load2("gfx/balls/ballPurple.png"))
-	        && (balls[3] = IMG_Load2("gfx/balls/ballRed.png"))
-	        && (balls[4] = IMG_Load2("gfx/balls/ballTurkish.png"))
-	        && (balls[5] = IMG_Load2("gfx/balls/ballYellow.png"))
-	        && (balls[6] = IMG_Load2("gfx/balls/ballGray.png"))
-	        && (cursor[0] = IMG_Load2("gfx/animations/cursor/1.png"))
-	        && (cursor[1] = IMG_Load2("gfx/animations/cursor/2.png"))
-	        && (bomb[0] = IMG_Load2("gfx/animations/bomb/bomb_1.png"))
-	        && (bomb[1] = IMG_Load2("gfx/animations/bomb/bomb_2.png"))
-	        && (ready[0] = IMG_Load2("gfx/animations/ready/ready_1.png"))
-	        && (ready[1] = IMG_Load2("gfx/animations/ready/ready_2.png"))
-	        && (explosion[0] = IMG_Load2("gfx/animations/explosion/0.png"))
-	        && (explosion[1] = IMG_Load2("gfx/animations/explosion/1.png"))
-	        && (explosion[2] = IMG_Load2("gfx/animations/explosion/2.png"))
-	        && (explosion[3] = IMG_Load2("gfx/animations/explosion/3.png"))
-	        && (counter[0] = IMG_Load2("gfx/counter/1.png"))
-	        && (counter[1] = IMG_Load2("gfx/counter/2.png"))
-	        && (counter[2] = IMG_Load2("gfx/counter/3.png"))
-	        && (backBoard = IMG_Load2("gfx/BackBoard.png")) //not used, we just test if it exists :)
-	        && (iGameOver = IMG_Load2("gfx/iGameOver.png"))
-	        && (iWinner = IMG_Load2("gfx/iWinner.png"))
-	        && (iDraw = IMG_Load2("gfx/iDraw.png"))
-	        && (iLoser = IMG_Load2("gfx/iLoser.png"))
-	        && (iChainBack = IMG_Load2("gfx/chainFrame.png"))
-//            && (optionsBack = IMG_Load2("gfx/options.png"))
-	        && (bOn = IMG_Load2("gfx/bOn.png"))
-	        && (bOff = IMG_Load2("gfx/bOff.png"))
-//            && (bChange = IMG_Load2("gfx/bChange.png"))
-	        && (b1024 = IMG_Load2("gfx/b1024.png"))
-	        && (dialogBox = IMG_Load2("gfx/dialogbox.png"))
-//	&& (fileDialogBox = IMG_Load2("gfx/fileDialogbox.png"))
-	        && (iLevelCheck = IMG_Load2("gfx/iLevelCheck.png"))
-	        && (iLevelCheckBox = IMG_Load2("gfx/iLevelCheckBox.png"))
-	        && (iLevelCheckBoxMarked = IMG_Load2("gfx/iLevelCheckBoxMarked.png"))
-	        && (iCheckBoxArea = IMG_Load2("gfx/iCheckBoxArea.png"))
-	        && (boardBackBack = IMG_Load2("gfx/boardBackBack.png"))
-	        && (changeButtonsBack = IMG_Load2("gfx/changeButtonsBack.png"))
-	        && (garbageTL = IMG_Load2("gfx/garbage/garbageTL.png"))
-	        && (garbageT = IMG_Load2("gfx/garbage/garbageT.png"))
-	        && (garbageTR = IMG_Load2("gfx/garbage/garbageTR.png"))
-	        && (garbageR = IMG_Load2("gfx/garbage/garbageR.png"))
-	        && (garbageBR = IMG_Load2("gfx/garbage/garbageBR.png"))
-	        && (garbageB = IMG_Load2("gfx/garbage/garbageB.png"))
-	        && (garbageBL = IMG_Load2("gfx/garbage/garbageBL.png"))
-	        && (garbageL = IMG_Load2("gfx/garbage/garbageL.png"))
-	        && (garbageFill = IMG_Load2("gfx/garbage/garbageFill.png"))
-	        && (garbageML = IMG_Load2("gfx/garbage/garbageML.png"))
-	        && (garbageM = IMG_Load2("gfx/garbage/garbageM.png"))
-	        && (garbageMR = IMG_Load2("gfx/garbage/garbageMR.png"))
-	        && (garbageGM = IMG_Load2("gfx/garbage/garbageGM.png"))
-	        && (garbageGML = IMG_Load2("gfx/garbage/garbageGML.png"))
-	        && (garbageGMR = IMG_Load2("gfx/garbage/garbageGMR.png"))
-	        && (smiley[0] = IMG_Load2("gfx/smileys/0.png"))
-	        && (smiley[1] = IMG_Load2("gfx/smileys/1.png"))
-	        && (smiley[2] = IMG_Load2("gfx/smileys/2.png"))
-	        && (smiley[3] = IMG_Load2("gfx/smileys/3.png"))
-	        //new in 1.3.2
-	        && (transCover = IMG_Load2("gfx/transCover.png"))
-	        //end new in 1.3.2
-	        //new in 1.4.0
-	        && (bSkip = IMG_Load2("gfx/bBlank.png"))
-	        && (bNext = IMG_Load2("gfx/bBlank.png"))
-	        && (bRetry = IMG_Load2("gfx/bBlank.png"))
-	     ))
-		//if there was a problem ie. "File not found"
-	{
-		cerr << "Error: Failed to load image file: " << SDL_GetError() << endl;
-		exit(1);
-	}
-	try {
-		bNewGame = IMG_Load3("gfx/bNewGame.png");
-		mouse = IMG_Load3("gfx/mouse.png");
-		menuMarked = IMG_Load3("gfx/menu/marked.png");
-		menuUnmarked = IMG_Load3("gfx/menu/unmarked.png");
-	}
-	catch (exception& e) {
-		cerr << e.what() << endl;
-		exit(1);
-	}
+static int InitImages(sago::SagoSpriteHolder& holder) {
+	bricks[0] = holder.GetSprite("blue");
+	bricks[1] = holder.GetSprite("green");
+	bricks[2] = holder.GetSprite("purple");
+	bricks[3] = holder.GetSprite("red");
+	bricks[4] = holder.GetSprite("turkish");
+	bricks[5] = holder.GetSprite("yellow");
+	bricks[6] = holder.GetSprite("grey");
+	bomb = holder.GetSprite("block_bomb");
+	backgroundImage = holder.GetSprite("background");
+	bHighScore = holder.GetSprite("b_highscore");
+	bBack = holder.GetSprite("b_blank");
+	bForward = holder.GetSprite("b_forward");
+	blackLine = holder.GetSprite("black_line");
+	stageBobble = holder.GetSprite("i_stage_clear_limit");
+	crossover = holder.GetSprite("crossover");
+	balls[0] = holder.GetSprite("ball_blue");
+	balls[1] = holder.GetSprite("ball_green");
+	balls[2] = holder.GetSprite("ball_purple");
+	balls[3] = holder.GetSprite("ball_red");
+	balls[4] = holder.GetSprite("ball_turkish");
+	balls[5] = holder.GetSprite("ball_yellow");
+	balls[6] = holder.GetSprite("ball_gray");
+	cursor = holder.GetSprite("cursor");
+	ready = holder.GetSprite("ready");
+	explosion[0] = holder.GetSprite("explosion0");
+	explosion[1] = holder.GetSprite("explosion1");
+	explosion[2] = holder.GetSprite("explosion2");
+	explosion[3] = holder.GetSprite("explosion3");
+	counter[0] = holder.GetSprite("counter_1");
+	counter[1] = holder.GetSprite("counter_2");
+	counter[2] = holder.GetSprite("counter_3");
+	iGameOver = holder.GetSprite("i_game_over");
+	iWinner = holder.GetSprite("i_winner");
+	iDraw = holder.GetSprite("i_draw");
+	iLoser = holder.GetSprite("i_loser");
+	iChainFrame = holder.GetSprite("chain_frame");
+	dialogBox = holder.GetSprite("dialogbox");
+	iLevelCheck = holder.GetSprite("i_level_check");
+	iLevelCheckBox = holder.GetSprite("i_level_check_box");
+	iLevelCheckBoxMarked = holder.GetSprite("i_level_check_box_marked");
+	iCheckBoxArea = holder.GetSprite("i_check_box_area");
+	boardBackBack = holder.GetSprite("board_back_back");
+	garbageTL = holder.GetSprite("garbage_tl");
+	garbageT = holder.GetSprite("garbage_t");
+	garbageTR = holder.GetSprite("garbage_tr");
+	garbageR = holder.GetSprite("garbage_r");
+	garbageBR = holder.GetSprite("garbage_br");
+	garbageB = holder.GetSprite("garbage_b");
+	garbageBL = holder.GetSprite("garbage_bl");
+	garbageL = holder.GetSprite("garbage_l");
+	garbageFill = holder.GetSprite("garbage_fill");
+	garbageML = holder.GetSprite("garbage_ml");
+	garbageM = holder.GetSprite("garbage_m");
+	garbageMR = holder.GetSprite("garbage_mr");
+	garbageGM = holder.GetSprite("garbage_gm");
+	garbageGML = holder.GetSprite("garbage_gml");
+	garbageGMR = holder.GetSprite("garbage_gmr");
+	smiley[0] = holder.GetSprite("smileys0");
+	smiley[1] = holder.GetSprite("smileys1");
+	smiley[2] = holder.GetSprite("smileys2");
+	smiley[3] = holder.GetSprite("smileys3");
+	transCover = holder.GetSprite("trans_cover");
+	bSkip = holder.GetSprite("b_blank");
+	bNext = holder.GetSprite("b_blank");
+	bRetry = holder.GetSprite("b_blank");
+	mouse = holder.GetSprite("mouse");
+	menuMarked = holder.GetSprite("menu_marked");
+	menuUnmarked = holder.GetSprite("menu_unmarked");
+	backBoard = holder.GetSprite("back_board");
 
-
-	//Prepare for fast blittering!
-	CONVERT(backgroundImage);
-	CONVERT(bOptions);
-	CONVERTA(bConfigure);
-	CONVERTA(bSelectPuzzle);
-	CONVERTA(bSkip);
-	CONVERTA(bRetry);
-	CONVERTA(bNext);
-	CONVERT(bHighScore);
-	CONVERTA(boardBackBack);
-	CONVERT(backBoard);
-	CONVERT(blackLine);
-	CONVERTA(changeButtonsBack);
-	CONVERTA(cursor[0]);
-	CONVERTA(cursor[1]);
-	CONVERTA(counter[0]);
-	CONVERTA(counter[1]);
-	CONVERTA(counter[2]);
-	CONVERT(bOn);
-	CONVERT(bOff);
-	CONVERT(b1024);
-	CONVERTA(dialogBox);
-//	CONVERTA(fileDialogBox);
-	CONVERTA(iLevelCheck);
-	CONVERT(iLevelCheckBox);
-	CONVERT(iLevelCheckBoxMarked);
-	CONVERTA(iCheckBoxArea);
-	for (int i = 0; i<4; i++) {
-		CONVERTA(explosion[i]);
-	}
-	for (int i = 0; i<7; i++) {
-		CONVERTA(bricks[i]);
-		CONVERTA(balls[i]);
-	}
-	CONVERTA(crossover);
-	CONVERTA(garbageTL);
-	CONVERTA(garbageT);
-	CONVERTA(garbageTR);
-	CONVERTA(garbageR);
-	CONVERTA(garbageBR);
-	CONVERTA(garbageB);
-	CONVERTA(garbageBL);
-	CONVERTA(garbageL);
-	CONVERTA(garbageFill);
-	CONVERTA(garbageML);
-	CONVERTA(garbageMR);
-	CONVERTA(garbageM);
-	CONVERTA(garbageGML);
-	CONVERTA(garbageGMR);
-	CONVERTA(garbageGM);
-	CONVERTA(smiley[0]);
-	CONVERTA(smiley[1]);
-	CONVERTA(smiley[2]);
-	CONVERTA(smiley[3]);
-	CONVERTA(iWinner);
-	CONVERTA(iDraw);
-	CONVERTA(iLoser);
-	CONVERTA(iChainBack);
-	CONVERTA(iGameOver);
-	mouse->OptimizeForBlit(true);
-	bNewGame->OptimizeForBlit(true);
-	CONVERTA(stageBobble);
-	CONVERTA(transCover);
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
 	memset(&nf_button_color,0,sizeof(SDL_Color));
 	nf_button_color.b = 255;
 	nf_button_color.g = 255;
 	nf_button_color.r = 255;
+	nf_button_color.a = 255;
 	nf_standard_blue_color.b = 255;
 	nf_standard_blue_color.g = 0;
 	nf_standard_blue_color.r = 0;
+	nf_standard_blue_color.a = 255;
 	nf_standard_small_color.b = 0;
 	nf_standard_small_color.g = 0;
 	nf_standard_small_color.r = 200;
-	NFont_OpenFont(&nf_button_font,"fonts/FreeSerif.ttf",24,nf_button_color);
-	nf_button_font.setDest(screen);
-	NFont_OpenFont(&nf_standard_blue_font,"fonts/FreeSerif.ttf",30,nf_standard_blue_color);
-	nf_standard_blue_font.setDest(screen);
-	NFont_OpenFont(&nf_standard_small_font,"fonts/FreeSerif.ttf",16,nf_standard_small_color);
-	nf_standard_small_font.setDest(screen);
-	NFont_OpenFont(&nf_scoreboard_font,"fonts/PenguinAttack.ttf",20,nf_button_color);
-	nf_scoreboard_font.setDest(screen);
-	nf_button_font.setDest(screen);
-
+	nf_standard_small_color.a = 255;
+	nf_button_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
+	nf_standard_blue_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
+	nf_standard_small_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
+	nf_scoreboard_font.load(screen, holder.GetDataHolder().getFontPtr("penguinattack", 20), nf_button_color);
 
 //Loads the sound if sound present
 	if (!NoSound) {
 		//And here the music:
-		bgMusic = Mix_LoadMUS2("music/bgMusic.ogg");
-		highbeatMusic = Mix_LoadMUS2("music/highbeat.ogg");
+		bgMusic = holder.GetDataHolder().getMusicPtr("bgmusic");
+		highbeatMusic = holder.GetDataHolder().getMusicPtr("highbeat");
 		//the music... we just hope it exists, else the user won't hear anything
 		//Same goes for the sounds
-		boing = Mix_LoadWAV2("sound/pop.ogg");
-		applause = Mix_LoadWAV2("sound/applause.ogg");
-		photoClick = Mix_LoadWAV2("sound/cameraclick.ogg");
-		typingChunk = Mix_LoadWAV2("sound/typing.ogg");
-		counterChunk = Mix_LoadWAV2("sound/counter.ogg");
-		counterFinalChunk = Mix_LoadWAV2("sound/counterFinal.ogg");
+		boing = holder.GetDataHolder().getSoundPtr("pop");
+		applause = holder.GetDataHolder().getSoundPtr("applause");
+		photoClick = holder.GetDataHolder().getSoundPtr("cameraclick");
+		typingChunk = holder.GetDataHolder().getSoundPtr("typing");
+		counterChunk = holder.GetDataHolder().getSoundPtr("counter");
+		counterFinalChunk = holder.GetDataHolder().getSoundPtr("counter_final");
 	} //All sound has been loaded or not
 	return 0;
 } //InitImages()
-
-
-//Unload images and fonts and sounds
-void UnloadImages() {
-	if (verboseLevel) {
-		cout << "Unloading data..." << endl;
-	}
-	if (!NoSound) { //Only unload then it has been loaded!
-		Mix_HaltMusic();
-		Mix_FreeMusic(bgMusic);
-		Mix_FreeMusic(highbeatMusic);
-		Mix_FreeChunk(boing);
-		Mix_FreeChunk(applause);
-		Mix_FreeChunk(photoClick);
-		Mix_FreeChunk(counterChunk);
-		Mix_FreeChunk(counterFinalChunk);
-		Mix_FreeChunk(typingChunk);
-	}
-	//Free surfaces:
-	//I think this will crash, at least it happend to me...
-	//Chrashes no more. Caused by an undocumented double free
-	SDL_FreeSurface(backgroundImage);
-	SDL_FreeSurface(bOptions);
-	SDL_FreeSurface(bConfigure);
-	SDL_FreeSurface(bSelectPuzzle);
-	SDL_FreeSurface(bHighScore);
-	SDL_FreeSurface(blackLine);
-	SDL_FreeSurface(stageBobble);
-	SDL_FreeSurface(bricks[0]);
-	SDL_FreeSurface(bricks[1]);
-	SDL_FreeSurface(bricks[2]);
-	SDL_FreeSurface(bricks[3]);
-	SDL_FreeSurface(bricks[4]);
-	SDL_FreeSurface(bricks[5]);
-	SDL_FreeSurface(bricks[6]);
-	SDL_FreeSurface(crossover);
-	SDL_FreeSurface(balls[0]);
-	SDL_FreeSurface(balls[1]);
-	SDL_FreeSurface(balls[2]);
-	SDL_FreeSurface(balls[3]);
-	SDL_FreeSurface(balls[4]);
-	SDL_FreeSurface(balls[5]);
-	SDL_FreeSurface(balls[6]);
-	SDL_FreeSurface(cursor[0]);
-	SDL_FreeSurface(cursor[1]);
-	SDL_FreeSurface(backBoard); //not used, we just test if it exists :)
-	SDL_FreeSurface(iGameOver);
-	SDL_FreeSurface(iWinner);
-	SDL_FreeSurface(iDraw);
-	SDL_FreeSurface(iLoser);
-	SDL_FreeSurface(iChainBack);
-	SDL_FreeSurface(bOn);
-	SDL_FreeSurface(bOff);
-	SDL_FreeSurface(b1024);
-	SDL_FreeSurface(dialogBox);
-	//SDL_FreeSurface(fileDialogBox);
-	SDL_FreeSurface(iLevelCheck);
-	SDL_FreeSurface(iLevelCheckBox);
-	SDL_FreeSurface(iLevelCheckBoxMarked);
-	SDL_FreeSurface(iCheckBoxArea);
-	SDL_FreeSurface(boardBackBack);
-	SDL_FreeSurface(changeButtonsBack);
-	SDL_FreeSurface(garbageTL);
-	SDL_FreeSurface(garbageT);
-	SDL_FreeSurface(garbageTR);
-	SDL_FreeSurface(garbageR);
-	SDL_FreeSurface(garbageBR);
-	SDL_FreeSurface(garbageB);
-	SDL_FreeSurface(garbageBL);
-	SDL_FreeSurface(garbageL);
-	SDL_FreeSurface(garbageFill);
-	SDL_FreeSurface(garbageML);
-	SDL_FreeSurface(garbageM);
-	SDL_FreeSurface(garbageMR);
-	SDL_FreeSurface(garbageGML);
-	SDL_FreeSurface(garbageGM);
-	SDL_FreeSurface(garbageGMR);
-	SDL_FreeSurface(smiley[0]);
-	SDL_FreeSurface(smiley[1]);
-	SDL_FreeSurface(smiley[2]);
-	SDL_FreeSurface(smiley[3]);
-	SDL_FreeSurface(transCover);
-	mouse->MakeNull();
-	bNewGame->MakeNull();
-}
 
 
 static stringstream converter;
@@ -657,61 +251,22 @@ static string itoa2(int num) {
 }
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y) {
-	SDL_Rect dest;
-	dest.x = x;
-	dest.y = y;
-	SDL_BlitSurface(img, nullptr, target, &dest);
+void DrawIMG(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
+	sprite.Draw(target, SDL_GetTicks() ,x,y);
 }
 
-void DrawIMG_Bounded(SDL_Surface* img, SDL_Surface* target, int x, int y, int minx, int miny, int maxx, int maxy) {
-	SDL_Rect dest;
-	dest.x = x;
-	dest.y = y;
-	if (dest.x >= minx && dest.y >= miny && dest.x + img->w <= maxx && dest.y + img->h <= maxy) {
-		SDL_BlitSurface(img, nullptr, target, &dest);
-		return;
-	}
-	SDL_Rect dest2;
-	dest2.x = 0;
-	dest2.y = 0;
-	dest2.w = img->w;
-	dest2.h = img->h;
-	if (dest.x < minx) {
-		dest2.x += minx-dest.x;
-		dest.x = minx;
-	}
-	if (dest.y < miny) {
-		dest2.y += miny-dest.y;
-		dest.y = miny;
-	}
-	if (dest.y+dest2.h > maxy) {
-		dest2.h -= (dest.y+dest2.h - maxy);
-	}
-	if (dest.x+dest2.w > maxx) {
-		dest2.w -= (dest.x+dest2.w - maxx);
-	}
-	SDL_BlitSurface(img, &dest2, target, &dest);
-}
-
-/*Draws a part of an image on a surface of choice*/
-void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y, int w, int h, int x2, int y2) {
-	SDL_Rect dest;
-	dest.x = x;
-	dest.y = y;
-	SDL_Rect dest2;
-	dest2.x = x2;
-	dest2.y = y2;
-	dest2.w = w;
-	dest2.h = h;
-	SDL_BlitSurface(img, &dest2, target, &dest);
+void DrawIMG_Bounded(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
+	SDL_Rect bounds;
+	bounds.x = minx;
+	bounds.y = miny;
+	bounds.w = maxx-minx;
+	bounds.h = maxy-miny;
+	sprite.DrawBounded(target, SDL_GetTicks(),x,y,bounds);
 }
 
 
-void NFont_Write(SDL_Surface* target, int x, int y, const string& text) {
-	nf_standard_blue_font.setDest(target);
-	nf_standard_blue_font.draw(x, y, "%s", text.c_str());
-	nf_standard_blue_font.setDest(screen);
+void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
+	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
 
 void ResetFullscreen() {
@@ -724,7 +279,8 @@ void ResetFullscreen() {
 	}
 	DrawIMG(background, screen, 0, 0);
 #else
-	SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
+	//TODO: Find SDL2 alternative
+	//SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
 #endif
 	SDL_ShowCursor(SDL_DISABLE);
 }
@@ -1013,17 +569,17 @@ public:
 		topx = tx;
 		topy = ty;
 	}
-	
-	void DrawImgBoard(SDL_Surface* img, int x, int y) const {
+
+	void DrawImgBoard(sago::SagoSprite& img, int x, int y) const {
 		DrawIMG(img, screen, x+topx, y+topy);
 	}
-	
-	void DrawImgBoardBounded(SDL_Surface* img, int x, int y) const {
-		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard->w, topy + backBoard->h);
+
+	void DrawImgBoardBounded(sago::SagoSprite& img, int x, int y) const {
+		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight());
 	}
-	
+
 	void PrintTextCenteredBoard(int x, int y, const char* text) {
-		nf_button_font.drawCenter(x+topx+60, y+topy+10, "%s", text);
+		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::CENTER, "%s", text);
 	}
 
 	int GetTopX() const {
@@ -1090,10 +646,10 @@ private:
 				if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0)) {
 					DrawImgBoardBounded(bricks[board[j][i]%10],  j*bsize, bsize*12-i*bsize-pixels);
 					if ((board[j][i]/BLOCKWAIT)%10==1) {
-						DrawImgBoard(bomb[(ticks/BOMBTIME)%2],  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoard(bomb,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((board[j][i]/BLOCKHANG)%10==1) {
-						DrawImgBoardBounded(ready[(ticks/READYTIME)%2],  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(ready,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 
 				}
@@ -1227,13 +783,12 @@ public:
 	//Draws everything
 	void DoPaintJob() {
 		DrawIMG(boardBackBack,screen,this->GetTopX()-60,this->GetTopY()-68);
-		
-		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
-		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
-		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
-		nf_scoreboard_font.draw(this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
+
+		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
+		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
+		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
+		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
 		DrawImgBoard(backBoard,  0, 0);
-		nf_standard_blue_font.setDest(screen); //reset to screen at the end of this funciton!
 
 		PaintBricks();
 		if (stageClear) {
@@ -1242,7 +797,7 @@ public:
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = "Moves left: " + itoa(MovesLeft);
-			nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
+			nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
@@ -1260,7 +815,7 @@ public:
 			}
 			else {
 				strHolder = "Last puzzle";
-				nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
+				nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
@@ -1278,7 +833,7 @@ public:
 			}
 			else {
 				strHolder = "Last stage";
-				nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
+				nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 
@@ -1286,11 +841,11 @@ public:
 		if (AI_Enabled&&(!bGameOver)) {
 			strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
 			//NFont_Write(   5, 5, strHolder.c_str());
-			nf_standard_blue_font.draw(topx+5, topy+5, "%s",strHolder.c_str());
+			nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 		}
 #endif
 		if (!bGameOver) {
-			DrawImgBoard(cursor[(ticks/600)%2],cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
+			DrawImgBoard(cursor,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
 		}
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
@@ -1343,7 +898,6 @@ public:
 				}
 			}
 		}
-		nf_standard_blue_font.setDest(screen);
 	}
 
 
@@ -1381,15 +935,17 @@ void writeScreenShot() {
 #else
 	string buf = "screenshot"+itoa(rightNow)+".bmp";
 #endif
-	SDL_SaveBMP( screen, buf.c_str() );
-	if (!NoSound)
+	//SDL_SaveBMP( screen, buf.c_str() );
+	//TODO: Write screenshot
+	if (!NoSound) {
 		if (SoundEnabled) {
 			Mix_PlayChannel(1,photoClick,0);
 		}
+	}
 }
 
 //Function to return the name of a key, to be displayed...
-static string getKeyName(SDLKey key) {
+static string getKeyName(SDL_Keycode key) {
 	string keyname(SDL_GetKeyName(key));
 	return keyname;
 }
@@ -1399,10 +955,10 @@ static string getKeyName(SDLKey key) {
 bool OpenDialogbox(int x, int y, std::string& name) {
 	bool done = false;     //We are done!
 	bool accept = false;   //New name is accepted! (not Cancelled)
+	SDL_TextInput textInputScope;
 	ReadKeyboard rk = ReadKeyboard(name.c_str());
 	string strHolder;
 	DrawIMG(backgroundImage,screen,0,0);
-	SDLUnicodeScope unicodeScope;
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(dialogBox,screen,x,y);
 		NFont_Write(screen, x+40,y+76,rk.GetString());
@@ -1422,6 +978,12 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 				accept = false;
 			}
 
+			if (event.type == SDL_TEXTINPUT) {
+				if ((rk.ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
+					Mix_PlayChannel(1,typingChunk,0);
+				}
+			}
+
 			if ( event.type == SDL_KEYDOWN ) {
 				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
 					done = true;
@@ -1431,13 +993,8 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 					done = true;
 					accept = false;
 				}
-				else if (!(event.key.keysym.sym == SDLK_BACKSPACE)) {
-					if ((rk.ReadKey(event.key.keysym))&&(SoundEnabled)&&(!NoSound)) {
-						Mix_PlayChannel(1,typingChunk,0);
-					}
-				}
-				else if (event.key.keysym.sym == SDLK_BACKSPACE) {
-					if ((rk.ReadKey(event.key.keysym))&&(SoundEnabled)&&(!NoSound)) {
+				else {
+					if ((rk.ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
 						Mix_PlayChannel(1,typingChunk,0);
 					}
 				}
@@ -1445,12 +1002,11 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 
 		}   //while(event)
 
-		SDL_Flip(screen); //Update screen
+		SDL_RenderPresent(screen); //Update screen
 	}   //while(!done)
 	name = rk.GetString();
 	bScreenLocked = false;
 	showDialog = false;
-	unicodeScope.Release();
 	return accept;
 }
 
@@ -1458,10 +1014,10 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 void DrawHighscores(int x, int y, bool endless) {
 	DrawIMG(backgroundImage,screen,0,0);
 	if (endless) {
-		nf_standard_blue_font.draw(x+100,y+100, "%s",_("Endless:") );
+		nf_standard_blue_font.draw(screen, x+100,y+100, "%s",_("Endless:") );
 	}
 	else {
-		nf_standard_blue_font.draw(x+100,y+100, "%s",_("Time Trial:") );
+		nf_standard_blue_font.draw(screen, x+100,y+100, "%s",_("Time Trial:") );
 	}
 	for (int i =0; i<10; i++) {
 		char playerScore[32];
@@ -1478,8 +1034,8 @@ void DrawHighscores(int x, int y, bool endless) {
 		else {
 			strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
 		}
-		nf_standard_blue_font.draw(x+420,y+150+i*35, "%s",playerScore);
-		nf_standard_blue_font.draw(x+60,y+150+i*35, "%s",playerName);
+		nf_standard_blue_font.draw(screen, x+420,y+150+i*35, "%s",playerScore);
+		nf_standard_blue_font.draw(screen, x+60,y+150+i*35, "%s",playerName);
 	}
 }
 
@@ -1574,9 +1130,9 @@ void OpenScoresDisplay() {
 		//Draw buttons:
 		DrawIMG(bHighScore,screen,scoreX,scoreY);
 		DrawIMG(bBack,screen,backX,backY);
-		nf_button_font.drawCenter(backX+60,backY+10,_("Back"));
+		nf_button_font.draw(screen, backX+60,backY+10, NFont::CENTER ,_("Back"));
 		DrawIMG(bNext,screen,nextX,nextY);
-		nf_button_font.drawCenter(nextX+60,nextY+10,_("Next"));
+		nf_button_font.draw(screen, nextX+60,nextY+10, NFont::CENTER,_("Next"));
 
 		//Draw page number
 		string pageXofY = (boost::format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
@@ -1656,9 +1212,8 @@ void OpenScoresDisplay() {
 			}
 		}
 
-		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse->PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen); //Update screen
+		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
+		SDL_RenderPresent(screen);
 	}
 
 
@@ -1682,11 +1237,10 @@ bool OpenFileDialogbox(int x, int y, char* name) {
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		DrawIMG(backgroundImage,screen,0,0);
 		DrawIMG(bForward,screen,x+460,y+420);
-		nf_button_font.drawCenter(x+20+60, y+420+10, _("Forward"));
+		nf_button_font.draw(screen, x+20+60, y+420+10, NFont::CENTER, _("Forward"));
 		DrawIMG(bBack,screen,x+20,y+420);
-		nf_button_font.drawCenter(x+20+60, y+420+10, _("Back"));
+		nf_button_font.draw(screen, x+20+60, y+420+10, NFont::CENTER, _("Back"));
 		const int nrOfFiles = 10;
-		DrawIMG(changeButtonsBack,screen,x,y);
 		for (int i=0; i<nrOfFiles; i++) {
 			NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
 		}
@@ -1745,9 +1299,8 @@ bool OpenFileDialogbox(int x, int y, char* name) {
 			}
 		}
 
-		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse->PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen); //Update screen
+		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
+		SDL_RenderPresent(screen); //Update screen
 	}
 	return true;
 }
@@ -1766,8 +1319,9 @@ static void DrawBalls() {
 			//cout << "Printing text: " << theTextManeger.textArray[i].getText() << endl;
 			int x = theTextManeger.textArray[i].getX()-12;
 			int y = theTextManeger.textArray[i].getY()-12;
-			DrawIMG(iChainBack,screen,x,y);
-			nf_standard_small_font.drawCenter(x+12,y+7, "%s",theTextManeger.textArray[i].getText());
+			DrawIMG(iChainFrame,screen,x,y);
+
+			nf_standard_small_font.draw(screen, x+12,y+7, NFont::CENTER, "%s",theTextManeger.textArray[i].getText());
 		}
 	} //for
 }    //DrawBalls
@@ -1967,10 +1521,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	}
 
 	//NFont_Write(screen, 800,4,FPS);
-	nf_standard_blue_font.draw(800, 4, "%s", FPS);
+	nf_standard_blue_font.draw(screen, 800, 4, "%s", FPS);
 #endif
 
-	//SDL_Flip(screen); Update screen is now called outside DrawEvrything, bacause the mouse needs to be painted
+	//SDL_RenderPresent(screen); Update screen is now called outside DrawEvrything, bacause the mouse needs to be painted
 
 }
 
@@ -2107,7 +1661,7 @@ int PuzzleLevelSelect(int Type) {
 				}
 			}
 
-		SDL_GetKeyState(nullptr);
+		SDL_GetKeyboardState(nullptr);
 
 		SDL_GetMouseState(&mousex,&mousey);
 		if (mousex != oldmousex || mousey != oldmousey) {
@@ -2168,9 +1722,8 @@ int PuzzleLevelSelect(int Type) {
 			NFont_Write(screen, 200,600,totalString.c_str());
 		}
 
-		//DrawIMG(mouse,screen,mousex,mousey);
-		mouse->PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen); //draws it all to the screen
+		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
+		SDL_RenderPresent(screen); //draws it all to the screen
 
 	}
 	DrawIMG(backgroundImage, screen, 0, 0);
@@ -2441,6 +1994,7 @@ int main(int argc, char* argv[]) {
 		cerr << "Unable to init SDL: " << SDL_GetError() << endl;
 		exit(1);
 	}
+	TTF_Init();
 	atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
 
 	SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
@@ -2459,7 +2013,7 @@ int main(int argc, char* argv[]) {
 			NoSound = true; //Tries to stop all sound from playing/loading
 		}
 
-	SDL_WM_SetCaption("Block Attack - Rise of the Blocks", nullptr); //Sets title line
+	//SDL_WM_SetCaption("Block Attack - Rise of the Blocks", nullptr); //Sets title line
 
 	if (verboseLevel) {
 		//Copyright notice:
@@ -2512,41 +2066,41 @@ int main(int argc, char* argv[]) {
 		joyplay2 = (bool)configSettings->getInt("joypad2");
 
 		if (configSettings->exists("player1keyup")) {
-			keySettings[0].up = (SDLKey)configSettings->getInt("player1keyup");
+			keySettings[0].up = (SDL_Keycode)configSettings->getInt("player1keyup");
 		}
 		if (configSettings->exists("player1keydown")) {
-			keySettings[0].down = (SDLKey)configSettings->getInt("player1keydown");
+			keySettings[0].down = (SDL_Keycode)configSettings->getInt("player1keydown");
 		}
 		if (configSettings->exists("player1keyleft")) {
-			keySettings[0].left = (SDLKey)configSettings->getInt("player1keyleft");
+			keySettings[0].left = (SDL_Keycode)configSettings->getInt("player1keyleft");
 		}
 		if (configSettings->exists("player1keyright")) {
-			keySettings[0].right = (SDLKey)configSettings->getInt("player1keyright");
+			keySettings[0].right = (SDL_Keycode)configSettings->getInt("player1keyright");
 		}
 		if (configSettings->exists("player1keychange")) {
-			keySettings[0].change = (SDLKey)configSettings->getInt("player1keychange");
+			keySettings[0].change = (SDL_Keycode)configSettings->getInt("player1keychange");
 		}
 		if (configSettings->exists("player1keypush")) {
-			keySettings[0].push = (SDLKey)configSettings->getInt("player1keypush");
+			keySettings[0].push = (SDL_Keycode)configSettings->getInt("player1keypush");
 		}
 
 		if (configSettings->exists("player2keyup")) {
-			keySettings[2].up = (SDLKey)configSettings->getInt("player2keyup");
+			keySettings[2].up = (SDL_Keycode)configSettings->getInt("player2keyup");
 		}
 		if (configSettings->exists("player2keydown")) {
-			keySettings[2].down = (SDLKey)configSettings->getInt("player2keydown");
+			keySettings[2].down = (SDL_Keycode)configSettings->getInt("player2keydown");
 		}
 		if (configSettings->exists("player2keyleft")) {
-			keySettings[2].left = (SDLKey)configSettings->getInt("player2keyleft");
+			keySettings[2].left = (SDL_Keycode)configSettings->getInt("player2keyleft");
 		}
 		if (configSettings->exists("player2keyright")) {
-			keySettings[2].right = (SDLKey)configSettings->getInt("player2keyright");
+			keySettings[2].right = (SDL_Keycode)configSettings->getInt("player2keyright");
 		}
 		if (configSettings->exists("player2keychange")) {
-			keySettings[2].change = (SDLKey)configSettings->getInt("player2keychange");
+			keySettings[2].change = (SDL_Keycode)configSettings->getInt("player2keychange");
 		}
 		if (configSettings->exists("player2keypush")) {
-			keySettings[2].push = (SDLKey)configSettings->getInt("player2keypush");
+			keySettings[2].push = (SDL_Keycode)configSettings->getInt("player2keypush");
 		}
 		if (configSettings->exists("player1name")) {
 			player1name = configSettings->getString("player1name");
@@ -2579,26 +2133,33 @@ int main(int argc, char* argv[]) {
 	}
 
 
+	// "Block Attack - Rise of the Blocks"
 	//Open video
+	int createWindowParams = 0;
 	if ((bFullscreen)&&(!singlePuzzle)) {
-		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
-	}
-	else {
-		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
+		createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
-	if ( screen == nullptr ) {
-		cerr << "Unable to set " << xsize << "x" << ysize << " video: " << SDL_GetError() << endl;
-		exit(1);
-	}
-
+	SDL_Window* sdlWindow = SDL_CreateWindow("Block Attack - Rise of the BlocksMy Game Window",
+	                        SDL_WINDOWPOS_UNDEFINED,
+	                        SDL_WINDOWPOS_UNDEFINED,
+	                        xsize, ysize,
+	                        createWindowParams );
+	dieOnNullptr(sdlWindow, "Unable to create window");
+	SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+	dieOnNullptr(renderer, "Unable to create render");
+	screen = renderer;
 	//Init the file system abstraction layer
 	PHYSFS_init(argv[0]);
+	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
 	//Load default theme
-	loadTheme(Config::getInstance()->getString("themename"));
+	sago::SagoDataHolder d(renderer);
+	sago::SagoSpriteHolder spriteholder(d);
+	loadTheme(spriteholder, Config::getInstance()->getString("themename"));
+
 	//Now sets the icon:
-	SDL_Surface* icon = IMG_Load2("gfx/icon.png");
-	SDL_WM_SetIcon(icon,nullptr);
+	//SDL_Surface* icon = IMG_Load2("gfx/icon.png");
+	//SDL_WM_SetIcon(icon,nullptr);
 
 	if (verboseLevel) {
 		cout << "Images loaded" << endl;
@@ -2631,7 +2192,7 @@ int main(int argc, char* argv[]) {
 	}
 	DrawIMG(backgroundImage, screen, 0, 0);
 	DrawEverything(xsize,ysize,&theGame,&theGame2);
-	SDL_Flip(screen);
+	SDL_RenderPresent(screen);
 	//game loop
 	MainMenu();
 
@@ -2683,10 +2244,6 @@ int main(int argc, char* argv[]) {
 
 	Config::getInstance()->save();
 
-	//Frees memory from music and fonts
-	//This is done after writing of configurations and stats since it often crashes the program :(
-	UnloadImages();
-
 	//Close file system Apstraction layer!
 	PHYSFS_deinit();
 	return 0;
@@ -2694,7 +2251,6 @@ int main(int argc, char* argv[]) {
 
 
 int runGame(int gametype, int level) {
-	Uint8* keys;
 	int mousex, mousey;   //Mouse coordinates
 	bScreenLocked = false;
 	theTopScoresEndless = Highscore(1);
@@ -2703,30 +2259,6 @@ int runGame(int gametype, int level) {
 	puzzleLoaded = false;
 	bool weWhereConnected = false;
 	bool bNearDeath = false;                        //Play music faster or louder while tru
-
-	//Things used for repeating keystrokes:
-	bool repeatingS[2] = {false,false};
-	bool repeatingW[2] = {false,false};
-	bool repeatingN[2] = {false,false};
-	bool repeatingE[2] = {false,false};
-	const int startRepeat = 200;
-	const int repeatDelay = 100;    //Repeating
-	unsigned long timeHeldP1N = 0;
-	unsigned long timeHeldP1S = 0;
-	unsigned long timeHeldP1E = 0;
-	unsigned long timeHeldP1W = 0;
-	unsigned long timeHeldP2N = 0;
-	unsigned long timeHeldP2S = 0;
-	unsigned long timeHeldP2E = 0;
-	unsigned long timeHeldP2W = 0;
-	unsigned long timesRepeatedP1N = 0;
-	unsigned long timesRepeatedP1S = 0;
-	unsigned long timesRepeatedP1E = 0;
-	unsigned long timesRepeatedP1W = 0;
-	unsigned long timesRepeatedP2N = 0;
-	unsigned long timesRepeatedP2S = 0;
-	unsigned long timesRepeatedP2E = 0;
-	unsigned long timesRepeatedP2W = 0;
 
 	theBallManeger = ballManeger();
 	theExplosionManeger = explosionManeger();
@@ -2758,7 +2290,7 @@ int runGame(int gametype, int level) {
 
 
 	bool mustsetupgame = true;
-	
+
 
 	while (done == 0) {
 		if (mustsetupgame) {
@@ -2816,7 +2348,7 @@ int runGame(int gametype, int level) {
 			mustsetupgame = false;
 			DrawIMG(backgroundImage, screen, 0, 0);
 			DrawEverything(xsize,ysize,&theGame,&theGame2);
-			SDL_Flip(screen);
+			SDL_RenderPresent(screen);
 		}
 
 		if (!(highPriority)) {
@@ -2848,27 +2380,15 @@ int runGame(int gametype, int level) {
 						//player1:
 						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
 							theGame.MoveCursor('N');
-							repeatingN[0]=true;
-							timeHeldP1N=SDL_GetTicks();
-							timesRepeatedP1N=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].down ) {
 							theGame.MoveCursor('S');
-							repeatingS[0]=true;
-							timeHeldP1S=SDL_GetTicks();
-							timesRepeatedP1S=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].left) ) {
 							theGame.MoveCursor('W');
-							repeatingW[0]=true;
-							timeHeldP1W=SDL_GetTicks();
-							timesRepeatedP1W=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].right) ) {
 							theGame.MoveCursor('E');
-							repeatingE[0]=true;
-							timeHeldP1E=SDL_GetTicks();
-							timesRepeatedP1E=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].push ) {
 							theGame.PushLine();
@@ -2881,27 +2401,15 @@ int runGame(int gametype, int level) {
 						//player2:
 						if ( event.key.keysym.sym == keySettings[player2keys].up ) {
 							theGame2.MoveCursor('N');
-							repeatingN[1]=true;
-							timeHeldP2N=SDL_GetTicks();
-							timesRepeatedP2N=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].down ) {
 							theGame2.MoveCursor('S');
-							repeatingS[1]=true;
-							timeHeldP2S=SDL_GetTicks();
-							timesRepeatedP2S=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].left) ) {
 							theGame2.MoveCursor('W');
-							repeatingW[1]=true;
-							timeHeldP2W=SDL_GetTicks();
-							timesRepeatedP2W=0;
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].right) ) {
 							theGame2.MoveCursor('E');
-							repeatingE[1]=true;
-							timeHeldP2E=SDL_GetTicks();
-							timesRepeatedP2E=0;
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].push ) {
 							theGame2.PushLine();
@@ -2941,88 +2449,6 @@ int runGame(int gametype, int level) {
 			} //while event PollEvent - read keys
 
 			/**********************************************************************
-			**************************** Repeating start **************************
-			**********************************************************************/
-
-			keys = SDL_GetKeyState(nullptr);
-//Also the joysticks:
-//Repeating not implemented
-
-//Player 1 start
-			if (!(keys[keySettings[player1keys].up])) {
-				repeatingN[0]=false;
-			}
-			while ((repeatingN[0])&&(keys[keySettings[player1keys].up])&&(SDL_GetTicks()>timeHeldP1N+timesRepeatedP1N*repeatDelay+startRepeat)) {
-				theGame.MoveCursor('N');
-				timesRepeatedP1N++;
-			}
-
-			if (!(keys[keySettings[player1keys].down])) {
-				repeatingS[0]=false;
-			}
-			while ((repeatingS[0])&&(keys[keySettings[player1keys].down])&&(SDL_GetTicks()>timeHeldP1S+timesRepeatedP1S*repeatDelay+startRepeat)) {
-				theGame.MoveCursor('S');
-				timesRepeatedP1S++;
-			}
-
-			if (!(keys[keySettings[player1keys].left])) {
-				repeatingW[0]=false;
-			}
-			while ((repeatingW[0])&&(keys[keySettings[player1keys].left])&&(SDL_GetTicks()>timeHeldP1W+timesRepeatedP1W*repeatDelay+startRepeat)) {
-				timesRepeatedP1W++;
-				theGame.MoveCursor('W');
-			}
-
-			if (!(keys[keySettings[player1keys].right])) {
-				repeatingE[0]=false;
-			}
-			while ((repeatingE[0])&&(keys[keySettings[player1keys].right])&&(SDL_GetTicks()>timeHeldP1E+timesRepeatedP1E*repeatDelay+startRepeat)) {
-				timesRepeatedP1E++;
-				theGame.MoveCursor('E');
-			}
-
-//Player 1 end
-
-//Player 2 start
-			if (!(keys[keySettings[player2keys].up])) {
-				repeatingN[1]=false;
-			}
-			while ((repeatingN[1])&&(keys[keySettings[player2keys].up])&&(SDL_GetTicks()>timeHeldP2N+timesRepeatedP2N*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('N');
-				timesRepeatedP2N++;
-			}
-
-			if (!(keys[keySettings[player2keys].down])) {
-				repeatingS[1]=false;
-			}
-			while ((repeatingS[1])&&(keys[keySettings[player2keys].down])&&(SDL_GetTicks()>timeHeldP2S+timesRepeatedP2S*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('S');
-				timesRepeatedP2S++;
-			}
-
-			if (!(keys[keySettings[player2keys].left])) {
-				repeatingW[1]=false;
-			}
-			while ((repeatingW[1])&&(keys[keySettings[player2keys].left])&&(SDL_GetTicks()>timeHeldP2W+timesRepeatedP2W*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('W');
-				timesRepeatedP2W++;
-			}
-
-			if (!(keys[keySettings[player2keys].right])) {
-				repeatingE[1]=false;
-			}
-			while ((repeatingE[1])&&(keys[keySettings[player2keys].right])&&(SDL_GetTicks()>timeHeldP2E+timesRepeatedP2E*repeatDelay+startRepeat)) {
-				theGame2.MoveCursor('E');
-				timesRepeatedP2E++;
-			}
-
-//Player 2 end
-
-			/**********************************************************************
-			**************************** Repeating end ****************************
-			**********************************************************************/
-
-			/**********************************************************************
 			***************************** Joypad start ****************************
 			**********************************************************************/
 
@@ -3033,27 +2459,15 @@ int runGame(int gametype, int level) {
 						joypad1.update();
 						if (joypad1.up) {
 							theGame.MoveCursor('N');
-							repeatingN[0]=true;
-							timeHeldP1N=SDL_GetTicks();
-							timesRepeatedP1N=0;
 						}
 						if (joypad1.down) {
 							theGame.MoveCursor('S');
-							repeatingS[0]=true;
-							timeHeldP1S=SDL_GetTicks();
-							timesRepeatedP1S=0;
 						}
 						if (joypad1.left) {
 							theGame.MoveCursor('W');
-							repeatingW[0]=true;
-							timeHeldP1W=SDL_GetTicks();
-							timesRepeatedP1W=0;
 						}
 						if (joypad1.right) {
 							theGame.MoveCursor('E');
-							repeatingE[0]=true;
-							timeHeldP1E=SDL_GetTicks();
-							timesRepeatedP1E=0;
 						}
 						if (joypad1.but1) {
 							theGame.SwitchAtCursor();
@@ -3066,27 +2480,15 @@ int runGame(int gametype, int level) {
 						joypad1.update();
 						if (joypad1.up) {
 							theGame2.MoveCursor('N');
-							repeatingN[1]=true;
-							timeHeldP2N=SDL_GetTicks();
-							timesRepeatedP2N=0;
 						}
 						if (joypad1.down) {
 							theGame2.MoveCursor('S');
-							repeatingS[1]=true;
-							timeHeldP2S=SDL_GetTicks();
-							timesRepeatedP2S=0;
 						}
 						if (joypad1.left) {
 							theGame2.MoveCursor('W');
-							repeatingW[1]=true;
-							timeHeldP2W=SDL_GetTicks();
-							timesRepeatedP2W=0;
 						}
 						if (joypad1.right) {
 							theGame2.MoveCursor('E');
-							repeatingE[1]=true;
-							timeHeldP2E=SDL_GetTicks();
-							timesRepeatedP2E=0;
 						}
 						if (joypad1.but1) {
 							theGame2.SwitchAtCursor();
@@ -3101,27 +2503,15 @@ int runGame(int gametype, int level) {
 						joypad2.update();
 						if (joypad2.up) {
 							theGame.MoveCursor('N');
-							repeatingN[0]=true;
-							timeHeldP1N=SDL_GetTicks();
-							timesRepeatedP1N=0;
 						}
 						if (joypad2.down) {
 							theGame.MoveCursor('S');
-							repeatingS[0]=true;
-							timeHeldP1S=SDL_GetTicks();
-							timesRepeatedP1S=0;
 						}
 						if (joypad2.left) {
 							theGame.MoveCursor('W');
-							repeatingW[0]=true;
-							timeHeldP1W=SDL_GetTicks();
-							timesRepeatedP1W=0;
 						}
 						if (joypad2.right) {
 							theGame.MoveCursor('E');
-							repeatingE[0]=true;
-							timeHeldP1E=SDL_GetTicks();
-							timesRepeatedP1E=0;
 						}
 						if (joypad2.but1) {
 							theGame.SwitchAtCursor();
@@ -3134,27 +2524,15 @@ int runGame(int gametype, int level) {
 						joypad2.update();
 						if (joypad2.up) {
 							theGame2.MoveCursor('N');
-							repeatingN[1]=true;
-							timeHeldP2N=SDL_GetTicks();
-							timesRepeatedP2N=0;
 						}
 						if (joypad2.down) {
 							theGame2.MoveCursor('S');
-							repeatingS[1]=true;
-							timeHeldP2S=SDL_GetTicks();
-							timesRepeatedP2S=0;
 						}
 						if (joypad2.left) {
 							theGame2.MoveCursor('W');
-							repeatingW[1]=true;
-							timeHeldP2W=SDL_GetTicks();
-							timesRepeatedP2W=0;
 						}
 						if (joypad2.right) {
 							theGame2.MoveCursor('E');
-							repeatingE[1]=true;
-							timeHeldP2E=SDL_GetTicks();
-							timesRepeatedP2E=0;
 						}
 						if (joypad2.but1) {
 							theGame2.SwitchAtCursor();
@@ -3169,9 +2547,6 @@ int runGame(int gametype, int level) {
 			/**********************************************************************
 			***************************** Joypad end ******************************
 			**********************************************************************/
-
-
-			SDL_GetKeyState(nullptr);
 
 			SDL_GetMouseState(&mousex,&mousey);
 
@@ -3372,7 +2747,7 @@ int runGame(int gametype, int level) {
 					//twoPlayers = false;
 				}
 			}
-		
+
 		if (theGame.isGameOver() && registerTTHighscorePlayer1) {
 			registerTTHighscorePlayer1 = false;
 			theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
@@ -3394,8 +2769,8 @@ int runGame(int gametype, int level) {
 		oldMousex = mousex;
 		oldMousey = mousey;
 		//Draw the mouse:
-		mouse->PaintTo(screen,mousex,mousey);
-		SDL_Flip(screen);
+		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
+		SDL_RenderPresent(screen);
 	} //game loop
 	return 0;
 }

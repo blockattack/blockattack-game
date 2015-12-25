@@ -25,6 +25,9 @@ http://blockattack.sf.net
 #ifndef _MAINVARS_HPP
 #define	_MAINVARS_HPP
 
+#include "sago/SagoSprite.hpp"
+
+
 //main variables and constants
 
 
@@ -33,93 +36,87 @@ http://blockattack.sf.net
 #define BOMBTIME 200
 #define CURSORTIME 200
 
+#ifndef SHAREDIR
+#define SHAREDIR "."
+#endif
+
 const char sharedir[] = SHAREDIR;
 
 //All graphic in the game (as pointers):
-SDL_Surface *backgroundImage; //Stores the background image
-static SDL_Surface *backBoard;     //Stores the background to the board
-static std::shared_ptr<CppSdl::CppSdlImageHolder> bNewGame;      //The New Game botton
-static SDL_Surface *bOptions;      //The Options botton
-static SDL_Surface *bConfigure;    //The configure button
-static SDL_Surface *bSelectPuzzle; //The Select Puzzle Button
-static SDL_Surface *bBack;         //The "Back" button
-static SDL_Surface *bForward;      //The "forward" button
-static SDL_Surface *iChainBack;
+sago::SagoSprite backgroundImage; //Stores the background image
+static sago::SagoSprite backBoard;     //Stores the background to the board
+static sago::SagoSprite bBack;         //The "Back" button
+static sago::SagoSprite bForward;      //The "forward" button
 #if NETWORK
-//static SDL_Surface *bNetwork;
-//static SDL_Surface *bConnect;
-//static SDL_Surface *bHost;
+//static sago::SagoSprite bNetwork;
+//static sago::SagoSprite bConnect;
+//static sago::SagoSprite bHost;
 #endif
-static SDL_Surface *bHighScore;    //The High Score botton
-static SDL_Surface *blackLine;		//The seperator in stage clear
-static SDL_Surface *stageBobble;	//The bobble instage clear
-SDL_Surface *screen;        //The whole screen;
-static SDL_Surface *iGameOver;     //The gameOver image
-static SDL_Surface *iWinner;		//the "winner" image
-static SDL_Surface *iDraw;			//the "draw" image
-static SDL_Surface *iLoser;		//the "loser" image
+static sago::SagoSprite bHighScore;    //The High Score botton
+static sago::SagoSprite blackLine;		//The seperator in stage clear
+static sago::SagoSprite stageBobble;	//The bobble instage clear
+SDL_Renderer *screen;        //The whole screen;
+static sago::SagoSprite iGameOver;     //The gameOver image
+static sago::SagoSprite iWinner;		//the "winner" image
+static sago::SagoSprite iDraw;			//the "draw" image
+static sago::SagoSprite iLoser;		//the "loser" image
+static sago::SagoSprite iChainFrame;
 //Animations:
-static SDL_Surface *cursor[2];    //The animated cursor
-static SDL_Surface *bomb[2];       //Bomb then the bricks should blow
-static SDL_Surface *ready[2];      //Before the blocks fall
-static SDL_Surface *explosion[4];   //Then a block explodes
+static sago::SagoSprite cursor;    //The animated cursor
+static sago::SagoSprite bomb;
+static sago::SagoSprite ready;      //Before the blocks fall
+static sago::SagoSprite explosion[4];   //Then a block explodes
 //Animations end
-static SDL_Surface *counter[3];    //Counts down from 3
-static SDL_Surface *bricks[7];     //The bricks, saved in an array of pointers
-static SDL_Surface *crossover;     //Cross the bricks that will be cleared soon
-static SDL_Surface *balls[7];      //The balls (the small ones that jump around)
-static SDL_Surface *changeButtonsBack;
-static SDL_Surface *dialogBox;
-static SDL_Surface *bOn;
-static SDL_Surface *bOff;
-static SDL_Surface *b1024;
-static SDL_Surface *iLevelCheck;		//To the level select screen
-static SDL_Surface *iLevelCheckBox;
-static SDL_Surface *iLevelCheckBoxMarked;
-static SDL_Surface *iCheckBoxArea;
-static SDL_Surface *boardBackBack;
-static SDL_Surface *garbageTL;			//the Garbage Blocks
-static SDL_Surface *garbageT;
-static SDL_Surface *garbageTR;
-static SDL_Surface *garbageR;
-static SDL_Surface *garbageBR;
-static SDL_Surface *garbageB;
-static SDL_Surface *garbageBL;
-static SDL_Surface *garbageL;
-static SDL_Surface *garbageFill;
-static SDL_Surface *garbageM;
-static SDL_Surface *garbageML;
-static SDL_Surface *garbageMR;
-static SDL_Surface *smiley[4];
-static SDL_Surface *garbageGM;
-static SDL_Surface *garbageGML;
-static SDL_Surface *garbageGMR;
-static SDL_Surface *transCover;        //The transperant block, covers the upcomming
+static sago::SagoSprite counter[3];    //Counts down from 3
+static sago::SagoSprite bricks[7];     //The bricks, saved in an array of pointers
+static sago::SagoSprite crossover;     //Cross the bricks that will be cleared soon
+static sago::SagoSprite balls[7];      //The balls (the small ones that jump around)
+static sago::SagoSprite dialogBox;
+static sago::SagoSprite iLevelCheck;		//To the level select screen
+static sago::SagoSprite iLevelCheckBox;
+static sago::SagoSprite iLevelCheckBoxMarked;
+static sago::SagoSprite iCheckBoxArea;
+static sago::SagoSprite boardBackBack;
+static sago::SagoSprite garbageTL;			//the Garbage Blocks
+static sago::SagoSprite garbageT;
+static sago::SagoSprite garbageTR;
+static sago::SagoSprite garbageR;
+static sago::SagoSprite garbageBR;
+static sago::SagoSprite garbageB;
+static sago::SagoSprite garbageBL;
+static sago::SagoSprite garbageL;
+static sago::SagoSprite garbageFill;
+static sago::SagoSprite garbageM;
+static sago::SagoSprite garbageML;
+static sago::SagoSprite garbageMR;
+static sago::SagoSprite smiley[4];
+static sago::SagoSprite garbageGM;
+static sago::SagoSprite garbageGML;
+static sago::SagoSprite garbageGMR;
+static sago::SagoSprite transCover;        //The transperant block, covers the upcomming
 #if LEVELEDITOR
-static SDL_Surface *bCreateFile;
-static SDL_Surface *bDeletePuzzle;
-static SDL_Surface *bLoadFile;
-static SDL_Surface *bMoveBack;
-static SDL_Surface *bMoveDown;
-static SDL_Surface *bMoveForward;
-static SDL_Surface *bMoveLeft;
-static SDL_Surface *bMoveRight;
-static SDL_Surface *bMoveUp;
-static SDL_Surface *bNewPuzzle;
-static SDL_Surface *bSaveFileAs;
-static SDL_Surface *bSavePuzzle;
-static SDL_Surface *bSaveToFile;
-static SDL_Surface *bTestPuzzle;
+static sago::SagoSprite bCreateFile;
+static sago::SagoSprite bDeletePuzzle;
+static sago::SagoSprite bLoadFile;
+static sago::SagoSprite bMoveBack;
+static sago::SagoSprite bMoveDown;
+static sago::SagoSprite bMoveForward;
+static sago::SagoSprite bMoveLeft;
+static sago::SagoSprite bMoveRight;
+static sago::SagoSprite bMoveUp;
+static sago::SagoSprite bNewPuzzle;
+static sago::SagoSprite bSaveFileAs;
+static sago::SagoSprite bSavePuzzle;
+static sago::SagoSprite bSaveToFile;
+static sago::SagoSprite bTestPuzzle;
 #endif
-static SDL_Surface *bSkip;
-static SDL_Surface *bRetry;
-static SDL_Surface *bNext;
+static sago::SagoSprite bSkip;
+static sago::SagoSprite bRetry;
+static sago::SagoSprite bNext;
 
-std::shared_ptr<CppSdl::CppSdlImageHolder> menuMarked;
-std::shared_ptr<CppSdl::CppSdlImageHolder> menuUnmarked;
-std::shared_ptr<CppSdl::CppSdlImageHolder> mouse;
-
-static SDL_Surface *tmp;				//a temporary surface to use DisplayFormat
+sago::SagoSprite menuMarked;
+sago::SagoSprite menuUnmarked;
+sago::SagoSprite mouse;
 
 static NFont nf_button_font;        //Font used for buttons!
 NFont nf_scoreboard_font;
@@ -153,7 +150,6 @@ static bool bNearDeathPrev;                    //Near death status last time che
 bool bFullscreen;			//true if game is running fullscreen
 static bool puzzleLoaded;          //true if the puzzle levels have been loaded
 static bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
-static bool standardBackground;
 bool highPriority;
 
 static bool editorMode = false;
@@ -213,9 +209,6 @@ static int oldMousex, oldMousey;
 //Old Stage Clear Buble
 static int oldBubleX, oldBubleY;
 
-//bool doublebuf = false; //if true, screen is double buffered
-static char forceredraw = 1; //If 1: always redraw, if 2: rarely redraw
-
 static bool singlePuzzle = false; //if true we are just in a little 300x600 window
 static int singlePuzzleNr = 0;
 static std::string singlePuzzleFile;
@@ -238,12 +231,12 @@ bool joyplay2=false;    //Player two uses the joypad
 //Stores the controls
 struct control
 {
-	SDLKey up;
-	SDLKey down;
-	SDLKey left;
-	SDLKey right;
-	SDLKey change;
-	SDLKey push;
+	SDL_Keycode up;
+	SDL_Keycode down;
+	SDL_Keycode left;
+	SDL_Keycode right;
+	SDL_Keycode change;
+	SDL_Keycode push;
 };
 
 control keySettings[3];	//array to hold the controls (default and two custom)

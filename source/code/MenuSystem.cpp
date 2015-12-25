@@ -21,11 +21,9 @@ http://blockattack.sf.net
 ===========================================================================
 */
 
-#include <SDL/SDL_events.h>
 
 #include "MenuSystem.h"
 #include "common.h"
-#include "CppSdlImageHolder.hpp"
 #include "global.hpp"
 
 int mousex;
@@ -33,21 +31,14 @@ int mousey;
 
 using namespace std;
 
-/*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-inline void DrawIMG(SDL_Surface* img, SDL_Surface* target, int x, int y) {
-	SDL_Rect dest;
-	dest.x = x;
-	dest.y = y;
-	SDL_BlitSurface(img, nullptr, target, &dest);
-}
 
 ButtonGfx standardButton;
 
-void ButtonGfx::setSurfaces(shared_ptr<CppSdl::CppSdlImageHolder> marked, shared_ptr<CppSdl::CppSdlImageHolder> unmarked) {
+void ButtonGfx::setSurfaces(sago::SagoSprite& marked, sago::SagoSprite& unmarked) {
 	this->marked = marked;
 	this->unmarked = unmarked;
-	xsize=(marked)->GetWidth();
-	ysize=(marked)->GetHeight();
+	xsize=(marked).GetWidth();
+	ysize=(marked).GetHeight();
 	if (verboseLevel) {
 		cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
 	}
@@ -100,13 +91,12 @@ void Button::drawToScreen() {
 	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
 #endif
 	if (marked) {
-		gfx->marked->PaintTo(screen, x, y);
+		gfx->marked.Draw(screen, SDL_GetTicks(), x, y);
 	}
 	else {
-		gfx->unmarked->PaintTo(screen,x,y);
+		gfx->unmarked.Draw(screen, SDL_GetTicks(), x, y);
 	}
-	gfx->thefont.setDest(screen);
-	gfx->thefont.drawCenter(x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont.getHeight("%s", label.c_str())/2, "%s", label.c_str());
+	gfx->thefont->draw(screen, x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont->getHeight("%s", label.c_str())/2, NFont::CENTER, "%s", label.c_str());
 }
 
 void Button::setPopOnRun(bool popOnRun) {
@@ -126,14 +116,14 @@ int Button::getHeight() {
 }
 
 void Menu::drawSelf() {
-	DrawIMG(backgroundImage,screen,0,0);
+	backgroundImage.Draw(screen, SDL_GetTicks(), 0, 0);
 	vector<Button*>::iterator it;
 	for (it = buttons.begin(); it < buttons.end(); it++) {
 		(*it)->drawToScreen();
 	}
 	exit.drawToScreen();
-	standardButton.thefont.draw(50, 50, "%s", title.c_str());
-	mouse->PaintTo(screen,mousex,mousey);
+	standardButton.thefont->draw(screen, 50, 50, "%s", title.c_str());
+	mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 }
 
 void Menu::performClick(int x,int y) {
@@ -171,14 +161,14 @@ void Menu::addButton(Button* b) {
 	placeButtons();
 }
 
-Menu::Menu(SDL_Surface* screen) {
+Menu::Menu(SDL_Renderer* screen) {
 	this->screen = screen;
 	buttons = vector<Button*>(10);
 	isSubmenu = true;
 	exit.setLabel( _("Back") );
 }
 
-Menu::Menu(SDL_Surface* screen,bool submenu) {
+Menu::Menu(SDL_Renderer* screen,bool submenu) {
 	this->screen = screen;
 	buttons = vector<Button*>(0);
 	isSubmenu = submenu;
@@ -190,7 +180,7 @@ Menu::Menu(SDL_Surface* screen,bool submenu) {
 	}
 }
 
-Menu::Menu(SDL_Surface* screen, const string& title, bool submenu) {
+Menu::Menu(SDL_Renderer* screen, const string& title, bool submenu) {
 	this->screen = screen;
 	buttons = vector<Button*>(0);
 	isSubmenu = submenu;
@@ -298,6 +288,6 @@ void Menu::run() {
 		}
 
 		drawSelf();
-		SDL_Flip(screen);
+		SDL_RenderPresent(screen);
 	}
 }

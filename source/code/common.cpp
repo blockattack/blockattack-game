@@ -49,6 +49,13 @@ bool strequals(const char* a, const char* b) {
 	return strcmp(a,b) == 0;
 }
 
+void dieOnNullptr(bool ptr, const char* msg) {
+	if (!ptr) {
+		cerr << "Fatal error: " << msg << endl;
+		abort();
+	}
+}
+
 /**
  * str2double parses a string and returns a double with the value of the string.
  * if the string is not a double then 0.0 is returned instead of throing an error

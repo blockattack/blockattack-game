@@ -1,10 +1,7 @@
 #!/bin/bash
 set -e
 zip -9rj Game/blockattack.data source/AUTH
-cd Game
-zip -9r blockattack.data gfx -x \*svn*
-zip -9r blockattack.data music -x \*svn*
-zip -9r blockattack.data sound -x \*svn*
-zip -9r blockattack.data fonts -x \*svn*
+cd Game/data
+zip -9r ../blockattack.data * -x \*svn*
 
 exit 0

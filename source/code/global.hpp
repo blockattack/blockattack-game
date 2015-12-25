@@ -24,24 +24,24 @@ http://blockattack.sf.net
 #ifndef _GLOBAL_HPP
 #define	_GLOBAL_HPP
 
-#include "CppSdlImageHolder.hpp"
 #include "Libs/NFont.h"
 #include <memory>
+#include "sago/SagoSpriteHolder.hpp"
 
 void MainMenu();
 void ResetFullscreen();
 
-extern std::shared_ptr<CppSdl::CppSdlImageHolder>  menuMarked;
-extern std::shared_ptr<CppSdl::CppSdlImageHolder>  menuUnmarked;
+extern sago::SagoSprite  menuMarked;
+extern sago::SagoSprite  menuUnmarked;
 extern NFont nf_scoreboard_font;
 extern bool MusicEnabled;			//true if background music is enabled
 extern bool SoundEnabled;			//true if sound effects is enabled
 extern bool bFullscreen;			//true if game is running fullscreen
 extern std::string player1name;
 extern std::string player2name;
-extern SDL_Surface *screen;        //The whole screen;
-extern std::shared_ptr<CppSdl::CppSdlImageHolder> mouse;
-extern SDL_Surface* backgroundImage;
+extern SDL_Renderer *screen;        //The whole screen;
+extern sago::SagoSprite mouse;
+extern sago::SagoSprite backgroundImage;
 extern bool highPriority;
 extern int verboseLevel;
 

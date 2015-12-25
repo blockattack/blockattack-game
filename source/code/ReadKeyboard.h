@@ -34,14 +34,14 @@ private:
 	int maxLength;
 	std::string::iterator position;
 	std::string text_string;
-	void putchar(char);
+	void putchar(const std::string& );
 	void removeChar();
 public:
 	ReadKeyboard(void);
 	~ReadKeyboard(void);
 	ReadKeyboard(const char*);
-	Uint8 CharsBeforeCursor(); //Where should the cursor be placed?
-	bool ReadKey(const SDL_keysym&);
-	bool ReadKey(SDLKey); //true if key accepted
-	const char* GetString(void);
+	int CharsBeforeCursor(); //Where should the cursor be placed?
+	bool ReadKey(const SDL_Event&);
+	bool ReadKey(SDL_Keycode); //true if key accepted
+	const std::string& GetString(void) const;
 };
