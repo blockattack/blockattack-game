@@ -231,7 +231,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 		applause = holder.GetDataHolder().getSoundPtr("applause");
 		photoClick = holder.GetDataHolder().getSoundPtr("cameraclick");
 		typingChunk = holder.GetDataHolder().getSoundPtr("typing");
-		counterChunk = holder.GetDataHolder().getSoundPtr("counter_final");
+		counterChunk = holder.GetDataHolder().getSoundPtr("counter");
 		counterFinalChunk = holder.GetDataHolder().getSoundPtr("counter_final");
 	} //All sound has been loaded or not
 	return 0;

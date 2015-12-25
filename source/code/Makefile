@@ -73,7 +73,7 @@ run: $(BINARY)
 	cd $(GAMEDIR) && ./blockattack
 
 clean:
-	rm *.o *.P Libs/*.o Libs/*.P
+	rm *.o *.P Libs/*.o Libs/*.P ; true
 
 SOURCE_FILES = $(OFILES:.o=.cpp)
 
