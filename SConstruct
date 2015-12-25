@@ -6,12 +6,15 @@ opts.Add('prefix', 'Destination directory', '/usr/local')
 opts.Add('sharedir', 'Directory to use to store data file', '$prefix/share/blockattack')
 opts.Add('bindir', 'Directory to use to store data file', '$prefix/bin')
 opts.Add('mandir', 'Directory to use to store data file', '$prefix/share/man')
-opts.Add('CXX', 'C++ compiler to use', os.environ['CXX'])
 opts.Add('CXXFLAGS', 'C++ flags', "-std=c++11")
 
 
 # Copy Build Environment #
 env = Environment(options = opts)
+if 'PATH' in os.environ:
+	env.Append(PATH = os.environ['PATH'])
+if 'CXX' in os.environ:
+	env.Append(CXX = os.environ['CXX'])
 Export("env")
 SConsignFile()
 
