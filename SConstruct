@@ -9,6 +9,8 @@ opts.Add('mandir', 'Directory to use to store data file', '$prefix/share/man')
 opts.Add('CXXFLAGS', 'C++ flags', "-std=c++11")
 
 
+print "Warning: scons is absolutely unsupported for building Block Attack - Rise of the blocks"
+
 # Copy Build Environment #
 env = Environment(options = opts)
 if 'PATH' in os.environ:

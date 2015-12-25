@@ -16,7 +16,6 @@ addons:
     - libphysfs-dev
     - libboost1.55-dev
     - libjsoncpp-dev
-    - scons
 
 cache:
   apt: true
