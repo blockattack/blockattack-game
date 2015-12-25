@@ -48,12 +48,12 @@ SagoSprite::SagoSprite(const SagoDataHolder& texHolder, const std::string& textu
 }
 
 SagoSprite::SagoSprite(const SagoSprite& base) : data(new SagoSpriteData(*base.data)) {
-	
+
 }
 
 SagoSprite& SagoSprite::operator=(const SagoSprite& base) {
 	*data = *base.data;
-    return *this;
+	return *this;
 }
 
 SagoSprite::~SagoSprite() {
@@ -62,7 +62,7 @@ SagoSprite::~SagoSprite() {
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) const {
 	if (!data->tex) {
-		std::cerr << "Texture is null!" << std::endl; 
+		std::cerr << "Texture is null!" << std::endl;
 	}
 	SDL_Rect rect = data->imgCord;
 	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);

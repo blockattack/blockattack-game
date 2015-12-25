@@ -40,5 +40,16 @@ public:
 	}
 };
 
+class SDL_TextInput {
+public:
+	SDL_TextInput() {
+		SDL_StartTextInput();
+	}
+	
+	~SDL_TextInput() {
+		SDL_StopTextInput();
+	}
+};
+
 #endif	/* SCOPEHELPERS_HPP */
 

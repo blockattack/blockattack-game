@@ -99,7 +99,7 @@ Joypad::Joypad() {
 	but2REL=true;
 	int joynum = 0;
 	/*while ((SDL_JoystickOpened(joynum))&&(joynum<Joypad_number)) {
-		joynum++;
+	    joynum++;
 	}*/
 	if (joynum>=Joypad_number) {
 		working = false;

@@ -199,7 +199,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	menuMarked = holder.GetSprite("menu_marked");
 	menuUnmarked = holder.GetSprite("menu_unmarked");
 	backBoard = holder.GetSprite("back_board");
-	
+
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
 	memset(&nf_button_color,0,sizeof(SDL_Color));
 	nf_button_color.b = 255;
@@ -251,11 +251,11 @@ static string itoa2(int num) {
 }
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-void DrawIMG(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int y) {
+void DrawIMG(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
 	sprite.Draw(target, SDL_GetTicks() ,x,y);
 }
 
-void DrawIMG_Bounded(sago::SagoSprite &sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
+void DrawIMG_Bounded(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
 	SDL_Rect bounds;
 	bounds.x = minx;
 	bounds.y = miny;
@@ -569,15 +569,15 @@ public:
 		topx = tx;
 		topy = ty;
 	}
-	
+
 	void DrawImgBoard(sago::SagoSprite& img, int x, int y) const {
 		DrawIMG(img, screen, x+topx, y+topy);
 	}
-	
+
 	void DrawImgBoardBounded(sago::SagoSprite& img, int x, int y) const {
 		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight());
 	}
-	
+
 	void PrintTextCenteredBoard(int x, int y, const char* text) {
 		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::CENTER, "%s", text);
 	}
@@ -783,7 +783,7 @@ public:
 	//Draws everything
 	void DoPaintJob() {
 		DrawIMG(boardBackBack,screen,this->GetTopX()-60,this->GetTopY()-68);
-		
+
 		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
 		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
 		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
@@ -955,6 +955,7 @@ static string getKeyName(SDL_Keycode key) {
 bool OpenDialogbox(int x, int y, std::string& name) {
 	bool done = false;     //We are done!
 	bool accept = false;   //New name is accepted! (not Cancelled)
+	SDL_TextInput textInputScope;
 	ReadKeyboard rk = ReadKeyboard(name.c_str());
 	string strHolder;
 	DrawIMG(backgroundImage,screen,0,0);
@@ -977,6 +978,12 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 				accept = false;
 			}
 
+			if (event.type == SDL_TEXTINPUT) {
+				if ((rk.ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
+					Mix_PlayChannel(1,typingChunk,0);
+				}
+			}
+
 			if ( event.type == SDL_KEYDOWN ) {
 				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
 					done = true;
@@ -986,12 +993,7 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 					done = true;
 					accept = false;
 				}
-				else if (!(event.key.keysym.sym == SDLK_BACKSPACE)) {
-					if ((rk.ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
-						Mix_PlayChannel(1,typingChunk,0);
-					}
-				}
-				else if (event.key.keysym.sym == SDLK_BACKSPACE) {
+				else {
 					if ((rk.ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
 						Mix_PlayChannel(1,typingChunk,0);
 					}
@@ -1318,7 +1320,7 @@ static void DrawBalls() {
 			int x = theTextManeger.textArray[i].getX()-12;
 			int y = theTextManeger.textArray[i].getY()-12;
 			DrawIMG(iChainFrame,screen,x,y);
-			
+
 			nf_standard_small_font.draw(screen, x+12,y+7, NFont::CENTER, "%s",theTextManeger.textArray[i].getText());
 		}
 	} //for
@@ -2137,14 +2139,14 @@ int main(int argc, char* argv[]) {
 	if ((bFullscreen)&&(!singlePuzzle)) {
 		createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
-	
-	SDL_Window *sdlWindow = SDL_CreateWindow("Block Attack - Rise of the BlocksMy Game Window",
-                              SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED,
-                              xsize, ysize,
-                              createWindowParams );
+
+	SDL_Window* sdlWindow = SDL_CreateWindow("Block Attack - Rise of the BlocksMy Game Window",
+	                        SDL_WINDOWPOS_UNDEFINED,
+	                        SDL_WINDOWPOS_UNDEFINED,
+	                        xsize, ysize,
+	                        createWindowParams );
 	dieOnNullptr(sdlWindow, "Unable to create window");
-	SDL_Renderer *renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+	SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 	dieOnNullptr(renderer, "Unable to create render");
 	screen = renderer;
 	//Init the file system abstraction layer
@@ -2154,7 +2156,7 @@ int main(int argc, char* argv[]) {
 	sago::SagoDataHolder d(renderer);
 	sago::SagoSpriteHolder spriteholder(d);
 	loadTheme(spriteholder, Config::getInstance()->getString("themename"));
-	
+
 	//Now sets the icon:
 	//SDL_Surface* icon = IMG_Load2("gfx/icon.png");
 	//SDL_WM_SetIcon(icon,nullptr);
@@ -2288,7 +2290,7 @@ int runGame(int gametype, int level) {
 
 
 	bool mustsetupgame = true;
-	
+
 
 	while (done == 0) {
 		if (mustsetupgame) {
@@ -2745,7 +2747,7 @@ int runGame(int gametype, int level) {
 					//twoPlayers = false;
 				}
 			}
-		
+
 		if (theGame.isGameOver() && registerTTHighscorePlayer1) {
 			registerTTHighscorePlayer1 = false;
 			theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
