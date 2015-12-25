@@ -23,6 +23,7 @@ http://blockattack.sf.net
 
 #include "ReadKeyboard.h"
 #include "utf8.h"
+#include <iostream>
 
 using namespace std;
 
@@ -34,7 +35,7 @@ ReadKeyboard::ReadKeyboard(void) {
 ReadKeyboard::~ReadKeyboard(void) {
 }
 
-Uint8 ReadKeyboard::CharsBeforeCursor() {
+int ReadKeyboard::CharsBeforeCursor() {
 	return std::distance(text_string.begin(), position);
 }
 
@@ -46,10 +47,19 @@ ReadKeyboard::ReadKeyboard(const char* oldName) {
 
 
 void ReadKeyboard::putchar(const std::string& thing) {
-	if (text_string.length() < maxLength) {
-//		text_string.insert(position, thing);
-		utf8::advance(position, 1, text_string.end());
+	/*for (char a : thing) {
+	    std::cout << (int)a;
 	}
+	std::cout << std::endl;
+	cout << "Length (pre): " << std::distance(text_string.begin(), position) << endl;*/
+	if (text_string.length() < maxLength) {
+		int oldPostition = utf8::distance(text_string.begin(), position);
+		int lengthOfInsertString = utf8::distance(thing.begin(), thing.end());
+		text_string.insert(position, thing.begin(), thing.end());
+		position = text_string.begin();  //Inserting may destroy our old iterator
+		utf8::advance(position, oldPostition + lengthOfInsertString, text_string.end());
+	}
+	//cout << "Length (post): " << std::distance(text_string.begin(), position) << endl;
 }
 
 
@@ -62,27 +72,20 @@ void ReadKeyboard::removeChar() {
 }
 
 bool ReadKeyboard::ReadKey(const SDL_Event& key) {
-	return false;
-	/*if ( 
-			(key.unicode >= 'a' && key.unicode <= 'z') ||
-			(key.unicode >= '0' && key.unicode <= '9') || 
-			(key.unicode >= 'A' && key.unicode <= 'Z')) {
-		ReadKeyboard::putchar(key.unicode);
-		return true;
+	if (key.type == SDL_TEXTINPUT) {
+		putchar(key.text.text);
+		if (key.text.text[0] != 0) {
+			return true;
+		}
 	}
-	if (key.unicode == '.' || key.unicode == ',') {
-		ReadKeyboard::putchar('.');
-	}
-	return ReadKey(key.sym);*/
+	return ReadKey(key.key.keysym.sym);
 }
 
 bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
-	return false;
-	/*
-	if (keyPressed == SDLK_SPACE) {
-		ReadKeyboard::putchar(' ');
-		return true;
-	}
+	/*if (keyPressed == SDLK_SPACE) {
+	    ReadKeyboard::putchar(' ');
+	    return true;
+	}*/
 	if (keyPressed == SDLK_DELETE) {
 		if ((text_string.length()>0)&& (position<text_string.end())) {
 			ReadKeyboard::removeChar();
@@ -113,9 +116,9 @@ bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
 		utf8::next(position, text_string.end());
 		return true;
 	}
-	return true;*/
+	return true;
 }
 
-const char* ReadKeyboard::GetString() {
-	return text_string.c_str();
+const std::string& ReadKeyboard::GetString() const {
+	return text_string;
 }

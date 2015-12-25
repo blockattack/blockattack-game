@@ -40,8 +40,8 @@ public:
 	ReadKeyboard(void);
 	~ReadKeyboard(void);
 	ReadKeyboard(const char*);
-	Uint8 CharsBeforeCursor(); //Where should the cursor be placed?
+	int CharsBeforeCursor(); //Where should the cursor be placed?
 	bool ReadKey(const SDL_Event&);
 	bool ReadKey(SDL_Keycode); //true if key accepted
-	const char* GetString(void);
+	const std::string& GetString(void) const;
 };
