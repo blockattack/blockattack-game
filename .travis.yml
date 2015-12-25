@@ -10,10 +10,6 @@ addons:
     packages:
     - g++-4.9
     - build-essential
-    - libsdl2-dev
-    - libsdl2-image-dev
-    - libsdl2-mixer-dev
-    - libsdl2-ttf-dev
     - libenet-dev
     - libphysfs-dev
     - libboost1.55-dev
