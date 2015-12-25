@@ -29,7 +29,6 @@ http://blockattack.sf.net
 #include "SDL.h"
 #include <vector>
 #include "Libs/NFont.h"
-#include "CppSdlImageHolder.hpp"
 #include "sago/SagoSprite.hpp"
 #include <memory>
 

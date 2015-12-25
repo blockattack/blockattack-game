@@ -24,7 +24,6 @@ http://blockattack.sf.net
 #ifndef _GLOBAL_HPP
 #define	_GLOBAL_HPP
 
-#include "CppSdlImageHolder.hpp"
 #include "Libs/NFont.h"
 #include <memory>
 #include "sago/SagoSpriteHolder.hpp"

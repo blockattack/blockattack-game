@@ -57,7 +57,6 @@ http://blockattack.sf.net
 #include <SDL/SDL_timer.h>
 #include <SDL/SDL_video.h>
 #include <SDL/SDL_ttf.h>
-#include "CppSdlImageHolder.hpp"
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
 #include <memory>
