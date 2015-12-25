@@ -31,7 +31,7 @@ endif
 
 #Compile with debug information or optimized.
 ifeq ($(DEBUG),1)
-BASE_CFLAGS += -g -DDEBUG=1 -Wall
+BASE_CFLAGS += -g -DDEBUG=1 -Wall -Wno-sign-compare
 else
 BASE_CFLAGS += -O3 
 endif

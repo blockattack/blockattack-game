@@ -24,7 +24,6 @@ http://blockattack.sf.net
 
 #include "MenuSystem.h"
 #include "common.h"
-#include "CppSdlImageHolder.hpp"
 #include "global.hpp"
 
 int mousex;
