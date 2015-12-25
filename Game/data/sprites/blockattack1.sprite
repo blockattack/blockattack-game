@@ -82,15 +82,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"b_back" : {
-	"texture" : "b_back",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 40,
-	"width" : 120,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "b_blank" : {
 	"texture" : "b_blank",
  	"topx" : 0,
@@ -106,15 +97,6 @@
 	"topy" : 0,
 	"height" : 100,
 	"width" : 100,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"b_forward" : {
-	"texture" : "b_forward",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 40,
-	"width" : 120,
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
@@ -154,15 +136,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"b_next" : {
-	"texture" : "b_next",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 40,
-	"width" : 120,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "board_back_back" : {
 	"texture" : "board_back_back",
  	"topx" : 0,
@@ -178,24 +151,6 @@
 	"topy" : 0,
 	"height" : 50,
 	"width" : 100,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"b_retry" : {
-	"texture" : "b_retry",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 40,
-	"width" : 120,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"b_skip" : {
-	"texture" : "b_skip",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 40,
-	"width" : 120,
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },

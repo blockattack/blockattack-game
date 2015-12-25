@@ -141,7 +141,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	bomb = holder.GetSprite("block_bomb");
 	backgroundImage = holder.GetSprite("background");
 	bHighScore = holder.GetSprite("b_highscore");
-	bBack = holder.GetSprite("b_back");
+	bBack = holder.GetSprite("b_blank");
 	bForward = holder.GetSprite("b_forward");
 	blackLine = holder.GetSprite("black_line");
 	stageBobble = holder.GetSprite("i_stage_clear_limit");
@@ -193,9 +193,9 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	smiley[2] = holder.GetSprite("smileys2");
 	smiley[3] = holder.GetSprite("smileys3");
 	transCover = holder.GetSprite("trans_cover");
-	bSkip = holder.GetSprite("b_skip");
-	bNext = holder.GetSprite("b_next");
-	bRetry = holder.GetSprite("b_retry");
+	bSkip = holder.GetSprite("b_blank");
+	bNext = holder.GetSprite("b_blank");
+	bRetry = holder.GetSprite("b_blank");
 	mouse = holder.GetSprite("mouse");
 	menuMarked = holder.GetSprite("menu_marked");
 	menuUnmarked = holder.GetSprite("menu_unmarked");
