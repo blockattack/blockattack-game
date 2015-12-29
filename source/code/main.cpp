@@ -58,7 +58,6 @@ http://blockattack.sf.net
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
 #include <memory>
-#include <SDL/SDL_video.h>
 
 //if SHAREDIR is not used we look in current directory
 #ifndef SHAREDIR
