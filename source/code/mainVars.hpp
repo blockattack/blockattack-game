@@ -195,13 +195,6 @@ static const int bsize = 50;
 std::string player1name;
 std::string player2name;
 
-//paths
-static std::string stageClearSavePath;
-
-static const int nrOfStageLevels = 50;		//number of stages in stage Clear
-std::vector<bool> stageCleared(nrOfStageLevels);		//vector that tells if a stage is cleared
-std::vector<Uint32> stageTimes(nrOfStageLevels);             //For statistical puposes
-std::vector<Uint32> stageScores(nrOfStageLevels);            //--||--
 bool twoPlayers;    //True if two players are playing
 
 //Old mouse position:

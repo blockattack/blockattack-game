@@ -56,6 +56,7 @@ http://blockattack.sf.net
 #include <vector>
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
+#include "stageclearhandler.hpp"
 #include <memory>
 #include <SDL/SDL_video.h>
 
@@ -1536,9 +1537,7 @@ int PuzzleLevelSelect(int Type) {
 	int oldmousex = 0;
 	int oldmousey = 0;
 	bool levelSelected = false;
-	bool tempBool;
 	int nrOfLevels = 0;
-	Uint32 tempUInt32;
 	Uint32 totalScore = 0;
 	Uint32 totalTime = 0;
 	int selected = 0;
@@ -1555,46 +1554,10 @@ int PuzzleLevelSelect(int Type) {
 		nrOfLevels = PuzzleGetNumberOfPuzzles();
 	}
 	if (Type == 1) {
-		ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
-		if (stageFile) {
-			for (int i = 0; i<nrOfStageLevels; i++) {
-				stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
-				stageCleared[i]=tempBool;
-			}
-			if (!stageFile.eof()) {
-				for (int i=0; i<nrOfStageLevels; i++) {
-					tempUInt32 = 0;
-					if (!stageFile.eof()) {
-						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
-					}
-					stageScores[i]=tempUInt32;
-					totalScore+=tempUInt32;
-				}
-				for (int i=0; i<nrOfStageLevels; i++) {
-					tempUInt32 = 0;
-					if (!stageFile.eof()) {
-						stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
-					}
-					stageTimes[i]=tempUInt32;
-					totalTime += tempUInt32;
-				}
-			}
-			else {
-				for (int i=0; i<nrOfStageLevels; i++) {
-					stageScores[i]=0;
-					stageTimes[i]=0;
-				}
-			}
-			stageFile.close();
-		}
-		else {
-			for (int i=0; i<nrOfStageLevels; i++) {
-				stageCleared[i]= false;
-				stageScores[i]=0;
-				stageTimes[i]=0;
-			}
-		}
-		nrOfLevels = nrOfStageLevels;
+		LoadStageClearStages();
+		totalScore = GetTotalScore();
+		totalTime = GetTotalTime();
+		nrOfLevels = GetNrOfLevels();
 	}
 
 	while (!levelSelected) {
@@ -1618,7 +1581,7 @@ int PuzzleLevelSelect(int Type) {
 			if (Type == 0 && PuzzleIsCleared(i)) {
 				DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			}
-			if (Type == 1 && stageCleared.at(i)==true) {
+			if (Type == 1 && IsStageCleared(i)) {
 				DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			}
 		}
@@ -1708,11 +1671,11 @@ int PuzzleLevelSelect(int Type) {
 			string scoreString = _("Best score: 0");
 			string timeString = _("Time used: -- : --");
 
-			if (stageScores.at(selected)>0) {
-				scoreString = _("Best score: ")+itoa(stageScores.at(selected));
+			if (GetStageScores(selected)>0) {
+				scoreString = _("Best score: ")+itoa(GetStageScores(selected));
 			}
-			if (stageTimes.at(selected)>0) {
-				timeString = _("Time used: ")+itoa(stageTimes.at(selected)/1000/60)+" : "+itoa2((stageTimes.at(selected)/1000)%60);
+			if (GetStageTime(selected)>0) {
+				timeString = _("Time used: ")+itoa(GetStageTime(selected)/1000/60)+" : "+itoa2((GetStageTime(selected)/1000)%60);
 			}
 
 			NFont_Write(screen, 200,200,scoreString.c_str());

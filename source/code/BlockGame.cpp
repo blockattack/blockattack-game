@@ -33,6 +33,7 @@ http://blockattack.sf.net
 
 #include "BlockGame.hpp"
 #include "puzzlehandler.hpp"
+#include "stageclearhandler.hpp"
 #include<boost/lexical_cast.hpp>
 
 
@@ -1738,39 +1739,12 @@ void BlockGame::AI_Move() {
 
 //Updates evrything, if not called nothing happends
 void BlockGame::Update() {
-	Uint32 tempUInt32;
 	Uint32 nowTime = ticks; //We remember the time, so it doesn't change during this call
 
 	{
 		FindTowerHeight();
 		if ((linesCleared-TowerHeight>stageClearLimit) && (stageClear) && (!bGameOver)) {
-			stageCleared[Level] = true;
-			if (stageScores[Level]<score) {
-				gameEndedAfter = nowTime-gameStartedAt;
-				stageScores[Level] = score;
-				stageTimes[Level] = gameEndedAfter;
-			}
-
-			ofstream outfile;
-			outfile.open(stageClearSavePath.c_str(), ios::binary |ios::trunc);
-			if (!outfile) {
-				cerr << "Error writing to file: " << stageClearSavePath << endl;
-			}
-			else {
-				for (int i=0; i<nrOfStageLevels; i++) {
-					bool tempBool = stageCleared[i];
-					outfile.write(reinterpret_cast<char*>(&tempBool), sizeof(bool));
-				}
-				for (int i=0; i<nrOfStageLevels; i++) {
-					tempUInt32 = stageScores[i];
-					outfile.write(reinterpret_cast<char*>(&tempUInt32), sizeof(Uint32));
-				}
-				for (int i=0; i<nrOfStageLevels; i++) {
-					tempUInt32 = stageTimes[i];
-					outfile.write(reinterpret_cast<char*>(&tempUInt32), sizeof(Uint32));
-				}
-				outfile.close();
-			}
+			StageClearSetClear(Level, score, nowTime-gameStartedAt);
 			setPlayerWon();
 			stageButtonStatus = SBstageClear;
 		}
