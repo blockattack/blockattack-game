@@ -844,19 +844,21 @@ void BlockGame::ClearBlocks() {
 					combo++;
 				}
 				else {
-					if (combo>2)
+					if (combo>2) {
 						for (int k = j-combo; k<j; k++) {
 							toBeCleared[k][i] = true;
 						}
+					}
 					combo=1;
 					previus = board[j][i]%10000000;
 				}
 			} //if board
 			else {
-				if (combo>2)
+				if (combo>2) {
 					for (int k = j-combo; k<j; k++) {
 						toBeCleared[k][i] = true;
 					}
+				}
 				combo = 0;
 				previus = -1;
 			}
@@ -867,8 +869,8 @@ void BlockGame::ClearBlocks() {
 	combo = 0;
 	chain = 0;
 	int grey = 0;
-	for (int i=0; i<30; i++)
-		for (int j=0; j<6; j++)
+	for (int i=0; i<30; i++) {
+		for (int j=0; j<6; j++) {
 			if (toBeCleared[j][i]) {
 				//see if any garbage is around:
 				FirstGarbageMarker(j-1, i);
@@ -896,6 +898,8 @@ void BlockGame::ClearBlocks() {
 					score+=3*combo;    //More points if more cleared simontanously
 				}
 			}
+		}
+	}
 	score+=chainSize[chain]*100;
 	if (chain==0) {
 		chain=firstUnusedChain();
@@ -903,19 +907,20 @@ void BlockGame::ClearBlocks() {
 		chainUsed[chain]=true;
 	}
 	chainSize[chain]++;
-	for (int i=0; i<30; i++)
+	for (int i=0; i<30; i++) {
 		for (int j=0; j<6; j++) {
 			//if(board[j][i]/10==(BLOCKWAIT+10*FALLTIME)/10)
 			if (toBeCleared[j][i]) {
 				board[j][i]=(board[j][i]%10000000)+chain*10000000;
 			}
 		}
+	}
 
 	{
 		//This is here we add text to screen!
 		bool dead = false;
-		for (int i=29; i>=0; i--)
-			for (int j=0; j<6; j++)
+		for (int i=29; i>=0; i--) {
+			for (int j=0; j<6; j++) {
 				if (toBeCleared[j][i]) {
 					if (!dead) {
 						dead=true;
@@ -925,6 +930,8 @@ void BlockGame::ClearBlocks() {
 						}
 					}
 				}
+			}
+		}
 	} //This was there text was added
 
 	if (vsMode)
@@ -1015,16 +1022,17 @@ void BlockGame::ClearBlocks() {
 
 	//Calculate chain
 	chain=0;
-	for (int i=0; i<6; i++)
+	for (int i=0; i<6; i++) {
 		for (int j=0; j<30; j++) {
 			if (chainSize[board[i][j]/10000000]>chain) {
 				chain=chainSize[board[i][j]/10000000];
 			}
 		}
+	}
 
 	//Make space in table for more things
-	if (chain==0)
-		for (int i=0; i<NUMBEROFCHAINS; i++)
+	if (chain==0) {
+		for (int i=0; i<NUMBEROFCHAINS; i++) {
 			if (chainUsed[i]==true) {
 				if ((vsMode)&&(chainSize[i]>1)) {
 					garbageTarget->CreateGarbage(6, chainSize[i]-1);
@@ -1037,6 +1045,8 @@ void BlockGame::ClearBlocks() {
 				}
 				chainUsed[i]=false;
 			}
+		}
+	}
 } //ClearBlocks
 
 //prints "Game Over" and ends game
@@ -1063,10 +1073,11 @@ int BlockGame::FallBlock(int x, int y, int number) {
 	if (y == 0) {
 		return -1;
 	}
-	if (x>0)
+	if (x>0) {
 		if (board[x-1][y] == number) {
 			return -1;
 		}
+	}
 	int i=x;
 	bool canFall = true;
 	//checks a line of a garbage block and see if something is under it
@@ -1089,18 +1100,19 @@ int BlockGame::FallBlock(int x, int y, int number) {
 
 //Makes all Garbage fall one spot
 void BlockGame::GarbageFall() {
-	for (int i=0; i<30; i++)
+	for (int i=0; i<30; i++) {
 		for (int j=0; j<7; j++) {
 			if ((((board[j][i]/1000000)%10) == 1)||(((board[j][i]/1000000)%10) == 2)) {
 				FallBlock(j, i, board[j][i]);
 			}
 		}
+	}
 }
 
 //Makes the blocks fall (it doesn't test time, this must be done before hand)
 void BlockGame::FallDown() {
 	bool falling =false;        //nothing is moving unless proven otherwise
-	for (int i=0; i<29; i++)
+	for (int i=0; i<29; i++) {
 		for (int j=0; j<6; j++) {
 			if ((board[j][i]==-1) && (board[j][i+1]!=-1) && (board[j][i+1]%BLOCKFALL<7)) {
 				board[j][i] = board[j][i+1];
@@ -1111,6 +1123,7 @@ void BlockGame::FallDown() {
 				falling=true;
 			}
 		}
+	}
 	if (!falling) { //If nothing is falling
 		if ((puzzleMode)&&(!bGameOver)&&(MovesLeft==0)&&(!(BoardEmpty()))) {
 			//Puzzle not won
@@ -1160,10 +1173,11 @@ void BlockGame::PushLine() {
 void BlockGame::PushLineInternal() {
 	//If not game over, not high tower and not puzzle mode
 	if ((!bGameOver) && TowerHeight<13 && (!puzzleMode) && (gameStartedAt<ticks)&&(chain==0)) {
-		for (int i=19; i>0; i--)
+		for (int i=19; i>0; i--) {
 			for (int j=0; j<6; j++) {
 				board[j][i] = board[j][i-1];
 			}
+		}
 		for (int j=0; j<6; j++) {
 			board[j][0] = rand2() % 4;
 			if (j > 0) {
@@ -1204,10 +1218,11 @@ void BlockGame::PushLineInternal() {
 	if (puzzleMode && !bGameOver) {
 		//Reloads level
 		MovesLeft = PuzzleNumberOfMovesAllowed(Level);
-		for (int i=0; i<6; i++)
+		for (int i=0; i<6; i++) {
 			for (int j=0; j<12; j++) {
 				board[i][j+1] = PuzzleGetBrick(Level,i,j);
 			}
+		}
 		score=0;
 		bGameOver=false;
 	}
@@ -1308,10 +1323,11 @@ bool BlockGame::horiClearPossible() {
 
 //the Line Has Unmoveable Objects witch might stall the AI
 bool BlockGame::lineHasGarbage(int line) {
-	for (int i=0; i<6; i++)
+	for (int i=0; i<6; i++) {
 		if (board[i][line]>1000000) {
 			return true;
 		}
+	}
 	return false;
 }
 
@@ -1319,10 +1335,11 @@ bool BlockGame::lineHasGarbage(int line) {
 int BlockGame::nrOfRealTypes(int line) {
 	//cout << "Start_ nrOfReal" << endl;
 	int counter = 0;
-	for (int i=0; i<6; i++)
+	for (int i=0; i<6; i++) {
 		if ((board[i][line]>-1)&&(board[i][line]<7)) {
 			counter++;
 		}
+	}
 	return counter;
 }
 
@@ -1367,10 +1384,11 @@ double BlockGame::firstInLine1(int line) {
 		cerr << "Warning: first in Line1: " << line << endl;
 		return 3.0;
 	}
-	for (int i=0; i<6; i++)
+	for (int i=0; i<6; i++) {
 		if ((board[i][line]>-1)&&(board[i][line]<7)) {
 			return (double)i;
 		}
+	}
 	return 3.0;
 }
 
@@ -1811,11 +1829,12 @@ void BlockGame::Update() {
 		if (bGameOver) {
 			AIstatus = 0;       //Enusres that AI is resetted
 		}
-		else if (AI_Enabled)
+		else if (AI_Enabled) {
 			if (lastAImove+AI_MoveSpeed<ticks) {
 				AI_Move();
 				lastAImove=ticks;
 			}
+		}
 
 		/*************************************************************
 		Ai stuff ended

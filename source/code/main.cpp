@@ -57,6 +57,7 @@ http://blockattack.sf.net
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
 #include <memory>
+#include <SDL/SDL_video.h>
 
 //if SHAREDIR is not used we look in current directory
 #ifndef SHAREDIR
@@ -2127,8 +2128,9 @@ int main(int argc, char* argv[]) {
 
 
 	// "Block Attack - Rise of the Blocks"
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	//Open video
-	int createWindowParams = 0;
+	int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
 	if ((bFullscreen)&&(!singlePuzzle)) {
 		createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
@@ -2141,6 +2143,7 @@ int main(int argc, char* argv[]) {
 	dieOnNullptr(sdlWindow, "Unable to create window");
 	SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 	dieOnNullptr(renderer, "Unable to create render");
+	//SDL_RenderSetLogicalSize(renderer, xsize, ysize);
 	screen = renderer;
 	//Init the file system abstraction layer
 	PHYSFS_init(argv[0]);
@@ -2183,6 +2186,7 @@ int main(int argc, char* argv[]) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
 	}
+	SDL_RenderClear(screen);
 	DrawIMG(backgroundImage, screen, 0, 0);
 	DrawEverything(xsize,ysize,&theGame,&theGame2);
 	SDL_RenderPresent(screen);
@@ -2347,6 +2351,8 @@ int runGame(int gametype, int level) {
 		if (!(highPriority)) {
 			SDL_Delay(1);
 		}
+		
+		SDL_RenderClear(screen);
 		DrawIMG(backgroundImage, screen, 0, 0);
 
 		//updates the balls and explosions:
