@@ -24,6 +24,7 @@ http://blockattack.sf.net
 #include "common.h"
 #include "global.hpp"
 #include "scopeHelpers.hpp"
+#include "icon.hpp"
 
 #include <string.h>
 
@@ -2118,6 +2119,8 @@ int main(int argc, char* argv[]) {
 	//Now sets the icon:
 	//SDL_Surface* icon = IMG_Load2("gfx/icon.png");
 	//SDL_WM_SetIcon(icon,nullptr);
+	SetSDLIcon(sdlWindow);
+
 
 	if (verboseLevel) {
 		cout << "Images loaded" << endl;
