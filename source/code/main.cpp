@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.sf.net
+http://blockattack.net
 ===========================================================================
 */
 
@@ -1974,7 +1974,7 @@ int main(int argc, char* argv[]) {
 
 	if (verboseLevel) {
 		//Copyright notice:
-		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.sf.net" << endl << "Copyright 2004-2011 Poul Sander" << endl <<
+		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.net" << endl << "Copyright 2004-2011 Poul Sander" << endl <<
 		     "A SDL based game (see www.libsdl.org)" << endl <<
 		     "The game is availeble under the GPL, see COPYING for details." << endl;
 #if defined(_WIN32)

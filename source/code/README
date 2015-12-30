@@ -22,5 +22,5 @@ To compile: build-essential, libsdl1.2-dev, libsdl-image1.2-dev, libsdl-mixer1.2
 By default the game is now placed in: /usr/local/bin/blockattack
 This means that it can be runned by just typing "blockattack"
 
-http://blockattack.sf.net
+http://blockattack.net
 Poul Sander poul@poulsander.com

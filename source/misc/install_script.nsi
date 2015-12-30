@@ -4,7 +4,7 @@
 !define PRODUCT_NAME "Block Attack - Rise Of the Blocks"
 !define PRODUCT_VERSION "1.4.0"
 !define PRODUCT_PUBLISHER "Poul Sander"
-!define PRODUCT_WEB_SITE "http://blockattack.sf.net"
+!define PRODUCT_WEB_SITE "http://blockattack.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\block_attack.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
