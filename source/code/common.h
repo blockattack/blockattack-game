@@ -30,13 +30,6 @@ http://blockattack.net
 #ifndef _COMMON_H
 #define	_COMMON_H
 
-/*
- *Files will be saved in:
- * HOME/.gamesaves/"+GAMENAME (unix)
- *or DOCUMENTS/My Games/GAMENAME (Windows)
- */
-#define GAMENAME "blockattack"
-
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -44,10 +37,7 @@ http://blockattack.net
 #include <stdlib.h>
 #include <libintl.h>
 #include <boost/format.hpp>
-#if defined(_WIN32) 
-#include "windows.h"
-#include "shlobj.h"
-#endif
+
 
 #define _(String) gettext (String)
 
@@ -60,8 +50,6 @@ struct commonTime
 };
 
 std::string itoa(int num) __attribute__((const));
-
-std::string getPathToSaveFiles() __attribute__((pure));
 
 bool strequals(const char* a, const char* b);
 
@@ -83,9 +71,6 @@ void dieOnNullptr(bool, const char* msg);
  */
 double str2double(const std::string &str2parse) __attribute__((const));
 
-#if defined(_WIN32)
-std::string getMyDocumentsPath();
-#endif
 
 class TimeHandler
 {

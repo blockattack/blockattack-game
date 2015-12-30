@@ -51,7 +51,7 @@ endif
 BASE_LIBS += -lphysfs
 
 OFILES=main.o highscore.o ReadKeyboard.o joypad.o listFiles.o common.o stats.o Libs/NFont.o Libs/SDL_FontCache.o MenuSystem.o menudef.o \
-       puzzlehandler.o stageclearhandler.o icon.o ${SAGO_O_FILES}
+       puzzlehandler.o stageclearhandler.o icon.o os.o ${SAGO_O_FILES}
 
 ifeq ($(CROSS),i686-w64-mingw32.static-)
 OFILES += winicon.res

@@ -23,6 +23,7 @@ http://blockattack.net
 
 #include "stats.h"
 #include "common.h"
+#include "os.hpp"
 
 using namespace std;
 

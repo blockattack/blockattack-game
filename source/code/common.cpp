@@ -24,6 +24,7 @@ http://blockattack.net
 #include "common.h"
 #include <sstream>
 #include <cstring>
+#include "os.hpp"
 
 using namespace std;
 using boost::format;
@@ -90,44 +91,6 @@ int str2int(const string& str2parse) {
 	catch (ios_base::failure& f) {
 		return 0;
 	}
-}
-
-#ifdef _WIN32
-//Returns path to "my Documents" in windows:
-string getMyDocumentsPath() {
-	TCHAR pszPath[MAX_PATH];
-	//if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
-	if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, pszPath))) {
-		// pszPath is now the path that you want
-#if DEBUG
-		cout << "MyDocuments Located: " << pszPath << endl;
-#endif
-		string theResult= pszPath;
-		return theResult;
-	}
-	else {
-		cout << "Warning: My Documents not found!" << endl;
-		string theResult ="";
-		return theResult;
-	}
-}
-
-#endif
-
-/**
- * Returns the path to where all settings must be saved.
- * On unix-like systems this is the home-folder under: ~/.gamesaves/GAMENAME
- * In Windows it is My Documents/My Games
- * Consider changing this for Vista that has a special save games folder
- */
-string getPathToSaveFiles() {
-#ifdef __unix__
-	return (string)getenv("HOME")+(string)"/.gamesaves/"+GAMENAME;
-#elif _WIN32
-	return getMyDocumentsPath()+(string)"/My Games/"+GAMENAME;
-#else
-	return ".";
-#endif
 }
 
 /**

@@ -17,39 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+http://blockattack.net
 ===========================================================================
 */
 
-#ifndef SCOPEHELPERS_HPP
-#define	SCOPEHELPERS_HPP
+#if defined(_WIN32) 
+#include "windows.h"
+#include "shlobj.h"
+#endif
+#include <string>
 
-#include "common.h"
-
-
-class SDL_RendererHolder {
-	SDL_Renderer* ptr;
-public:
-	SDL_RendererHolder(SDL_Renderer* input) {
-		dieOnNullptr(input, "Failed to get render");
-		ptr = input;
-	}
-	
-	~SDL_RendererHolder() {
-		SDL_DestroyRenderer(ptr);
-	}
-};
-
-class SDL_TextInput {
-public:
-	SDL_TextInput() {
-		SDL_StartTextInput();
-	}
-	
-	~SDL_TextInput() {
-		SDL_StopTextInput();
-	}
-};
-
-#endif	/* SCOPEHELPERS_HPP */
-
+std::string getPathToSaveFiles() __attribute__((pure));
+#if defined(_WIN32)
+std::string getMyDocumentsPath();
+#endif
