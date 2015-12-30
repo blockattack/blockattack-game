@@ -22,50 +22,13 @@ http://blockattack.net
 */
 
 #include "highscore.h"
+#include "os.hpp"
 
 using namespace std;
 
-#ifdef _WIN32
-
-//Returns path to "my Documents" in windows:
-string getMyDocumentsPath1() {
-	TCHAR pszPath[MAX_PATH];
-	//if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
-	if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
-		// pszPath is now the path that you want
-		cout << "MyDocuments Located: " << pszPath << endl;
-		string theResult= pszPath;
-		return theResult;
-	}
-	else {
-		cout << "Warning: My Documents not found!" << endl;
-		string theResult ="";
-		return theResult;
-	}
-}
-
-#endif
-
 Highscore::Highscore(int type) {
-#if defined(__unix__)
-	string home = getenv("HOME");
-	string filename1 = home+"/.gamesaves/blockattack/endless.dat";
-	string filename2 = home+"/.gamesaves/blockattack/timetrial.dat";
-#elif defined(_WIN32)
-	string home = getMyDocumentsPath1();
-	string filename1, filename2;
-	if (&home!=nullptr) {
-		filename1 = home+"/My Games/blockattack/endless.dat";
-		filename2 = home+"/My Games/blockattack/timetrial.dat";
-	}
-	else {
-		filename1 = "endless.dat";
-		filename2 = "timetrial.dat";
-	}
-#else
-	string filename1 = "endless.dat";
-	string filename2 = "timetrial.dat";
-#endif
+	string filename1 = getPathToHighscoresEndless();
+	string filename2 = getPathToHighscoresTimetrial();
 	ourType = type;
 	if (type == 1) {
 		filename = filename1;
@@ -91,25 +54,8 @@ Highscore::Highscore(int type) {
 }
 
 void Highscore::writeFile() {
-#if defined(__unix__)
-	string home = getenv("HOME");
-	string filename1 = home+"/.gamesaves/blockattack/endless.dat";
-	string filename2 = home+"/.gamesaves/blockattack/timetrial.dat";
-#elif defined(_WIN32)
-	string home = getMyDocumentsPath1();
-	string filename1, filename2;
-	if (&home!=nullptr) {
-		filename1 = home+"/My Games/blockattack/endless.dat";
-		filename2 = home+"/My Games/blockattack/timetrial.dat";
-	}
-	else {
-		filename1 = "endless.dat";
-		filename2 = "timetrial.dat";
-	}
-#else
-	string filename1 = "endless.dat";
-	string filename2 = "timetrial.dat";
-#endif
+	string filename1 = getPathToHighscoresEndless();
+	string filename2 = getPathToHighscoresTimetrial();
 	if (ourType == 1) {
 		filename = filename1;
 	}

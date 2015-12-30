@@ -31,3 +31,6 @@ std::string getPathToSaveFiles() __attribute__((pure));
 #if defined(_WIN32)
 std::string getMyDocumentsPath();
 #endif
+
+std::string getPathToHighscoresEndless();
+std::string getPathToHighscoresTimetrial();

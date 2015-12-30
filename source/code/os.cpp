@@ -51,6 +51,23 @@ string getMyDocumentsPath() {
 	}
 }
 
+//Returns path to "my Documents" in windows:
+string getMyDocumentsPath1() {
+	TCHAR pszPath[MAX_PATH];
+	//if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
+	if (SUCCEEDED(SHGetSpecialFolderPath(nullptr, pszPath, CSIDL_PERSONAL, FALSE))) {
+		// pszPath is now the path that you want
+		cout << "MyDocuments Located: " << pszPath << endl;
+		string theResult= pszPath;
+		return theResult;
+	}
+	else {
+		cout << "Warning: My Documents not found!" << endl;
+		string theResult ="";
+		return theResult;
+	}
+}
+
 #endif
 
 /**
@@ -67,4 +84,12 @@ std::string getPathToSaveFiles() {
 #else
 	return ".";
 #endif
+}
+
+std::string getPathToHighscoresEndless() {
+	return getPathToSaveFiles()+"/endless.dat";
+}
+
+std::string getPathToHighscoresTimetrial() {
+	return getPathToSaveFiles()+"/timetrial.dat";
 }
