@@ -25,12 +25,13 @@ http://blockattack.net
 #include "global.hpp"
 #include "scopeHelpers.hpp"
 #include "icon.hpp"
+#include "os.hpp"
 
 #include <string.h>
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "version 1.5.0 BETA"
+#define VERSION_NUMBER "version 2.0.0 BETA"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
@@ -95,11 +96,7 @@ static int InitImages(sago::SagoSpriteHolder& holder);
 static string oldThemePath = "default";
 
 void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
-#if defined(__unix__)
-	string home = (string)getenv("HOME")+(string)"/.gamesaves/blockattack";
-#elif defined(_WIN32)
-	string home = (string)getMyDocumentsPath()+(string)"/My Games/blockattack";
-#endif
+	string home = getPathToSaveFiles();
 	//Remove old theme
 	PHYSFS_removeFromSearchPath(oldThemePath.c_str());
 	//Look in blockattack.data
@@ -107,9 +104,7 @@ void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 	//Look in folder
 	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
 	//Look in home folder
-#if defined(__unix__) || defined(_WIN32)
 	PHYSFS_addToSearchPath(home.c_str(), 1);
-#endif
 	if (themeName == Config::getInstance()->getString("themename")) {
 		//If this is a theme different from the saved one. Remember it!
 		Config::getInstance()->setString("themename", themeName);
@@ -120,9 +115,7 @@ void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 	}
 	oldThemePath = "themes/"+themeName;
 	PHYSFS_addToSearchPath(oldThemePath.c_str(),0);
-#if defined(__unix__) || defined(_WIN32)
 	PHYSFS_addToSearchPath((home+(string)"/"+oldThemePath).c_str(), 0);
-#endif
 	InitImages(holder);
 }
 
@@ -562,6 +555,7 @@ static textManeger theTextManeger;
 //Here comes the Block Game object
 #include "BlockGame.hpp"
 #include "BlockGame.cpp"
+#include "os.hpp"
 
 class BlockGameSdl : public BlockGame {
 public:
@@ -918,23 +912,7 @@ void writeScreenShot() {
 		cout << "Saving screenshot" << endl;
 	}
 	int rightNow = (int)time(nullptr);
-	/*#if defined(__unix__)
-	    char buf[514];
-	    snprintf( buf, sizeof(buf), "%s/.gamesaves/blockattack/screenshots/screenshot%i.bmp", getenv("HOME"), rightNow );
-	#elif defined(__win32__)
-	    char buf[MAX_PATH];
-	    snprintf( buf, sizeof(buf), "%s\\My Games\\blockattack\\screenshots\\screenshot%i.bmp", (getMyDocumentsPath()).c_str(), rightNow );
-	#else
-	    char buf[MAX_PATH];
-	    snprintf( buf, sizeof(buf), "screenshot%i.bmp", rightNow );
-	#endif*/
-#if defined(__unix__)
-	string buf = (string)getenv("HOME")+"/.gamesaves/blockattack/screenshots/screenshot"+itoa(rightNow)+".bmp";
-#elif defined(__win32__)
-	string buf = getMyDocumentsPath()+"\\My Games\\blockattack\\screenshots\\screenshot"+itoa(rightNow)+".bmp";
-#else
-	string buf = "screenshot"+itoa(rightNow)+".bmp";
-#endif
+	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+itoa(rightNow)+".bmp";
 	//SDL_SaveBMP( screen, buf.c_str() );
 	//TODO: Write screenshot
 	if (!NoSound) {
@@ -1705,15 +1683,7 @@ void changePuzzleLevels() {
 			theFileName[i]=0;
 		}
 		PuzzleSetName(theFileName);
-#if defined(__unix__)
-		string home = getenv("HOME");
-		PuzzleSetSavePath(home+"/.gamesaves/blockattack/"+PuzzleGetName()+".save");
-#elif defined(_WIN32)
-		string home = getMyDocumentsPath();
-		PuzzleSetSavePath(home+"/My Games/blockattack/"+PuzzleGetName()+".save");
-#else
-		PuzzleSetSavePath(PuzzleGetName()+".save");
-#endif
+		PuzzleSetSavePath(getPathToSaveFiles()+"/"+PuzzleGetName()+".save");
 	}
 
 }
@@ -1911,39 +1881,8 @@ int main(int argc, char* argv[]) {
 	theBallManeger = ballManeger();
 	theExplosionManeger = explosionManeger();
 
-//We now set the paths were we are saving, we are using the keyword __unix__ . I hope that all UNIX systems has a home folder
-#if defined(__unix__)
-	string home = getenv("HOME");
-	string optionsPath = home+"/.gamesaves/blockattack/options.dat";
-#elif defined(_WIN32)
-	string home = getMyDocumentsPath();
-	string optionsPath;
-	if (&home!=nullptr) { //Null if no APPDATA dir exists (win 9x)
-		optionsPath = home+"/My Games/blockattack/options.dat";
-	}
-	else {
-		optionsPath = "options.dat";
-	}
-#else
-	string optionsPath = "options.dat";
-#endif
-
-#if defined(__unix__)
-	stageClearSavePath = home+"/.gamesaves/blockattack/stageClear.SCsave";
-	PuzzleSetSavePath(home+"/.gamesaves/blockattack/puzzle.levels.save");
-#elif defined(_WIN32)
-	if (&home!=nullptr) {
-		stageClearSavePath = home+"/My Games/blockattack/stageClear.SCsave";
-		PuzzleSetSavePath(home+"/My Games/blockattack/puzzle.levels.save");
-	}
-	else {
-		stageClearSavePath = "stageClear.SCsave";
-		PuzzleSetSavePath("puzzle.levels.save");
-	}
-#else
-	stageClearSavePath = "stageClear.SCsave";
-	PuzzleSetSavePath("puzzle.levels.save");
-#endif
+	stageClearSavePath = getStageClearSavePath();
+	PuzzleSetSavePath(getPuzzleSetSavePath());
 	PuzzleSetName("puzzle.levels");
 
 	//Init SDL
@@ -1963,29 +1902,21 @@ int main(int argc, char* argv[]) {
 	theTextManeger = textManeger();
 
 	//Open Audio
-	if (!NoSound) //If sound has not been disabled, then load the sound system
+	if (!NoSound) {
+		//If sound has not been disabled, then load the sound system
 		if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
 			cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
 			     << "Sound will be disabled!" << endl;
 			NoSound = true; //Tries to stop all sound from playing/loading
 		}
+	}
 
-	//SDL_WM_SetCaption("Block Attack - Rise of the Blocks", nullptr); //Sets title line
 
 	if (verboseLevel) {
 		//Copyright notice:
 		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.net" << endl << "Copyright 2004-2011 Poul Sander" << endl <<
 		     "A SDL based game (see www.libsdl.org)" << endl <<
 		     "The game is availeble under the GPL, see COPYING for details." << endl;
-#if defined(_WIN32)
-		cout << "Windows build" << endl;
-#elif defined(__linux__)
-		cout << "Linux build" <<  endl;
-#elif defined(__unix__)
-		cout << "Unix build" <<  endl;
-#else
-		cout << "Alternative build" << endl;
-#endif
 		cout << "-------------------------------------------" << endl;
 	}
 
@@ -2098,7 +2029,7 @@ int main(int argc, char* argv[]) {
 		createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
-	SDL_Window* sdlWindow = SDL_CreateWindow("Block Attack - Rise of the BlocksMy Game Window",
+	SDL_Window* sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
 	                        SDL_WINDOWPOS_UNDEFINED,
 	                        SDL_WINDOWPOS_UNDEFINED,
 	                        xsize, ysize,
@@ -2115,18 +2046,11 @@ int main(int argc, char* argv[]) {
 	sago::SagoDataHolder d(renderer);
 	sago::SagoSpriteHolder spriteholder(d);
 	loadTheme(spriteholder, Config::getInstance()->getString("themename"));
-
-	//Now sets the icon:
-	//SDL_Surface* icon = IMG_Load2("gfx/icon.png");
-	//SDL_WM_SetIcon(icon,nullptr);
 	SetSDLIcon(sdlWindow);
-
 
 	if (verboseLevel) {
 		cout << "Images loaded" << endl;
 	}
-
-	//InitMenues();
 
 	BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
 	BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
