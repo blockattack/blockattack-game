@@ -2041,6 +2041,7 @@ int main(int argc, char* argv[]) {
 	screen = renderer;
 	//Init the file system abstraction layer
 	PHYSFS_init(argv[0]);
+	PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
 	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
 	//Load default theme
 	sago::SagoDataHolder d(renderer);

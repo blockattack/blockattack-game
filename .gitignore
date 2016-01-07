@@ -3,3 +3,8 @@
 *.o
 *~
 *.orig
+winicon.res
+nbproject
+.*
+-.travis.yml
+-.gitignore

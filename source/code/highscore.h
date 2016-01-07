@@ -27,15 +27,6 @@ http://blockattack.net
 #include <string>
 #include <stdlib.h>
 
-#ifdef _WIN32
-#ifndef CSIDL_PERSONAL
-#define CSIDL_PERSONAL                  0x0005
-#endif
-#define _WIN32_IE  0x0400
-#include "windows.h"
-#include <shlobj.h>
-#endif
-
 const int top = 10;
 
 struct record
