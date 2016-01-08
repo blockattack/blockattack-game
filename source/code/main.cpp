@@ -1953,42 +1953,42 @@ int main(int argc, char* argv[]) {
 		joyplay1 = (bool)configSettings->getInt("joypad1");
 		joyplay2 = (bool)configSettings->getInt("joypad2");
 
-		if (configSettings->exists("player1keyup")) {
-			keySettings[0].up = (SDL_Keycode)configSettings->getInt("player1keyup");
+		if (configSettings->exists("sdl2_player1keyup")) {
+			keySettings[0].up = (SDL_Keycode)configSettings->getInt("sdl2_player1keyup");
 		}
-		if (configSettings->exists("player1keydown")) {
-			keySettings[0].down = (SDL_Keycode)configSettings->getInt("player1keydown");
+		if (configSettings->exists("sdl2_player1keydown")) {
+			keySettings[0].down = (SDL_Keycode)configSettings->getInt("sdl2_player1keydown");
 		}
-		if (configSettings->exists("player1keyleft")) {
-			keySettings[0].left = (SDL_Keycode)configSettings->getInt("player1keyleft");
+		if (configSettings->exists("sdl2_player1keyleft")) {
+			keySettings[0].left = (SDL_Keycode)configSettings->getInt("sdl2_player1keyleft");
 		}
-		if (configSettings->exists("player1keyright")) {
-			keySettings[0].right = (SDL_Keycode)configSettings->getInt("player1keyright");
+		if (configSettings->exists("sdl2_player1keyright")) {
+			keySettings[0].right = (SDL_Keycode)configSettings->getInt("sdl2_player1keyright");
 		}
-		if (configSettings->exists("player1keychange")) {
-			keySettings[0].change = (SDL_Keycode)configSettings->getInt("player1keychange");
+		if (configSettings->exists("sdl2_player1keychange")) {
+			keySettings[0].change = (SDL_Keycode)configSettings->getInt("sdl2_player1keychange");
 		}
-		if (configSettings->exists("player1keypush")) {
-			keySettings[0].push = (SDL_Keycode)configSettings->getInt("player1keypush");
+		if (configSettings->exists("sdl2_player1keypush")) {
+			keySettings[0].push = (SDL_Keycode)configSettings->getInt("sdl2_player1keypush");
 		}
 
-		if (configSettings->exists("player2keyup")) {
-			keySettings[2].up = (SDL_Keycode)configSettings->getInt("player2keyup");
+		if (configSettings->exists("sdl2_player2keyup")) {
+			keySettings[2].up = (SDL_Keycode)configSettings->getInt("sdl2_player2keyup");
 		}
-		if (configSettings->exists("player2keydown")) {
-			keySettings[2].down = (SDL_Keycode)configSettings->getInt("player2keydown");
+		if (configSettings->exists("sdl2_player2keydown")) {
+			keySettings[2].down = (SDL_Keycode)configSettings->getInt("sdl2_player2keydown");
 		}
-		if (configSettings->exists("player2keyleft")) {
-			keySettings[2].left = (SDL_Keycode)configSettings->getInt("player2keyleft");
+		if (configSettings->exists("sdl2_player2keyleft")) {
+			keySettings[2].left = (SDL_Keycode)configSettings->getInt("sdl2_player2keyleft");
 		}
-		if (configSettings->exists("player2keyright")) {
-			keySettings[2].right = (SDL_Keycode)configSettings->getInt("player2keyright");
+		if (configSettings->exists("sdl2_player2keyright")) {
+			keySettings[2].right = (SDL_Keycode)configSettings->getInt("sdl2_player2keyright");
 		}
-		if (configSettings->exists("player2keychange")) {
-			keySettings[2].change = (SDL_Keycode)configSettings->getInt("player2keychange");
+		if (configSettings->exists("sdl2_player2keychange")) {
+			keySettings[2].change = (SDL_Keycode)configSettings->getInt("sdl2_player2keychange");
 		}
-		if (configSettings->exists("player2keypush")) {
-			keySettings[2].push = (SDL_Keycode)configSettings->getInt("player2keypush");
+		if (configSettings->exists("sdl2_player2keypush")) {
+			keySettings[2].push = (SDL_Keycode)configSettings->getInt("sdl2_player2keypush");
 		}
 		if (configSettings->exists("player1name")) {
 			player1name = configSettings->getString("player1name");
@@ -2095,19 +2095,19 @@ int main(int argc, char* argv[]) {
 		configSettings->setInt("joypad1",(int)joyplay1);
 		configSettings->setInt("joypad2",(int)joyplay2);
 
-		configSettings->setInt("player1keyup",(int)keySettings[0].up);
-		configSettings->setInt("player1keydown",(int)keySettings[0].down);
-		configSettings->setInt("player1keyleft",(int)keySettings[0].left);
-		configSettings->setInt("player1keyright",(int)keySettings[0].right);
-		configSettings->setInt("player1keychange",(int)keySettings[0].change);
-		configSettings->setInt("player1keypush",(int)keySettings[0].push);
+		configSettings->setInt("sdl2_player1keyup",(int)keySettings[0].up);
+		configSettings->setInt("sdl2_player1keydown",(int)keySettings[0].down);
+		configSettings->setInt("sdl2_player1keyleft",(int)keySettings[0].left);
+		configSettings->setInt("sdl2_player1keyright",(int)keySettings[0].right);
+		configSettings->setInt("sdl2_player1keychange",(int)keySettings[0].change);
+		configSettings->setInt("sdl2_player1keypush",(int)keySettings[0].push);
 
-		configSettings->setInt("player2keyup",(int)keySettings[2].up);
-		configSettings->setInt("player2keydown",(int)keySettings[2].down);
-		configSettings->setInt("player2keyleft",(int)keySettings[2].left);
-		configSettings->setInt("player2keyright",(int)keySettings[2].right);
-		configSettings->setInt("player2keychange",(int)keySettings[2].change);
-		configSettings->setInt("player2keypush",(int)keySettings[2].push);
+		configSettings->setInt("sdl2_player2keyup",(int)keySettings[2].up);
+		configSettings->setInt("sdl2_player2keydown",(int)keySettings[2].down);
+		configSettings->setInt("sdl2_player2keyleft",(int)keySettings[2].left);
+		configSettings->setInt("sdl2_player2keyright",(int)keySettings[2].right);
+		configSettings->setInt("sdl2_player2keychange",(int)keySettings[2].change);
+		configSettings->setInt("sdl2_player2keypush",(int)keySettings[2].push);
 
 		configSettings->setString("player1name",player1name);
 		configSettings->setString("player2name",player2name);
