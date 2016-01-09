@@ -37,3 +37,5 @@ std::string getPathToHighscoresTimetrial();
 
 std::string getStageClearSavePath();
 std::string getPuzzleSetSavePath();
+
+void OsCreateFolders();

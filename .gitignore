@@ -8,3 +8,5 @@ nbproject
 .*
 -.travis.yml
 -.gitignore
+*.patch
+Game/blockattack*

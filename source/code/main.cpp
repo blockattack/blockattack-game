@@ -1498,12 +1498,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		Ticks = SDL_GetTicks();
 	}
 
-	//NFont_Write(screen, 800,4,FPS);
 	nf_standard_blue_font.draw(screen, 800, 4, "%s", FPS);
 #endif
-
-	//SDL_RenderPresent(screen); Update screen is now called outside DrawEvrything, bacause the mouse needs to be painted
-
 }
 
 //The function that allows the player to choose PuzzleLevel
@@ -1782,30 +1778,7 @@ static void StartTwoPlayerVs() {
 
 //The main function, quite big... too big
 int main(int argc, char* argv[]) {
-	//We first create the folder there we will save (only on UNIX systems)
-	//we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
-#if defined(__unix__)
-	//Compiler warns about unused result. The users envisonment should normally give the user all the information he needs
-	if (system("mkdir -p ~/.gamesaves/blockattack/screenshots")) {
-		cerr << "mkdir error creating ~/.gamesaves/blockattack/screenshots" << endl;
-	}
-	if (system("mkdir -p ~/.gamesaves/blockattack/replays")) {
-		cerr << "mkdir error creating ~/.gamesaves/blockattack/replays" << endl;
-	}
-	if (system("mkdir -p ~/.gamesaves/blockattack/puzzles")) {
-		cerr << "mkdir error creating ~/.gamesaves/blockattack/puzzles" << endl;
-	}
-#elif defined(_WIN32)
-	//Now for Windows NT/2k/xp/2k3 etc.
-	string tempA = getMyDocumentsPath()+"\\My Games";
-	CreateDirectory(tempA.c_str(),nullptr);
-	tempA = getMyDocumentsPath()+"\\My Games\\blockattack";
-	CreateDirectory(tempA.c_str(),nullptr);
-	tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\replays";
-	CreateDirectory(tempA.c_str(),nullptr);
-	tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\screenshots";
-	CreateDirectory(tempA.c_str(),nullptr);
-#endif
+	OsCreateFolders();
 	highPriority = false;   //if true the game will take most resources, but increase framerate.
 	bFullscreen = false;
 	//Set default Config variables:

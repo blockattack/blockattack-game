@@ -137,3 +137,31 @@ std::string getPuzzleSetSavePath() {
 #endif
 	return ret;
 }
+
+void OsCreateFolders() {
+	//We first create the folder there we will save (only on UNIX systems)
+	//we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
+	
+#if defined(__unix__)
+	//Compiler warns about unused result. The users envisonment should normally give the user all the information he needs
+	if (system("mkdir -p ~/.gamesaves/blockattack/screenshots")) {
+		cerr << "mkdir error creating ~/.gamesaves/blockattack/screenshots" << endl;
+	}
+	if (system("mkdir -p ~/.gamesaves/blockattack/replays")) {
+		cerr << "mkdir error creating ~/.gamesaves/blockattack/replays" << endl;
+	}
+	if (system("mkdir -p ~/.gamesaves/blockattack/puzzles")) {
+		cerr << "mkdir error creating ~/.gamesaves/blockattack/puzzles" << endl;
+	}
+#elif defined(_WIN32)
+	//Now for Windows NT/2k/xp/2k3 etc.
+	string tempA = getMyDocumentsPath()+"\\My Games";
+	CreateDirectory(tempA.c_str(),nullptr);
+	tempA = getMyDocumentsPath()+"\\My Games\\blockattack";
+	CreateDirectory(tempA.c_str(),nullptr);
+	tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\replays";
+	CreateDirectory(tempA.c_str(),nullptr);
+	tempA = getMyDocumentsPath()+"\\My Games\\blockattack\\screenshots";
+	CreateDirectory(tempA.c_str(),nullptr);
+#endif
+}
