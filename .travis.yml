@@ -14,6 +14,7 @@ addons:
     - libphysfs-dev
     - libboost1.55-dev
     - libjsoncpp-dev
+    - cmake
 
 cache:
   apt: true
