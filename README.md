@@ -8,7 +8,6 @@ A Tetris Attack Clone under the GPL.
   * libSDL2_image
   * libSDL2_mixer
   * libSDL2_ttf
-  * libenet
   * libphysfs
   * libboost (only needed for compiling)
   * libutfcpp (only needed for compiling)
@@ -18,14 +17,22 @@ A Tetris Attack Clone under the GPL.
 The only supported build method is using the Makefile
 To build do:
 ```
-cd source/code
+cmake .
 make
 ```
 The result should be in the "Game"-folder. To run
 ```
-cd ../../Game
-./blockattack
+cd ./Game/blockattack
 ```
 
+Windows build uses MXE (mxe.cc) with these installed:
+```
+sdl2 sdl2_image sdl2_mixer sdl2_ttf physfs jsoncpp libtool gettext freetype zlib boost
+```
+and libutfcpp copied from "source/misc/travis_help/utf8_v2_3_4/source/" to "/path/to/mxe/usr/lib/gcc/i686-w64-mingw32.static/4.9.3/include"
 
-
+Compiled with:
+```
+i686-w64-mingw32.static-cmake --debug-output . && make
+```
+As of 2016-01-17 the Windows version crashes but it will work eventually

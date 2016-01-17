@@ -3,10 +3,9 @@ set -e
 # Travis runs Ubuntu 12.04 and misses libutfcpp-dev.
 cp source/misc/travis_help/utf8_v2_3_4/source/utf8.h source/code/
 cp -r source/misc/travis_help/utf8_v2_3_4/source/utf8 source/code/
-make -C source/code -f Makefile
+cmake .
+make
 make clean
 ./packdata.sh
 #i686-pc-mingw32-c++ -c -std=c++11 source/code/os.cpp -o windows_os_test.o
-#I do not support scons.
-#scons -Q prefix=$HOME -Q sharedir=$HOME/share/
 
