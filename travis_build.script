@@ -8,6 +8,4 @@ make
 make clean
 ./packdata.sh
 #i686-pc-mingw32-c++ -c -std=c++11 source/code/os.cpp -o windows_os_test.o
-#I do not support scons.
-#scons -Q prefix=$HOME -Q sharedir=$HOME/share/
 

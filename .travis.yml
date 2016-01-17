@@ -15,6 +15,7 @@ addons:
     - libboost1.55-dev
     - libjsoncpp-dev
     - cmake
+    - docbook-to-man
 
 cache:
   apt: true
