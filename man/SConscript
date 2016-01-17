@@ -1,8 +1,0 @@
-#-------------#
-# Import Vars #
-#-------------#
-Import('*')
-
-env.Install ('$destdir/$mandir/man6/','blockattack.6.gz')
-env.Alias('install', '$destdir/$mandir/man6/')
-
