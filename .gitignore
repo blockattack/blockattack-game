@@ -13,6 +13,8 @@ Game/blockattack*
 cmake_install.cmake
 CMake*
 -CMakeLists.txt
+CPack*
+Makefile
 source/manual/
 -source/manual/block_attack_manual.tex
 man/blockattack.6.gz
