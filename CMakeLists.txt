@@ -6,9 +6,9 @@ set(BIN_DIR ${blockattack_SOURCE_DIR}/Game)
 # Define install paths
 set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE STRING "Install executable in this directory")
 set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/blockattack" CACHE STRING "Install data to this directory")
-set(INSTALL_MAN_DIR "${CMAKE_INSTALL_PREFIX}/share/man" CACHE STRING "Install the man page to this directory")
-set(INSTALL_APPLICATIONS_DIR "${CMAKE_INSTALL_PREFIX}/share/applications" CACHE STRING "Install the .desktop file to this directory")
-set(INSTALL_ICONS_DIR "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
+set(INSTALL_MAN_DIR "/usr/share/man" CACHE STRING "Install the man page to this directory")
+set(INSTALL_APPLICATIONS_DIR "/usr/share/applications" CACHE STRING "Install the .desktop file to this directory")
+set(INSTALL_ICONS_DIR "/usr/share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
 
 #The path to the data dir must be compiled into the binary
 add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
