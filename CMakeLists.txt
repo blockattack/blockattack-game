@@ -10,8 +10,10 @@ set(INSTALL_MAN_DIR "/usr/share/man/man6" CACHE STRING "Install the man page to 
 set(INSTALL_APPLICATIONS_DIR "/usr/share/applications" CACHE STRING "Install the .desktop file to this directory")
 set(INSTALL_ICONS_DIR "/usr/share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
 
+if (!WIN32)
 #The path to the data dir must be compiled into the binary
 add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
+endif()
 
 #Compiler options
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-sign-compare -std=c++11")

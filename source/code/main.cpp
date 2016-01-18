@@ -101,6 +101,7 @@ void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
 	PHYSFS_removeFromSearchPath(oldThemePath.c_str());
 	//Look in blockattack.data
 	PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
+	PHYSFS_addToSearchPath(((string)PHYSFS_getBaseDir()+"/blockattack.data").c_str(), 1);
 	//Look in folder
 	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
 	//Look in home folder

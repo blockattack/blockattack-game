@@ -188,6 +188,7 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 	}
 	std::cout << path << " loaded" << std::endl;
 	data->music[musicName] = ret;
+	data->dataToFree.push_back(std::move(m_data));
 	return ret;
 }
 
@@ -225,6 +226,7 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 
 	std::cout << path << " loaded" << std::endl;
 	data->sounds[soundName] = ret;
+	data->dataToFree.push_back(std::move(m_data));
 	return ret;
 }
 
