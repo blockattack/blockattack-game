@@ -17,12 +17,18 @@ A Tetris Attack Clone under the GPL.
 The only supported build method is using the Makefile
 To build do:
 ```
+./packdata.sh
 cmake .
 make
 ```
 The result should be in the "Game"-folder. To run
 ```
 cd ./Game/blockattack
+```
+
+You can also choose to install it with
+```
+sudo make install
 ```
 
 Windows build uses MXE (mxe.cc) with these installed:
@@ -35,4 +41,3 @@ Compiled with:
 ```
 i686-w64-mingw32.static-cmake --debug-output . && make
 ```
-As of 2016-01-17 the Windows version crashes but it will work eventually

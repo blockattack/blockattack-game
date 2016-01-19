@@ -10,6 +10,21 @@ set(INSTALL_MAN_DIR "/usr/share/man/man6" CACHE STRING "Install the man page to 
 set(INSTALL_APPLICATIONS_DIR "/usr/share/applications" CACHE STRING "Install the .desktop file to this directory")
 set(INSTALL_ICONS_DIR "/usr/share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
 
+# This sets up the exe icon for windows under mingw.
+# Taken from https://hansonry.wordpress.com/2010/12/15/windows-application-icon-using-mingw-and-cmake/
+set(RES_FILES "")
+if(MINGW)
+ set(RES_FILES "${blockattack_SOURCE_DIR}/source/code/winicon.rc")
+ set(CMAKE_RC_COMPILER_INIT windres)
+ ENABLE_LANGUAGE(RC)
+ SET(CMAKE_RC_COMPILE_OBJECT
+ "<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
+endif(MINGW)
+
+if (WIN32)
+SET(GUI_TYPE WIN32)
+endif()
+
 if (!WIN32)
 #The path to the data dir must be compiled into the binary
 add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
@@ -35,12 +50,13 @@ file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp")
 #I am still trying to get BlockGame to compile as a source file
 list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
 
+
 #Some messages to figure out what cmake does
 message("${SOURCES}")
 message("${CMAKE_EXE_LINKER_FLAGS}")
 
 #building/compiling/linking
-add_executable(blockattack ${SOURCES})
+add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
 target_link_libraries( blockattack ${SDL2_LIBRARY})
 target_link_libraries( blockattack physfs jsoncpp)
 target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
