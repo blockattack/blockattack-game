@@ -2,6 +2,11 @@
 Block Attack - Rise of the Blocks - the game
 A Tetris Attack Clone under the GPL. 
 
+www.blockattack.net
+
+##Screen shot
+![Block Attack - Rise of the Blocks 2.0.0 snapshot](/source/misc/screenshots/screen_shot_2016_01_19.png?raw=true "Screen shot from 2016-01-19")
+
 # Dependencies
   * A version of g++ with C++11 support. Tested on g++-4.9
   * libSDL2
