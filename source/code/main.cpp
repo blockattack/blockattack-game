@@ -262,6 +262,8 @@ void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
 	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
 
+SDL_Window* sdlWindow;
+
 void ResetFullscreen() {
 #if defined(_WIN32)
 /*	if (bFullscreen) {
@@ -276,6 +278,12 @@ void ResetFullscreen() {
 	//TODO: Find SDL2 alternative
 	//SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
 #endif
+	if (bFullscreen) {
+		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	} 
+	else {
+		SDL_SetWindowFullscreen(sdlWindow, 0);
+	}
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -914,8 +922,10 @@ void writeScreenShot() {
 	}
 	int rightNow = (int)time(nullptr);
 	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+itoa(rightNow)+".bmp";
-	//SDL_SaveBMP( screen, buf.c_str() );
-	//TODO: Write screenshot
+	SDL_Surface *sreenshotSurface = SDL_CreateRGBSurface(0, 1024, 768, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_RenderReadPixels(screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
+	SDL_SaveBMP(sreenshotSurface, buf.c_str());
+	SDL_FreeSurface(sreenshotSurface);
 	if (!NoSound) {
 		if (SoundEnabled) {
 			Mix_PlayChannel(1,photoClick,0);
@@ -1121,6 +1131,7 @@ void OpenScoresDisplay() {
 		SDL_Event event;
 
 		SDL_GetMouseState(&mousex,&mousey);
+		bool mustWriteScreenshot = false;
 
 		while ( SDL_PollEvent(&event) ) {
 
@@ -1148,7 +1159,7 @@ void OpenScoresDisplay() {
 				}
 
 				if ( event.key.keysym.sym == SDLK_F9 ) {
-					writeScreenShot();
+					mustWriteScreenshot = true;
 				}
 
 				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
@@ -1193,6 +1204,9 @@ void OpenScoresDisplay() {
 
 		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 		SDL_RenderPresent(screen);
+		if (mustWriteScreenshot) {
+			writeScreenShot();
+		}
 	}
 
 
@@ -2003,7 +2017,7 @@ int main(int argc, char* argv[]) {
 		createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
-	SDL_Window* sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
+	sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
 	                        SDL_WINDOWPOS_UNDEFINED,
 	                        SDL_WINDOWPOS_UNDEFINED,
 	                        xsize, ysize,
@@ -2224,6 +2238,8 @@ int runGame(int gametype, int level) {
 		theExplosionManeger.update();
 		theTextManeger.update();
 
+		bool mustWriteScreenshot = false;
+		
 		if (!bScreenLocked) {
 			SDL_Event event;
 
@@ -2298,7 +2314,7 @@ int runGame(int gametype, int level) {
 							//StartReplay("/home/poul/.gamesaves/blockattack/quicksave");
 						}
 						if ( event.key.keysym.sym == SDLK_F9 ) {
-							writeScreenShot();
+							mustWriteScreenshot = true;
 						}
 						if ( event.key.keysym.sym == SDLK_F5 ) {
 						}
@@ -2634,6 +2650,9 @@ int runGame(int gametype, int level) {
 		//Draw the mouse:
 		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 		SDL_RenderPresent(screen);
+		if (mustWriteScreenshot) {
+			writeScreenShot();
+		}
 	} //game loop
 	return 0;
 }
