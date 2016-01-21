@@ -46,6 +46,7 @@ public:
 	TTF_Font* getFontPtr(const std::string &fontName, int ptsize) const;
 	Mix_Music* getMusicPtr(const std::string &musicName) const;
 	Mix_Chunk* getSoundPtr(const std::string &soundName) const;
+	void setVerbose(bool value);
 	virtual ~SagoDataHolder();
 private:
 	SagoDataHolder(const SagoDataHolder& base) = delete;

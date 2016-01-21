@@ -40,8 +40,13 @@ struct SagoDataHolder::SagoDataHolderData {
 	std::map<std::string, Mix_Chunk*> sounds;
 	std::vector<SDL_RWops*> rwOpsToFree;
 	std::vector<std::unique_ptr<char[]>> dataToFree;
+	bool verbose = false;
 	SDL_Renderer* renderer = nullptr;
 };
+
+static void printFileWeLoad(const std::string& value) {
+	std::cout << "Loading " << value << std::endl;
+}
 
 SagoDataHolder::SagoDataHolder(SDL_Renderer* renderer) {
 	data = new SagoDataHolderData();
@@ -75,6 +80,9 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 		return ret;
 	}
 	std::string path = "textures/"+textureName+".png";
+	if (data->verbose) { 
+		printFileWeLoad(path);
+	}
 	if (!PHYSFS_exists(path.c_str())) {
 		std::cerr << "getTextureFailed - Texture does not exists: " << path << std::endl;
 		exit(1);
@@ -106,7 +114,6 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 		std::cerr << "getTextureFailed to load " << path << std::endl;
 	}
 	SDL_FreeSurface(surface);
-	std::cerr << path << " loaded" << std::endl;
 	data->textures[textureName] = ret;
 	return ret;
 }
@@ -117,6 +124,9 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 		return ret;
 	}
 	std::string path = "fonts/"+fontName+".ttf";
+	if (data->verbose) { 
+		printFileWeLoad(path);
+	}
 	if (!PHYSFS_exists(path.c_str())) {
 		std::cerr << "getFontPtr - Font does not exists: " << path << std::endl;
 		return ret;
@@ -158,6 +168,9 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 		return ret;
 	}
 	std::string path = "music/"+musicName+".ogg";
+	if (data->verbose) { 
+		printFileWeLoad(path);
+	}
 	if (!PHYSFS_exists(path.c_str())) {
 		std::cerr << "getMusicPtr - Music file does not exists: " << path << std::endl;
 		return ret;
@@ -186,7 +199,6 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 	if (!ret) {
 		std::cerr << "getMusicPtr to load " << path << " because: " << Mix_GetError() << std::endl;
 	}
-	std::cout << path << " loaded" << std::endl;
 	data->music[musicName] = ret;
 	data->dataToFree.push_back(std::move(m_data));
 	return ret;
@@ -199,6 +211,9 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 		return ret;
 	}
 	std::string path = "sounds/"+soundName+".ogg";
+	if (data->verbose) { 
+		printFileWeLoad(path);
+	}
 	if (!PHYSFS_exists(path.c_str())) {
 		std::cerr << "getSoundPtr - Sound file does not exists: " << path << std::endl;
 		return ret;
@@ -223,11 +238,13 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 	}
 
 	ret = Mix_LoadWAV_RW(rw, SDL_TRUE);
-
-	std::cout << path << " loaded" << std::endl;
 	data->sounds[soundName] = ret;
 	data->dataToFree.push_back(std::move(m_data));
 	return ret;
+}
+
+void SagoDataHolder::setVerbose(bool value) {
+	data->verbose = value;
 }
 
 } //name space sago

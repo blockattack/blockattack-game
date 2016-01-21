@@ -2033,6 +2033,7 @@ int main(int argc, char* argv[]) {
 	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
 	//Load default theme
 	sago::SagoDataHolder d(renderer);
+	d.setVerbose(false);
 	sago::SagoSpriteHolder spriteholder(d);
 	loadTheme(spriteholder, Config::getInstance()->getString("themename"));
 	SetSDLIcon(sdlWindow);
