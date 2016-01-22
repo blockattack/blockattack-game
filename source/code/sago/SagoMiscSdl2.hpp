@@ -28,6 +28,7 @@
 namespace sago {
 	
 	void SagoFatalError(const char* errorMsg);
+	void SagoFatalErrorF(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
 	
 }
 

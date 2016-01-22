@@ -30,6 +30,7 @@
 #include <physfs.h>
 #include <memory>
 #include <SDL_mixer.h>
+#include "SagoMiscSdl2.hpp"
 
 namespace sago {
 
@@ -84,13 +85,10 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 		printFileWeLoad(path);
 	}
 	if (!PHYSFS_exists(path.c_str())) {
-		std::cerr << "getTextureFailed - Texture does not exists: " << path << std::endl;
-		exit(1);
-		return ret;
+		sago::SagoFatalErrorF("getTextureFailed - Texture does not exist: %s", path.c_str());
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
 	unsigned int m_size = PHYSFS_fileLength(myfile);
-	//char* m_data = new char[m_size];
 	std::unique_ptr<char[]> m_data(new char[m_size]);
 	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
 	if (length_read != (int)m_size) {
@@ -152,7 +150,6 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 	}
 
 	ret = TTF_OpenFontRW(rw, SDL_FALSE, ptsize);
-	//delete [] m_data;
 	if (!ret) {
 		std::cerr << "Error openening font: " << fontName << " because: " << TTF_GetError() << std::endl;
 	}

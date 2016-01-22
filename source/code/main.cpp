@@ -565,6 +565,7 @@ static textManeger theTextManeger;
 #include "BlockGame.hpp"
 #include "BlockGame.cpp"
 #include "os.hpp"
+#include "sago/SagoMiscSdl2.hpp"
 
 class BlockGameSdl : public BlockGame {
 public:
@@ -1793,6 +1794,7 @@ static void StartTwoPlayerVs() {
 
 //The main function, quite big... too big
 int main(int argc, char* argv[]) {
+	try {
 	OsCreateFolders();
 	highPriority = false;   //if true the game will take most resources, but increase framerate.
 	bFullscreen = false;
@@ -2122,6 +2124,10 @@ int main(int argc, char* argv[]) {
 
 	//Close file system Apstraction layer!
 	PHYSFS_deinit();
+	
+	} catch (exception& e) {
+		sago::SagoFatalError(e.what());
+	}
 	return 0;
 }
 

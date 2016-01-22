@@ -43,3 +43,11 @@ void sago::SagoFatalError(const char* errorMsg) {
 	abort();
 }
 
+void sago::SagoFatalErrorF(const char* fmt, ...) {
+	char buffer[1024];
+	va_list args;
+	va_start(args, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, args);
+	SagoFatalError(buffer);
+	va_end(args);
+}
