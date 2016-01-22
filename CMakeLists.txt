@@ -46,7 +46,7 @@ pkg_search_module(SDL2IMAGE REQUIRED SDL2_image)
 pkg_search_module(SDL2TTF REQUIRED SDL2_ttf)
 
 #Find all sources but one
-file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp")
+file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp" "source/code/Libs/*.c")
 #I am still trying to get BlockGame to compile as a source file
 list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
 
