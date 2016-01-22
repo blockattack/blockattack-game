@@ -25,6 +25,7 @@ http://blockattack.net
 #include <sstream>
 #include <cstring>
 #include "os.hpp"
+#include "sago/SagoMiscSdl2.hpp"
 
 using namespace std;
 using boost::format;
@@ -52,8 +53,7 @@ bool strequals(const char* a, const char* b) {
 
 void dieOnNullptr(bool ptr, const char* msg) {
 	if (!ptr) {
-		cerr << "Fatal error: " << msg << endl;
-		abort();
+		sago::SagoFatalError(msg);
 	}
 }
 
