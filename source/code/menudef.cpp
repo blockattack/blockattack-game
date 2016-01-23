@@ -29,10 +29,12 @@ http://blockattack.net
 
 using namespace std;
 
+#if 0
 //Menu
 static void PrintHi(Button* b) {
 	cout << "Hi" <<endl;
 }
+#endif
 
 //Stores the controls
 struct control {
@@ -126,14 +128,6 @@ static void runTwoPlayerVs(Button* b) {
 	runGame(11,0);
 }
 
-static void runHostGame(Button* b) {
-	runGame(12,0);
-}
-
-static void runJoinGame(Button* b) {
-	runGame(13,0);
-}
-
 static void buttonActionMusic(Button* b) {
 	MusicEnabled = !MusicEnabled;
 	b->setLabel(MusicEnabled? "Music: On" : "Music: Off");
@@ -159,26 +153,6 @@ static void buttonActionPlayer1Name(Button* b) {
 static void buttonActionPlayer2Name(Button* b) {
 	if (OpenDialogbox(200,100,player2name)) {
 		return;    //must save if true
-	}
-}
-
-static void buttonActionPortChange(Button* b) {
-	string port = Config::getInstance()->getString("portv4");
-	if (OpenDialogbox(200,100,port) && atoi(port.c_str())) {
-		Config::getInstance()->setInt("portv4",atoi(port.c_str()));
-		boost::format f(_("Port: %1%") );
-		f % port;
-		b->setLabel(f.str());
-	}
-}
-
-static void buttonActionIpChange(Button* b) {
-	string ip = Config::getInstance()->getString("address0");
-	if (OpenDialogbox(200,100,ip)) {
-		Config::getInstance()->setString("address0",ip);
-		boost::format f(_("Address: %1%") );
-		f % ip;
-		b->setLabel(f.str());
 	}
 }
 

@@ -2139,7 +2139,6 @@ int runGame(int gametype, int level) {
 	theTopScoresTimeTrial = Highscore(2);
 	drawBalls = true;
 	puzzleLoaded = false;
-	bool weWhereConnected = false;
 	bool bNearDeath = false;                        //Play music faster or louder while tru
 
 	theBallManeger = ballManeger();

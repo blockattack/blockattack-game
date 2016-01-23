@@ -61,9 +61,9 @@ void ListFiles::setDirectory(const string& directory) {
 	if (!DirectoryPointer) {
 		return;
 	}
-	while (dp=readdir(DirectoryPointer)) {
+	while ( (dp=readdir(DirectoryPointer)) ) {
 		string name = (string)(char*)dp->d_name;
-		if (!isInList(name) && name[0]!='.' ) {
+		if ( name.at(0) != '.' && !isInList(name) )  {
 			filenames.push_back(name);
 		}
 	}
@@ -93,9 +93,9 @@ void ListFiles::setDirectory2(const string& dic) {
 	if (!DirectoryPointer) {
 		return;
 	}
-	while (dp=readdir(DirectoryPointer)) {
+	while ( (dp=readdir(DirectoryPointer)) ) {
 		string name = (string)(char*)dp->d_name;
-		if (!isInList(name) && name != "." && name != "..") {
+		if ( name.at(0) != '.' && !isInList(name) ) {
 			filenames.push_back(name);
 		}
 	}
