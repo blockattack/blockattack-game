@@ -227,19 +227,19 @@ void Menu::run() {
 
 				if (event.key.keysym.sym == SDLK_DOWN) {
 					marked++;
-					if (marked>buttons.size()) {
+					if (marked> (int)buttons.size()) {
 						marked = 0;
 					}
 				}
 
 				if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
-					if (marked < buttons.size()) {
+					if (marked < (int)buttons.size()) {
 						buttons.at(marked)->doAction();
 						if (buttons.at(marked)->isPopOnRun()) {
 							running = false;
 						}
 					}
-					if (marked == buttons.size()) {
+					if (marked == (int)buttons.size()) {
 						running = false;
 					}
 				}
@@ -248,10 +248,10 @@ void Menu::run() {
 
 		}
 
-		for (int i=0; i<buttons.size(); i++) {
+		for (int i=0; i<(int)buttons.size(); i++) {
 			buttons.at(i)->marked = (i == marked);
 		}
-		exit.marked = (marked == buttons.size());
+		exit.marked = (marked == (int)buttons.size());
 		Uint8 buttonState = SDL_GetMouseState(&mousex,&mousey);
 		// If the mouse button is released, make bMouseUp equal true
 		if ( (buttonState&SDL_BUTTON(1))==0) {
@@ -259,7 +259,7 @@ void Menu::run() {
 		}
 
 		if (abs(mousex-oldmousex)>5 || abs(mousey-oldmousey)>5) {
-			for (int i=0; i< buttons.size(); ++i) {
+			for (int i=0; i< (int)buttons.size(); ++i) {
 				if (buttons.at(i)->isClicked(mousex,mousey)) {
 					marked = i;
 				}
@@ -274,7 +274,7 @@ void Menu::run() {
 		//mouse clicked
 		if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
 			bMouseUp = false;
-			for (int i=0; i< buttons.size(); ++i) {
+			for (int i=0; i< (int)buttons.size(); ++i) {
 				if (buttons.at(i)->isClicked(mousex,mousey)) {
 					buttons.at(i)->doAction();
 					if (buttons.at(i)->isPopOnRun()) {

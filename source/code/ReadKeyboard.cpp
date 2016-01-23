@@ -47,19 +47,13 @@ ReadKeyboard::ReadKeyboard(const char* oldName) {
 
 
 void ReadKeyboard::putchar(const std::string& thing) {
-	/*for (char a : thing) {
-	    std::cout << (int)a;
-	}
-	std::cout << std::endl;
-	cout << "Length (pre): " << std::distance(text_string.begin(), position) << endl;*/
-	if (text_string.length() < maxLength) {
+	if ( (int)text_string.length() < maxLength) {
 		int oldPostition = utf8::distance(text_string.begin(), position);
 		int lengthOfInsertString = utf8::distance(thing.begin(), thing.end());
 		text_string.insert(position, thing.begin(), thing.end());
 		position = text_string.begin();  //Inserting may destroy our old iterator
 		utf8::advance(position, oldPostition + lengthOfInsertString, text_string.end());
 	}
-	//cout << "Length (post): " << std::distance(text_string.begin(), position) << endl;
 }
 
 
@@ -82,10 +76,6 @@ bool ReadKeyboard::ReadKey(const SDL_Event& key) {
 }
 
 bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
-	/*if (keyPressed == SDLK_SPACE) {
-	    ReadKeyboard::putchar(' ');
-	    return true;
-	}*/
 	if (keyPressed == SDLK_DELETE) {
 		if ((text_string.length()>0)&& (position<text_string.end())) {
 			ReadKeyboard::removeChar();

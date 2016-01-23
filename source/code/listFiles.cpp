@@ -76,7 +76,7 @@ void ListFiles::setDirectory(const string& directory) {
 }
 
 bool ListFiles::isInList(const string& name) {
-	for (int i=0; i< filenames.size(); i++) {
+	for (int i=0; i< (int)filenames.size(); i++) {
 		if (name == filenames.at(i) ) {
 			return true;
 		}
@@ -106,7 +106,7 @@ void ListFiles::setDirectory2(const string& dic) {
 }
 
 string ListFiles::getFileName(int nr) {
-	if (startFileNr+nr<filenames.size()) {
+	if (startFileNr+nr< (int)filenames.size()) {
 		return filenames[startFileNr+nr];
 	}
 	else {
@@ -116,7 +116,7 @@ string ListFiles::getFileName(int nr) {
 
 bool ListFiles::fileExists(int nr) {
 	string emptyString="";
-	if (startFileNr+nr<filenames.size()) {
+	if (startFileNr+nr<(int)filenames.size()) {
 		if (filenames[startFileNr+nr]==emptyString) {
 			return false;
 		}
@@ -139,7 +139,7 @@ void ListFiles::back() {
 }
 
 void ListFiles::forward() {
-	if (startFileNr<filenames.size()-FIRST_FILE) {
+	if (startFileNr<(int)filenames.size()-FIRST_FILE) {
 		startFileNr = startFileNr+10;
 	}
 }
