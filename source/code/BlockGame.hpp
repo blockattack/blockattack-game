@@ -58,27 +58,28 @@ private:
 	int prevTowerHeight;
 	bool bGarbageFallLeft;
 
-	Uint32 nextGarbageNumber;
-	Uint32 pushedPixelAt;
-	Uint32 nrPushedPixel, nrFellDown, nrStops;
+	int nextGarbageNumber;
+	int pushedPixelAt;
+	int nrPushedPixel, nrFellDown;
+	unsigned int nrStops;
 	bool garbageToBeCleared[7][30];
-	Uint32 lastAImove;
+	unsigned int lastAImove;
 
-	Sint16 AI_LineOffset; //how many lines have changed since command
-	Uint32 hangTicks;    //How many times have hang been decreased?
+	int AI_LineOffset; //how many lines have changed since command
+	int hangTicks;    //How many times have hang been decreased?
 	//int the two following index 0 may NOT be used (what the fuck did I meen?)
-	Uint8 chainSize[NUMBEROFCHAINS]; //Contains the chains
+	int chainSize[NUMBEROFCHAINS]; //Contains the chains
 	bool chainUsed[NUMBEROFCHAINS];   //True if the chain is used
 
-	Uint32 nextRandomNumber;
+	unsigned int nextRandomNumber;
 
-	Uint16 rand2();
+	int rand2();
 	int firstUnusedChain();
 
 //public:
 protected:
 	int lastCounter;
-	string strHolder;
+	std::string strHolder;
 	bool bDraw;
 	unsigned int ticks;
 	unsigned int gameStartedAt;
@@ -86,7 +87,7 @@ protected:
 	int linesCleared;
 	int TowerHeight;
 	BlockGame *garbageTarget;
-	Sint32 board[7][30];
+	int board[7][30];
 	int stop;
 	int speedLevel;
 	int pixels;
@@ -99,13 +100,13 @@ protected:
 	int cursorx; //stores cursor position
 	int cursory; // -||-
 	double speed, baseSpeed; //factor for speed. Lower value = faster gameplay
-	Uint32 score;
+	int score;
 	bool bGameOver;
 	bool hasWonTheGame;
 	int AI_MoveSpeed;   //How often will the computer move? milliseconds
 	bool AI_Enabled;
 
-	Uint32 handicap;
+	int handicap;
 
 
 	int AIlineToClear;
@@ -126,12 +127,12 @@ public:
 	//It should work now and can be used if we want to assign more players in network games that we need to free later
 	~BlockGame();
 
-	void setGameSpeed(Uint8 globalSpeedLevel);
-	void setHandicap(Uint8 globalHandicap);
+	void setGameSpeed(int globalSpeedLevel);
+	void setHandicap(int globalHandicap);
 	//Set the move speed of the AI based on the aiLevel parameter
 	//Also enables AI
-	void setAIlevel(Uint8 aiLevel);
-	Uint8 getAIlevel()  const;
+	void setAIlevel(int aiLevel);
+	int getAIlevel()  const;
 	
 	virtual void AddText(int x, int y, const std::string& text, int time) const  {}
 	virtual void AddBall(int x, int y, bool right, int color) const  {}
@@ -146,8 +147,8 @@ public:
 	int GetScore() const;
 	int GetHandicap() const;
 	bool isGameOver() const;
-	Sint32 GetGameStartedAt() const;
-	Sint32 GetGameEndedAt() const;
+	int GetGameStartedAt() const;
+	int GetGameEndedAt() const;
 	bool isTimeTrial() const;
 	bool isStageClear() const;
 	bool isVsMode() const;
@@ -176,7 +177,7 @@ public:
 	void NewVsGame(BlockGame *target,unsigned int ticks);
 	//Starts new Vs Game (two Player)
 	void NewVsGame(BlockGame *target, bool AI,unsigned int ticks);
-	void putStartBlocks(Uint32 n);
+	void putStartBlocks(int n);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
 	//Creates garbage using a given wide and height
@@ -192,7 +193,7 @@ public:
 	//Generates a new line and moves the field one block up (restart puzzle mode)
 	void PushLine();
 	void Update(unsigned int newtick);
-	void PerformAction(unsigned int tick, int action, string param);
+	void PerformAction(unsigned int tick, int action, std::string param);
 	/**
 	 *
 	 * @param tick Tick of the action
@@ -200,7 +201,7 @@ public:
 	 * @param param Params.
 	 * @return 1 if an action was selected
 	 */
-	int GotAction(unsigned int &tick,int &action,string &param);
+	int GotAction(unsigned int &tick, int &action, std::string &param);
 	//Prints "winner" and ends game
 	void setPlayerWon();
 	//void SetGameOver();

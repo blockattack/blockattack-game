@@ -36,15 +36,17 @@ http://blockattack.net
 #include "stageclearhandler.hpp"
 #include<boost/lexical_cast.hpp>
 
+using namespace std;
 
-static stringstream ss; //Used for internal formatting
+
+static std::stringstream ss; //Used for internal formatting
 
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
-Uint16 BlockGame::rand2() {
+int BlockGame::rand2() {
 	nextRandomNumber = nextRandomNumber*1103515245 + 12345;
-	return ((Uint16)(nextRandomNumber/65536)) % 32768;
+	return ((int)(nextRandomNumber/65536)) % 32768;
 }
 
 int BlockGame::firstUnusedChain() {
@@ -115,7 +117,7 @@ BlockGame::BlockGame() {
 BlockGame::~BlockGame() {
 }
 
-void BlockGame::setGameSpeed(Uint8 globalSpeedLevel) {
+void BlockGame::setGameSpeed(int globalSpeedLevel) {
 	boost::format f("%1%");
 	f % globalSpeedLevel;
 	switch (globalSpeedLevel) {
@@ -140,20 +142,20 @@ void BlockGame::setGameSpeed(Uint8 globalSpeedLevel) {
 	};
 }
 
-void BlockGame::setHandicap(Uint8 globalHandicap) {
+void BlockGame::setHandicap(int globalHandicap) {
 	boost::format f("%1%");
 	f % globalHandicap;
-	handicap=1000*((Uint32)globalHandicap);
+	handicap=1000*((int)globalHandicap);
 }
 
 //Set the move speed of the AI based on the aiLevel parameter
 //Also enables AI
-void BlockGame::setAIlevel(Uint8 aiLevel) {
+void BlockGame::setAIlevel(int aiLevel) {
 	AI_Enabled = true;
 	AI_MoveSpeed=120-(20*(aiLevel-3));
 };
 
-Uint8 BlockGame::getAIlevel() const {
+int BlockGame::getAIlevel() const {
 	return (120-AI_MoveSpeed)/20+3;
 }
 
@@ -169,11 +171,11 @@ bool BlockGame::isGameOver() const {
 	return bGameOver;
 }
 
-Sint32 BlockGame::GetGameStartedAt() const {
+int BlockGame::GetGameStartedAt() const {
 	return gameStartedAt;
 }
 
-Sint32 BlockGame::GetGameEndedAt() const {
+int BlockGame::GetGameEndedAt() const {
 	return gameEndedAfter;
 }
 
@@ -451,13 +453,13 @@ bool BlockGame::hasStaticContent() const {
 /*
  * Generates some blocks so the user don't see a board without blocks
  */
-//void putStartBlocks(Uint32);
+//void putStartBlocks(int);
 
 void BlockGame::putStartBlocks() {
 	putStartBlocks(time(0));
 }
 
-void BlockGame::putStartBlocks(Uint32 n) {
+void BlockGame::putStartBlocks(int n) {
 	for (int i=0; i<7; i++) {
 		for (int j=0; j<30; j++) {
 			board[i][j] = -1;
@@ -578,7 +580,7 @@ void BlockGame::putStartBlocks(Uint32 n) {
 
 //decreases hang for all hanging blocks and wait for waiting blocks
 void BlockGame::ReduceStuff() {
-	Sint32 howMuchHang = (ticks - FRAMELENGTH*hangTicks)/FRAMELENGTH;
+	int howMuchHang = (ticks - FRAMELENGTH*hangTicks)/FRAMELENGTH;
 	if (howMuchHang>0) {
 		for (int i=0; i<7; i++)
 			for (int j=0; j<30; j++) {
@@ -797,7 +799,7 @@ void BlockGame::ClearBlocks() {
 	for (int i=0; i<6; i++)
 		for (int j=0; j<30; j++) {
 			//Clears blocks marked for clearing
-			Sint32 temp=board[i][j];
+			int temp=board[i][j];
 			if (1==((temp/BLOCKWAIT)%10))
 				if (((temp/10)%100)==0) {
 					if (chainSize[chain]<chainSize[board[i][j]/10000000]) {
@@ -1739,7 +1741,7 @@ void BlockGame::AI_Move() {
 
 //Updates evrything, if not called nothing happends
 void BlockGame::Update() {
-	Uint32 nowTime = ticks; //We remember the time, so it doesn't change during this call
+	unsigned int nowTime = ticks; //We remember the time, so it doesn't change during this call
 
 	{
 		FindTowerHeight();
@@ -1752,7 +1754,7 @@ void BlockGame::Update() {
 			stop+=1000;
 		}
 
-		while (nowTime>nrStops*40+gameStartedAt) { //Increase stops, till we reach nowTime
+		while ( nowTime> nrStops*40+gameStartedAt) { //Increase stops, till we reach nowTime
 			if (stop>0) {
 				stop = stop-20;
 				if (stop<=0) {
@@ -1853,7 +1855,7 @@ void BlockGame::PerformAction(unsigned int tick, int action, string param) {
 	ss.clear();
 	ss << param;
 	int p1,p2;
-	Uint32 p3;
+	int p3;
 	switch (action) {
 	case ACTION_UPDATE:
 		UpdateInternal(tick);
