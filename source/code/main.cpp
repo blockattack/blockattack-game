@@ -348,12 +348,12 @@ public:
 
 static const int maxNumberOfBalls = 6*12*2*2;
 
-class ballManeger {
+class ballManager {
 public:
 	aBall ballArray[maxNumberOfBalls];
 	bool ballUsed[maxNumberOfBalls];
 
-	ballManeger() {
+	ballManager() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			ballUsed[i] = false;
 		}
@@ -390,9 +390,9 @@ public:
 	} //update
 
 
-}; //theBallManeger
+}; //theBallManager
 
-static ballManeger theBallManeger;
+static ballManager theBallManager;
 
 //a explosions, non moving
 class anExplosion {
@@ -437,12 +437,12 @@ public:
 	}
 };  //nExplosion
 
-class explosionManeger {
+class explosionManager {
 public:
 	anExplosion explosionArray[maxNumberOfBalls];
 	bool explosionUsed[maxNumberOfBalls];
 
-	explosionManeger() {
+	explosionManager() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			explosionUsed[i] = false;
 		}
@@ -475,9 +475,9 @@ public:
 	} //update
 
 
-}; //explosionManeger
+}; //explosionManager
 
-static explosionManeger theExplosionManeger;
+static explosionManager theExplosionManager;
 
 //text pop-up
 class textMessage {
@@ -519,12 +519,12 @@ public:
 	}
 };  //text popup
 
-class textManeger {
+class textManager {
 public:
 	textMessage textArray[maxNumberOfBalls];
 	bool textUsed[maxNumberOfBalls];
 
-	textManeger() {
+	textManager() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			textUsed[i] = false;
 		}
@@ -557,9 +557,9 @@ public:
 	} //update
 
 
-}; //textManeger
+}; //textManager
 
-static textManeger theTextManeger;
+static textManager theTextManager;
 
 //Here comes the Block Game object
 #include "BlockGame.hpp"
@@ -594,15 +594,15 @@ public:
 	}
 
 	void AddText(int x, int y, const std::string& text, int time) const override {
-		theTextManeger.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
+		theTextManager.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
 	}
 
 	void AddBall(int x, int y, bool right, int color) const  override {
-		theBallManeger.addBall(topx+40+x*bsize, topy+bsize*12-y*bsize, right, color);
+		theBallManager.addBall(topx+40+x*bsize, topy+bsize*12-y*bsize, right, color);
 	}
 
 	void AddExplosion(int x, int y) const  override {
-		theExplosionManeger.addExplosion(topx-10+x*bsize, topy+bsize*12-10-y*bsize);
+		theExplosionManager.addExplosion(topx-10+x*bsize, topy+bsize*12-10-y*bsize);
 	}
 
 	void PlayerWonEvent() const  override {
@@ -1303,19 +1303,18 @@ bool OpenFileDialogbox(int x, int y, char* name) {
 //Draws the balls and explosions
 static void DrawBalls() {
 	for (int i = 0; i< maxNumberOfBalls; i++) {
-		if (theBallManeger.ballUsed[i]) {
-			DrawIMG(balls[theBallManeger.ballArray[i].getColor()],screen,theBallManeger.ballArray[i].getX(),theBallManeger.ballArray[i].getY());
+		if (theBallManager.ballUsed[i]) {
+			DrawIMG(balls[theBallManager.ballArray[i].getColor()],screen,theBallManager.ballArray[i].getX(),theBallManager.ballArray[i].getY());
 		} //if used
-		if (theExplosionManeger.explosionUsed[i]) {
-			DrawIMG(explosion[theExplosionManeger.explosionArray[i].getFrame()],screen,theExplosionManeger.explosionArray[i].getX(),theExplosionManeger.explosionArray[i].getY());
+		if (theExplosionManager.explosionUsed[i]) {
+			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
 		}
-		if (theTextManeger.textUsed[i]) {
-			//cout << "Printing text: " << theTextManeger.textArray[i].getText() << endl;
-			int x = theTextManeger.textArray[i].getX()-12;
-			int y = theTextManeger.textArray[i].getY()-12;
+		if (theTextManager.textUsed[i]) {
+			int x = theTextManager.textArray[i].getX()-12;
+			int y = theTextManager.textArray[i].getY()-12;
 			DrawIMG(iChainFrame,screen,x,y);
 
-			nf_standard_small_font.draw(screen, x+12,y+7, NFont::CENTER, "%s",theTextManeger.textArray[i].getText());
+			nf_standard_small_font.draw(screen, x+12,y+7, NFont::CENTER, "%s",theTextManager.textArray[i].getText());
 		}
 	} //for
 }    //DrawBalls
@@ -1868,8 +1867,8 @@ int main(int argc, char* argv[]) {
 	drawBalls = true;
 	puzzleLoaded = false;
 
-	theBallManeger = ballManeger();
-	theExplosionManeger = explosionManeger();
+	theBallManager = ballManager();
+	theExplosionManager = explosionManager();
 
 	stageClearSavePath = getStageClearSavePath();
 	PuzzleSetSavePath(getPuzzleSetSavePath());
@@ -1889,7 +1888,7 @@ int main(int argc, char* argv[]) {
 	Joypad joypad1 = Joypad();    //Creates a joypad
 	Joypad joypad2 = Joypad();    //Creates a joypad
 
-	theTextManeger = textManeger();
+	theTextManager = textManager();
 
 	//Open Audio
 	if (!NoSound) {
@@ -2141,8 +2140,8 @@ int runGame(int gametype, int level) {
 	puzzleLoaded = false;
 	bool bNearDeath = false;                        //Play music faster or louder while tru
 
-	theBallManeger = ballManeger();
-	theExplosionManeger = explosionManeger();
+	theBallManager = ballManager();
+	theExplosionManager = explosionManager();
 	BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
 	BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
 	player1 = &theGame;
@@ -2240,9 +2239,9 @@ int runGame(int gametype, int level) {
 		DrawIMG(backgroundImage, screen, 0, 0);
 
 		//updates the balls and explosions:
-		theBallManeger.update();
-		theExplosionManeger.update();
-		theTextManeger.update();
+		theBallManager.update();
+		theExplosionManager.update();
+		theTextManager.update();
 
 		bool mustWriteScreenshot = false;
 		
