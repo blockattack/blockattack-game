@@ -93,31 +93,15 @@ using namespace std;
 
 static int InitImages(sago::SagoSpriteHolder& holder);
 
-static string oldThemePath = "default";
-
-void loadTheme(sago::SagoSpriteHolder& holder, const string& themeName) {
-	string home = getPathToSaveFiles();
-	//Remove old theme
-	PHYSFS_removeFromSearchPath(oldThemePath.c_str());
+static void PhysFsSetSearchPath() {
 	//Look in blockattack.data
 	PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
 	PHYSFS_addToSearchPath(((string)PHYSFS_getBaseDir()+"/blockattack.data").c_str(), 1);
 	//Look in folder
 	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
 	//Look in home folder
+	string home = getPathToSaveFiles();
 	PHYSFS_addToSearchPath(home.c_str(), 1);
-	if (themeName == Config::getInstance()->getString("themename")) {
-		//If this is a theme different from the saved one. Remember it!
-		Config::getInstance()->setString("themename", themeName);
-	}
-	if (themeName.compare("default")==0 || (themeName.compare("start")==0)) {
-		InitImages(holder);
-		return; //Nothing more to do
-	}
-	oldThemePath = "themes/"+themeName;
-	PHYSFS_addToSearchPath(oldThemePath.c_str(),0);
-	PHYSFS_addToSearchPath((home+(string)"/"+oldThemePath).c_str(), 0);
-	InitImages(holder);
 }
 
 
@@ -2030,13 +2014,11 @@ int main(int argc, char* argv[]) {
 	screen = renderer;
 	//Init the file system abstraction layer
 	PHYSFS_init(argv[0]);
-	PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
-	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
-	//Load default theme
+	PhysFsSetSearchPath();
 	sago::SagoDataHolder d(renderer);
 	d.setVerbose(false);
 	sago::SagoSpriteHolder spriteholder(d);
-	loadTheme(spriteholder, Config::getInstance()->getString("themename"));
+	InitImages(spriteholder);
 	SetSDLIcon(sdlWindow);
 
 	if (verboseLevel) {
