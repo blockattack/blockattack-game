@@ -1386,29 +1386,28 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			//Blank player2's board:
 			DrawIMG(backBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
 			//Write a description:
+			string gametypeName;
 			string infostring;
 			if (theGame->isTimeTrial()) {
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Time Trial");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				gametypeName = _("Time Trial");
 				infostring = _("Score as much as possible in 2 minutes");
 				
 			}
 			else if (theGame->isStageClear()) {
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Stage Clear");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				gametypeName = _("Stage Clear");
 				infostring = _("You must clear a number of lines. Speed is rapidly increased.");
 			}
 			else if (theGame->isPuzzleMode()) {
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Puzzle");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				gametypeName = _("Puzzle");
 				infostring = _("Clear the entire board with a limited number of moves.");
 			}
 			else {
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10,"Endless");
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160,"Objective:");
+				gametypeName = _("Endless");
 				infostring = _("Score as much as possible. No time limit.");
 			}
 			if (infostring.length() > 0) {
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10, gametypeName);
+				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160, _("Objective:"));
 				nf_standard_blue_font.drawBox(screen, { static_cast<float>(theGame2->GetTopX()+7),static_cast<float>(theGame2->GetTopY()+160+32), 280, 200}, "%s", infostring.c_str());
 			}
 
