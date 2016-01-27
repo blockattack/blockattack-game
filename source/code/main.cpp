@@ -60,6 +60,7 @@ http://blockattack.net
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
 #include <memory>
+#include <SDL/SDL_error.h>
 
 //if SHAREDIR is not used we look in current directory
 #ifndef SHAREDIR
@@ -1423,6 +1424,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			else {
 				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
+			
 		}
 		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
@@ -1860,8 +1862,7 @@ int main(int argc, char* argv[]) {
 
 	//Init SDL
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-		cerr << "Unable to init SDL: " << SDL_GetError() << endl;
-		exit(1);
+		sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
 	}
 	TTF_Init();
 	atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
@@ -1978,15 +1979,6 @@ int main(int argc, char* argv[]) {
 			cout << "Unable to load options file, using default values" << endl;
 		}
 	}
-
-#if NETWORK
-	Config::getInstance()->setDefault("portv4","42200");
-	strcpy(serverAddress, "192.168.0.2                 \0");
-	if (configSettings->exists("address0")) {
-		strcpy(serverAddress, "                            \0");
-		strncpy(serverAddress,configSettings->getString("address0").c_str(),sizeof(serverAddress)-1);
-	}
-#endif
 
 	if (singlePuzzle) {
 		xsize=300;
@@ -2631,9 +2623,6 @@ int runGame(int gametype, int level) {
 		//Once evrything has been checked, update graphics
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
 		SDL_GetMouseState(&mousex,&mousey);
-		//Remember mouse placement
-		oldMousex = mousex;
-		oldMousey = mousey;
 		//Draw the mouse:
 		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 		SDL_RenderPresent(screen);
