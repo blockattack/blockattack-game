@@ -197,8 +197,6 @@ std::string player2name;
 
 bool twoPlayers;    //True if two players are playing
 
-//Old mouse position:
-static int oldMousex, oldMousey;
 //Old Stage Clear Buble
 static int oldBubleX, oldBubleY;
 

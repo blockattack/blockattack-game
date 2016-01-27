@@ -1562,7 +1562,12 @@ int PuzzleLevelSelect(int Type) {
 		}
 
 		SDL_Event event;
-		while ( SDL_PollEvent(&event) )
+		while ( SDL_PollEvent(&event) ) {
+			if ( event.type == SDL_QUIT ) {
+				Config::getInstance()->setShuttingDown(5);
+				levelNr = -1;
+				levelSelected = true;
+			}
 			if ( event.type == SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
 					levelNr = -1;
@@ -1597,6 +1602,7 @@ int PuzzleLevelSelect(int Type) {
 					}
 				}
 			}
+		}
 
 		SDL_GetKeyboardState(nullptr);
 
