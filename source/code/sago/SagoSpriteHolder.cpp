@@ -47,6 +47,7 @@ struct SagoSpriteHolder::SagoSpriteHolderData {
 	const sago::SagoDataHolder* tex;
 	std::unordered_map<std::string,std::shared_ptr<sago::SagoSprite>> sprites;
 	const sago::SagoSprite* defaultSprite;
+	bool verbose = false;
 };
 
 SagoSpriteHolder::SagoSpriteHolder(const SagoDataHolder& texHolder) {
@@ -104,11 +105,15 @@ void SagoSpriteHolder::ReadSprites() {
 	std::vector<std::string> spritefiles = GetFileList("sprites");
 	for (std::string& item : spritefiles  ) {
 		if (boost::algorithm::ends_with(item,".sprite")) {
-			cout << "Found " << item << endl;
+			if (data->verbose) {
+				cout << "Found " << item << endl;
+			}
 			ReadSpriteFile(item);
 		}
 		else {
-			cout << "Ignoreing " << item << endl;
+			if (data->verbose) {
+				cout << "Ignoreing " << item << endl;
+			}
 		}
 	}
 }
