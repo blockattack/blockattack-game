@@ -273,7 +273,7 @@ void ResetFullscreen() {
 
 
 //The small things that are faaling when you clear something
-class aBall {
+class ABall {
 private:
 	double x;
 	double y;
@@ -283,11 +283,11 @@ private:
 	unsigned long int lastTime;
 public:
 
-	aBall() {
+	ABall() {
 	}
 
 	//constructor:
-	aBall(int X, int Y, bool right, int coulor) {
+	ABall(int X, int Y, bool right, int coulor) {
 		double tal = 1.0+((double)rand()/((double)RAND_MAX));
 		velocityY = -tal*startVelocityY;
 		lastTime = currentTime;
@@ -332,12 +332,12 @@ public:
 
 static const int maxNumberOfBalls = 6*12*2*2;
 
-class ballManager {
+class BallManager {
 public:
-	aBall ballArray[maxNumberOfBalls];
+	ABall ballArray[maxNumberOfBalls];
 	bool ballUsed[maxNumberOfBalls];
 
-	ballManager() {
+	BallManager() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			ballUsed[i] = false;
 		}
@@ -355,7 +355,7 @@ public:
 			return -1;
 		}
 		currentTime = SDL_GetTicks();
-		ballArray[ballNumber] = aBall(x,y,right,color);
+		ballArray[ballNumber] = ABall(x,y,right,color);
 		ballUsed[ballNumber] = true;
 		return 1;
 	}  //addBall
@@ -376,10 +376,10 @@ public:
 
 }; //theBallManager
 
-static ballManager theBallManager;
+static BallManager theBallManager;
 
 //a explosions, non moving
-class anExplosion {
+class AnExplosion {
 private:
 	int x;
 	int y;
@@ -391,11 +391,11 @@ private:
 	unsigned long int placeTime; //Then the explosion occored
 public:
 
-	anExplosion() {
+	AnExplosion() {
 	}
 
 	//constructor:
-	anExplosion(int X, int Y) {
+	AnExplosion(int X, int Y) {
 		placeTime = currentTime;
 		x = X;
 		y = Y;
@@ -421,12 +421,12 @@ public:
 	}
 };  //nExplosion
 
-class explosionManager {
+class ExplosionManager {
 public:
-	anExplosion explosionArray[maxNumberOfBalls];
+	AnExplosion explosionArray[maxNumberOfBalls];
 	bool explosionUsed[maxNumberOfBalls];
 
-	explosionManager() {
+	ExplosionManager() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			explosionUsed[i] = false;
 		}
@@ -441,7 +441,7 @@ public:
 			return -1;
 		}
 		currentTime = SDL_GetTicks();
-		explosionArray[explosionNumber] = anExplosion(x,y);
+		explosionArray[explosionNumber] = AnExplosion(x,y);
 		explosionUsed[explosionNumber] = true;
 		return 1;
 	}  //addBall
@@ -461,10 +461,10 @@ public:
 
 }; //explosionManager
 
-static explosionManager theExplosionManager;
+static ExplosionManager theExplosionManager;
 
 //text pop-up
-class textMessage {
+class TextMessage {
 private:
 	int x;
 	int y;
@@ -473,11 +473,11 @@ private:
 	unsigned long int placeTime; //Then the text was placed
 public:
 
-	textMessage() {
+	TextMessage() {
 	}
 
 	//constructor:
-	textMessage(int X, int Y,const char* Text,unsigned int Time) {
+	TextMessage(int X, int Y,const char* Text,unsigned int Time) {
 		placeTime = currentTime;
 		x = X;
 		y = Y;
@@ -503,12 +503,12 @@ public:
 	}
 };  //text popup
 
-class textManager {
+class TextManager {
 public:
-	textMessage textArray[maxNumberOfBalls];
+	TextMessage textArray[maxNumberOfBalls];
 	bool textUsed[maxNumberOfBalls];
 
-	textManager() {
+	TextManager() {
 		for (int i=0; i<maxNumberOfBalls; i++) {
 			textUsed[i] = false;
 		}
@@ -523,7 +523,7 @@ public:
 			return -1;
 		}
 		currentTime = SDL_GetTicks();
-		textArray[textNumber] = textMessage(x,y,Text.c_str(),Time);
+		textArray[textNumber] = TextMessage(x,y,Text.c_str(),Time);
 		textUsed[textNumber] = true;
 		return 1;
 	}  //addText
@@ -543,7 +543,7 @@ public:
 
 }; //textManager
 
-static textManager theTextManager;
+static TextManager theTextManager;
 
 //Here comes the Block Game object
 #include "BlockGame.hpp"
@@ -1858,8 +1858,8 @@ int main(int argc, char* argv[]) {
 	drawBalls = true;
 	puzzleLoaded = false;
 
-	theBallManager = ballManager();
-	theExplosionManager = explosionManager();
+	theBallManager = BallManager();
+	theExplosionManager = ExplosionManager();
 
 	stageClearSavePath = getStageClearSavePath();
 	PuzzleSetSavePath(getPuzzleSetSavePath());
@@ -1878,7 +1878,7 @@ int main(int argc, char* argv[]) {
 	Joypad joypad1 = Joypad();    //Creates a joypad
 	Joypad joypad2 = Joypad();    //Creates a joypad
 
-	theTextManager = textManager();
+	theTextManager = TextManager();
 
 	//Open Audio
 	if (!NoSound) {
@@ -2119,8 +2119,8 @@ int runGame(int gametype, int level) {
 	puzzleLoaded = false;
 	bool bNearDeath = false;                        //Play music faster or louder while tru
 
-	theBallManager = ballManager();
-	theExplosionManager = explosionManager();
+	theBallManager = BallManager();
+	theExplosionManager = ExplosionManager();
 	BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
 	BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
 	player1 = &theGame;
