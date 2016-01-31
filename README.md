@@ -28,7 +28,7 @@ make
 ```
 The result should be in the "Game"-folder. To run
 ```
-cd ./Game/blockattack
+./Game/blockattack
 ```
 
 You can also choose to install it with
