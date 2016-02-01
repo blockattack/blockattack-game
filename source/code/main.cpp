@@ -1789,7 +1789,6 @@ int main(int argc, char* argv[]) {
 	highPriority = false;   //if true the game will take most resources, but increase framerate.
 	bFullscreen = false;
 	//Set default Config variables:
-	Config::getInstance()->setDefault("themename","default");
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
@@ -1800,13 +1799,11 @@ int main(int argc, char* argv[]) {
 			const char priorityString[] = "-priority";
 			const char singlePuzzleString[] = "-SP";
 			const char noSoundAtAll[] = "-nosound";
-			const char selectTheme[] = "-theme";
 			const char verbose[] = "-v";
 			if (strequals(argv[argumentNr],helpString)) {
 				cout << "Block Attack Help" << endl << helpString << "  " << _("Displays this message") <<
 				     endl << "-priority  " << _("Starts game in high priority") << endl <<
-				     "-nosound  " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl <<
-				     "-theme <" << _("THEMENAME") << ">  " << _("Changes to the theme <THEMENAME> on startup") << endl;
+				     "-nosound  " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl;
 #ifdef WIN32
 				system("Pause");
 #endif
@@ -1834,13 +1831,6 @@ int main(int argc, char* argv[]) {
 			}
 			if (strequals(argv[argumentNr],noSoundAtAll)) {
 				NoSound = true;
-			}
-			if (strequals(argv[argumentNr],selectTheme)) {
-				argumentNr++; //Go to themename (the next argument)
-				if (verboseLevel) {
-					cout << "Theme set to \"" << argv[argumentNr] << '"' << endl;
-				}
-				Config::getInstance()->setString("themename",argv[argumentNr]);
 			}
 			if (strequals(argv[argumentNr],verbose)) {
 				verboseLevel++;
