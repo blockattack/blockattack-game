@@ -1003,10 +1003,10 @@ void DrawHighscores(int x, int y, bool endless) {
 			snprintf(playerScore, sizeof(playerScore), "%i", theTopScoresTimeTrial.getScoreNumber(i));
 		}
 		if (endless) {
-			strcpy(playerName,theTopScoresEndless.getScoreName(i));
+			snprintf(playerName, sizeof(playerName), "%s", theTopScoresEndless.getScoreName(i));
 		}
 		else {
-			strcpy(playerName,theTopScoresTimeTrial.getScoreName(i));
+			snprintf(playerName, sizeof(playerName), "%s", theTopScoresTimeTrial.getScoreName(i));
 		}
 		nf_standard_blue_font.draw(screen, x+420,y+150+i*35, "%s",playerScore);
 		nf_standard_blue_font.draw(screen, x+60,y+150+i*35, "%s",playerName);
@@ -1675,7 +1675,7 @@ int PuzzleLevelSelect(int Type) {
 //This function will promt for the user to select another file for puzzle mode
 void changePuzzleLevels() {
 	char theFileName[30];
-	strcpy(theFileName, PuzzleGetName().c_str());
+	snprintf(theFileName, sizeof(theFileName), "%s", PuzzleGetName().c_str());
 	for (int i=PuzzleGetName().length(); i<30; i++) {
 		theFileName[i]=' ';
 	}

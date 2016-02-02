@@ -103,6 +103,6 @@ int Highscore::getScoreNumber(int room) {
 	return tabel[room].score;
 }
 
-char* Highscore::getScoreName(int room) {
+const char* Highscore::getScoreName(int room) {
 	return &tabel[room].name[0];
 }

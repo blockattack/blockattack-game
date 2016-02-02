@@ -54,5 +54,5 @@ public:
 	bool isHighScore(int);
 	void addScore(const std::string& newName, int);
 	int getScoreNumber(int);
-	char* getScoreName(int);
+	const char* getScoreName(int);
 };
