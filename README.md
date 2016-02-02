@@ -1,6 +1,6 @@
 # blockattack-game [![Build Status](https://travis-ci.org/blockattack/blockattack-game.svg?branch=master)](https://travis-ci.org/blockattack/blockattack-game)
 Block Attack - Rise of the Blocks - the game
-A Tetris Attack Clone under the GPL. 
+A Tetris Attack Clone under the GPL.
 
 www.blockattack.net
 
@@ -15,6 +15,7 @@ www.blockattack.net
   * libSDL2_ttf
   * libphysfs
   * libboost (only needed for compiling)
+  * libboost-program-options-dev
   * libutfcpp (only needed for compiling)
   * jsoncpp
 
@@ -44,5 +45,5 @@ and libutfcpp copied from "source/misc/travis_help/utf8_v2_3_4/source/" to "/pat
 
 Compiled with:
 ```
-i686-w64-mingw32.static-cmake --debug-output . && make
+i686-w64-mingw32.static-cmake . && make
 ```

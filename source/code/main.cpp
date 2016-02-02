@@ -82,6 +82,7 @@ http://blockattack.net
 //#include "uploadReplay.h"   //Takes care of everything libcurl related
 
 #include "common.h"
+#include <boost/program_options.hpp>
 
 /*******************************************************************************
 * All variables and constant has been moved to mainVars.hpp for the overview.  *
@@ -1792,52 +1793,29 @@ int main(int argc, char* argv[]) {
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
-	if (argc > 1) {
-		int argumentNr = 1;
-		while (argc>argumentNr) {
-			const char helpString[] = "--help";
-			const char priorityString[] = "-priority";
-			const char singlePuzzleString[] = "-SP";
-			const char noSoundAtAll[] = "-nosound";
-			const char verbose[] = "-v";
-			if (strequals(argv[argumentNr],helpString)) {
-				cout << "Block Attack Help" << endl << helpString << "  " << _("Displays this message") <<
-				     endl << "-priority  " << _("Starts game in high priority") << endl <<
-				     "-nosound  " << _("No sound will be played at all, and sound hardware will not be loaded (use this if game crashes because of sound)") << endl;
-#ifdef WIN32
-				system("Pause");
-#endif
-				return 0;
-			}
-			if (strequals(argv[argumentNr],priorityString)) {
-				if (verboseLevel) {
-					cout << "Priority mode" << endl;
-				}
-				highPriority = true;
-			}
-			if (strequals(argv[argumentNr],singlePuzzleString)) {
-				singlePuzzle = true; //We will just have one puzzle
-				if (argv[argumentNr+1][1]!=0) {
-					singlePuzzleNr = (argv[argumentNr+1][1]-'0')+(argv[argumentNr+1][0]-'0')*10;
-				}
-				else {
-					singlePuzzleNr = (argv[argumentNr+1][0]-'0');
-				}
-				singlePuzzleFile = argv[argumentNr+2];
-				argumentNr+=2;
-				if (verboseLevel) {
-					cout << "SinglePuzzleMode, File: " << singlePuzzleFile << " and Level: " << singlePuzzleNr << endl;
-				}
-			}
-			if (strequals(argv[argumentNr],noSoundAtAll)) {
-				NoSound = true;
-			}
-			if (strequals(argv[argumentNr],verbose)) {
-				verboseLevel++;
-			}
-			argumentNr++;
-		}   //while
-	}   //if
+	boost::program_options::options_description desc("Allowed options");
+	desc.add_options()
+	("help,h", _("Displays this message"))
+	("nosound", _("Disables the sound. Can be used if sound gives you programs starting"))
+	("priority", _("Causes the game to not sleep between frames."))
+	("verbose-basic", _("Enables basic verbose messages"))
+	;
+	boost::program_options::variables_map vm;
+	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
+	boost::program_options::notify(vm);
+	if (vm.count("help")) {
+		cout << desc << endl;
+		return 1;
+	}
+	if (vm.count("nosound")) {
+		NoSound = true;
+	}
+	if (vm.count("priority")) {
+		highPriority = true;
+	}
+	if (vm.count("verbose-basic")) {
+		verboseLevel++;
+	}
 
 	SoundEnabled = true;
 	MusicEnabled = true;
