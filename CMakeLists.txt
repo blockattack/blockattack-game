@@ -45,6 +45,8 @@ pkg_search_module(SDL2MIXER REQUIRED SDL2_mixer)
 pkg_search_module(SDL2IMAGE REQUIRED SDL2_image)
 pkg_search_module(SDL2TTF REQUIRED SDL2_ttf)
 
+find_package(Boost COMPONENTS program_options REQUIRED)
+
 #Find all sources but one
 file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp" "source/code/Libs/*.c")
 #I am still trying to get BlockGame to compile as a source file
@@ -60,6 +62,7 @@ add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
 target_link_libraries( blockattack ${SDL2_LIBRARY})
 target_link_libraries( blockattack physfs jsoncpp)
 target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
+target_link_libraries( blockattack ${Boost_LIBRARIES} )
 set_target_properties( blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
 
 #Installing
