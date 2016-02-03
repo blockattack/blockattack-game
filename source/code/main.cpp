@@ -31,7 +31,7 @@ http://blockattack.net
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "version 2.0.0 BETA"
+#define VERSION_NUMBER "2.0.0 SNAPSHOT"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
@@ -245,6 +245,10 @@ void DrawIMG_Bounded(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int 
 
 void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
 	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
+}
+
+void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
+	nf_standard_blue_font.draw(target, x, y, "%s", text);
 }
 
 SDL_Window* sdlWindow;
@@ -1041,26 +1045,26 @@ void DrawStats() {
 	NFont_Write(screen, 10,y, _("Run time: ") );
 	commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
 	y+=y_spacing;
-	NFont_Write(screen, 10,y,((string)( _("Days: ")+itoa(ct.days))).c_str());
+	NFont_Write(screen, 10, y, SPrintCF( _("Days: %i"), ct.days) );
 	y+=y_spacing;
-	NFont_Write(screen, 10,y,((string)( _("Hours: ")+itoa(ct.hours))).c_str());
+	NFont_Write(screen, 10, y, SPrintCF( _("Hours: %i"), ct.hours) );
 	y+=y_spacing;
-	NFont_Write(screen, 10,y,((string)( _("Minutes: ")+itoa(ct.minutes))).c_str());
+	NFont_Write(screen, 10, y, SPrintCF( _("Minutes: %i"), ct.minutes) );
 	y+=y_spacing;
-	NFont_Write(screen, 10,y,((string)( _("Seconds: ")+itoa(ct.seconds))).c_str());
+	NFont_Write(screen, 10, y, SPrintCF( _("Seconds: %i"), ct.seconds) );
 
 	y-=y_spacing*4; //Four rows back
 	const int x_offset3 = xsize/3+10; //Ofset for three rows
 	NFont_Write(screen, x_offset3,y, _("Play time: ") );
 	ct = TimeHandler::getTime("playTime");
 	y+=y_spacing;
-	NFont_Write(screen, x_offset3,y,((string)( _("Days: ")+itoa(ct.days))).c_str());
+	NFont_Write(screen, x_offset3, y, SPrintCF( _("Days: %i"), ct.days) );
 	y+=y_spacing;
-	NFont_Write(screen, x_offset3,y,((string)( _("Hours: ")+itoa(ct.hours))).c_str());
+	NFont_Write(screen, x_offset3, y, SPrintCF( _("Hours: %i"), ct.hours) );
 	y+=y_spacing;
-	NFont_Write(screen, x_offset3,y,((string)( _("Minutes: ")+itoa(ct.minutes))).c_str());
+	NFont_Write(screen, x_offset3, y, SPrintCF( _("Minutes: %i"), ct.minutes) );
 	y+=y_spacing;
-	NFont_Write(screen, x_offset3,y,((string)( _("Seconds: ")+itoa(ct.seconds))).c_str());
+	NFont_Write(screen, x_offset3, y, SPrintCF( _("Seconds: %i"), ct.seconds) );
 
 	const int x_offset = xsize/2+10;
 	y = 5+y_spacing*2;
@@ -1784,7 +1788,7 @@ static void StartTwoPlayerVs() {
 }
 
 //The main function, quite big... too big
-int main(int argc, char* argv[]) {
+int main(int argc, const char* argv[]) {
 	try {
 	OsCreateFolders();
 	highPriority = false;   //if true the game will take most resources, but increase framerate.
@@ -1793,12 +1797,16 @@ int main(int argc, char* argv[]) {
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
-	boost::program_options::options_description desc("Allowed options");
+	boost::program_options::options_description desc(
+	SPrintStringF(_("Block Attack - Rise of the blocks %s\n"
+					"%s\n\n"
+					"Allowed options"), VERSION_NUMBER, "www.blockattack.net")
+	);
 	desc.add_options()
-	("help,h", _("Displays this message"))
-	("nosound", _("Disables the sound. Can be used if sound gives you programs starting"))
-	("priority", _("Causes the game to not sleep between frames."))
-	("verbose-basic", _("Enables basic verbose messages"))
+		("help,h", _("Displays this message"))
+		("nosound", _("Disables the sound. Can be used if sound errors prevents you from starting"))
+		("priority", _("Causes the game to not sleep between frames."))
+		("verbose-basic", _("Enables basic verbose messages"))
 	;
 	boost::program_options::variables_map vm;
 	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
@@ -1861,8 +1869,8 @@ int main(int argc, char* argv[]) {
 
 	if (verboseLevel) {
 		//Copyright notice:
-		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://blockattack.net" << endl << "Copyright 2004-2011 Poul Sander" << endl <<
-		     "A SDL based game (see www.libsdl.org)" << endl <<
+		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://www.blockattack.net" << endl << "Copyright 2004-2016 Poul Sander" << endl <<
+		     "A SDL2 based game (see www.libsdl.org)" << endl <<
 		     "The game is availeble under the GPL, see COPYING for details." << endl;
 		cout << "-------------------------------------------" << endl;
 	}

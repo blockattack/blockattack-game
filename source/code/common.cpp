@@ -26,6 +26,7 @@ http://blockattack.net
 #include <cstring>
 #include "os.hpp"
 #include "sago/SagoMiscSdl2.hpp"
+#include <stdarg.h>
 
 using namespace std;
 using boost::format;
@@ -57,11 +58,6 @@ void dieOnNullptr(bool ptr, const char* msg) {
 	}
 }
 
-/**
- * str2double parses a string and returns a double with the value of the string.
- * if the string is not a double then 0.0 is returned instead of throing an error
- * in that way this function will always return a useable value.
- */
 double str2double(const string& str2parse) {
 	try {
 		converter.clear();
@@ -75,11 +71,26 @@ double str2double(const string& str2parse) {
 	}
 }
 
-/**
- * str2int parses a string and returns an int with the value of the string.
- * if the string is not an int then 0 is returned instead of throing an error
- * in that way this function will always return a useable value.
- */
+std::string SPrintStringF(const char* fmt, ...) {
+	std::string ret;
+	char buffer[1024];
+	va_list args;
+	va_start(args, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, args);
+	ret = buffer;
+	va_end(args);
+	return ret;
+}
+
+const char* SPrintCF(const char* fmt, ...) {
+	static char buffer[1024];
+	va_list args;
+	va_start(args, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, args);
+	va_end(args);
+	return buffer;
+}
+
 int str2int(const string& str2parse) {
 	try {
 		converter.clear();
