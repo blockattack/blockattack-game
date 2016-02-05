@@ -1797,11 +1797,7 @@ int main(int argc, const char* argv[]) {
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
-	boost::program_options::options_description desc(
-	SPrintStringF(_("Block Attack - Rise of the blocks %s\n"
-					"%s\n\n"
-					"Allowed options"), VERSION_NUMBER, "www.blockattack.net")
-	);
+	boost::program_options::options_description desc("Allowed options");
 	desc.add_options()
 		("help,h", _("Displays this message"))
 		("nosound", _("Disables the sound. Can be used if sound errors prevents you from starting"))
@@ -1809,9 +1805,17 @@ int main(int argc, const char* argv[]) {
 		("verbose-basic", _("Enables basic verbose messages"))
 	;
 	boost::program_options::variables_map vm;
-	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
-	boost::program_options::notify(vm);
+	try {
+		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
+		boost::program_options::notify(vm);
+	} catch (exception& e) {
+		cerr << e.what() << endl;
+		cerr << desc << endl;
+		throw;
+	}
 	if (vm.count("help")) {
+		cout << SPrintStringF(_("Block Attack - Rise of the blocks %s\n"
+					"%s\n"), VERSION_NUMBER, "www.blockattack.net");
 		cout << desc << endl;
 		return 1;
 	}
