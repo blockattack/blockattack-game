@@ -94,15 +94,17 @@ using namespace std;
 
 static int InitImages(sago::SagoSpriteHolder& holder);
 
-static void PhysFsSetSearchPath() {
-	//Look in blockattack.data
-	PHYSFS_addToSearchPath(((string)SHAREDIR+"/blockattack.data").c_str(), 1);
-	PHYSFS_addToSearchPath(((string)PHYSFS_getBaseDir()+"/blockattack.data").c_str(), 1);
-	//Look in folder
-	PHYSFS_addToSearchPath( ((string) PHYSFS_getBaseDir()+"/data").c_str(), 1);
-	//Look in home folder
-	string home = getPathToSaveFiles();
-	PHYSFS_addToSearchPath(home.c_str(), 1);
+static void FsSearchParthMainAppend(std::vector<std::string>& paths) {
+	paths.push_back((string)SHAREDIR+"/blockattack.data");
+	paths.push_back((string)PHYSFS_getBaseDir()+"/blockattack.data");
+	paths.push_back((string)PHYSFS_getBaseDir()+"/data");
+}
+
+static void PhysFsSetSearchPath(const vector<string>& paths, const string& savepath) {
+	for (const string& path : paths) {
+		PHYSFS_addToSearchPath(path.c_str(),1);
+	}
+	PHYSFS_addToSearchPath(savepath.c_str(), 1);
 }
 
 
@@ -1791,6 +1793,11 @@ static void StartTwoPlayerVs() {
 int main(int argc, const char* argv[]) {
 	try {
 	OsCreateFolders();
+	//Init the file system abstraction layer
+	PHYSFS_init(argv[0]);
+	vector<string> search_paths;
+	FsSearchParthMainAppend(search_paths);
+	string savepath = getPathToSaveFiles();
 	highPriority = false;   //if true the game will take most resources, but increase framerate.
 	bFullscreen = false;
 	//Set default Config variables:
@@ -1803,6 +1810,7 @@ int main(int argc, const char* argv[]) {
 		("nosound", _("Disables the sound. Can be used if sound errors prevents you from starting"))
 		("priority", _("Causes the game to not sleep between frames."))
 		("verbose-basic", _("Enables basic verbose messages"))
+		("print-search-path", _("Prints the search path and quits"))
 	;
 	boost::program_options::variables_map vm;
 	try {
@@ -1827,6 +1835,13 @@ int main(int argc, const char* argv[]) {
 	}
 	if (vm.count("verbose-basic")) {
 		verboseLevel++;
+	}
+	if (vm.count("print-search-path")) {
+		for (const string& s : search_paths) {
+			cout << s << endl;
+		}
+		cout << savepath << endl;
+		return 0;
 	}
 
 	SoundEnabled = true;
@@ -1989,9 +2004,8 @@ int main(int argc, const char* argv[]) {
 	dieOnNullptr(renderer, "Unable to create render");
 	//SDL_RenderSetLogicalSize(renderer, xsize, ysize);
 	screen = renderer;
-	//Init the file system abstraction layer
-	PHYSFS_init(argv[0]);
-	PhysFsSetSearchPath();
+	
+	PhysFsSetSearchPath(search_paths, savepath);
 	sago::SagoDataHolder d(renderer);
 	d.setVerbose(false);
 	sago::SagoSpriteHolder spriteholder(d);
