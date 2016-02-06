@@ -22,7 +22,7 @@ http://blockattack.net
 */
 
 #include "icon.hpp"
-#include "icon.h"
+#include "icon.inc"
 
 void SetSDLIcon(SDL_Window* window)
 {
