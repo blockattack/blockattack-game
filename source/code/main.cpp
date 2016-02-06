@@ -1787,7 +1787,8 @@ static void StartTwoPlayerVs() {
 }
 
 //The main function, quite big... too big
-int main(int argc, const char* argv[]) {
+//Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it
+int main(int argc, char* argv[]) {
 	try {
 		OsCreateFolders();
 		//Init the file system abstraction layer

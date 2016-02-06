@@ -23,6 +23,7 @@ endif(MINGW)
 
 if (WIN32)
 SET(GUI_TYPE WIN32)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i686")
 endif()
 
 if (NOT WIN32)
@@ -51,7 +52,6 @@ find_package(Boost COMPONENTS program_options REQUIRED)
 file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp" "source/code/Libs/*.c")
 #I am still trying to get BlockGame to compile as a source file
 list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
-
 
 #Some messages to figure out what cmake does
 message("${SOURCES}")
