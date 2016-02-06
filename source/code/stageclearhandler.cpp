@@ -31,7 +31,7 @@ http://blockattack.net
 std::string stageClearSavePath;
 
 
-std::vector<bool> stageCleared(nrOfStageLevels);		//vector that tells if a stage is cleared
+std::vector<bool> stageCleared(nrOfStageLevels);        //vector that tells if a stage is cleared
 std::vector<Sint32> stageTimes(nrOfStageLevels);             //For statistical puposes
 std::vector<Sint32> stageScores(nrOfStageLevels);            //--||--
 Sint32 totalScore = 0;

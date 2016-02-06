@@ -357,7 +357,7 @@ void BlockGame::nextLevel(unsigned int ticks) {
 }
 
 //Starts new Vs Game (two Player)
-void BlockGame::NewVsGame(BlockGame *target, unsigned int ticks) {
+void BlockGame::NewVsGame(BlockGame* target, unsigned int ticks) {
 	NewGame(ticks);
 	vsMode = true;
 	putStartBlocks();
@@ -366,7 +366,7 @@ void BlockGame::NewVsGame(BlockGame *target, unsigned int ticks) {
 }
 
 //Starts new Vs Game (two Player)
-void BlockGame::NewVsGame(BlockGame *target, bool AI, unsigned int ticks) {
+void BlockGame::NewVsGame(BlockGame* target, bool AI, unsigned int ticks) {
 	NewGame(ticks);
 	vsMode = true;
 	AI_Enabled = AI;

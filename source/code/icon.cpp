@@ -24,20 +24,19 @@ http://blockattack.net
 #include "icon.hpp"
 #include "icon.inc"
 
-void SetSDLIcon(SDL_Window* window)
-{
+void SetSDLIcon(SDL_Window* window) {
 	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(
-			(void *)gimp_image.pixel_data,
-			gimp_image.width,
-			gimp_image.height,
-			gimp_image.bytes_per_pixel * 8,
-			gimp_image.bytes_per_pixel * gimp_image.width,
+	                           (void*)gimp_image.pixel_data,
+	                           gimp_image.width,
+	                           gimp_image.height,
+	                           gimp_image.bytes_per_pixel * 8,
+	                           gimp_image.bytes_per_pixel * gimp_image.width,
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-			0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF
+	                           0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF
 #else
-			0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000
+	                           0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000
 #endif
-			);
+	                       );
 	SDL_SetWindowIcon(window, surface);
 	SDL_FreeSurface(surface);
 

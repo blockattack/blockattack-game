@@ -257,21 +257,21 @@ SDL_Window* sdlWindow;
 
 void ResetFullscreen() {
 #if defined(_WIN32)
-/*	if (bFullscreen) {
-		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
-	}
-	else {
-		screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
-	}
-	DrawIMG(background, screen, 0, 0);
-*/
+	/*  if (bFullscreen) {
+	        screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
+	    }
+	    else {
+	        screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
+	    }
+	    DrawIMG(background, screen, 0, 0);
+	*/
 #else
 	//TODO: Find SDL2 alternative
 	//SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
 #endif
 	if (bFullscreen) {
 		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
-	} 
+	}
 	else {
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
@@ -914,7 +914,7 @@ void writeScreenShot() {
 	}
 	int rightNow = (int)time(nullptr);
 	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+itoa(rightNow)+".bmp";
-	SDL_Surface *sreenshotSurface = SDL_CreateRGBSurface(0, 1024, 768, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurface(0, 1024, 768, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_RenderReadPixels(screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
 	SDL_SaveBMP(sreenshotSurface, buf.c_str());
 	SDL_FreeSurface(sreenshotSurface);
@@ -1398,7 +1398,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			if (theGame->isTimeTrial()) {
 				gametypeName = _("Time Trial");
 				infostring = _("Score as much as possible in 2 minutes");
-				
+
 			}
 			else if (theGame->isStageClear()) {
 				gametypeName = _("Stage Clear");
@@ -1430,7 +1430,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			else {
 				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
-			
+
 		}
 		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
@@ -1792,312 +1792,314 @@ static void StartTwoPlayerVs() {
 //The main function, quite big... too big
 int main(int argc, const char* argv[]) {
 	try {
-	OsCreateFolders();
-	//Init the file system abstraction layer
-	PHYSFS_init(argv[0]);
-	vector<string> search_paths;
-	FsSearchParthMainAppend(search_paths);
-	string savepath = getPathToSaveFiles();
-	highPriority = false;   //if true the game will take most resources, but increase framerate.
-	bFullscreen = false;
-	//Set default Config variables:
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	textdomain (PACKAGE);
-	boost::program_options::options_description desc("Allowed options");
-	desc.add_options()
+		OsCreateFolders();
+		//Init the file system abstraction layer
+		PHYSFS_init(argv[0]);
+		vector<string> search_paths;
+		FsSearchParthMainAppend(search_paths);
+		string savepath = getPathToSaveFiles();
+		highPriority = false;   //if true the game will take most resources, but increase framerate.
+		bFullscreen = false;
+		//Set default Config variables:
+		setlocale (LC_ALL, "");
+		bindtextdomain (PACKAGE, LOCALEDIR);
+		textdomain (PACKAGE);
+		boost::program_options::options_description desc("Allowed options");
+		desc.add_options()
 		("help,h", _("Displays this message"))
 		("nosound", _("Disables the sound. Can be used if sound errors prevents you from starting"))
 		("priority", _("Causes the game to not sleep between frames."))
 		("verbose-basic", _("Enables basic verbose messages"))
 		("print-search-path", _("Prints the search path and quits"))
-	;
-	boost::program_options::variables_map vm;
-	try {
-		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
-		boost::program_options::notify(vm);
-	} catch (exception& e) {
-		cerr << e.what() << endl;
-		cerr << desc << endl;
-		throw;
-	}
-	if (vm.count("help")) {
-		cout << SPrintStringF(_("Block Attack - Rise of the blocks %s\n"
-					"%s\n"), VERSION_NUMBER, "www.blockattack.net");
-		cout << desc << endl;
-		return 1;
-	}
-	if (vm.count("nosound")) {
-		NoSound = true;
-	}
-	if (vm.count("priority")) {
-		highPriority = true;
-	}
-	if (vm.count("verbose-basic")) {
-		verboseLevel++;
-	}
-	if (vm.count("print-search-path")) {
-		for (const string& s : search_paths) {
-			cout << s << endl;
+		;
+		boost::program_options::variables_map vm;
+		try {
+			boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
+			boost::program_options::notify(vm);
 		}
-		cout << savepath << endl;
-		return 0;
-	}
-
-	SoundEnabled = true;
-	MusicEnabled = true;
-	bScreenLocked = false;
-	twoPlayers = false; //true if two players splitscreen
-	theTopScoresEndless = Highscore(1);
-	theTopScoresTimeTrial = Highscore(2);
-	drawBalls = true;
-	puzzleLoaded = false;
-
-	theBallManager = BallManager();
-	theExplosionManager = ExplosionManager();
-
-	stageClearSavePath = getStageClearSavePath();
-	PuzzleSetSavePath(getPuzzleSetSavePath());
-	PuzzleSetName("puzzle.levels");
-
-	//Init SDL
-	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-		sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
-	}
-	TTF_Init();
-	atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
-
-	SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
-
-	Joypad_init();    //Prepare the joysticks
-	Joypad joypad1 = Joypad();    //Creates a joypad
-	Joypad joypad2 = Joypad();    //Creates a joypad
-
-	theTextManager = TextManager();
-
-	//Open Audio
-	if (!NoSound) {
-		//If sound has not been disabled, then load the sound system
-		if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
-			cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
-			     << "Sound will be disabled!" << endl;
-			NoSound = true; //Tries to stop all sound from playing/loading
+		catch (exception& e) {
+			cerr << e.what() << endl;
+			cerr << desc << endl;
+			throw;
 		}
-	}
-
-
-	if (verboseLevel) {
-		//Copyright notice:
-		cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://www.blockattack.net" << endl << "Copyright 2004-2016 Poul Sander" << endl <<
-		     "A SDL2 based game (see www.libsdl.org)" << endl <<
-		     "The game is availeble under the GPL, see COPYING for details." << endl;
-		cout << "-------------------------------------------" << endl;
-	}
-
-
-	keySettings[0].up= SDLK_UP;
-	keySettings[0].down = SDLK_DOWN;
-	keySettings[0].left = SDLK_LEFT;
-	keySettings[0].right = SDLK_RIGHT;
-	keySettings[0].change = SDLK_RCTRL;
-	keySettings[0].push = SDLK_RSHIFT;
-
-	keySettings[2].up= SDLK_w;
-	keySettings[2].down = SDLK_s;
-	keySettings[2].left = SDLK_a;
-	keySettings[2].right = SDLK_d;
-	keySettings[2].change = SDLK_LCTRL;
-	keySettings[2].push = SDLK_LSHIFT;
-
-	player1keys=0;
-	player2keys=2;
-
-	player1name = "Player 1";
-	player2name = "Player 2";
-
-	Config* configSettings = Config::getInstance();
-	//configSettings->setString("aNumber"," A string");
-	//configSettings->save();
-	if (configSettings->exists("fullscreen")) { //Test if an configFile exists
-		bFullscreen = (bool)configSettings->getInt("fullscreen");
-		MusicEnabled = (bool)configSettings->getInt("musicenabled");
-		SoundEnabled = (bool)configSettings->getInt("soundenabled");
-		mouseplay1 = (bool)configSettings->getInt("mouseplay1");
-		mouseplay2 = (bool)configSettings->getInt("mouseplay2");
-		joyplay1 = (bool)configSettings->getInt("joypad1");
-		joyplay2 = (bool)configSettings->getInt("joypad2");
-
-		if (configSettings->exists("sdl2_player1keyup")) {
-			keySettings[0].up = (SDL_Keycode)configSettings->getInt("sdl2_player1keyup");
+		if (vm.count("help")) {
+			cout << SPrintStringF(_("Block Attack - Rise of the blocks %s\n"
+			                        "%s\n"), VERSION_NUMBER, "www.blockattack.net");
+			cout << desc << endl;
+			return 1;
 		}
-		if (configSettings->exists("sdl2_player1keydown")) {
-			keySettings[0].down = (SDL_Keycode)configSettings->getInt("sdl2_player1keydown");
+		if (vm.count("nosound")) {
+			NoSound = true;
 		}
-		if (configSettings->exists("sdl2_player1keyleft")) {
-			keySettings[0].left = (SDL_Keycode)configSettings->getInt("sdl2_player1keyleft");
+		if (vm.count("priority")) {
+			highPriority = true;
 		}
-		if (configSettings->exists("sdl2_player1keyright")) {
-			keySettings[0].right = (SDL_Keycode)configSettings->getInt("sdl2_player1keyright");
+		if (vm.count("verbose-basic")) {
+			verboseLevel++;
 		}
-		if (configSettings->exists("sdl2_player1keychange")) {
-			keySettings[0].change = (SDL_Keycode)configSettings->getInt("sdl2_player1keychange");
-		}
-		if (configSettings->exists("sdl2_player1keypush")) {
-			keySettings[0].push = (SDL_Keycode)configSettings->getInt("sdl2_player1keypush");
+		if (vm.count("print-search-path")) {
+			for (const string& s : search_paths) {
+				cout << s << endl;
+			}
+			cout << savepath << endl;
+			return 0;
 		}
 
-		if (configSettings->exists("sdl2_player2keyup")) {
-			keySettings[2].up = (SDL_Keycode)configSettings->getInt("sdl2_player2keyup");
+		SoundEnabled = true;
+		MusicEnabled = true;
+		bScreenLocked = false;
+		twoPlayers = false; //true if two players splitscreen
+		theTopScoresEndless = Highscore(1);
+		theTopScoresTimeTrial = Highscore(2);
+		drawBalls = true;
+		puzzleLoaded = false;
+
+		theBallManager = BallManager();
+		theExplosionManager = ExplosionManager();
+
+		stageClearSavePath = getStageClearSavePath();
+		PuzzleSetSavePath(getPuzzleSetSavePath());
+		PuzzleSetName("puzzle.levels");
+
+		//Init SDL
+		if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+			sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
 		}
-		if (configSettings->exists("sdl2_player2keydown")) {
-			keySettings[2].down = (SDL_Keycode)configSettings->getInt("sdl2_player2keydown");
+		TTF_Init();
+		atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
+
+		SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
+
+		Joypad_init();    //Prepare the joysticks
+		Joypad joypad1 = Joypad();    //Creates a joypad
+		Joypad joypad2 = Joypad();    //Creates a joypad
+
+		theTextManager = TextManager();
+
+		//Open Audio
+		if (!NoSound) {
+			//If sound has not been disabled, then load the sound system
+			if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
+				cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
+				     << "Sound will be disabled!" << endl;
+				NoSound = true; //Tries to stop all sound from playing/loading
+			}
 		}
-		if (configSettings->exists("sdl2_player2keyleft")) {
-			keySettings[2].left = (SDL_Keycode)configSettings->getInt("sdl2_player2keyleft");
-		}
-		if (configSettings->exists("sdl2_player2keyright")) {
-			keySettings[2].right = (SDL_Keycode)configSettings->getInt("sdl2_player2keyright");
-		}
-		if (configSettings->exists("sdl2_player2keychange")) {
-			keySettings[2].change = (SDL_Keycode)configSettings->getInt("sdl2_player2keychange");
-		}
-		if (configSettings->exists("sdl2_player2keypush")) {
-			keySettings[2].push = (SDL_Keycode)configSettings->getInt("sdl2_player2keypush");
-		}
-		if (configSettings->exists("player1name")) {
-			player1name = configSettings->getString("player1name");
-		}
-		if (configSettings->exists("player2name")) {
-			player2name = configSettings->getString("player2name");
-		}
+
+
 		if (verboseLevel) {
-			cout << "Data loaded from config file" << endl;
+			//Copyright notice:
+			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://www.blockattack.net" << endl << "Copyright 2004-2016 Poul Sander" << endl <<
+			     "A SDL2 based game (see www.libsdl.org)" << endl <<
+			     "The game is availeble under the GPL, see COPYING for details." << endl;
+			cout << "-------------------------------------------" << endl;
 		}
-	}
-	else {
+
+
+		keySettings[0].up= SDLK_UP;
+		keySettings[0].down = SDLK_DOWN;
+		keySettings[0].left = SDLK_LEFT;
+		keySettings[0].right = SDLK_RIGHT;
+		keySettings[0].change = SDLK_RCTRL;
+		keySettings[0].push = SDLK_RSHIFT;
+
+		keySettings[2].up= SDLK_w;
+		keySettings[2].down = SDLK_s;
+		keySettings[2].left = SDLK_a;
+		keySettings[2].right = SDLK_d;
+		keySettings[2].change = SDLK_LCTRL;
+		keySettings[2].push = SDLK_LSHIFT;
+
+		player1keys=0;
+		player2keys=2;
+
+		player1name = "Player 1";
+		player2name = "Player 2";
+
+		Config* configSettings = Config::getInstance();
+		//configSettings->setString("aNumber"," A string");
+		//configSettings->save();
+		if (configSettings->exists("fullscreen")) { //Test if an configFile exists
+			bFullscreen = (bool)configSettings->getInt("fullscreen");
+			MusicEnabled = (bool)configSettings->getInt("musicenabled");
+			SoundEnabled = (bool)configSettings->getInt("soundenabled");
+			mouseplay1 = (bool)configSettings->getInt("mouseplay1");
+			mouseplay2 = (bool)configSettings->getInt("mouseplay2");
+			joyplay1 = (bool)configSettings->getInt("joypad1");
+			joyplay2 = (bool)configSettings->getInt("joypad2");
+
+			if (configSettings->exists("sdl2_player1keyup")) {
+				keySettings[0].up = (SDL_Keycode)configSettings->getInt("sdl2_player1keyup");
+			}
+			if (configSettings->exists("sdl2_player1keydown")) {
+				keySettings[0].down = (SDL_Keycode)configSettings->getInt("sdl2_player1keydown");
+			}
+			if (configSettings->exists("sdl2_player1keyleft")) {
+				keySettings[0].left = (SDL_Keycode)configSettings->getInt("sdl2_player1keyleft");
+			}
+			if (configSettings->exists("sdl2_player1keyright")) {
+				keySettings[0].right = (SDL_Keycode)configSettings->getInt("sdl2_player1keyright");
+			}
+			if (configSettings->exists("sdl2_player1keychange")) {
+				keySettings[0].change = (SDL_Keycode)configSettings->getInt("sdl2_player1keychange");
+			}
+			if (configSettings->exists("sdl2_player1keypush")) {
+				keySettings[0].push = (SDL_Keycode)configSettings->getInt("sdl2_player1keypush");
+			}
+
+			if (configSettings->exists("sdl2_player2keyup")) {
+				keySettings[2].up = (SDL_Keycode)configSettings->getInt("sdl2_player2keyup");
+			}
+			if (configSettings->exists("sdl2_player2keydown")) {
+				keySettings[2].down = (SDL_Keycode)configSettings->getInt("sdl2_player2keydown");
+			}
+			if (configSettings->exists("sdl2_player2keyleft")) {
+				keySettings[2].left = (SDL_Keycode)configSettings->getInt("sdl2_player2keyleft");
+			}
+			if (configSettings->exists("sdl2_player2keyright")) {
+				keySettings[2].right = (SDL_Keycode)configSettings->getInt("sdl2_player2keyright");
+			}
+			if (configSettings->exists("sdl2_player2keychange")) {
+				keySettings[2].change = (SDL_Keycode)configSettings->getInt("sdl2_player2keychange");
+			}
+			if (configSettings->exists("sdl2_player2keypush")) {
+				keySettings[2].push = (SDL_Keycode)configSettings->getInt("sdl2_player2keypush");
+			}
+			if (configSettings->exists("player1name")) {
+				player1name = configSettings->getString("player1name");
+			}
+			if (configSettings->exists("player2name")) {
+				player2name = configSettings->getString("player2name");
+			}
+			if (verboseLevel) {
+				cout << "Data loaded from config file" << endl;
+			}
+		}
+		else {
+			if (verboseLevel) {
+				cout << "Unable to load options file, using default values" << endl;
+			}
+		}
+
+		if (singlePuzzle) {
+			xsize=300;
+			ysize=600;
+		}
+
+
+		// "Block Attack - Rise of the Blocks"
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+		//Open video
+		int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
+		if ((bFullscreen)&&(!singlePuzzle)) {
+			createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		}
+
+		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
+		                             SDL_WINDOWPOS_UNDEFINED,
+		                             SDL_WINDOWPOS_UNDEFINED,
+		                             xsize, ysize,
+		                             createWindowParams );
+		dieOnNullptr(sdlWindow, "Unable to create window");
+		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+		dieOnNullptr(renderer, "Unable to create render");
+		//SDL_RenderSetLogicalSize(renderer, xsize, ysize);
+		screen = renderer;
+
+		PhysFsSetSearchPath(search_paths, savepath);
+		sago::SagoDataHolder d(renderer);
+		d.setVerbose(false);
+		sago::SagoSpriteHolder spriteholder(d);
+		InitImages(spriteholder);
+		SetSDLIcon(sdlWindow);
+
 		if (verboseLevel) {
-			cout << "Unable to load options file, using default values" << endl;
+			cout << "Images loaded" << endl;
 		}
+
+		BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
+		BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
+		player1 = &theGame;
+		player2 = &theGame2;
+		/*if (singlePuzzle)
+		{
+		    theGame.GetTopY()=0;
+		    theGame.GetTopX()=0;
+		    theGame2.GetTopY()=10000;
+		    theGame2.GetTopX()=10000;
+		}*/
+		theGame.SetGameOver();      //sets the game over in the beginning
+		theGame2.SetGameOver();
+
+
+		//Takes names from file instead
+		theGame.name = player1name;
+		theGame2.name = player2name;
+
+		if (singlePuzzle) {
+			LoadPuzzleStages();
+			theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
+		}
+		SDL_RenderClear(screen);
+		DrawIMG(backgroundImage, screen, 0, 0);
+		DrawEverything(xsize,ysize,&theGame,&theGame2);
+		SDL_RenderPresent(screen);
+		//game loop
+		MainMenu();
+
+
+
+		//Saves options
+		if (!editorMode) {
+			configSettings->setInt("fullscreen",(int)bFullscreen);
+			configSettings->setInt("musicenabled",(int)MusicEnabled);
+			configSettings->setInt("soundenabled",(int)SoundEnabled);
+			configSettings->setInt("mouseplay1",(int)mouseplay1);
+			configSettings->setInt("mouseplay2",(int)mouseplay2);
+			configSettings->setInt("joypad1",(int)joyplay1);
+			configSettings->setInt("joypad2",(int)joyplay2);
+
+			configSettings->setInt("sdl2_player1keyup",(int)keySettings[0].up);
+			configSettings->setInt("sdl2_player1keydown",(int)keySettings[0].down);
+			configSettings->setInt("sdl2_player1keyleft",(int)keySettings[0].left);
+			configSettings->setInt("sdl2_player1keyright",(int)keySettings[0].right);
+			configSettings->setInt("sdl2_player1keychange",(int)keySettings[0].change);
+			configSettings->setInt("sdl2_player1keypush",(int)keySettings[0].push);
+
+			configSettings->setInt("sdl2_player2keyup",(int)keySettings[2].up);
+			configSettings->setInt("sdl2_player2keydown",(int)keySettings[2].down);
+			configSettings->setInt("sdl2_player2keyleft",(int)keySettings[2].left);
+			configSettings->setInt("sdl2_player2keyright",(int)keySettings[2].right);
+			configSettings->setInt("sdl2_player2keychange",(int)keySettings[2].change);
+			configSettings->setInt("sdl2_player2keypush",(int)keySettings[2].push);
+
+			configSettings->setString("player1name",player1name);
+			configSettings->setString("player2name",player2name);
+			configSettings->save();
+		}
+
+		//calculate uptime:
+		//int hours, mins, secs,
+		commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
+
+		if (verboseLevel) {
+			cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << endl;
+		}
+
+		ct = TimeHandler::addTime("totalTime",ct);
+		if (verboseLevel) {
+			cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
+		}
+
+		Stats::getInstance()->save();
+
+		Config::getInstance()->save();
+
+		//Close file system Apstraction layer!
+		PHYSFS_deinit();
+
 	}
-
-	if (singlePuzzle) {
-		xsize=300;
-		ysize=600;
-	}
-
-
-	// "Block Attack - Rise of the Blocks"
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-	//Open video
-	int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
-	if ((bFullscreen)&&(!singlePuzzle)) {
-		createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-	}
-
-	sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
-	                        SDL_WINDOWPOS_UNDEFINED,
-	                        SDL_WINDOWPOS_UNDEFINED,
-	                        xsize, ysize,
-	                        createWindowParams );
-	dieOnNullptr(sdlWindow, "Unable to create window");
-	SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
-	dieOnNullptr(renderer, "Unable to create render");
-	//SDL_RenderSetLogicalSize(renderer, xsize, ysize);
-	screen = renderer;
-	
-	PhysFsSetSearchPath(search_paths, savepath);
-	sago::SagoDataHolder d(renderer);
-	d.setVerbose(false);
-	sago::SagoSpriteHolder spriteholder(d);
-	InitImages(spriteholder);
-	SetSDLIcon(sdlWindow);
-
-	if (verboseLevel) {
-		cout << "Images loaded" << endl;
-	}
-
-	BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
-	BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
-	player1 = &theGame;
-	player2 = &theGame2;
-	/*if (singlePuzzle)
-	{
-	    theGame.GetTopY()=0;
-	    theGame.GetTopX()=0;
-	    theGame2.GetTopY()=10000;
-	    theGame2.GetTopX()=10000;
-	}*/
-	theGame.SetGameOver();      //sets the game over in the beginning
-	theGame2.SetGameOver();
-
-
-	//Takes names from file instead
-	theGame.name = player1name;
-	theGame2.name = player2name;
-
-	if (singlePuzzle) {
-		LoadPuzzleStages();
-		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
-	}
-	SDL_RenderClear(screen);
-	DrawIMG(backgroundImage, screen, 0, 0);
-	DrawEverything(xsize,ysize,&theGame,&theGame2);
-	SDL_RenderPresent(screen);
-	//game loop
-	MainMenu();
-
-
-
-	//Saves options
-	if (!editorMode) {
-		configSettings->setInt("fullscreen",(int)bFullscreen);
-		configSettings->setInt("musicenabled",(int)MusicEnabled);
-		configSettings->setInt("soundenabled",(int)SoundEnabled);
-		configSettings->setInt("mouseplay1",(int)mouseplay1);
-		configSettings->setInt("mouseplay2",(int)mouseplay2);
-		configSettings->setInt("joypad1",(int)joyplay1);
-		configSettings->setInt("joypad2",(int)joyplay2);
-
-		configSettings->setInt("sdl2_player1keyup",(int)keySettings[0].up);
-		configSettings->setInt("sdl2_player1keydown",(int)keySettings[0].down);
-		configSettings->setInt("sdl2_player1keyleft",(int)keySettings[0].left);
-		configSettings->setInt("sdl2_player1keyright",(int)keySettings[0].right);
-		configSettings->setInt("sdl2_player1keychange",(int)keySettings[0].change);
-		configSettings->setInt("sdl2_player1keypush",(int)keySettings[0].push);
-
-		configSettings->setInt("sdl2_player2keyup",(int)keySettings[2].up);
-		configSettings->setInt("sdl2_player2keydown",(int)keySettings[2].down);
-		configSettings->setInt("sdl2_player2keyleft",(int)keySettings[2].left);
-		configSettings->setInt("sdl2_player2keyright",(int)keySettings[2].right);
-		configSettings->setInt("sdl2_player2keychange",(int)keySettings[2].change);
-		configSettings->setInt("sdl2_player2keypush",(int)keySettings[2].push);
-
-		configSettings->setString("player1name",player1name);
-		configSettings->setString("player2name",player2name);
-		configSettings->save();
-	}
-
-	//calculate uptime:
-	//int hours, mins, secs,
-	commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
-
-	if (verboseLevel) {
-		cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << endl;
-	}
-
-	ct = TimeHandler::addTime("totalTime",ct);
-	if (verboseLevel) {
-		cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
-	}
-
-	Stats::getInstance()->save();
-
-	Config::getInstance()->save();
-
-	//Close file system Apstraction layer!
-	PHYSFS_deinit();
-	
-	} catch (exception& e) {
+	catch (exception& e) {
 		sago::SagoFatalError(e.what());
 	}
 	return 0;
@@ -2207,7 +2209,7 @@ int runGame(int gametype, int level) {
 		if (!(highPriority)) {
 			SDL_Delay(1);
 		}
-		
+
 		SDL_RenderClear(screen);
 		DrawIMG(backgroundImage, screen, 0, 0);
 
@@ -2217,7 +2219,7 @@ int runGame(int gametype, int level) {
 		theTextManager.update();
 
 		bool mustWriteScreenshot = false;
-		
+
 		if (!bScreenLocked) {
 			SDL_Event event;
 

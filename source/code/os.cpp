@@ -31,10 +31,10 @@ http://blockattack.net
 
 
 /**
- * Retrives the effective user's home dir. 
- * If the user is running as root we ignore the HOME environment. It works badly with sudo. 
+ * Retrives the effective user's home dir.
+ * If the user is running as root we ignore the HOME environment. It works badly with sudo.
  * Writing to $HOME as root implies security concerns that a multiplatform program cannot be assumed to handle.
- * @return The home directory. HOME environment is respected for non-root users if it exists. 
+ * @return The home directory. HOME environment is respected for non-root users if it exists.
  */
 static std::string getHome() {
 	std::string res;
@@ -45,7 +45,7 @@ static std::string getHome() {
 		res = homeEnv;
 		return res;
 	}
-	struct passwd *pw = getpwuid(uid);
+	struct passwd* pw = getpwuid(uid);
 	if (!pw) {
 		throw std::runtime_error("Unable to get passwd struct.");
 	}
@@ -141,7 +141,7 @@ std::string getPuzzleSetSavePath() {
 void OsCreateFolders() {
 	//We first create the folder there we will save (only on UNIX systems)
 	//we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
-	
+
 #if defined(__unix__)
 	//Compiler warns about unused result. The users envisonment should normally give the user all the information he needs
 	if (system("mkdir -p ~/.gamesaves/blockattack/screenshots")) {
