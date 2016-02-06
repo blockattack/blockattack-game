@@ -130,7 +130,7 @@ static void runTwoPlayerVs(Button* b) {
 
 static void buttonActionMusic(Button* b) {
 	MusicEnabled = !MusicEnabled;
-	b->setLabel(MusicEnabled? "Music: On" : "Music: Off");
+	b->setLabel(MusicEnabled? _("Music: On") : _("Music: Off"));
 }
 
 static void buttonActionSound(Button* b) {

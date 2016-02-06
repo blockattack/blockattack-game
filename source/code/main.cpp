@@ -791,7 +791,7 @@ public:
 		}
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
-			strHolder = "Moves left: " + itoa(MovesLeft);
+			strHolder = _("Moves left: ") + itoa(MovesLeft);
 			nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 
 		}
@@ -1655,19 +1655,16 @@ int PuzzleLevelSelect(int Type) {
 		}
 
 		if (Type == 1) {
-			string scoreString = _("Best score: 0");
-			string timeString = _("Time used: -- : --");
-
-			if (GetStageScores(selected)>0) {
-				scoreString = _("Best score: ")+itoa(GetStageScores(selected));
-			}
+			string scoreString = SPrintStringF(_("Best score: %i"), GetStageScores(selected)) ;
+			string timeString = SPrintStringF(_("Time used: %s"),"-- : --");
+			
 			if (GetStageTime(selected)>0) {
-				timeString = _("Time used: ")+itoa(GetStageTime(selected)/1000/60)+" : "+itoa2((GetStageTime(selected)/1000)%60);
+				timeString = SPrintStringF(_("Time used: %s"), string(itoa(GetStageTime(selected)/1000/60)+" : "+itoa2((GetStageTime(selected)/1000)%60)).c_str() );
 			}
 
 			NFont_Write(screen, 200,200,scoreString.c_str());
 			NFont_Write(screen, 200,250,timeString.c_str());
-			string totalString = (boost::format("Total score: %1% in %2%:%3%")%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
+			string totalString = (boost::format(_("Total score: %1% in %2%:%3%"))%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
 			NFont_Write(screen, 200,600,totalString.c_str());
 		}
 
@@ -1918,8 +1915,8 @@ int main(int argc, const char* argv[]) {
 		player1keys=0;
 		player2keys=2;
 
-		player1name = "Player 1";
-		player2name = "Player 2";
+		player1name = _("Player 1");
+		player2name = _("Player 2");
 
 		Config* configSettings = Config::getInstance();
 		//configSettings->setString("aNumber"," A string");

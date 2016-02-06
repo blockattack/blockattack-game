@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-06 16:05+0100\n"
+"POT-Creation-Date: 2016-02-06 19:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,6 +31,10 @@ msgstr ""
 
 #: ../../code/main.cpp:785
 msgid "Speed:"
+msgstr ""
+
+#: ../../code/main.cpp:794
+msgid "Moves left: "
 msgstr ""
 
 #: ../../code/main.cpp:800 ../../code/main.cpp:818
@@ -184,19 +188,33 @@ msgid "Stage Clear Level Select"
 msgstr ""
 
 #: ../../code/main.cpp:1658
-msgid "Best score: 0"
+#, c-format
+msgid "Best score: %i"
 msgstr ""
 
-#: ../../code/main.cpp:1659
-msgid "Time used: -- : --"
+#: ../../code/main.cpp:1659 ../../code/main.cpp:1662
+#, c-format
+msgid "Time used: %s"
 msgstr ""
 
-#: ../../code/main.cpp:1662
-msgid "Best score: "
+#: ../../code/main.cpp:1667
+msgid "Total score: %1% in %2%:%3%"
 msgstr ""
 
-#: ../../code/main.cpp:1665
-msgid "Time used: "
+#: ../../code/main.cpp:1918
+msgid "Player 1"
+msgstr ""
+
+#: ../../code/main.cpp:1919
+msgid "Player 2"
+msgstr ""
+
+#: ../../code/menudef.cpp:133 ../../code/menudef.cpp:192
+msgid "Music: On"
+msgstr ""
+
+#: ../../code/menudef.cpp:133 ../../code/menudef.cpp:192
+msgid "Music: Off"
 msgstr ""
 
 #: ../../code/menudef.cpp:138 ../../code/menudef.cpp:194
@@ -245,14 +263,6 @@ msgstr ""
 
 #: ../../code/menudef.cpp:189
 msgid "Configuration"
-msgstr ""
-
-#: ../../code/menudef.cpp:192
-msgid "Music: On"
-msgstr ""
-
-#: ../../code/menudef.cpp:192
-msgid "Music: Off"
 msgstr ""
 
 #: ../../code/menudef.cpp:199
