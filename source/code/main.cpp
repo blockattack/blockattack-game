@@ -1806,11 +1806,12 @@ int main(int argc, const char* argv[]) {
 		textdomain (PACKAGE);
 		boost::program_options::options_description desc("Allowed options");
 		desc.add_options()
-		("help,h", _("Displays this message"))
-		("nosound", _("Disables the sound. Can be used if sound errors prevents you from starting"))
-		("priority", _("Causes the game to not sleep between frames."))
-		("verbose-basic", _("Enables basic verbose messages"))
-		("print-search-path", _("Prints the search path and quits"))
+		("help,h", "Displays this message")
+		("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
+		("priority", "Causes the game to not sleep between frames.")
+		("verbose-basic", "Enables basic verbose messages")
+		("print-search-path", "Prints the search path and quits")
+		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. Default: \"%s\"", LOCALEDIR).c_str() )
 		;
 		boost::program_options::variables_map vm;
 		try {
@@ -1822,9 +1823,13 @@ int main(int argc, const char* argv[]) {
 			cerr << desc << endl;
 			throw;
 		}
+		if (vm.count("bind-text-domain")) {
+			string s = vm["bind-text-domain"].as<string>();
+			bindtextdomain (PACKAGE, s.c_str());
+		}
 		if (vm.count("help")) {
-			cout << SPrintStringF(_("Block Attack - Rise of the blocks %s\n"
-			                        "%s\n"), VERSION_NUMBER, "www.blockattack.net");
+			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n"
+			                        "%s\n", VERSION_NUMBER, "www.blockattack.net");
 			cout << desc << endl;
 			return 1;
 		}
