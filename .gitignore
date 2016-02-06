@@ -1,6 +1,7 @@
 /nbproject/private/
 *.P
 *.o
+*.a
 *~
 *.orig
 winicon.res
@@ -18,3 +19,5 @@ Makefile
 source/manual/
 -source/manual/block_attack_manual.tex
 man/blockattack.6.gz
+source/misc/translation/locale
+*.mo
