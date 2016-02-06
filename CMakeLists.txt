@@ -25,7 +25,7 @@ if (WIN32)
 SET(GUI_TYPE WIN32)
 endif()
 
-if (!WIN32)
+if (NOT WIN32)
 #The path to the data dir must be compiled into the binary
 add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
 endif()
