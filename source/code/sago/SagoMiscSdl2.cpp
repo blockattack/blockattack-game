@@ -51,3 +51,4 @@ void sago::SagoFatalErrorF(const char* fmt, ...) {
 	SagoFatalError(buffer);
 	va_end(args);
 }
+

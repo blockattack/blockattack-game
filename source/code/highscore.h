@@ -27,6 +27,9 @@ http://blockattack.net
 #include <string>
 #include <stdlib.h>
 
+#ifndef HIGHSCORE_H
+#define HIGHSCORE_H
+
 const int top = 10;
 
 struct record
@@ -56,3 +59,5 @@ public:
 	int getScoreNumber(int);
 	const char* getScoreName(int);
 };
+
+#endif

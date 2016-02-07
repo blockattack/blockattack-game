@@ -45,14 +45,14 @@ const char sharedir[] = SHAREDIR;
 //All graphic in the game (as pointers):
 sago::SagoSprite backgroundImage; //Stores the background image
 static sago::SagoSprite backBoard;     //Stores the background to the board
-static sago::SagoSprite bBack;         //The "Back" button
+sago::SagoSprite bBack;         //The "Back" button
 static sago::SagoSprite bForward;      //The "forward" button
 #if NETWORK
 //static sago::SagoSprite bNetwork;
 //static sago::SagoSprite bConnect;
 //static sago::SagoSprite bHost;
 #endif
-static sago::SagoSprite bHighScore;    //The High Score botton
+sago::SagoSprite bHighScore;    //The High Score botton
 static sago::SagoSprite blackLine;		//The seperator in stage clear
 static sago::SagoSprite stageBobble;	//The bobble instage clear
 SDL_Renderer *screen;        //The whole screen;
@@ -94,33 +94,17 @@ static sago::SagoSprite garbageGM;
 static sago::SagoSprite garbageGML;
 static sago::SagoSprite garbageGMR;
 static sago::SagoSprite transCover;        //The transperant block, covers the upcomming
-#if LEVELEDITOR
-static sago::SagoSprite bCreateFile;
-static sago::SagoSprite bDeletePuzzle;
-static sago::SagoSprite bLoadFile;
-static sago::SagoSprite bMoveBack;
-static sago::SagoSprite bMoveDown;
-static sago::SagoSprite bMoveForward;
-static sago::SagoSprite bMoveLeft;
-static sago::SagoSprite bMoveRight;
-static sago::SagoSprite bMoveUp;
-static sago::SagoSprite bNewPuzzle;
-static sago::SagoSprite bSaveFileAs;
-static sago::SagoSprite bSavePuzzle;
-static sago::SagoSprite bSaveToFile;
-static sago::SagoSprite bTestPuzzle;
-#endif
 static sago::SagoSprite bSkip;
 static sago::SagoSprite bRetry;
-static sago::SagoSprite bNext;
+sago::SagoSprite bNext;
 
 sago::SagoSprite menuMarked;
 sago::SagoSprite menuUnmarked;
 sago::SagoSprite mouse;
 
-static NFont nf_button_font;        //Font used for buttons!
+NFont nf_button_font;        //Font used for buttons!
 NFont nf_scoreboard_font;
-static NFont nf_standard_blue_font;      //Font used instead of the old blue SFont
+NFont nf_standard_blue_font;      //Font used instead of the old blue SFont
 static NFont nf_standard_small_font;
 
 static Mix_Music *bgMusic;         //backgroundMusic
@@ -154,18 +138,6 @@ bool highPriority;
 
 static bool editorMode = false;
 static bool editorModeTest = false;
-
-//Things for network play:
-#if NETWORK
-static bool networkPlay;
-static bool networkActive;
-//sockets here
-#define SERVERPORT 41780
-#define CLIENTPORT 41781
-
-
-static char serverAddress[30];
-#endif
 
 //other ball constants:
 const double gravity = 200.8; //acceleration

@@ -27,13 +27,19 @@ http://blockattack.net
 #include "Libs/NFont.h"
 #include <memory>
 #include "sago/SagoSpriteHolder.hpp"
+#include "highscore.h"
 
 void MainMenu();
 void ResetFullscreen();
 
 extern sago::SagoSprite  menuMarked;
 extern sago::SagoSprite  menuUnmarked;
+extern sago::SagoSprite bHighScore;
+extern sago::SagoSprite bBack;
+extern sago::SagoSprite bNext;
 extern NFont nf_scoreboard_font;
+extern NFont nf_standard_blue_font;
+extern NFont nf_button_font;
 extern bool MusicEnabled;			//true if background music is enabled
 extern bool SoundEnabled;			//true if sound effects is enabled
 extern bool bFullscreen;			//true if game is running fullscreen
@@ -44,6 +50,8 @@ extern sago::SagoSprite mouse;
 extern sago::SagoSprite backgroundImage;
 extern bool highPriority;
 extern int verboseLevel;
+extern Highscore theTopScoresEndless;      //Stores highscores for endless
+extern Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
 
 #endif	/* _GLOBAL_HPP */
 
