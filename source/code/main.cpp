@@ -1801,6 +1801,7 @@ int main(int argc, char* argv[]) {
 		//Set default Config variables:
 		setlocale (LC_ALL, "");
 		bindtextdomain (PACKAGE, LOCALEDIR);
+		bind_textdomain_codeset(PACKAGE, "utf-8");
 		textdomain (PACKAGE);
 		boost::program_options::options_description desc("Allowed options");
 		desc.add_options()
