@@ -15,7 +15,7 @@ www.blockattack.net
   * libSDL2_ttf
   * libphysfs
   * libboost (only needed for compiling)
-  * libboost-program-options-dev
+  * libboost-program-options
   * libutfcpp (only needed for compiling)
   * jsoncpp
 
