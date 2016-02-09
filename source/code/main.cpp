@@ -86,9 +86,9 @@ http://blockattack.net
 #include <boost/program_options.hpp>
 
 /*******************************************************************************
-* All variables and constant has been moved to mainVars.hpp for the overview.  *
+* All variables and constant has been moved to mainVars.inc for the overview.  *
 *******************************************************************************/
-#include "mainVars.hpp"
+#include "mainVars.inc"
 
 using namespace std;
 
