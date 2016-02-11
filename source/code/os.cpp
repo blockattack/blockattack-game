@@ -90,6 +90,8 @@ string getMyDocumentsPath() {
 
 #endif
 
+static std::string overrideSavePath = ""; 
+
 /**
  * Returns the path to where all settings must be saved.
  * On unix-like systems this is the home-folder under: ~/.gamesaves/GAMENAME
@@ -97,6 +99,9 @@ string getMyDocumentsPath() {
  * Consider changing this for Vista that has a special save games folder
  */
 std::string getPathToSaveFiles() {
+	if (overrideSavePath.length() > 0) {
+		return overrideSavePath;
+	}
 #ifdef __unix__
 	return (std::string)getenv("HOME")+(std::string)"/.gamesaves/"+GAMENAME;
 #elif _WIN32
@@ -104,6 +109,10 @@ std::string getPathToSaveFiles() {
 #else
 	return ".";
 #endif
+}
+
+void setPathToSaveFiles(const std::string& path) {
+	overrideSavePath = path;
 }
 
 std::string getPathToHighscoresEndless() {

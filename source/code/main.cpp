@@ -1656,7 +1656,11 @@ int main(int argc, char* argv[]) {
 		("priority", "Causes the game to not sleep between frames.")
 		("verbose-basic", "Enables basic verbose messages")
 		("print-search-path", "Prints the search path and quits")
-		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. Default: \"%s\"", LOCALEDIR).c_str() )
+		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
+		                "Default: \"%s\"", LOCALEDIR).c_str()) 
+		("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory must exsist."
+		                " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str()) 
+		
 		;
 		boost::program_options::variables_map vm;
 		try {
@@ -1671,6 +1675,11 @@ int main(int argc, char* argv[]) {
 		if (vm.count("bind-text-domain")) {
 			string s = vm["bind-text-domain"].as<string>();
 			bindtextdomain (PACKAGE, s.c_str());
+		}
+		if (vm.count("homepath")) {
+			string s = vm["homepath"].as<string>();
+			setPathToSaveFiles(s);
+			savepath = getPathToSaveFiles();
 		}
 		if (vm.count("help")) {
 			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n"

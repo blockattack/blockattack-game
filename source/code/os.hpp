@@ -27,10 +27,12 @@ http://blockattack.net
 #endif
 #include <string>
 
-std::string getPathToSaveFiles() __attribute__((pure));
+std::string getPathToSaveFiles();
 #if defined(_WIN32)
 std::string getMyDocumentsPath();
 #endif
+
+void setPathToSaveFiles(const std::string& path);
 
 std::string getPathToHighscoresEndless();
 std::string getPathToHighscoresTimetrial();
