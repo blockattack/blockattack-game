@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   ScoresDisplay.cpp
  * Author: poul
- * 
+ *
  * Created on 7. februar 2016, 17:34
  */
 
@@ -151,7 +151,7 @@ void ScoresDisplay::Draw(SDL_Renderer* target) {
 	NFont_Write(screen, xsize/2-nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2,ysize-60,pageXofY.c_str());
 }
 
-void ScoresDisplay::ProcessInput(const SDL_Event& event, bool &processed) {
+void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 	if ( event.type == SDL_KEYDOWN ) {
 		if ( (event.key.keysym.sym == SDLK_RIGHT)) {
 			page++;
@@ -178,7 +178,7 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool &processed) {
 void ScoresDisplay::Update() {
 	int mousex, mousey;
 	SDL_GetMouseState(&mousex,&mousey);
-	
+
 	// If the mouse button is released, make bMouseUp equal true
 	if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 		bMouseUp=true;

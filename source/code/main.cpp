@@ -994,35 +994,35 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 }
 
 
-void RunGameState(sago::GameStateInterface &state ) {
+void RunGameState(sago::GameStateInterface& state ) {
 	int mousex,mousey;
 	bool done = false;     //We are done!
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		state.Draw(screen);
-		
+
 		SDL_Delay(1);
 		SDL_Event event;
 
 		SDL_GetMouseState(&mousex,&mousey);
 		bool mustWriteScreenshot = false;
-		
+
 		while ( SDL_PollEvent(&event) ) {
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
 			}
-			
+
 			if ( event.key.keysym.sym == SDLK_F9 ) {
 				mustWriteScreenshot = true;
 			}
-			
+
 			bool processed = false;
 			state.ProcessInput(event, processed);
-			
+
 		}
-		
+
 		state.Update();
-		
+
 		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 		SDL_RenderPresent(screen);
 		if (mustWriteScreenshot) {
@@ -1503,7 +1503,7 @@ int PuzzleLevelSelect(int Type) {
 		if (Type == 1) {
 			string scoreString = SPrintStringF(_("Best score: %i"), GetStageScores(selected)) ;
 			string timeString = SPrintStringF(_("Time used: %s"),"-- : --");
-			
+
 			if (GetStageTime(selected)>0) {
 				timeString = SPrintStringF(_("Time used: %s"), string(itoa(GetStageTime(selected)/1000/60)+" : "+itoa2((GetStageTime(selected)/1000)%60)).c_str() );
 			}
@@ -1636,7 +1636,6 @@ static void StartTwoPlayerVs() {
 //Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it
 int main(int argc, char* argv[]) {
 	try {
-		OsCreateFolders();
 		//Init the file system abstraction layer
 		PHYSFS_init(argv[0]);
 		vector<string> search_paths;
@@ -1657,10 +1656,10 @@ int main(int argc, char* argv[]) {
 		("verbose-basic", "Enables basic verbose messages")
 		("print-search-path", "Prints the search path and quits")
 		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
-		                "Default: \"%s\"", LOCALEDIR).c_str()) 
+		        "Default: \"%s\"", LOCALEDIR).c_str())
 		("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory must exsist."
-		                " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str()) 
-		
+		        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
+
 		;
 		boost::program_options::variables_map vm;
 		try {
@@ -1683,7 +1682,7 @@ int main(int argc, char* argv[]) {
 		}
 		if (vm.count("help")) {
 			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n"
-			                        "%s\n", VERSION_NUMBER, "www.blockattack.net");
+			                      "%s\n", VERSION_NUMBER, "www.blockattack.net");
 			cout << desc << endl;
 			return 1;
 		}
@@ -1703,6 +1702,8 @@ int main(int argc, char* argv[]) {
 			cout << savepath << endl;
 			return 0;
 		}
+		//Os create folders must be after the paramters because they can change the home folder
+		OsCreateFolders();
 
 		SoundEnabled = true;
 		MusicEnabled = true;
