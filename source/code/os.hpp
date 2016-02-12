@@ -34,9 +34,6 @@ std::string getMyDocumentsPath();
 
 void setPathToSaveFiles(const std::string& path);
 
-std::string getPathToHighscoresEndless();
-std::string getPathToHighscoresTimetrial();
-
 std::string getStageClearSavePath();
 std::string getPuzzleSetSavePath();
 

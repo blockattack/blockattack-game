@@ -115,14 +115,6 @@ void setPathToSaveFiles(const std::string& path) {
 	overrideSavePath = path;
 }
 
-std::string getPathToHighscoresEndless() {
-	return getPathToSaveFiles()+"/endless.dat";
-}
-
-std::string getPathToHighscoresTimetrial() {
-	return getPathToSaveFiles()+"/timetrial.dat";
-}
-
 std::string getStageClearSavePath() {
 	std::string ret;
 #if defined(__unix__)

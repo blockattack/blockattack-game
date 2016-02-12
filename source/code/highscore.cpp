@@ -23,12 +23,13 @@ http://blockattack.net
 
 #include "highscore.h"
 #include "os.hpp"
+#include "Libs/physfs.hpp"
 
 using namespace std;
 
 Highscore::Highscore(int type) {
-	string filename1 = getPathToHighscoresEndless();
-	string filename2 = getPathToHighscoresTimetrial();
+	string filename1 = "endless.dat"; 
+	string filename2 = "timetrial.dat"; 
 	ourType = type;
 	if (type == 1) {
 		filename = filename1;
@@ -36,7 +37,7 @@ Highscore::Highscore(int type) {
 	if (type == 2) {
 		filename = filename2;
 	}
-	ifstream scorefile(filename.c_str(), ios::binary);
+	PhysFS::ifstream scorefile(filename.c_str());
 	if (scorefile) {
 		for (int i = 0; i<top; i++) {
 			scorefile.read(tabel[i].name,30*sizeof(char));
@@ -49,13 +50,12 @@ Highscore::Highscore(int type) {
 			tabel[i].score = 2000 - i*100;
 		}
 	}
-	scorefile.close();
 	writeFile();
 }
 
 void Highscore::writeFile() {
-	string filename1 = getPathToHighscoresEndless();
-	string filename2 = getPathToHighscoresTimetrial();
+	string filename1 = "endless.dat";
+	string filename2 = "timetrial.dat"; 
 	if (ourType == 1) {
 		filename = filename1;
 	}
@@ -63,8 +63,7 @@ void Highscore::writeFile() {
 		filename = filename2;
 	}
 
-	ofstream outfile;
-	outfile.open(Highscore::filename.c_str(), ios::binary |ios::trunc);
+	PhysFS::ofstream outfile(filename);
 	if (!outfile) {
 		cout << "Error writing to file: " << filename << endl;
 		exit(1);
@@ -73,7 +72,6 @@ void Highscore::writeFile() {
 		outfile.write(tabel[i].name,30*sizeof(char));
 		outfile.write(reinterpret_cast<char*>(&tabel[i].score),sizeof(int));
 	}
-	outfile.close();
 }
 
 bool Highscore::isHighScore(int newScore) {

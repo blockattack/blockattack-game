@@ -106,6 +106,7 @@ static void PhysFsSetSearchPath(const vector<string>& paths, const string& savep
 		PHYSFS_addToSearchPath(path.c_str(),1);
 	}
 	PHYSFS_addToSearchPath(savepath.c_str(), 1);
+	PHYSFS_setWriteDir(savepath.c_str());
 }
 
 
