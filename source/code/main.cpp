@@ -1952,7 +1952,7 @@ int main(int argc, char* argv[]) {
 		Stats::getInstance()->save();
 
 		Config::getInstance()->save();
-
+		
 		//Close file system Apstraction layer!
 		PHYSFS_deinit();
 

@@ -24,11 +24,13 @@ http://blockattack.net
 #include "stats.h"
 #include "common.h"
 #include "os.hpp"
-#include <fstream>
+#include "physfs_stream.hpp"
 
 using namespace std;
 
 Stats* Stats::instance = nullptr;
+
+const char * const statsFileName = "statsFile";
 
 Stats::Stats() {
 	statMap.clear();
@@ -36,15 +38,14 @@ Stats::Stats() {
 }
 
 void Stats::load() {
-	string filename = getPathToSaveFiles()+"/statsFile";
-	ifstream inFile(filename.c_str());
+	PhysFS::ifstream inFile(statsFileName);
 	string key;
 	char value[MAX_VAR_LENGTH];
 	if (inFile) {
 		while (!inFile.eof()) {
 			inFile >> key; // The key is first on line
 			inFile.get(); //Take the space
-			inFile.getline(value,MAX_VAR_LENGTH); //The rest of the line is the value.
+			inFile.getline(value, MAX_VAR_LENGTH); //The rest of the line is the value.
 			statMap[key] = str2int(value);
 		}
 		inFile.close();
@@ -60,9 +61,7 @@ Stats* Stats::getInstance() {
 }
 
 void Stats::save() {
-	string filename = getPathToSaveFiles()+"/statsFile";
-	ofstream outFile(filename.c_str(),ios::trunc);
-
+	PhysFS::ofstream outFile(statsFileName, ios::trunc);
 	if (outFile) {
 		//outFile << statMap.size() << endl;
 		map<string,unsigned int>::iterator iter;

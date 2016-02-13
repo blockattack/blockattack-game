@@ -34,22 +34,8 @@ http://blockattack.net
 #include <map>
 #include <string>
 
-
-
-
 class Stats
 {
-private:
-	std::map<std::string,unsigned int> statMap;
-
-	static Stats *instance;
-
-	void load();
-protected:
-
-	Stats();
-
-
 public:
 
 	static Stats* getInstance();
@@ -62,7 +48,11 @@ public:
 
 	bool exists(const std::string &statName);
 
-
+private:
+	std::map<std::string,unsigned int> statMap;
+	static Stats *instance;
+	void load();
+	Stats();
 };
 
 #endif	/* _STATS_H */
