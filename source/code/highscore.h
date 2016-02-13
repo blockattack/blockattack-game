@@ -22,7 +22,6 @@ http://blockattack.net
 */
 
 #include <iostream>
-#include <fstream>
 #include <cstring>
 #include <string>
 #include <stdlib.h>

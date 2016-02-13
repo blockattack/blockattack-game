@@ -27,6 +27,7 @@ http://blockattack.net
 #include "os.hpp"
 #include "sago/SagoMiscSdl2.hpp"
 #include <stdarg.h>
+#include "Libs/physfs.hpp"
 
 using namespace std;
 using boost::format;
@@ -174,8 +175,7 @@ Config::Config() {
 }
 
 void Config::load() {
-	string filename = getPathToSaveFiles()+"/configFile";
-	ifstream inFile(filename.c_str());
+	PhysFS::ifstream inFile("configFile");
 	string key;
 	string previuskey;
 	char value[MAX_VAR_LENGTH];
@@ -193,7 +193,6 @@ void Config::load() {
 #endif
 			configMap[key] = (string)value;
 		}
-		inFile.close();
 	}
 }
 
@@ -206,8 +205,7 @@ Config* Config::getInstance() {
 }
 
 void Config::save() {
-	string filename = getPathToSaveFiles()+"/configFile";
-	ofstream outFile(filename.c_str(),ios::trunc);
+	PhysFS::ofstream outFile("configFile");
 
 	if (outFile) {
 		map<string,string>::iterator iter;
@@ -217,7 +215,6 @@ void Config::save() {
 		outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
 		//This is checked on load too in case a user changes it himself.
 	}
-	outFile.close();
 }
 
 bool Config::exists(const string& varName) const {

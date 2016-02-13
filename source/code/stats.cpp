@@ -24,6 +24,7 @@ http://blockattack.net
 #include "stats.h"
 #include "common.h"
 #include "os.hpp"
+#include <fstream>
 
 using namespace std;
 
