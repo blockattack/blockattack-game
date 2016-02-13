@@ -23,7 +23,7 @@ http://blockattack.net
 
 #include "highscore.h"
 #include "os.hpp"
-#include "Libs/physfs.hpp"
+#include "physfs_stream.hpp"
 
 using namespace std;
 
@@ -50,6 +50,7 @@ Highscore::Highscore(int type) {
 			tabel[i].score = 2000 - i*100;
 		}
 	}
+	scorefile.close();
 	writeFile();
 }
 
@@ -63,7 +64,7 @@ void Highscore::writeFile() {
 		filename = filename2;
 	}
 
-	PhysFS::ofstream outfile(filename);
+	PhysFS::ofstream outfile(filename.c_str(), ios::binary);
 	if (!outfile) {
 		cout << "Error writing to file: " << filename << endl;
 		exit(1);
@@ -72,6 +73,7 @@ void Highscore::writeFile() {
 		outfile.write(tabel[i].name,30*sizeof(char));
 		outfile.write(reinterpret_cast<char*>(&tabel[i].score),sizeof(int));
 	}
+	outfile.close();
 }
 
 bool Highscore::isHighScore(int newScore) {

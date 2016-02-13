@@ -27,7 +27,7 @@ http://blockattack.net
 #include "os.hpp"
 #include "sago/SagoMiscSdl2.hpp"
 #include <stdarg.h>
-#include "Libs/physfs.hpp"
+#include "physfs_stream.hpp"
 
 using namespace std;
 using boost::format;
@@ -214,6 +214,7 @@ void Config::save() {
 		}
 		outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
 		//This is checked on load too in case a user changes it himself.
+		outFile.close();
 	}
 }
 

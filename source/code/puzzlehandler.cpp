@@ -27,7 +27,7 @@ http://blockattack.net
 #include <iostream>
 #include "stats.h"
 #include <physfs.h>         //Abstract file system. To use containers
-#include "physfs_stream.hpp" //To use C++ style file streams
+#include "physfs_stream.hpp"
 
 using namespace std;
 
@@ -106,13 +106,12 @@ int LoadPuzzleStages( ) {
 			}
 	}
 	bool tempBool;
-	std::ifstream puzzleFile(puzzleSavePath.c_str(), std::ios::binary);
+	PhysFS::ifstream puzzleFile(puzzleSavePath.c_str());
 	if (puzzleFile) {
 		for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++) {
 			puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
 			puzzleCleared[i] = tempBool;
 		}
-		puzzleFile.close();
 	}
 	else {
 		tempBool = false;
