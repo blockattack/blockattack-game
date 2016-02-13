@@ -23,6 +23,7 @@ http://blockattack.net
 
 #include "os.hpp"
 #include <iostream>
+#include <physfs.h>
 
 #ifdef __unix__
 #include <pwd.h>
@@ -125,28 +126,4 @@ std::string getPuzzleSetSavePath() {
 	ret = "puzzle.levels.save";
 #endif
 	return ret;
-}
-
-static void OsCreateFolderInSaveGames(const string& path) {
-	string cmd = "mkdir -p "+getPathToSaveFiles()+"/"+path;
-#if defined(__unix__)
-	int retcode = system(cmd.c_str());
-	if (retcode != 0) {
-		cerr << "Failed to create: " << getPathToSaveFiles()+"/"+path << endl;
-	}
-#elif defined(_WIN32)
-	//Now for Windows NT/2k/xp/2k3 etc.
-	string tempA = getMyDocumentsPath()+"\\My Games";
-	CreateDirectory(tempA.c_str(),nullptr);
-	tempA += "/"+path;
-	CreateDirectory(tempA.c_str(),nullptr);
-#endif
-}
-
-void OsCreateFolders() {
-	//We first create the folder there we will save (only on UNIX systems)
-	//we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
-	OsCreateFolderInSaveGames("screenshots");
-	OsCreateFolderInSaveGames("replays");
-	OsCreateFolderInSaveGames("puzzles");
 }

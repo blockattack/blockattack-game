@@ -110,6 +110,14 @@ static void PhysFsSetSearchPath(const vector<string>& paths, const string& savep
 }
 
 
+static void PhysFsCreateFolders() {
+	//We first create the folder there we will save (only on UNIX systems)
+	//we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
+	PHYSFS_mkdir("screenshots");
+	PHYSFS_mkdir("replays");
+	PHYSFS_mkdir("puzzles");
+}
+
 //Load all image files to memory
 static int InitImages(sago::SagoSpriteHolder& holder) {
 	bricks[0] = holder.GetSprite("blue");
@@ -1703,7 +1711,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 		//Os create folders must be after the paramters because they can change the home folder
-		OsCreateFolders();
+		PhysFsCreateFolders();
 
 		SoundEnabled = true;
 		MusicEnabled = true;
