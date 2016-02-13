@@ -34,8 +34,6 @@ http://blockattack.net
 
 #include <string>
 
-extern std::string stageClearSavePath;
-
 void StageClearSetClear(int level, int score, int time);
 void LoadStageClearStages();
 int GetTotalScore();

@@ -23,13 +23,12 @@ http://blockattack.net
 
 #include "stageclearhandler.hpp"
 #include "SDL.h"
-#include <fstream>
 #include <vector>
 #include <iostream>
+#include "physfs_stream.hpp"
 
 //paths
-std::string stageClearSavePath;
-
+const char* const stageClearSaveName = "stageClear.SCsave";
 
 std::vector<bool> stageCleared(nrOfStageLevels);        //vector that tells if a stage is cleared
 std::vector<Sint32> stageTimes(nrOfStageLevels);             //For statistical puposes
@@ -47,10 +46,10 @@ void StageClearSetClear(int Level, int score, int time) {
 		stageTimes[Level] = gameEndedAfter;
 	}
 
-	ofstream outfile;
-	outfile.open(stageClearSavePath.c_str(), ios::binary |ios::trunc);
+	PhysFS::ofstream outfile;
+	outfile.open(stageClearSaveName, ios::binary |ios::trunc);
 	if (!outfile) {
-		cerr << "Error writing to file: " << stageClearSavePath << endl;
+		cerr << "Error writing to file: " << stageClearSaveName << endl;
 	}
 	else {
 		for (int i=0; i<nrOfStageLevels; i++) {
@@ -72,7 +71,7 @@ void StageClearSetClear(int Level, int score, int time) {
 void LoadStageClearStages() {
 	bool tempBool;
 	Uint32 tempUInt32;
-	ifstream stageFile(stageClearSavePath.c_str(),ios::binary);
+	PhysFS::ifstream stageFile(stageClearSaveName, ios::binary);
 	if (stageFile) {
 		for (int i = 0; i<nrOfStageLevels; i++) {
 			stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));

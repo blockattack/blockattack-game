@@ -1536,7 +1536,6 @@ void changePuzzleLevels() {
 			theFileName[i]=0;
 		}
 		PuzzleSetName(theFileName);
-		PuzzleSetSavePath(getPathToSaveFiles()+"/"+PuzzleGetName()+".save");
 	}
 
 }
@@ -1718,8 +1717,6 @@ int main(int argc, char* argv[]) {
 		theBallManager = BallManager();
 		theExplosionManager = ExplosionManager();
 
-		stageClearSavePath = getStageClearSavePath();
-		PuzzleSetSavePath(getPuzzleSetSavePath());
 		PuzzleSetName("puzzle.levels");
 
 		//Init SDL

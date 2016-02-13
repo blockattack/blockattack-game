@@ -115,18 +115,6 @@ void setPathToSaveFiles(const std::string& path) {
 	overrideSavePath = path;
 }
 
-std::string getStageClearSavePath() {
-	std::string ret;
-#if defined(__unix__)
-	ret = getHome()+"/.gamesaves/blockattack/stageClear.SCsave";
-#elif defined(_WIN32)
-	ret = getMyDocumentsPath()+"/My Games/blockattack/stageClear.SCsave";
-#else
-	ret = "stageClear.SCsave";
-#endif
-	return ret;
-}
-
 std::string getPuzzleSetSavePath() {
 	std::string ret;
 #if defined(__unix__)

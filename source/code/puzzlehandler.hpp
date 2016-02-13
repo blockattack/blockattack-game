@@ -35,7 +35,6 @@ int PuzzleGetNumberOfPuzzles();
 void PuzzleSetClear(int level);
 const std::string& PuzzleGetName();
 void PuzzleSetName(const std::string& name);
-void PuzzleSetSavePath(const std::string& filepath);
 
 #endif	/* PUZZLEHANDLER_HPP */
 

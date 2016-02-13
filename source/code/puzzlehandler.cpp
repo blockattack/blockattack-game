@@ -23,7 +23,6 @@ http://blockattack.net
 
 #include "puzzlehandler.hpp"
 #include <vector>
-#include <fstream>
 #include <iostream>
 #include "stats.h"
 #include <physfs.h>         //Abstract file system. To use containers
@@ -61,10 +60,7 @@ const std::string& PuzzleGetName() {
 
 void PuzzleSetName(const std::string& name) {
 	puzzleName = name;
-}
-
-void PuzzleSetSavePath(const std::string& filepath) {
-	puzzleSavePath = filepath;
+	puzzleSavePath = name + ".save";	
 }
 
 void PuzzleSetClear(int Level) {
@@ -72,7 +68,7 @@ void PuzzleSetClear(int Level) {
 		Stats::getInstance()->addOne("puzzlesSolved");
 	}
 	puzzleCleared[Level] = true;
-	std::ofstream outfile;
+	PhysFS::ofstream outfile;
 	outfile.open(puzzleSavePath.c_str(), ios::binary |ios::trunc);
 	if (!outfile) {
 		std::cerr << "Error writing to file: " << puzzleSavePath << endl;
