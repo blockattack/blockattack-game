@@ -25,6 +25,9 @@ http://blockattack.net
 Added to project 5/11-2004
 */
 
+#ifndef READKEYBOARD_HPP
+#define READKEYBOARD_HPP
+
 #include "SDL.h"
 #include <string>
 
@@ -45,3 +48,5 @@ public:
 	bool ReadKey(SDL_Keycode); //true if key accepted
 	const std::string& GetString(void) const;
 };
+
+#endif //READKEYBOARD_HPP

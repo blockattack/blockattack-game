@@ -943,66 +943,6 @@ static string getKeyName(SDL_Keycode key) {
 }
 
 
-//Dialogbox
-bool OpenDialogbox(int x, int y, std::string& name) {
-	bool done = false;     //We are done!
-	bool accept = false;   //New name is accepted! (not Cancelled)
-	SDL_TextInput textInputScope;
-	ReadKeyboard rk = ReadKeyboard(name.c_str());
-	string strHolder;
-	DrawIMG(backgroundImage,screen,0,0);
-	while (!done && !Config::getInstance()->isShuttingDown()) {
-		DrawIMG(dialogBox,screen,x,y);
-		NFont_Write(screen, x+40,y+76,rk.GetString());
-		strHolder = rk.GetString();
-		strHolder.erase((int)rk.CharsBeforeCursor());
-
-		if (((SDL_GetTicks()/600)%2)==1) {
-			NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
-		}
-
-		SDL_Event event;
-
-		while ( SDL_PollEvent(&event) ) {
-			if ( event.type == SDL_QUIT ) {
-				Config::getInstance()->setShuttingDown(5);
-				done = true;
-				accept = false;
-			}
-
-			if (event.type == SDL_TEXTINPUT) {
-				if ((rk.ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
-					Mix_PlayChannel(1,typingChunk,0);
-				}
-			}
-
-			if ( event.type == SDL_KEYDOWN ) {
-				if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
-					done = true;
-					accept = true;
-				}
-				else if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
-					done = true;
-					accept = false;
-				}
-				else {
-					if ((rk.ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
-						Mix_PlayChannel(1,typingChunk,0);
-					}
-				}
-			}
-
-		}   //while(event)
-
-		SDL_RenderPresent(screen); //Update screen
-	}   //while(!done)
-	name = rk.GetString();
-	bScreenLocked = false;
-	showDialog = false;
-	return accept;
-}
-
-
 void RunGameState(sago::GameStateInterface& state ) {
 	int mousex,mousey;
 	bool done = false;     //We are done!
@@ -1711,12 +1651,13 @@ int main(int argc, char* argv[]) {
 			cout << savepath << endl;
 			return 0;
 		}
+		
+		PhysFsSetSearchPath(search_paths, savepath);
 		//Os create folders must be after the paramters because they can change the home folder
 		PhysFsCreateFolders();
 
 		SoundEnabled = true;
 		MusicEnabled = true;
-		bScreenLocked = false;
 		twoPlayers = false; //true if two players splitscreen
 		theTopScoresEndless = Highscore(1);
 		theTopScoresTimeTrial = Highscore(2);
@@ -1758,7 +1699,7 @@ int main(int argc, char* argv[]) {
 			//Copyright notice:
 			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://www.blockattack.net" << endl << "Copyright 2004-2016 Poul Sander" << endl <<
 			     "A SDL2 based game (see www.libsdl.org)" << endl <<
-			     "The game is available under the GPL, see COPYING for details." << endl;
+			     "The game is availeble under the GPL, see COPYING for details." << endl;
 			cout << "-------------------------------------------" << endl;
 		}
 
@@ -1873,7 +1814,6 @@ int main(int argc, char* argv[]) {
 		//SDL_RenderSetLogicalSize(renderer, xsize, ysize);
 		screen = renderer;
 
-		PhysFsSetSearchPath(search_paths, savepath);
 		sago::SagoDataHolder d(renderer);
 		d.setVerbose(false);
 		sago::SagoSpriteHolder spriteholder(d);
@@ -1962,20 +1902,20 @@ int main(int argc, char* argv[]) {
 
 		Config::getInstance()->save();
 		
-		//Close file system Apstraction layer!
-		PHYSFS_deinit();
+		
 
 	}
 	catch (exception& e) {
 		sago::SagoFatalError(e.what());
 	}
+	//Close file system Apstraction layer!
+	PHYSFS_deinit();
 	return 0;
 }
 
 
 int runGame(int gametype, int level) {
 	int mousex, mousey;   //Mouse coordinates
-	bScreenLocked = false;
 	theTopScoresEndless = Highscore(1);
 	theTopScoresTimeTrial = Highscore(2);
 	drawBalls = true;
@@ -2087,7 +2027,7 @@ int runGame(int gametype, int level) {
 
 		bool mustWriteScreenshot = false;
 
-		if (!bScreenLocked) {
+		if (true) {
 			SDL_Event event;
 
 			while ( SDL_PollEvent(&event) ) {

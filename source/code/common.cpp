@@ -26,6 +26,7 @@ http://blockattack.net
 #include <cstring>
 #include "os.hpp"
 #include "sago/SagoMiscSdl2.hpp"
+#include "sago/SagoMisc.hpp"
 #include <stdarg.h>
 #include "physfs_stream.hpp"
 
@@ -205,17 +206,14 @@ Config* Config::getInstance() {
 }
 
 void Config::save() {
-	PhysFS::ofstream outFile("configFile");
-
-	if (outFile) {
-		map<string,string>::iterator iter;
-		for (iter = configMap.begin(); iter != configMap.end(); iter++) {
-			outFile << iter->first << " " << iter->second << endl;
-		}
-		outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
-		//This is checked on load too in case a user changes it himself.
-		outFile.close();
+	std::stringstream outFile;
+	map<string,string>::iterator iter;
+	for (iter = configMap.begin(); iter != configMap.end(); iter++) {
+		outFile << iter->first << " " << iter->second << endl;
 	}
+	outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
+	//This is checked on load too in case a user changes it himself.
+	sago::WriteFileContent("configFile", outFile.str());
 }
 
 bool Config::exists(const string& varName) const {

@@ -64,9 +64,9 @@ void Highscore::writeFile() {
 		filename = filename2;
 	}
 
-	PhysFS::ofstream outfile(filename.c_str(), ios::binary);
+	PhysFS::ofstream outfile(filename.c_str());
 	if (!outfile) {
-		cout << "Error writing to file: " << filename << endl;
+		cout << "Error writing to file: " << filename << ", Error: " << PHYSFS_getLastError() << endl;
 		exit(1);
 	}
 	for (int i = 0; i<top; i++) {

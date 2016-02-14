@@ -28,15 +28,18 @@ http://blockattack.net
 #include <memory>
 #include "sago/SagoSpriteHolder.hpp"
 #include "highscore.h"
+#include "sago/GameStateInterface.hpp"
 
 void MainMenu();
 void ResetFullscreen();
+void RunGameState(sago::GameStateInterface& state );
 
 extern sago::SagoSprite  menuMarked;
 extern sago::SagoSprite  menuUnmarked;
 extern sago::SagoSprite bHighScore;
 extern sago::SagoSprite bBack;
 extern sago::SagoSprite bNext;
+extern sago::SagoSprite dialogBox;
 extern NFont nf_scoreboard_font;
 extern NFont nf_standard_blue_font;
 extern NFont nf_button_font;
@@ -46,9 +49,11 @@ extern bool bFullscreen;			//true if game is running fullscreen
 extern std::string player1name;
 extern std::string player2name;
 extern SDL_Renderer *screen;        //The whole screen;
+extern Mix_Chunk *typingChunk;
 extern sago::SagoSprite mouse;
 extern sago::SagoSprite backgroundImage;
 extern bool highPriority;
+extern bool NoSound;	
 extern int verboseLevel;
 extern Highscore theTopScoresEndless;      //Stores highscores for endless
 extern Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial

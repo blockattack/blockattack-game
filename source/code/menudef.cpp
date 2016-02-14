@@ -145,13 +145,13 @@ static void buttonActionFullscreen(Button* b) {
 }
 
 static void buttonActionPlayer1Name(Button* b) {
-	if (OpenDialogbox(200,100,player1name)) {
+	if (OpenDialogbox(200, 100, player1name)) {
 		return;    //must save if true
 	}
 }
 
 static void buttonActionPlayer2Name(Button* b) {
-	if (OpenDialogbox(200,100,player2name)) {
+	if (OpenDialogbox(200, 100, player2name)) {
 		return;    //must save if true
 	}
 }

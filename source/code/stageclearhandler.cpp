@@ -47,7 +47,7 @@ void StageClearSetClear(int Level, int score, int time) {
 	}
 
 	PhysFS::ofstream outfile;
-	outfile.open(stageClearSaveName, ios::binary |ios::trunc);
+	outfile.open(stageClearSaveName, ios::binary);
 	if (!outfile) {
 		cerr << "Error writing to file: " << stageClearSaveName << endl;
 	}
@@ -64,6 +64,7 @@ void StageClearSetClear(int Level, int score, int time) {
 			Uint32 tempUInt32 = stageTimes[i];
 			outfile.write(reinterpret_cast<char*>(&tempUInt32), sizeof(Uint32));
 		}
+		outfile.flush();
 		outfile.close();
 	}
 }

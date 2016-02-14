@@ -71,7 +71,7 @@ static sago::SagoSprite counter[3];    //Counts down from 3
 static sago::SagoSprite bricks[7];     //The bricks, saved in an array of pointers
 static sago::SagoSprite crossover;     //Cross the bricks that will be cleared soon
 static sago::SagoSprite balls[7];      //The balls (the small ones that jump around)
-static sago::SagoSprite dialogBox;
+sago::SagoSprite dialogBox;
 static sago::SagoSprite iLevelCheck;		//To the level select screen
 static sago::SagoSprite iLevelCheckBox;
 static sago::SagoSprite iLevelCheckBoxMarked;
@@ -112,7 +112,7 @@ static Mix_Music *highbeatMusic;   //Background music with higher beat
 static Mix_Chunk *boing;           //boing sound when clearing
 static Mix_Chunk *applause;        //Applause, then the player is good
 static Mix_Chunk *photoClick;      //clickSound
-static Mix_Chunk *typingChunk;          //When writing
+Mix_Chunk *typingChunk;          //When writing
 static Mix_Chunk *counterChunk;         //When counting down
 static Mix_Chunk *counterFinalChunk;
 
@@ -124,9 +124,7 @@ static bool bMouseUp2;             //true if the mouse(2) is unpressed
 #if NETWORK
 static bool bNetworkOpen;			//Show the network menu
 #endif
-static bool bScreenLocked;			//Don't take input or allow any mouse interaction! Used for dialogbox and warningbox
-static bool showDialog;
-static bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline
+bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline
 //prevents crash on systems without a soundcard
 bool MusicEnabled;			//true if background music is enabled
 bool SoundEnabled;			//true if sound effects is enabled
