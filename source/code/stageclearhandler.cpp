@@ -25,10 +25,28 @@ http://blockattack.net
 #include "SDL.h"
 #include <vector>
 #include <iostream>
-#include "physfs_stream.hpp"
+#include <sstream>
+#include "cereal/cereal.hpp"
+#include "cereal/types/vector.hpp"
+#include "cereal/archives/json.hpp"
+#include "sago/SagoMisc.hpp"
 
 //paths
-const char* const stageClearSaveName = "stageClear.SCsave";
+const char* const stageClearSaveName = "stageClear.json.SCsave";
+
+struct StageClearElement {
+	bool cleared = false;
+	int time = 0;
+	int score = 0;
+	
+	template<class Archive>
+	void serialize(Archive & archive)
+	{
+		archive( cereal::make_nvp("cleared", cleared), cereal::make_nvp("time", time), cereal::make_nvp("score", score) ); 
+	}
+};
+
+std::vector<StageClearElement> stages(nrOfStageLevels);
 
 std::vector<bool> stageCleared(nrOfStageLevels);        //vector that tells if a stage is cleared
 std::vector<Sint32> stageTimes(nrOfStageLevels);             //For statistical puposes
@@ -37,79 +55,47 @@ Sint32 totalScore = 0;
 Sint32 totalTime = 0;
 
 using namespace std;
-
-void StageClearSetClear(int Level, int score, int time) {
-	stageCleared[Level] = true;
-	int gameEndedAfter = time;
-	if (stageScores[Level]<score) {
-		stageScores[Level] = score;
-		stageTimes[Level] = gameEndedAfter;
+		
+static void SaveStageClearStages() {
+	std::stringstream ss;
+	{
+		cereal::JSONOutputArchive archive(ss);
+		archive(cereal::make_nvp("stages", stages));
 	}
-
-	PhysFS::ofstream outfile;
-	outfile.open(stageClearSaveName, ios::binary);
-	if (!outfile) {
-		cerr << "Error writing to file: " << stageClearSaveName << endl;
-	}
-	else {
-		for (int i=0; i<nrOfStageLevels; i++) {
-			bool tempBool = stageCleared[i];
-			outfile.write(reinterpret_cast<char*>(&tempBool), sizeof(bool));
-		}
-		for (int i=0; i<nrOfStageLevels; i++) {
-			Uint32 tempUInt32 = stageScores[i];
-			outfile.write(reinterpret_cast<char*>(&tempUInt32), sizeof(Uint32));
-		}
-		for (int i=0; i<nrOfStageLevels; i++) {
-			Uint32 tempUInt32 = stageTimes[i];
-			outfile.write(reinterpret_cast<char*>(&tempUInt32), sizeof(Uint32));
-		}
-		outfile.flush();
-		outfile.close();
-	}
+	sago::WriteFileContent(stageClearSaveName, ss.str());
 }
 
+void StageClearSetClear(int Level, int score, int time) {
+	
+	stages.at(Level).cleared = true;
+	int gameEndedAfter = time;
+	if (stages.at(Level).score<score) {
+		stages[Level].score = score;
+		stages[Level].time = gameEndedAfter;
+	}
+	SaveStageClearStages();
+}
+
+
+
 void LoadStageClearStages() {
-	bool tempBool;
-	Uint32 tempUInt32;
-	PhysFS::ifstream stageFile(stageClearSaveName, ios::binary);
-	if (stageFile) {
-		for (int i = 0; i<nrOfStageLevels; i++) {
-			stageFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
-			stageCleared[i]=tempBool;
+	std::string readFileContent = sago::GetFileContent(stageClearSaveName);
+	if (readFileContent.length() > 0) {
+		std::stringstream ss(readFileContent);
+		{
+			cereal::JSONInputArchive archive(ss);
+			archive(cereal::make_nvp("stages", stages));
 		}
-		if (!stageFile.eof()) {
-			for (int i=0; i<nrOfStageLevels; i++) {
-				tempUInt32 = 0;
-				if (!stageFile.eof()) {
-					stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
-				}
-				stageScores[i]=tempUInt32;
-				totalScore+=tempUInt32;
-			}
-			for (int i=0; i<nrOfStageLevels; i++) {
-				tempUInt32 = 0;
-				if (!stageFile.eof()) {
-					stageFile.read(reinterpret_cast<char*>(&tempUInt32),sizeof(Uint32));
-				}
-				stageTimes[i]=tempUInt32;
-				totalTime += tempUInt32;
-			}
-		}
-		else {
-			for (int i=0; i<nrOfStageLevels; i++) {
-				stageScores[i]=0;
-				stageTimes[i]=0;
-			}
-		}
-		stageFile.close();
 	}
 	else {
-		for (int i=0; i<nrOfStageLevels; i++) {
-			stageCleared[i]= false;
-			stageScores[i]=0;
-			stageTimes[i]=0;
-		}
+		stages.clear();
+	}
+	stages.resize(nrOfStageLevels);
+	totalScore = 0;
+	totalTime = 0;
+	for (const StageClearElement& s : stages) {
+		totalScore += s.score;
+		totalTime += s.time;
 	}
 }
 
@@ -125,14 +111,14 @@ int GetNrOfLevels() {
 }
 
 bool IsStageCleared(int level) {
-	return stageCleared.at(level);
+	return stages.at(level).cleared;
 }
 
 
 int GetStageScores(int level) {
-	return stageScores.at(level);
+	return stages.at(level).score;
 }
 
 int GetStageTime(int level) {
-	return stageTimes.at(level);
+	return stages.at(level).time;
 }
