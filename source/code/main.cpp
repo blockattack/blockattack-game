@@ -1692,6 +1692,7 @@ int main(int argc, char* argv[]) {
 			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n"
 			                      "%s\n", VERSION_NUMBER, "www.blockattack.net");
 			cout << desc << endl;
+			cout << "The game is available under the GPL, see COPYING for details." << endl;
 			return 1;
 		}
 		if (vm.count("nosound")) {
@@ -1757,7 +1758,7 @@ int main(int argc, char* argv[]) {
 			//Copyright notice:
 			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://www.blockattack.net" << endl << "Copyright 2004-2016 Poul Sander" << endl <<
 			     "A SDL2 based game (see www.libsdl.org)" << endl <<
-			     "The game is availeble under the GPL, see COPYING for details." << endl;
+			     "The game is available under the GPL, see COPYING for details." << endl;
 			cout << "-------------------------------------------" << endl;
 		}
 
