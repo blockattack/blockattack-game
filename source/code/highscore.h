@@ -25,6 +25,7 @@ http://blockattack.net
 #include <cstring>
 #include <string>
 #include <stdlib.h>
+#include <vector>
 
 #ifndef HIGHSCORE_H
 #define HIGHSCORE_H
@@ -33,17 +34,17 @@ const int top = 10;
 
 struct record
 {
-	char name[30];
-	int score;
+	std::string name;
+	int score = 0;
 };
 
 
 class Highscore
 {
 private:
-	record tabel[top];
+	std::vector<record> table;
 	std::string filename;
-	int ourType;     //This is ugly, remove me, plz!
+	std::string type;
 	void writeFile();
 public:
 
@@ -51,12 +52,11 @@ public:
 	{
 	}
 
-	Highscore(int type);
+	Highscore(const std::string& type);
 
 	bool isHighScore(int);
 	void addScore(const std::string& newName, int);
-	int getScoreNumber(int);
-	const char* getScoreName(int);
+	record getScoreNumber(int);
 };
 
 #endif

@@ -1659,8 +1659,8 @@ int main(int argc, char* argv[]) {
 		SoundEnabled = true;
 		MusicEnabled = true;
 		twoPlayers = false; //true if two players splitscreen
-		theTopScoresEndless = Highscore(1);
-		theTopScoresTimeTrial = Highscore(2);
+		theTopScoresEndless = Highscore("endless");
+		theTopScoresTimeTrial = Highscore("timetrial");
 		drawBalls = true;
 		puzzleLoaded = false;
 
@@ -1916,8 +1916,8 @@ int main(int argc, char* argv[]) {
 
 int runGame(int gametype, int level) {
 	int mousex, mousey;   //Mouse coordinates
-	theTopScoresEndless = Highscore(1);
-	theTopScoresTimeTrial = Highscore(2);
+	theTopScoresEndless = Highscore("endless");
+	theTopScoresTimeTrial = Highscore("timetrial");
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool bNearDeath = false;                        //Play music faster or louder while tru

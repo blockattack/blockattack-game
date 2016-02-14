@@ -1,15 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+===========================================================================
+blockattack - Block Attack - Rise of the Blocks
+Copyright (C) 2005-2016 Poul Sander
 
-/* 
- * File:   DialogBox.cpp
- * Author: poul
- * 
- * Created on 14. februar 2016, 14:56
- */
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/
+
+Source information and contacts persons can be found at
+http://www.blockattack.net
+===========================================================================
+*/
 
 #include "DialogBox.hpp"
 #include "global.hpp"
@@ -19,44 +29,6 @@
 static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& text) {
 	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
-
-#if 0
-bool OpenDialogbox(int x, int y, std::string& name) {
-	bool done = false;     //We are done!
-	bool accept = false;   //New name is accepted! (not Cancelled)
-	SDL_TextInput textInputScope;
-	ReadKeyboard rk = ReadKeyboard(name.c_str());
-	std::string strHolder;
-	backgroundImage.Draw(screen, SDL_GetTicks(), 0, 0);
-	while (!done && !Config::getInstance()->isShuttingDown()) {
-		dialogBox.Draw(screen, SDL_GetTicks(), x, y);
-		NFont_Write(screen, x+40,y+76,rk.GetString());
-		strHolder = rk.GetString();
-		strHolder.erase((int)rk.CharsBeforeCursor());
-
-		if (((SDL_GetTicks()/600)%2)==1) {
-			NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
-		}
-
-		SDL_Event event;
-
-		while ( SDL_PollEvent(&event) ) {
-			if ( event.type == SDL_QUIT ) {
-				Config::getInstance()->setShuttingDown(5);
-				done = true;
-				accept = false;
-			}
-
-			
-
-		}   //while(event)
-
-		SDL_RenderPresent(screen); //Update screen
-	}   //while(!done)
-	name = rk.GetString();
-	return accept;
-}
-#endif
 
 bool OpenDialogbox(int x, int y, std::string& name) {
 	DialogBox d(x, y, name);
@@ -117,6 +89,7 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool &processed) {
 			}
 		}
 	}
+	processed = true;
 }
 
 void DialogBox::SetName(const std::string& name) {

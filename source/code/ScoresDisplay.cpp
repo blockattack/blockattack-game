@@ -1,15 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+===========================================================================
+blockattack - Block Attack - Rise of the Blocks
+Copyright (C) 2005-2016 Poul Sander
 
-/*
- * File:   ScoresDisplay.cpp
- * Author: poul
- *
- * Created on 7. februar 2016, 17:34
- */
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/
+
+Source information and contacts persons can be found at
+http://www.blockattack.net
+===========================================================================
+*/
 
 #include "ScoresDisplay.hpp"
 #include "global.hpp"
@@ -34,20 +44,17 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 		nf_standard_blue_font.draw(screen, x+100,y+100, "%s",_("Time Trial:") );
 	}
 	for (int i =0; i<10; i++) {
+		record r;
+		if (endless) {
+			r = theTopScoresEndless.getScoreNumber(i);
+		}
+		else {
+			r = theTopScoresTimeTrial.getScoreNumber(i);
+		}
 		char playerScore[32];
 		char playerName[32];
-		if (endless) {
-			snprintf(playerScore, sizeof(playerScore), "%i", theTopScoresEndless.getScoreNumber(i));
-		}
-		else {
-			snprintf(playerScore, sizeof(playerScore), "%i", theTopScoresTimeTrial.getScoreNumber(i));
-		}
-		if (endless) {
-			snprintf(playerName, sizeof(playerName), "%s", theTopScoresEndless.getScoreName(i));
-		}
-		else {
-			snprintf(playerName, sizeof(playerName), "%s", theTopScoresTimeTrial.getScoreName(i));
-		}
+		snprintf(playerScore, sizeof(playerScore), "%i", r.score);
+		snprintf(playerName, sizeof(playerName), "%s", r.name.c_str());
 		nf_standard_blue_font.draw(screen, x+420,y+150+i*35, "%s",playerScore);
 		nf_standard_blue_font.draw(screen, x+60,y+150+i*35, "%s",playerName);
 	}

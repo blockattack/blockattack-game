@@ -17,67 +17,72 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
 #include "highscore.h"
 #include "os.hpp"
 #include "physfs_stream.hpp"
+#include "cereal/cereal.hpp"
+#include "cereal/types/vector.hpp"
+#include "cereal/archives/json.hpp"
+#include "sago/SagoMisc.hpp"
+#include <algorithm> 
 
-using namespace std;
+namespace cereal {
+	
+template<class Archive>
+void save(Archive & archive, record const & m) {
+	archive( cereal::make_nvp("Name", m.name), cereal::make_nvp("Score", m.score) );
+}
 
-Highscore::Highscore(int type) {
-	string filename1 = "endless.dat"; 
-	string filename2 = "timetrial.dat"; 
-	ourType = type;
-	if (type == 1) {
-		filename = filename1;
+template<class Archive>
+void load(Archive & archive, record & m) {
+	archive( cereal::make_nvp("Name", m.name), cereal::make_nvp("Score", m.score) );
+}
+
+}
+
+/*
+ This sorts in reverse order. So the highest will be first
+ */
+bool record_sorter (const record& i,const record& j) { return (i.score > j.score); }
+
+Highscore::Highscore(const std::string& type) {
+	this->type = type;
+	filename = type+".json.dat";
+	std::string readFileContent = sago::GetFileContent(filename.c_str());
+	std::stringstream ss(readFileContent);
+	{
+		cereal::JSONInputArchive archive(ss);
+		archive(cereal::make_nvp("highscore", table));
 	}
-	if (type == 2) {
-		filename = filename2;
-	}
-	PhysFS::ifstream scorefile(filename.c_str());
-	if (scorefile) {
+	if (table.size() < top) {
 		for (int i = 0; i<top; i++) {
-			scorefile.read(tabel[i].name,30*sizeof(char));
-			scorefile.read(reinterpret_cast<char*>(&tabel[i].score), sizeof(int));
+			record r;
+			r.name = "Poul Sander";
+			r.score = 2000 - i*100;
+			table.push_back(r);
 		}
 	}
-	else {
-		for (int i = 0; i<top; i++) {
-			strcpy(tabel[i].name,"Poul Sander                  \0");
-			tabel[i].score = 2000 - i*100;
-		}
-	}
-	scorefile.close();
+	std::stable_sort(table.begin(), table.end(), record_sorter);
+	table.resize(top);
 	writeFile();
 }
 
-void Highscore::writeFile() {
-	string filename1 = "endless.dat";
-	string filename2 = "timetrial.dat"; 
-	if (ourType == 1) {
-		filename = filename1;
-	}
-	if (ourType == 2) {
-		filename = filename2;
-	}
 
-	PhysFS::ofstream outfile(filename.c_str());
-	if (!outfile) {
-		cout << "Error writing to file: " << filename << ", Error: " << PHYSFS_getLastError() << endl;
-		exit(1);
+void Highscore::writeFile() {
+    std::stringstream ss;
+	{
+		cereal::JSONOutputArchive archive(ss);
+		archive(cereal::make_nvp("highscore", table));
 	}
-	for (int i = 0; i<top; i++) {
-		outfile.write(tabel[i].name,30*sizeof(char));
-		outfile.write(reinterpret_cast<char*>(&tabel[i].score),sizeof(int));
-	}
-	outfile.close();
+	sago::WriteFileContent(filename.c_str(), ss.str());
 }
 
 bool Highscore::isHighScore(int newScore) {
-	if (newScore>tabel[top-1].score) {
+	if (newScore>table.back().score) {
 		return true;
 	}
 	else {
@@ -85,24 +90,21 @@ bool Highscore::isHighScore(int newScore) {
 	}
 }
 
-void Highscore::addScore(const string& newName, int newScore) {
-	int ranking = top-1;
-	while ( (ranking != 0) && (tabel[ranking-1].score<newScore)) {
-		ranking--;
-	}
-	for (int i=top-1; i>ranking; i--) {
-		tabel[i].score = tabel[i-1].score;
-		strcpy(tabel[i].name,tabel[i-1].name);
-	}
-	tabel[ranking].score = newScore;
-	snprintf(tabel[ranking].name, sizeof(tabel[ranking].name), "%s", newName.c_str());
+void Highscore::addScore(const std::string& newName, int newScore) {
+	record r;
+	r.name = newName;
+	r.score = newScore;
+	table.push_back(r);
+	std::stable_sort(table.begin(), table.end(), record_sorter);
+	table.resize(top);
 	Highscore::writeFile();
 }
 
-int Highscore::getScoreNumber(int room) {
-	return tabel[room].score;
+record Highscore::getScoreNumber(int room) {
+	record ret;
+	if(room < static_cast<int>(table.size()) ) {
+		ret = table.at(room);
+	}
+	return ret;
 }
 
-const char* Highscore::getScoreName(int room) {
-	return &tabel[room].name[0];
-}

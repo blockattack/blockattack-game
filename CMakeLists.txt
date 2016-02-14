@@ -57,6 +57,8 @@ list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
 message("${SOURCES}")
 message("${CMAKE_EXE_LINKER_FLAGS}")
 
+include_directories("source/code/Libs/include")
+
 #building/compiling/linking
 add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
 target_link_libraries( blockattack ${SDL2_LIBRARY})
