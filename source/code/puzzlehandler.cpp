@@ -27,10 +27,15 @@ http://blockattack.net
 #include "stats.h"
 #include <physfs.h>         //Abstract file system. To use containers
 #include "physfs_stream.hpp"
+#include "cereal/cereal.hpp"
+#include "cereal/types/vector.hpp"
+#include "cereal/archives/json.hpp"
+#include "sago/SagoMisc.hpp"
 
 using namespace std;
 
-static const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
+const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
+
 static std::string puzzleSavePath;
 static std::string puzzleName;              //The filename of
 static std::vector<bool> puzzleCleared(maxNrOfPuzzleStages); //vector that tells if puzzle cleared
@@ -60,7 +65,31 @@ const std::string& PuzzleGetName() {
 
 void PuzzleSetName(const std::string& name) {
 	puzzleName = name;
-	puzzleSavePath = name + ".save";	
+	puzzleSavePath = name + ".json.save";
+}
+
+void LoadClearData() {
+	std::string readFileContent = sago::GetFileContent(puzzleSavePath.c_str());
+	if (readFileContent.length() > 0) {
+		std::stringstream ss(readFileContent);
+		{
+			cereal::JSONInputArchive archive(ss);
+			archive(cereal::make_nvp("cleared", puzzleCleared));
+		}
+	}
+	else {
+		puzzleCleared.clear();
+	}
+	puzzleCleared.resize(nrOfPuzzles);
+}
+
+void SaveClearData() {
+	std::stringstream ss;
+	{
+		cereal::JSONOutputArchive archive(ss);
+		archive(cereal::make_nvp("cleared", puzzleCleared));
+	}
+	sago::WriteFileContent(puzzleSavePath.c_str(), ss.str());
 }
 
 void PuzzleSetClear(int Level) {
@@ -68,18 +97,7 @@ void PuzzleSetClear(int Level) {
 		Stats::getInstance()->addOne("puzzlesSolved");
 	}
 	puzzleCleared[Level] = true;
-	PhysFS::ofstream outfile;
-	outfile.open(puzzleSavePath.c_str(), ios::binary |ios::trunc);
-	if (!outfile) {
-		std::cerr << "Error writing to file: " << puzzleSavePath << endl;
-	}
-	else {
-		for (int i=0; i<nrOfPuzzles; i++) {
-			bool tempBool = puzzleCleared[i];
-			outfile.write(reinterpret_cast<char*>(&tempBool), sizeof(bool));
-		}
-		outfile.close();
-	}
+	SaveClearData();
 }
 
 /*Loads all the puzzle levels*/
@@ -101,19 +119,6 @@ int LoadPuzzleStages( ) {
 				inFile >> puzzleLevels[k][j][i];
 			}
 	}
-	bool tempBool;
-	PhysFS::ifstream puzzleFile(puzzleSavePath.c_str());
-	if (puzzleFile) {
-		for (int i=0; (i<nrOfPuzzles)&&(!puzzleFile.eof()); i++) {
-			puzzleFile.read(reinterpret_cast<char*>(&tempBool),sizeof(bool));
-			puzzleCleared[i] = tempBool;
-		}
-	}
-	else {
-		tempBool = false;
-		for (int i=0; i<nrOfPuzzles; i++) {
-			puzzleCleared[i] = tempBool;
-		}
-	}
+	LoadClearData();
 	return 0;
 }
