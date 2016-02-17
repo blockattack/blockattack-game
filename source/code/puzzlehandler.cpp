@@ -73,8 +73,14 @@ void LoadClearData() {
 	if (readFileContent.length() > 0) {
 		std::stringstream ss(readFileContent);
 		{
-			cereal::JSONInputArchive archive(ss);
-			archive(cereal::make_nvp("cleared", puzzleCleared));
+			try {
+				cereal::JSONInputArchive archive(ss);
+				archive(cereal::make_nvp("cleared", puzzleCleared));
+			}
+			catch (cereal::Exception &e) {
+				std::cerr << "Failed to read \"" << puzzleSavePath << "\". File will be regenerated. Reason: " << e.what() << std::endl;
+				puzzleCleared.clear();
+			}
 		}
 	}
 	else {

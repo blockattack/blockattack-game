@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
@@ -30,6 +30,7 @@ http://blockattack.net
 #include "cereal/types/vector.hpp"
 #include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
+#include "Libs/include/cereal/details/helpers.hpp"
 
 //paths
 const char* const stageClearSaveName = "stageClear.json.SCsave";
@@ -83,8 +84,14 @@ void LoadStageClearStages() {
 	if (readFileContent.length() > 0) {
 		std::stringstream ss(readFileContent);
 		{
-			cereal::JSONInputArchive archive(ss);
-			archive(cereal::make_nvp("stages", stages));
+			try {
+				cereal::JSONInputArchive archive(ss);
+				archive(cereal::make_nvp("stages", stages));
+			}
+			catch (cereal::Exception& e) {
+				std::cerr << "Failed to load file \"" << stageClearSaveName << "\". Reason: " << e.what() << std::endl;
+				stages.clear();
+			}
 		}
 	}
 	else {

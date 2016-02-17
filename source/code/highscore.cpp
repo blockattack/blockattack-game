@@ -54,10 +54,17 @@ Highscore::Highscore(const std::string& type) {
 	filename = type+".json.dat";
 	std::string readFileContent = sago::GetFileContent(filename.c_str());
 	if (readFileContent.length() > 0) {
-		std::stringstream ss(readFileContent);
-		{
-			cereal::JSONInputArchive archive(ss);
-			archive(cereal::make_nvp("highscore", table));
+		try {
+			std::stringstream ss(readFileContent);
+			{
+				cereal::JSONInputArchive archive(ss);
+				archive(cereal::make_nvp("highscore", table));
+			}
+		}
+		catch (cereal::Exception &e) {
+			std::cerr << "Failed to read highscore " << filename << " due to formatting errors. Resetting the file. Reason: " <<
+				e.what() << std::endl;
+			table.clear();
 		}
 	}
 	if (table.size() < top) {
@@ -75,7 +82,7 @@ Highscore::Highscore(const std::string& type) {
 
 
 void Highscore::writeFile() {
-    std::stringstream ss;
+	std::stringstream ss;
 	{
 		cereal::JSONOutputArchive archive(ss);
 		archive(cereal::make_nvp("highscore", table));
