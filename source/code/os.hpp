@@ -34,4 +34,4 @@ std::string getMyDocumentsPath();
 
 void setPathToSaveFiles(const std::string& path);
 
-std::string getPuzzleSetSavePath();
+void OsCreateSaveFolder();

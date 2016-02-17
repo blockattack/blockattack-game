@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
@@ -1651,7 +1651,7 @@ int main(int argc, char* argv[]) {
 			cout << savepath << endl;
 			return 0;
 		}
-		
+		OsCreateSaveFolder();
 		PhysFsSetSearchPath(search_paths, savepath);
 		//Os create folders must be after the paramters because they can change the home folder
 		PhysFsCreateFolders();
