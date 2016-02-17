@@ -280,7 +280,7 @@ void ResetFullscreen() {
 	//SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
 #endif
 	if (bFullscreen) {
-		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN /*_DESKTOP*/);
 	}
 	else {
 		SDL_SetWindowFullscreen(sdlWindow, 0);
@@ -1800,7 +1800,7 @@ int main(int argc, char* argv[]) {
 		//Open video
 		int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
 		if ((bFullscreen)&&(!singlePuzzle)) {
-			createWindowParams |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+			createWindowParams |= SDL_WINDOW_FULLSCREEN;
 		}
 
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
@@ -1950,9 +1950,7 @@ int runGame(int gametype, int level) {
 		cout << "Starting game loop" << endl;
 	}
 
-
 	bool mustsetupgame = true;
-
 
 	while (done == 0) {
 		if (mustsetupgame) {
