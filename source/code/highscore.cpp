@@ -53,10 +53,12 @@ Highscore::Highscore(const std::string& type) {
 	this->type = type;
 	filename = type+".json.dat";
 	std::string readFileContent = sago::GetFileContent(filename.c_str());
-	std::stringstream ss(readFileContent);
-	{
-		cereal::JSONInputArchive archive(ss);
-		archive(cereal::make_nvp("highscore", table));
+	if (readFileContent.length() > 0) {
+		std::stringstream ss(readFileContent);
+		{
+			cereal::JSONInputArchive archive(ss);
+			archive(cereal::make_nvp("highscore", table));
+		}
 	}
 	if (table.size() < top) {
 		for (int i = 0; i<top; i++) {
