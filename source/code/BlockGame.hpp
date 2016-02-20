@@ -49,6 +49,13 @@ http://blockattack.net
 #define ACTION_STARTBLOCKS 15
 #define ACTION_NOP 16
 
+enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
+
+extern stageButton stageButtonStatus;
+
+//This is the size of the blocks. They are always 50. The internal logic calculates it that way
+const int bsize = 50;
+
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +64,7 @@ class BlockGame
 private:
 	int prevTowerHeight;
 	bool bGarbageFallLeft;
+	bool singlePuzzle = false;
 
 	int nextGarbageNumber;
 	int pushedPixelAt;
@@ -207,6 +215,8 @@ public:
 	//void SetGameOver();
 	//Prints "draw" and ends the game
 	void setDraw();
+    void setSinglePuzzle(bool singlePuzzle);
+    bool isSinglePuzzle() const;
 private:
 	//Test if LineNr is an empty line, returns false otherwise.
 	bool LineEmpty(int lineNr) const;
@@ -268,7 +278,8 @@ private:
 	void AI_Move();
 //////////////////////////////////////////////////////////////////////////
 ///////////////////////////// AI ends here! //////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+////////
+//////////////////////////////////////////////////////////////////
 
 	void PushLineInternal();
 	//Updates evrything, if not called nothing happends

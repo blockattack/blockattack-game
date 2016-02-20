@@ -227,18 +227,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 } //InitImages()
 
 
-static stringstream converter;
-
-//Function to convert numbers to string (2 diget)
-static string itoa2(int num) {
-	converter.str(std::string());
-	converter.clear();
-	if (num<10) {
-		converter << "0";
-	}
-	converter << num;
-	return converter.str();
-}
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 void DrawIMG(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
@@ -1454,12 +1442,12 @@ int PuzzleLevelSelect(int Type) {
 			string timeString = SPrintStringF(_("Time used: %s"),"-- : --");
 
 			if (GetStageTime(selected)>0) {
-				timeString = SPrintStringF(_("Time used: %s"), string(itoa(GetStageTime(selected)/1000/60)+" : "+itoa2((GetStageTime(selected)/1000)%60)).c_str() );
+				timeString = SPrintStringF(_("Time used: %d : %02d"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
 			}
 
 			NFont_Write(screen, 200,200,scoreString.c_str());
 			NFont_Write(screen, 200,250,timeString.c_str());
-			string totalString = (boost::format(_("Total score: %1% in %2%:%3%"))%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str(); //"Total score: " +itoa(totalScore) + " in " + itoa(totalTime/1000/60) + " : " + itoa2((totalTime/1000)%60);
+			string totalString = (boost::format(_("Total score: %1% in %2%:%3%"))%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str();
 			NFont_Write(screen, 200,600,totalString.c_str());
 		}
 
@@ -1846,6 +1834,7 @@ int main(int argc, char* argv[]) {
 		if (singlePuzzle) {
 			LoadPuzzleStages();
 			theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
+			theGame.setSinglePuzzle(true);
 		}
 		SDL_RenderClear(screen);
 		DrawIMG(backgroundImage, screen, 0, 0);
@@ -1943,6 +1932,7 @@ int runGame(int gametype, int level) {
 	if (singlePuzzle) {
 		LoadPuzzleStages();
 		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
+		theGame.setSinglePuzzle(true);
 	}
 	//game loop
 	int done = 0;

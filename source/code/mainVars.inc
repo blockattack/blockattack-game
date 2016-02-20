@@ -26,6 +26,7 @@ http://blockattack.net
 #define	_MAINVARS_HPP
 
 #include "sago/SagoSprite.hpp"
+#include "BlockGame.hpp"
 
 
 //main variables and constants
@@ -159,7 +160,6 @@ unsigned long int currentTime;      //contains the current time, so we don't cal
 
 static int xsize = 1024;
 static int ysize = 768;
-static const int bsize = 50;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
 std::string player1name;
@@ -205,9 +205,6 @@ control keySettings[3];	//array to hold the controls (default and two custom)
 #define KEYMENU_MAXWITH 4
 #define KEYMENU_MAXDEPTH 7
 
-enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
-
-static stageButton stageButtonStatus = SBdontShow;
 
 static const int buttonXsize = 120;
 static const int buttonYsize = 40;

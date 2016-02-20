@@ -59,5 +59,6 @@ extern int verboseLevel;
 extern Highscore theTopScoresEndless;      //Stores highscores for endless
 extern Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
 
+
 #endif	/* _GLOBAL_HPP */
 

@@ -34,10 +34,25 @@ http://blockattack.net
 #include "BlockGame.hpp"
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
-#include<boost/lexical_cast.hpp>
+#include <boost/lexical_cast.hpp>
 
 using namespace std;
 
+
+static stringstream converter;
+
+//Function to convert numbers to string (2 diget)
+static string itoa2(int num) {
+	converter.str(std::string());
+	converter.clear();
+	if (num<10) {
+		converter << "0";
+	}
+	converter << num;
+	return converter.str();
+}
+
+stageButton stageButtonStatus;
 
 static std::stringstream ss; //Used for internal formatting
 
@@ -1771,7 +1786,7 @@ void BlockGame::Update() {
 			stop++;
 		}
 		if ((puzzleMode)&&(!bGameOver)&&BoardEmpty()) {
-			if (!singlePuzzle) {
+			if (!this->singlePuzzle) {
 				PuzzleSetClear(Level);
 				stageButtonStatus = SBpuzzleMode;
 			}
@@ -1919,6 +1934,11 @@ void BlockGame::PerformAction(unsigned int tick, int action, string param) {
 		break;
 	};
 }
-////////////////////////////////////////////////////////////////////////////////
-///////////////////////// BlockAttack class end ////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+
+void BlockGame::setSinglePuzzle(bool singlePuzzle) {
+	this->singlePuzzle = singlePuzzle;
+}
+
+bool BlockGame::isSinglePuzzle() const {
+	return singlePuzzle;
+}
