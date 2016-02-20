@@ -26,8 +26,8 @@ http://blockattack.net
 #include "common.h"
 #include "global.hpp"
 
-int mousex;
-int mousey;
+static int mousex;
+static int mousey;
 
 using namespace std;
 

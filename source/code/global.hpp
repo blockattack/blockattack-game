@@ -33,6 +33,7 @@ http://blockattack.net
 void MainMenu();
 void ResetFullscreen();
 void RunGameState(sago::GameStateInterface& state );
+bool OpenDialogbox(int x, int y, std::string& name);
 
 extern sago::SagoSprite  menuMarked;
 extern sago::SagoSprite  menuUnmarked;

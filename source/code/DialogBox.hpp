@@ -29,8 +29,7 @@ http://www.blockattack.net
 #include "ReadKeyboard.h"
 #include <memory>
 #include "scopeHelpers.hpp"
-
-bool OpenDialogbox(int x, int y, std::string& name);
+#include "global.hpp"
 
 class DialogBox : public sago::GameStateInterface {
 public:
