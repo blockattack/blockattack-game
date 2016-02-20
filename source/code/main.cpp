@@ -552,7 +552,6 @@ static TextManager theTextManager;
 
 //Here comes the Block Game object
 #include "BlockGame.hpp"
-#include "BlockGame.cpp"
 #include "os.hpp"
 #include "sago/SagoMiscSdl2.hpp"
 #include "ScoresDisplay.hpp"

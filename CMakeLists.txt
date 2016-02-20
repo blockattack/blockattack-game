@@ -51,7 +51,7 @@ find_package(Boost COMPONENTS program_options REQUIRED)
 #Find all sources but one
 file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp" "source/code/Libs/*.c")
 #I am still trying to get BlockGame to compile as a source file
-list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
+#list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
 
 #Some messages to figure out what cmake does
 message("${SOURCES}")
