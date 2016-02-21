@@ -69,6 +69,7 @@ struct BlockGameStartInfo {
 	int level = 0;
 	bool AI = false;
 	bool vsMode = false;
+	int startBlocks = -1;
 };
 
 struct GarbageStruct {
@@ -152,9 +153,8 @@ public:
 	//Constructor
 	BlockGame();
 
-	//Deconstructor, never really used... game used to crash when called, cause of the way sBoard was created
 	//It should work now and can be used if we want to assign more players in network games that we need to free later
-	~BlockGame();
+	virtual ~BlockGame();
 
 	void setGameSpeed(int globalSpeedLevel);
 	void setHandicap(int globalHandicap);
@@ -190,7 +190,6 @@ public:
 	void MoveCursorTo(int x, int y);
 	bool GetIsWinner() const;
 	void NewGame(const BlockGameStartInfo &s);
-	void putStartBlocks(int n);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
 	//Creates garbage using a given wide and height
@@ -234,6 +233,7 @@ private:
 	//Anything that the user can't move? In that case Game Over cannot occur
 	bool hasStaticContent() const;
 	void putStartBlocks();
+	void putStartBlocks(int n);
 	//decreases hang for all hanging blocks and wait for waiting blocks
 	void ReduceStuff();
 	//Clears garbage, must take one the lower left corner!

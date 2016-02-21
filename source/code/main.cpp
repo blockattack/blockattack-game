@@ -1480,8 +1480,8 @@ static void StartSinglePlayerEndless() {
 	//1 player - endless
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
+	startInfo.startBlocks = startInfo.ticks;
 	player1->NewGame(startInfo);
-	player1->putStartBlocks(time(0));
 	twoPlayers =false;
 	player2->SetGameOver();
 	player1->name = player1name;
@@ -1554,6 +1554,7 @@ static void StartTwoPlayerVs() {
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.vsMode = true;
+	startInfo.startBlocks = startInfo.ticks;
 	BlockGameStartInfo startInfo2 = startInfo;
 	if (player1AI) {
 		startInfo.AI = true;
@@ -1573,9 +1574,6 @@ static void StartTwoPlayerVs() {
 	player2->setGameSpeed(player2Speed);
 	player1->setHandicap(player1handicap);
 	player2->setHandicap(player2handicap);
-	int theTime = time(0);
-	player1->putStartBlocks(theTime);
-	player2->putStartBlocks(theTime);
 	player1->name = player1name;
 	player2->name = player2name;
 }

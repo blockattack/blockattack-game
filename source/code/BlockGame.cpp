@@ -314,6 +314,9 @@ void BlockGame::NewGame(const BlockGameStartInfo &s) {
 		}
 		putStartBlocks();
 	}
+	if (s.startBlocks >= 0) {
+		putStartBlocks(s.startBlocks);
+	}
 }
 
 //Instead of creating new object new game is called, to prevent memory leaks
