@@ -347,23 +347,6 @@ void BlockGame::NewPuzzleGame(int level, unsigned int ticks) {
 	}
 }
 
-//Play the next level
-void BlockGame::nextLevel(unsigned int ticks) {
-	if (puzzleMode) {
-		if (Level<PuzzleGetNumberOfPuzzles()-1) {
-			NewPuzzleGame(Level+1, ticks);
-		}
-	}
-	else if (stageClear) {
-		if (Level<50-1) {
-			BlockGameStartInfo s;
-			s.ticks = ticks;
-			s.stageClear = true;
-			s.level = Level+1;
-			NewGame(s);
-		}
-	}
-}
 
 //Starts new Vs Game (two Player)
 void BlockGame::NewVsGame(BlockGame* target, unsigned int ticks) {
@@ -1941,6 +1924,23 @@ int BlockGame::getLevel() const {
 	return Level;
 }
 
+//Play the next level
+void nextLevel(BlockGame& g, unsigned int ticks) {
+	if (g.isPuzzleMode()) {
+		if (g.getLevel()<PuzzleGetNumberOfPuzzles()-1) {
+			g.NewPuzzleGame(g.getLevel()+1, ticks);
+		}
+	}
+	else if (g.isStageClear()) {
+		if (g.getLevel() < 50-1) {
+			BlockGameStartInfo s;
+			s.ticks = ticks;
+			s.stageClear = true;
+			s.level = g.getLevel()+1;
+			g.NewGame(s);
+		}
+	}
+}
 
 void retryLevel(BlockGame& g, unsigned int ticks) {
 	BlockGameStartInfo s;

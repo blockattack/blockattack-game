@@ -2297,7 +2297,8 @@ int runGame(int gametype, int level) {
 					        &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
 					        &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
-						theGame.nextLevel(SDL_GetTicks());
+						nextLevel(theGame, SDL_GetTicks());
+						
 					}
 					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
 					        &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)

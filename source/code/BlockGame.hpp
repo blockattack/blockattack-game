@@ -184,8 +184,6 @@ public:
 	bool GetIsWinner() const;
 	void NewGame(const BlockGameStartInfo &s);
 	void NewPuzzleGame(int level, unsigned int ticks);
-	//Play the next level
-	void nextLevel(unsigned int ticks);
 	//Starts new Vs Game (two Player)
 	void NewVsGame(BlockGame *target,unsigned int ticks);
 	//Starts new Vs Game (two Player)
@@ -294,6 +292,8 @@ private:
 	void UpdateInternal(unsigned int newtick);
 };
 
+//Play the next level
+void nextLevel(BlockGame& g, unsigned int ticks);
 //Replay the current level
 void retryLevel(BlockGame& g, unsigned int ticks);
 
