@@ -790,7 +790,7 @@ public:
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
 			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
 			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
-			if (Level<PuzzleGetNumberOfPuzzles()-1) {
+			if (getLevel()<PuzzleGetNumberOfPuzzles()-1) {
 				if (hasWonTheGame) {
 					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
 					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
@@ -808,7 +808,7 @@ public:
 		if (stageClear && stageButtonStatus == SBstageClear) {
 			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
 			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
-			if (Level<50-1) {
+			if (getLevel()<50-1) {
 				if (hasWonTheGame) {
 					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
 					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
@@ -2291,7 +2291,7 @@ int runGame(int gametype, int level) {
 					        &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
 					        &&(mousey > theGame.GetTopY()+cordRetryButton.y)&&(mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {
 						//Clicked the retry button
-						theGame.retryLevel(SDL_GetTicks());
+						retryLevel(theGame, SDL_GetTicks());
 					}
 
 

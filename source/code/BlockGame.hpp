@@ -80,6 +80,7 @@ private:
 	bool chainUsed[NUMBEROFCHAINS];   //True if the chain is used
 
 	unsigned int nextRandomNumber;
+	int Level; //Only used in stageClear and puzzle (not implemented)
 
 	int rand2();
 	int firstUnusedChain();
@@ -101,7 +102,6 @@ protected:
 	int pixels;
 	int MovesLeft;
 	bool timetrial, stageClear, vsMode, puzzleMode;
-	int Level; //Only used in stageClear and puzzle (not implemented)
 	int stageClearLimit; //stores number of lines user must clear to win
 	int combo;
 	int chain;
@@ -177,8 +177,6 @@ public:
 	//Starts a new stage game, takes level as input!
 	void NewStageGame(int level, unsigned int ticks);
 	void NewPuzzleGame(int level, unsigned int ticks);
-	//Replay the current level
-	void retryLevel(unsigned int ticks);
 	//Play the next level
 	void nextLevel(unsigned int ticks);
 	//Starts new Vs Game (two Player)
@@ -217,6 +215,7 @@ public:
 	void setDraw();
     void setSinglePuzzle(bool singlePuzzle);
     bool isSinglePuzzle() const;
+    int getLevel() const;
 private:
 	//Test if LineNr is an empty line, returns false otherwise.
 	bool LineEmpty(int lineNr) const;
@@ -286,8 +285,8 @@ private:
 	void Update();
 	void UpdateInternal(unsigned int newtick);
 };
-////////////////////////////////////////////////////////////////////////////////
-///////////////////////// BlockAttack class end ////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+
+//Replay the current level
+void retryLevel(BlockGame& g, unsigned int ticks);
 
 #endif

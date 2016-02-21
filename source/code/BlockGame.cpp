@@ -347,16 +347,6 @@ void BlockGame::NewPuzzleGame(int level, unsigned int ticks) {
 	}
 }
 
-//Replay the current level
-void BlockGame::retryLevel(unsigned int ticks) {
-	if (puzzleMode) {
-		NewPuzzleGame(Level, ticks);
-	}
-	else if (stageClear) {
-		NewStageGame(Level, ticks);
-	}
-}
-
 //Play the next level
 void BlockGame::nextLevel(unsigned int ticks) {
 	if (puzzleMode) {
@@ -1941,4 +1931,18 @@ void BlockGame::setSinglePuzzle(bool singlePuzzle) {
 
 bool BlockGame::isSinglePuzzle() const {
 	return singlePuzzle;
+}
+
+int BlockGame::getLevel() const {
+	return Level;
+}
+
+
+void retryLevel(BlockGame& g, unsigned int ticks) {
+	if (g.isPuzzleMode()) {
+		g.NewPuzzleGame(g.getLevel(), ticks);
+	}
+	else if (g.isStageClear()) {
+		g.NewStageGame(g.getLevel(), ticks);
+	}
 }
