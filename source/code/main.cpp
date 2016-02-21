@@ -1503,11 +1503,14 @@ static void StartSinglePlayerTimeTrial() {
 }
 
 static int StartSinglePlayerPuzzle(int level) {
-	int myLevel = PuzzleLevelSelect(0);
-	if (myLevel == -1) {
+	BlockGameStartInfo startInfo;
+	startInfo.ticks = SDL_GetTicks();
+	startInfo.puzzleMode = true;
+	startInfo.level = PuzzleLevelSelect(0);
+	if (startInfo.level == -1) {
 		return 1;
 	}
-	player1->NewPuzzleGame(myLevel,SDL_GetTicks());
+	player1->NewGame(startInfo);
 	DrawIMG(backgroundImage, screen, 0, 0);
 	twoPlayers = false;
 	player2->SetGameOver();
@@ -1826,7 +1829,10 @@ int main(int argc, char* argv[]) {
 
 		if (singlePuzzle) {
 			LoadPuzzleStages();
-			theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
+			BlockGameStartInfo s;
+			s.puzzleMode = true;
+			s.level = singlePuzzleNr;
+			theGame.NewGame(s);
 			theGame.setSinglePuzzle(true);
 		}
 		SDL_RenderClear(screen);
@@ -1924,7 +1930,10 @@ int runGame(int gametype, int level) {
 
 	if (singlePuzzle) {
 		LoadPuzzleStages();
-		theGame.NewPuzzleGame(singlePuzzleNr, SDL_GetTicks());
+		BlockGameStartInfo s;
+		s.puzzleMode = true;
+		s.level = singlePuzzleNr;
+		theGame.NewGame(s);
 		theGame.setSinglePuzzle(true);
 	}
 	//game loop

@@ -62,8 +62,10 @@ const int bsize = 50;
 struct BlockGameStartInfo {
 	unsigned int ticks = 0;
 	bool timeTrial = false;
-	///True means a stage clear game will be started. Level must be set too.
+	///True means a stage clear game will be started. level must be set too.
 	bool stageClear = false;
+	///True if puzzle mode. level must be set too.
+	bool puzzleMode = false;
 	int level = 0;
 };
 
@@ -183,7 +185,6 @@ public:
 	void MoveCursorTo(int x, int y);
 	bool GetIsWinner() const;
 	void NewGame(const BlockGameStartInfo &s);
-	void NewPuzzleGame(int level, unsigned int ticks);
 	//Starts new Vs Game (two Player)
 	void NewVsGame(BlockGame *target,unsigned int ticks);
 	//Starts new Vs Game (two Player)

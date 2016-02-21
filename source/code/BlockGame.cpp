@@ -268,6 +268,40 @@ void BlockGame::NewGame(const BlockGameStartInfo &s) {
 			speed = baseSpeed;
 		}
 	}
+	if (s.puzzleMode) {
+		if (s.level>-1) {
+			puzzleMode = true;
+			Level = s.level;
+			MovesLeft = PuzzleNumberOfMovesAllowed(Level);
+			for (int i=0; i<6; i++)
+				for (int j=0; j<12; j++) {
+					board[i][j+1] = PuzzleGetBrick(Level,i,j);
+				}
+			baseSpeed = 100000;
+			speed = 100000;
+
+			//Now push the blines up
+			for (int i=19; i>0; i--)
+				for (int j=0; j<6; j++) {
+					board[j][i] = board[j][i-1];
+				}
+			for (int j=0; j<6; j++) {
+				board[j][0] = rand() % 6;
+				if (j > 0) {
+					if (board[j][0] == board[j-1][0]) {
+						board[j][0] = rand() % 6;
+					}
+				}
+				if (board[j][0] == board[j][1]) {
+					board[j][0] = 6;
+				}
+				if (board[j][0] == board[j][1]) {
+					board[j][0] = 6;
+				}
+
+			}
+		}
+	}
 }
 
 //Instead of creating new object new game is called, to prevent memory leaks
@@ -310,43 +344,6 @@ void BlockGame::NewGame( unsigned int ticks) {
 	}
 	lastAImove = ticks+3000;
 }   //NewGame
-
-void BlockGame::NewPuzzleGame(int level, unsigned int ticks) {
-	if (level>-1) {
-		NewGame(ticks);
-		puzzleMode = true;
-		Level = level;
-		MovesLeft = PuzzleNumberOfMovesAllowed(Level);
-		for (int i=0; i<6; i++)
-			for (int j=0; j<12; j++) {
-				board[i][j+1] = PuzzleGetBrick(Level,i,j);
-			}
-		baseSpeed = 100000;
-		speed = 100000;
-
-		//Now push the blines up
-		for (int i=19; i>0; i--)
-			for (int j=0; j<6; j++) {
-				board[j][i] = board[j][i-1];
-			}
-		for (int j=0; j<6; j++) {
-			board[j][0] = rand() % 6;
-			if (j > 0) {
-				if (board[j][0] == board[j-1][0]) {
-					board[j][0] = rand() % 6;
-				}
-			}
-			if (board[j][0] == board[j][1]) {
-				board[j][0] = 6;
-			}
-			if (board[j][0] == board[j][1]) {
-				board[j][0] = 6;
-			}
-
-		}
-	}
-}
-
 
 //Starts new Vs Game (two Player)
 void BlockGame::NewVsGame(BlockGame* target, unsigned int ticks) {
@@ -1926,17 +1923,18 @@ int BlockGame::getLevel() const {
 
 //Play the next level
 void nextLevel(BlockGame& g, unsigned int ticks) {
+	BlockGameStartInfo s;
+	s.ticks = ticks;
+	s.level = g.getLevel()+1;
 	if (g.isPuzzleMode()) {
 		if (g.getLevel()<PuzzleGetNumberOfPuzzles()-1) {
-			g.NewPuzzleGame(g.getLevel()+1, ticks);
+			s.puzzleMode = true;
+			g.NewGame(s);
 		}
 	}
 	else if (g.isStageClear()) {
 		if (g.getLevel() < 50-1) {
-			BlockGameStartInfo s;
-			s.ticks = ticks;
 			s.stageClear = true;
-			s.level = g.getLevel()+1;
 			g.NewGame(s);
 		}
 	}
@@ -1945,12 +1943,13 @@ void nextLevel(BlockGame& g, unsigned int ticks) {
 void retryLevel(BlockGame& g, unsigned int ticks) {
 	BlockGameStartInfo s;
 	s.ticks = ticks;
+	s.level = g.getLevel();
 	if (g.isPuzzleMode()) {
-		g.NewPuzzleGame(g.getLevel(), ticks);
+		s.puzzleMode = true;
+		g.NewGame(s);
 	}
 	else if (g.isStageClear()) {
 		s.stageClear = true;
-		s.level = g.getLevel();
 		g.NewGame(s);
 	}
 }
