@@ -36,15 +36,15 @@ http://blockattack.net
 struct ButtonGfx
 {
 	//Holds the graphic for a button that is selected
-	sago::SagoSprite marked;
+	sago::SagoSprite* marked;
 	//Holds the graphic for a button that is not selected
-	sago::SagoSprite unmarked;
+	sago::SagoSprite* unmarked;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize;
 	int ysize;
 	//A TTFont used for writing the label on the buttons
 	NFont* thefont;
-	void setSurfaces(sago::SagoSprite& marked, sago::SagoSprite& unmarked);
+	void setSurfaces(sago::SagoSprite* marked, sago::SagoSprite* unmarked);
 };
 
 extern ButtonGfx standardButton;

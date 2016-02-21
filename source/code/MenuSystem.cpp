@@ -34,11 +34,11 @@ using namespace std;
 
 ButtonGfx standardButton;
 
-void ButtonGfx::setSurfaces(sago::SagoSprite& marked, sago::SagoSprite& unmarked) {
+void ButtonGfx::setSurfaces(sago::SagoSprite* marked, sago::SagoSprite* unmarked) {
 	this->marked = marked;
 	this->unmarked = unmarked;
-	xsize=(marked).GetWidth();
-	ysize=(marked).GetHeight();
+	xsize=(marked)->GetWidth();
+	ysize=(marked)->GetHeight();
 	if (verboseLevel) {
 		cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
 	}
@@ -91,10 +91,10 @@ void Button::drawToScreen() {
 	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
 #endif
 	if (marked) {
-		gfx->marked.Draw(screen, SDL_GetTicks(), x, y);
+		gfx->marked->Draw(screen, SDL_GetTicks(), x, y);
 	}
 	else {
-		gfx->unmarked.Draw(screen, SDL_GetTicks(), x, y);
+		gfx->unmarked->Draw(screen, SDL_GetTicks(), x, y);
 	}
 	gfx->thefont->draw(screen, x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont->getHeight("%s", label.c_str())/2, NFont::CENTER, "%s", label.c_str());
 }

@@ -94,7 +94,7 @@ void Button_changekey::doAction() {
 }
 
 void InitMenues() {
-	standardButton.setSurfaces(menuMarked,menuUnmarked);
+	standardButton.setSurfaces(&menuMarked,&menuUnmarked);
 	standardButton.thefont = &nf_scoreboard_font;
 }
 

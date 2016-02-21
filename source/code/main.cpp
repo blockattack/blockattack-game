@@ -253,26 +253,20 @@ static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
 
 SDL_Window* sdlWindow;
 
+std::unique_ptr<sago::SagoDataHolder> dataHolder;
+std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
+
 void ResetFullscreen() {
-#if defined(_WIN32)
-	/*  if (bFullscreen) {
-	        screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_FULLSCREEN|SDL_ANYFORMAT);
-	    }
-	    else {
-	        screen=SDL_SetVideoMode(xsize,ysize,32,SDL_SWSURFACE|SDL_ANYFORMAT);
-	    }
-	    DrawIMG(background, screen, 0, 0);
-	*/
-#else
-	//TODO: Find SDL2 alternative
-	//SDL_WM_ToggleFullScreen(screen); //Will only work in Linux
-#endif
+	Mix_HaltMusic();  //We need to reload all data in case the screen type changes. Music must be stopped before unload.
 	if (bFullscreen) {
-		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN /*_DESKTOP*/);
+		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else {
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
+	dataHolder.reset(new sago::SagoDataHolder(screen));
+	spriteHolder.reset(new sago::SagoSpriteHolder( *(dataHolder.get()) ) );
+	InitImages(*(spriteHolder.get()) );
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -1786,10 +1780,6 @@ int main(int argc, char* argv[]) {
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 		//Open video
 		int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
-		if ((bFullscreen)&&(!singlePuzzle)) {
-			createWindowParams |= SDL_WINDOW_FULLSCREEN;
-		}
-
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
@@ -1798,13 +1788,9 @@ int main(int argc, char* argv[]) {
 		dieOnNullptr(sdlWindow, "Unable to create window");
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 		dieOnNullptr(renderer, "Unable to create render");
-		//SDL_RenderSetLogicalSize(renderer, xsize, ysize);
+		SDL_RenderSetLogicalSize(renderer, xsize, ysize);
 		screen = renderer;
-
-		sago::SagoDataHolder d(renderer);
-		d.setVerbose(false);
-		sago::SagoSpriteHolder spriteholder(d);
-		InitImages(spriteholder);
+		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
 
 		if (verboseLevel) {
