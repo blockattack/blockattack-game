@@ -1949,7 +1949,11 @@ int runGame(int gametype, int level) {
 				if (myLevel == -1) {
 					return 1;
 				}
-				theGame.NewStageGame(myLevel,SDL_GetTicks());
+				BlockGameStartInfo s;
+				s.ticks = SDL_GetTicks();
+				s.stageClear = true;
+				s.level = myLevel;
+				theGame.NewGame(s);
 				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers =false;
 				theGame2.SetGameOver();

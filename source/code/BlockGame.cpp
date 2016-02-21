@@ -258,6 +258,16 @@ void BlockGame::NewGame(const BlockGameStartInfo &s) {
 		timetrial = true;
 		putStartBlocks();
 	}
+	if (s.stageClear) {
+		if (s.level > -1) {
+			stageClear = true;
+			Level = s.level;
+			Stats::getInstance()->addOne("PlayedStageLevel"+itoa2(s.level));
+			stageClearLimit = 30+(Level%6)*10;
+			baseSpeed = 0.5/((double)(Level*0.5)+1.0);
+			speed = baseSpeed;
+		}
+	}
 }
 
 //Instead of creating new object new game is called, to prevent memory leaks
@@ -300,19 +310,6 @@ void BlockGame::NewGame( unsigned int ticks) {
 	}
 	lastAImove = ticks+3000;
 }   //NewGame
-
-//Starts a new stage game, takes level as input!
-void BlockGame::NewStageGame(int level, unsigned int ticks) {
-	if (level > -1) {
-		NewGame(ticks);
-		stageClear = true;
-		Level = level;
-		Stats::getInstance()->addOne("PlayedStageLevel"+itoa2(level));
-		stageClearLimit = 30+(Level%6)*10;
-		baseSpeed = 0.5/((double)(Level*0.5)+1.0);
-		speed = baseSpeed;
-	}
-}
 
 void BlockGame::NewPuzzleGame(int level, unsigned int ticks) {
 	if (level>-1) {
@@ -359,7 +356,11 @@ void BlockGame::nextLevel(unsigned int ticks) {
 	}
 	else if (stageClear) {
 		if (Level<50-1) {
-			NewStageGame(Level+1, ticks);
+			BlockGameStartInfo s;
+			s.ticks = ticks;
+			s.stageClear = true;
+			s.level = Level+1;
+			NewGame(s);
 		}
 	}
 }
@@ -1942,10 +1943,14 @@ int BlockGame::getLevel() const {
 
 
 void retryLevel(BlockGame& g, unsigned int ticks) {
+	BlockGameStartInfo s;
+	s.ticks = ticks;
 	if (g.isPuzzleMode()) {
 		g.NewPuzzleGame(g.getLevel(), ticks);
 	}
 	else if (g.isStageClear()) {
-		g.NewStageGame(g.getLevel(), ticks);
+		s.stageClear = true;
+		s.level = g.getLevel();
+		g.NewGame(s);
 	}
 }
