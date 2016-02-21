@@ -1071,7 +1071,7 @@ void BlockGame::SetGameOver() {
 	}
 }
 
-bool BlockGame::GetAIenabled() {
+bool BlockGame::GetAIenabled() const {
 	return AI_Enabled;
 }
 
@@ -1835,7 +1835,7 @@ void BlockGame::Update() {
 	}
 }
 
-bool BlockGame::IsNearDeath() {
+bool BlockGame::IsNearDeath() const {
 	if ((TowerHeight>12)&&(!puzzleMode)&&(!bGameOver)) {
 		return true;
 	}
