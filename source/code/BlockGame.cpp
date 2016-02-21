@@ -310,6 +310,7 @@ void BlockGame::NewGame(const BlockGameStartInfo &s) {
 		}
 		else {
 			name = "CPU";
+			setAIlevel(s.level);
 		}
 		putStartBlocks();
 	}

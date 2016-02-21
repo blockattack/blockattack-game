@@ -1525,26 +1525,26 @@ static void StarTwoPlayerTimeTrial() {
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.timeTrial = true;
+	BlockGameStartInfo startInfo2 = startInfo;
+	registerTTHighscorePlayer1 = true;
+	registerTTHighscorePlayer2 = true;
+	if (player1AI) {
+		startInfo.AI = true;
+		startInfo.level = player1AIlevel;
+		registerTTHighscorePlayer1 = false;
+	}
+	if (player2AI) {
+		startInfo2.AI = true;
+		startInfo2.level = player2AIlevel;
+		registerTTHighscorePlayer2 = false;
+	}
 	player1->NewGame(startInfo);
-	player2->NewGame(startInfo);
-	int theTime = time(0);
-	player1->putStartBlocks(theTime);
-	player2->putStartBlocks(theTime);
+	player2->NewGame(startInfo2);
 	twoPlayers = true;
 	player1->setGameSpeed(player1Speed);
 	player2->setGameSpeed(player2Speed);
 	player1->setHandicap(player1handicap);
 	player2->setHandicap(player2handicap);
-	registerTTHighscorePlayer1 = true;
-	registerTTHighscorePlayer2 = true;
-	if (player1AI) {
-		player1->setAIlevel(player1AIlevel);
-		registerTTHighscorePlayer1 = false;
-	}
-	if (player2AI) {
-		player2->setAIlevel(player2AIlevel);
-		registerTTHighscorePlayer2 = false;
-	}
 	player1->name = player1name;
 	player2->name = player2name;
 }
@@ -1554,9 +1554,18 @@ static void StartTwoPlayerVs() {
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.vsMode = true;
+	BlockGameStartInfo startInfo2 = startInfo;
+	if (player1AI) {
+		startInfo.AI = true;
+		startInfo.level = player1AIlevel;
+	}
+	if (player2AI) {
+		startInfo2.AI = true;
+		startInfo2.level = player2AIlevel;
+	}
 	player1->NewGame(startInfo);
 	player1->setGarbageTarget(player2);
-	player2->NewGame(startInfo);
+	player2->NewGame(startInfo2);
 	player2->setGarbageTarget(player1);
 	//vsMode = true;
 	twoPlayers = true;
@@ -1564,12 +1573,6 @@ static void StartTwoPlayerVs() {
 	player2->setGameSpeed(player2Speed);
 	player1->setHandicap(player1handicap);
 	player2->setHandicap(player2handicap);
-	if (player1AI) {
-		player1->setAIlevel(player1AIlevel);
-	}
-	if (player2AI) {
-		player2->setAIlevel(player2AIlevel);
-	}
 	int theTime = time(0);
 	player1->putStartBlocks(theTime);
 	player2->putStartBlocks(theTime);
@@ -1577,7 +1580,6 @@ static void StartTwoPlayerVs() {
 	player2->name = player2name;
 }
 
-//The main function, quite big... too big
 //Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it
 int main(int argc, char* argv[]) {
 	try {
@@ -1988,14 +1990,12 @@ int runGame(int gametype, int level) {
 				startInfo.vsMode = true;
 				theGame.NewGame(startInfo);
 				theGame.setGarbageTarget(&theGame2);
+				startInfo.AI = true;
+				startInfo.level = theAIlevel;
 				theGame2.NewGame(startInfo);
 				theGame2.setGarbageTarget(&theGame);
 				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
-				theGame2.setAIlevel((Uint8)theAIlevel);
-				int theTime = time(0);
-				theGame.putStartBlocks(theTime);
-				theGame2.putStartBlocks(theTime);
 				theGame.name = player1name;
 				theGame2.name = player2name;
 			}

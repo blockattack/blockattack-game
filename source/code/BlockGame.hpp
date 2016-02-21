@@ -158,9 +158,6 @@ public:
 
 	void setGameSpeed(int globalSpeedLevel);
 	void setHandicap(int globalHandicap);
-	//Set the move speed of the AI based on the aiLevel parameter
-	//Also enables AI
-	void setAIlevel(int aiLevel);
 	int getAIlevel()  const;
 	
 	virtual void AddText(int x, int y, const std::string& text, int time) const  {}
@@ -292,7 +289,9 @@ private:
 ///////////////////////////// AI ends here! //////////////////////////////
 ////////
 //////////////////////////////////////////////////////////////////
-
+	//Set the move speed of the AI based on the aiLevel parameter
+	//Also enables AI
+	void setAIlevel(int aiLevel);
 	void PushLineInternal();
 	//Updates evrything, if not called nothing happends
 	void Update();
