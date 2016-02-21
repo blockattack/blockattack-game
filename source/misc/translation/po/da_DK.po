@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-06 19:23+0100\n"
-"PO-Revision-Date: 2016-02-06 19:23+0100\n"
+"POT-Creation-Date: 2016-02-21 13:21+0100\n"
+"PO-Revision-Date: 2016-02-21 13:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -18,195 +18,141 @@ msgstr ""
 "X-Generator: Poedit 1.8.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../../code/main.cpp:782
+#: ../../code/main.cpp:774
 msgid "Score:"
 msgstr "Score:"
 
-#: ../../code/main.cpp:783
+#: ../../code/main.cpp:775
 msgid "Time:"
 msgstr "Tid:"
 
-#: ../../code/main.cpp:784
+#: ../../code/main.cpp:776
 msgid "Chain:"
 msgstr "Kæde:"
 
-#: ../../code/main.cpp:785
+#: ../../code/main.cpp:777
 msgid "Speed:"
 msgstr "Hastighed:"
 
-#: ../../code/main.cpp:794
+#: ../../code/main.cpp:786
 msgid "Moves left: "
 msgstr "Træk tilbage: "
 
-#: ../../code/main.cpp:800 ../../code/main.cpp:818
+#: ../../code/main.cpp:792 ../../code/main.cpp:810
 msgid "Retry"
 msgstr "Forsøg igen"
 
-#: ../../code/main.cpp:804 ../../code/main.cpp:822 ../../code/main.cpp:1116
+#: ../../code/main.cpp:796 ../../code/main.cpp:814
+#: ../../code/ScoresDisplay.cpp:154
 msgid "Next"
 msgstr "Næste"
 
-#: ../../code/main.cpp:808 ../../code/main.cpp:826
+#: ../../code/main.cpp:800 ../../code/main.cpp:818
 msgid "Skip"
 msgstr "Spring over"
 
-#: ../../code/main.cpp:998
-msgid "Endless:"
-msgstr "Endless:"
-
 #: ../../code/main.cpp:1001
-msgid "Time Trial:"
-msgstr "Time Trial:"
-
-#: ../../code/main.cpp:1027
-msgid "Stats"
-msgstr "Statistik"
-
-#: ../../code/main.cpp:1029
-msgid "Chains"
-msgstr "Kæder"
-
-#: ../../code/main.cpp:1037
-msgid "Lines Pushed: "
-msgstr "Linjer skubbet:"
-
-#: ../../code/main.cpp:1042
-msgid "Puzzles solved: "
-msgstr "Gåder løst:"
-
-#: ../../code/main.cpp:1047
-msgid "Run time: "
-msgstr "Kørsels tid:"
-
-#: ../../code/main.cpp:1050 ../../code/main.cpp:1063
-#, c-format
-msgid "Days: %i"
-msgstr "Dage: %i"
-
-#: ../../code/main.cpp:1052 ../../code/main.cpp:1065
-#, c-format
-msgid "Hours: %i"
-msgstr "Timer: %i"
-
-#: ../../code/main.cpp:1054 ../../code/main.cpp:1067
-#, c-format
-msgid "Minutes: %i"
-msgstr "Minutter: %i"
-
-#: ../../code/main.cpp:1056 ../../code/main.cpp:1069
-#, c-format
-msgid "Seconds: %i"
-msgstr "Sekunder: %i"
-
-#: ../../code/main.cpp:1060
-msgid "Play time: "
-msgstr "Spille tid:"
-
-#: ../../code/main.cpp:1073
-msgid "VS CPU (win/loss)"
-msgstr "mod computeren (vundet/tabt)"
-
-#: ../../code/main.cpp:1114 ../../code/main.cpp:1227
-#: ../../code/MenuSystem.cpp:169 ../../code/MenuSystem.cpp:177
-#: ../../code/MenuSystem.cpp:190
-msgid "Back"
-msgstr "Tilbage"
-
-#: ../../code/main.cpp:1119
-msgid "Page %1% of %2%"
-msgstr "Side %1% af %2%"
-
-#: ../../code/main.cpp:1225
 msgid "Forward"
 msgstr "Fremad"
 
-#: ../../code/main.cpp:1324 ../../code/main.cpp:1438
+#: ../../code/main.cpp:1003 ../../code/MenuSystem.cpp:169
+#: ../../code/MenuSystem.cpp:177 ../../code/MenuSystem.cpp:190
+#: ../../code/ScoresDisplay.cpp:152
+msgid "Back"
+msgstr "Tilbage"
+
+#: ../../code/main.cpp:1100 ../../code/main.cpp:1214
 msgid "AI"
 msgstr "Computer"
 
-#: ../../code/main.cpp:1327
+#: ../../code/main.cpp:1103
 msgid "Playing field"
 msgstr "Spille flade"
 
-#: ../../code/main.cpp:1399
+#: ../../code/main.cpp:1175
 msgid "Time Trial"
 msgstr "Time Trial"
 
-#: ../../code/main.cpp:1400
+#: ../../code/main.cpp:1176
 msgid "Score as much as possible in 2 minutes"
 msgstr "Se hvor mange point du kan opnå på 2 minutter"
 
-#: ../../code/main.cpp:1404
+#: ../../code/main.cpp:1180
 msgid "Stage Clear"
 msgstr "Stage Clear"
 
-#: ../../code/main.cpp:1405
+#: ../../code/main.cpp:1181
 msgid "You must clear a number of lines. Speed is rapidly increased."
 msgstr "Fjern et specifik antal linjer. Hastigheden stiger hurtigt."
 
-#: ../../code/main.cpp:1408
+#: ../../code/main.cpp:1184
 msgid "Puzzle"
 msgstr "Gåde"
 
-#: ../../code/main.cpp:1409
+#: ../../code/main.cpp:1185
 msgid "Clear the entire board with a limited number of moves."
 msgstr "Fjern alle blokke med et begrænset antal flyt"
 
-#: ../../code/main.cpp:1412
+#: ../../code/main.cpp:1188
 msgid "Endless"
 msgstr "Endless"
 
-#: ../../code/main.cpp:1413
+#: ../../code/main.cpp:1189
 msgid "Score as much as possible. No time limit."
 msgstr "Opnå så mange point som muligt. Ingen tidsbegrænsning."
 
-#: ../../code/main.cpp:1417
+#: ../../code/main.cpp:1193
 msgid "Objective:"
 msgstr "Formål:"
 
-#: ../../code/main.cpp:1423
+#: ../../code/main.cpp:1199
 msgid "Movement keys:"
 msgstr "Bevægelses taster:"
 
-#: ../../code/main.cpp:1426
+#: ../../code/main.cpp:1202
 msgid "Switch: "
 msgstr "Skift:"
 
-#: ../../code/main.cpp:1428
+#: ../../code/main.cpp:1204
 msgid "Restart: "
 msgstr "Genstart:"
 
-#: ../../code/main.cpp:1431
+#: ../../code/main.cpp:1207
 msgid "Push line: "
 msgstr "Skub linje:"
 
-#: ../../code/main.cpp:1551
+#: ../../code/main.cpp:1327
 msgid "Select Puzzle"
 msgstr "Vælg gåde"
 
-#: ../../code/main.cpp:1554
+#: ../../code/main.cpp:1330
 msgid "Stage Clear Level Select"
 msgstr "Vælg Stage Clear bane"
 
-#: ../../code/main.cpp:1658
+#: ../../code/main.cpp:1434
 #, c-format
 msgid "Best score: %i"
 msgstr "Bedste score: %i"
 
-#: ../../code/main.cpp:1659 ../../code/main.cpp:1662
+#: ../../code/main.cpp:1435
 #, c-format
 msgid "Time used: %s"
 msgstr "Tid brugt: %s"
 
-#: ../../code/main.cpp:1667
+#: ../../code/main.cpp:1438
+#, c-format
+msgid "Time used: %d : %02d"
+msgstr "Tid brugt: %d : %02d"
+
+#: ../../code/main.cpp:1443
 msgid "Total score: %1% in %2%:%3%"
 msgstr "Sammenlagt score: %1% på %2%:%3%"
 
-#: ../../code/main.cpp:1918
+#: ../../code/main.cpp:1705
 msgid "Player 1"
 msgstr "Spiller 1"
 
-#: ../../code/main.cpp:1919
+#: ../../code/main.cpp:1706
 msgid "Player 2"
 msgstr "Spiller 2"
 
@@ -240,7 +186,7 @@ msgstr "Skift taster"
 
 #: ../../code/menudef.cpp:165
 msgid "Left"
-msgstr "Venstra"
+msgstr "Venstre"
 
 #: ../../code/menudef.cpp:166
 msgid "Right"
@@ -320,11 +266,11 @@ msgstr "Flerspiller"
 
 #: ../../code/menudef.cpp:260
 msgid "Two player - time trial"
-msgstr "To spiller - Time Trial"
+msgstr "To spillere - Time Trial"
 
 #: ../../code/menudef.cpp:262
 msgid "Two player - vs"
-msgstr "To spiller - VS"
+msgstr "To spillere - VS"
 
 #: ../../code/menudef.cpp:271
 msgid "Block Attack - Rise of the blocks"
@@ -332,7 +278,7 @@ msgstr "Block Attack - Rise of the blocks"
 
 #: ../../code/menudef.cpp:273
 msgid "Single player - endless"
-msgstr "En spiller - Endless"
+msgstr "En spiller - Evighed"
 
 #: ../../code/menudef.cpp:275
 msgid "Single player - time trial"
@@ -352,7 +298,7 @@ msgstr "En spiller - VS"
 
 #: ../../code/menudef.cpp:283
 msgid "Multi player"
-msgstr "Flerspiller"
+msgstr "Flere spillere"
 
 #: ../../code/menudef.cpp:285
 msgid "Configure"
@@ -365,6 +311,66 @@ msgstr "Bedste resultater"
 #: ../../code/MenuSystem.cpp:180 ../../code/MenuSystem.cpp:193
 msgid "Exit"
 msgstr "Afslut"
+
+#: ../../code/ScoresDisplay.cpp:41
+msgid "Endless:"
+msgstr "Endless:"
+
+#: ../../code/ScoresDisplay.cpp:44
+msgid "Time Trial:"
+msgstr "Time Trial:"
+
+#: ../../code/ScoresDisplay.cpp:67
+msgid "Stats"
+msgstr "Statistik"
+
+#: ../../code/ScoresDisplay.cpp:69
+msgid "Chains"
+msgstr "Kæder"
+
+#: ../../code/ScoresDisplay.cpp:77
+msgid "Lines Pushed: "
+msgstr "Linjer skubbet:"
+
+#: ../../code/ScoresDisplay.cpp:82
+msgid "Puzzles solved: "
+msgstr "Gåder løst:"
+
+#: ../../code/ScoresDisplay.cpp:87
+msgid "Run time: "
+msgstr "Kørsels tid:"
+
+#: ../../code/ScoresDisplay.cpp:90 ../../code/ScoresDisplay.cpp:103
+#, c-format
+msgid "Days: %i"
+msgstr "Dage: %i"
+
+#: ../../code/ScoresDisplay.cpp:92 ../../code/ScoresDisplay.cpp:105
+#, c-format
+msgid "Hours: %i"
+msgstr "Timer: %i"
+
+#: ../../code/ScoresDisplay.cpp:94 ../../code/ScoresDisplay.cpp:107
+#, c-format
+msgid "Minutes: %i"
+msgstr "Minutter: %i"
+
+#: ../../code/ScoresDisplay.cpp:96 ../../code/ScoresDisplay.cpp:109
+#, c-format
+msgid "Seconds: %i"
+msgstr "Sekunder: %i"
+
+#: ../../code/ScoresDisplay.cpp:100
+msgid "Play time: "
+msgstr "Spille tid:"
+
+#: ../../code/ScoresDisplay.cpp:113
+msgid "VS CPU (win/loss)"
+msgstr "mod computeren (vundet/tabt)"
+
+#: ../../code/ScoresDisplay.cpp:157
+msgid "Page %1% of %2%"
+msgstr "Side %1% af %2%"
 
 #~ msgid "Best score: 0"
 #~ msgstr "Bedste resultat: 0"
