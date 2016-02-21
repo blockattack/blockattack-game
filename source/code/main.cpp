@@ -1478,7 +1478,9 @@ static bool registerTTHighscorePlayer2 = false;
 
 static void StartSinglePlayerEndless() {
 	//1 player - endless
-	player1->NewGame(SDL_GetTicks());
+	BlockGameStartInfo startInfo;
+	startInfo.ticks = SDL_GetTicks();
+	player1->NewGame(startInfo);
 	player1->putStartBlocks(time(0));
 	twoPlayers =false;
 	player2->SetGameOver();
@@ -1488,7 +1490,10 @@ static void StartSinglePlayerEndless() {
 }
 
 static void StartSinglePlayerTimeTrial() {
-	player1->NewTimeTrialGame(SDL_GetTicks());
+	BlockGameStartInfo startInfo;
+	startInfo.ticks = SDL_GetTicks();
+	startInfo.timeTrial = true;
+	player1->NewGame(startInfo);
 	twoPlayers =false;
 	player2->SetGameOver();
 	//vsMode = false;
@@ -1514,8 +1519,11 @@ static int StartSinglePlayerPuzzle(int level) {
 
 
 static void StarTwoPlayerTimeTrial() {
-	player1->NewTimeTrialGame(SDL_GetTicks());
-	player2->NewTimeTrialGame(SDL_GetTicks());
+	BlockGameStartInfo startInfo;
+	startInfo.ticks = SDL_GetTicks();
+	startInfo.timeTrial = true;
+	player1->NewGame(startInfo);
+	player2->NewGame(startInfo);
 	int theTime = time(0);
 	player1->putStartBlocks(theTime);
 	player2->putStartBlocks(theTime);

@@ -251,6 +251,15 @@ bool BlockGame::GetIsWinner()  const {
 	return hasWonTheGame;
 }
 
+
+void BlockGame::NewGame(const BlockGameStartInfo &s) {
+	NewGame(s.ticks);	
+	if (s.timeTrial) {
+		timetrial = true;
+		putStartBlocks();
+	}
+}
+
 //Instead of creating new object new game is called, to prevent memory leaks
 void BlockGame::NewGame( unsigned int ticks) {
 	this->ticks = ticks;
@@ -291,12 +300,6 @@ void BlockGame::NewGame( unsigned int ticks) {
 	}
 	lastAImove = ticks+3000;
 }   //NewGame
-
-void BlockGame::NewTimeTrialGame( unsigned int ticks) {
-	NewGame(ticks);
-	timetrial = true;
-	putStartBlocks();
-}
 
 //Starts a new stage game, takes level as input!
 void BlockGame::NewStageGame(int level, unsigned int ticks) {

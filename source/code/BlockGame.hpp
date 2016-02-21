@@ -56,6 +56,14 @@ extern stageButton stageButtonStatus;
 //This is the size of the blocks. They are always 50. The internal logic calculates it that way
 const int bsize = 50;
 
+/**
+ * This struct defines the start conditions of the game
+ */
+struct BlockGameStartInfo {
+	unsigned int ticks = 0;
+	bool timeTrial = false;
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
@@ -171,9 +179,7 @@ public:
 	int GetCursorY() const;
 	void MoveCursorTo(int x, int y);
 	bool GetIsWinner() const;
-	//Instead of creating new object new game is called, to prevent memory leaks
-	void NewGame(unsigned int ticks);
-	void NewTimeTrialGame(unsigned int ticks);
+	void NewGame(const BlockGameStartInfo &s);
 	//Starts a new stage game, takes level as input!
 	void NewStageGame(int level, unsigned int ticks);
 	void NewPuzzleGame(int level, unsigned int ticks);
@@ -217,6 +223,7 @@ public:
     bool isSinglePuzzle() const;
     int getLevel() const;
 private:
+	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
 	bool LineEmpty(int lineNr) const;
 	//Test if the entire board is empty (used for Puzzles)
