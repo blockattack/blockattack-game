@@ -1551,8 +1551,13 @@ static void StarTwoPlayerTimeTrial() {
 
 static void StartTwoPlayerVs() {
 	//2 player - VsMode
-	player1->NewVsGame(player2,SDL_GetTicks());
-	player2->NewVsGame(player1,SDL_GetTicks());
+	BlockGameStartInfo startInfo;
+	startInfo.ticks = SDL_GetTicks();
+	startInfo.vsMode = true;
+	player1->NewGame(startInfo);
+	player1->setGarbageTarget(player2);
+	player2->NewGame(startInfo);
+	player2->setGarbageTarget(player1);
 	//vsMode = true;
 	twoPlayers = true;
 	player1->setGameSpeed(player1Speed);
@@ -1978,8 +1983,13 @@ int runGame(int gametype, int level) {
 			case 4: {
 				//1 player - Vs mode
 				int theAIlevel = level; //startSingleVs();
-				theGame.NewVsGame(&theGame2, SDL_GetTicks());
-				theGame2.NewVsGame(&theGame, SDL_GetTicks());
+				BlockGameStartInfo startInfo;
+				startInfo.ticks = SDL_GetTicks();
+				startInfo.vsMode = true;
+				theGame.NewGame(startInfo);
+				theGame.setGarbageTarget(&theGame2);
+				theGame2.NewGame(startInfo);
+				theGame2.setGarbageTarget(&theGame);
 				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
 				theGame2.setAIlevel((Uint8)theAIlevel);

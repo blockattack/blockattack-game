@@ -302,6 +302,17 @@ void BlockGame::NewGame(const BlockGameStartInfo &s) {
 			}
 		}
 	}
+	if (s.vsMode) {
+		vsMode = true;
+		AI_Enabled = s.AI;
+		if (!AI_Enabled) {
+			Stats::getInstance()->addOne("VSgamesStarted");
+		}
+		else {
+			name = "CPU";
+		}
+		putStartBlocks();
+	}
 }
 
 //Instead of creating new object new game is called, to prevent memory leaks
@@ -345,29 +356,6 @@ void BlockGame::NewGame( unsigned int ticks) {
 	lastAImove = ticks+3000;
 }   //NewGame
 
-//Starts new Vs Game (two Player)
-void BlockGame::NewVsGame(BlockGame* target, unsigned int ticks) {
-	NewGame(ticks);
-	vsMode = true;
-	putStartBlocks();
-	garbageTarget = target;
-	Stats::getInstance()->addOne("VSgamesStarted");
-}
-
-//Starts new Vs Game (two Player)
-void BlockGame::NewVsGame(BlockGame* target, bool AI, unsigned int ticks) {
-	NewGame(ticks);
-	vsMode = true;
-	AI_Enabled = AI;
-	if (!AI) {
-		Stats::getInstance()->addOne("VSgamesStarted");
-	}
-	else {
-		name = "CPU";
-	}
-	putStartBlocks();
-	garbageTarget = target;
-}
 
 //Prints "winner" and ends game
 void BlockGame::setPlayerWon() {
@@ -1919,6 +1907,14 @@ bool BlockGame::isSinglePuzzle() const {
 
 int BlockGame::getLevel() const {
 	return Level;
+}
+
+void BlockGame::setGarbageTarget(BlockGame* garbageTarget) {
+	this->garbageTarget = garbageTarget;
+}
+
+BlockGame* BlockGame::getGarbageTarget() const {
+	return garbageTarget;
 }
 
 //Play the next level

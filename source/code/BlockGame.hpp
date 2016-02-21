@@ -67,6 +67,14 @@ struct BlockGameStartInfo {
 	///True if puzzle mode. level must be set too.
 	bool puzzleMode = false;
 	int level = 0;
+	bool AI = false;
+	bool vsMode = false;
+};
+
+struct GarbageStruct {
+	bool greyGarbage = false;
+	int width = 6;
+	int height = 1;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,10 +193,6 @@ public:
 	void MoveCursorTo(int x, int y);
 	bool GetIsWinner() const;
 	void NewGame(const BlockGameStartInfo &s);
-	//Starts new Vs Game (two Player)
-	void NewVsGame(BlockGame *target,unsigned int ticks);
-	//Starts new Vs Game (two Player)
-	void NewVsGame(BlockGame *target, bool AI,unsigned int ticks);
 	void putStartBlocks(int n);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
@@ -222,6 +226,8 @@ public:
     void setSinglePuzzle(bool singlePuzzle);
     bool isSinglePuzzle() const;
     int getLevel() const;
+    void setGarbageTarget(BlockGame* garbageTarget);
+    BlockGame* getGarbageTarget() const;
 private:
 	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
