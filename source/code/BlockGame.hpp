@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
@@ -30,24 +30,6 @@ http://blockattack.net
 #define NUMBEROFCHAINS 100
 #define BLOCKWAIT 100000
 #define BLOCKHANG 1000
-
-#define ACTION_UPDATE 0
-#define ACTION_MOVECURSOR 1
-#define ACTION_MOVECURSORTO 2
-#define ACTION_SWITCH 3
-#define ACTION_PUSH 4
-#define ACTION_CREATEGARBAGE 5
-#define ACTION_CREATEGRAYGARBAGE 6
-#define ACTION_GAMEOVER 7
-#define ACTION_WIN 8
-#define ACTION_DRAW 9
-#define ACTION_GAMESPEED 10
-#define ACTION_HANDICAP 11
-#define ACTION_NEW 12
-#define ACTION_NEWTT 13
-#define ACTION_NEWVS 14
-#define ACTION_STARTBLOCKS 15
-#define ACTION_NOP 16
 
 enum stageButton {SBdontShow, SBstageClear, SBpuzzleMode};
 
@@ -152,10 +134,7 @@ public:
 	std::string name;
 
 public:
-	//Constructor
 	BlockGame();
-
-	//It should work now and can be used if we want to assign more players in network games that we need to free later
 	virtual ~BlockGame();
 
 	void setGameSpeed(int globalSpeedLevel);
@@ -207,15 +186,6 @@ public:
 	//Generates a new line and moves the field one block up (restart puzzle mode)
 	void PushLine();
 	void Update(unsigned int newtick);
-	void PerformAction(unsigned int tick, int action, std::string param);
-	/**
-	 *
-	 * @param tick Tick of the action
-	 * @param action The action
-	 * @param param Params.
-	 * @return 1 if an action was selected
-	 */
-	int GotAction(unsigned int &tick, int &action, std::string &param);
 	//Prints "winner" and ends game
 	void setPlayerWon();
 	//void SetGameOver();
