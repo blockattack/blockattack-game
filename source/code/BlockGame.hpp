@@ -66,6 +66,8 @@ struct BlockGameStartInfo {
 	bool stageClear = false;
 	///True if puzzle mode. level must be set too.
 	bool puzzleMode = false;
+	///Single puzzle is used for the editor only.
+	bool singlePuzzle = false;
 	int level = 0;
 	bool AI = false;
 	bool vsMode = false;
@@ -219,7 +221,6 @@ public:
 	//void SetGameOver();
 	//Prints "draw" and ends the game
 	void setDraw();
-    void setSinglePuzzle(bool singlePuzzle);
     bool isSinglePuzzle() const;
     int getLevel() const;
     void setGarbageTarget(BlockGame* garbageTarget);

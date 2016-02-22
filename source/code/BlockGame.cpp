@@ -301,6 +301,7 @@ void BlockGame::NewGame(const BlockGameStartInfo &s) {
 
 			}
 		}
+		this->singlePuzzle = s.singlePuzzle;
 	}
 	if (s.vsMode) {
 		vsMode = true;
@@ -1899,10 +1900,6 @@ void BlockGame::PerformAction(unsigned int tick, int action, string param) {
 		cerr << "Unknown action: " << action << " " << param << endl;
 		break;
 	};
-}
-
-void BlockGame::setSinglePuzzle(bool singlePuzzle) {
-	this->singlePuzzle = singlePuzzle;
 }
 
 bool BlockGame::isSinglePuzzle() const {

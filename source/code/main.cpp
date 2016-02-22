@@ -1837,8 +1837,8 @@ int main(int argc, char* argv[]) {
 			BlockGameStartInfo s;
 			s.puzzleMode = true;
 			s.level = singlePuzzleNr;
+			s.singlePuzzle = true;
 			theGame.NewGame(s);
-			theGame.setSinglePuzzle(true);
 		}
 		SDL_RenderClear(screen);
 		DrawIMG(backgroundImage, screen, 0, 0);
@@ -1938,8 +1938,8 @@ int runGame(int gametype, int level) {
 		BlockGameStartInfo s;
 		s.puzzleMode = true;
 		s.level = singlePuzzleNr;
+		s.singlePuzzle = true;
 		theGame.NewGame(s);
-		theGame.setSinglePuzzle(true);
 	}
 	//game loop
 	int done = 0;
