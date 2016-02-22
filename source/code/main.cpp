@@ -1538,13 +1538,13 @@ static void StarTwoPlayerTimeTrial() {
 		startInfo2.level = player2AIlevel;
 		registerTTHighscorePlayer2 = false;
 	}
+	startInfo.gameSpeed = player1Speed;
+	startInfo2.gameSpeed = player2Speed;
+	startInfo.handicap = player1handicap;
+	startInfo2.handicap = player2handicap;
 	player1->NewGame(startInfo);
 	player2->NewGame(startInfo2);
 	twoPlayers = true;
-	player1->setGameSpeed(player1Speed);
-	player2->setGameSpeed(player2Speed);
-	player1->setHandicap(player1handicap);
-	player2->setHandicap(player2handicap);
 	player1->name = player1name;
 	player2->name = player2name;
 }
@@ -1564,16 +1564,16 @@ static void StartTwoPlayerVs() {
 		startInfo2.AI = true;
 		startInfo2.level = player2AIlevel;
 	}
+	startInfo.gameSpeed = player1Speed;
+	startInfo2.gameSpeed = player2Speed;
+	startInfo.handicap = player1handicap;
+	startInfo2.handicap = player2handicap;
 	player1->NewGame(startInfo);
 	player1->setGarbageTarget(player2);
 	player2->NewGame(startInfo2);
 	player2->setGarbageTarget(player1);
 	//vsMode = true;
 	twoPlayers = true;
-	player1->setGameSpeed(player1Speed);
-	player2->setGameSpeed(player2Speed);
-	player1->setHandicap(player1handicap);
-	player2->setHandicap(player2handicap);
 	player1->name = player1name;
 	player2->name = player2name;
 }

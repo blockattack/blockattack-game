@@ -318,6 +318,12 @@ void BlockGame::NewGame(const BlockGameStartInfo &s) {
 	if (s.startBlocks >= 0) {
 		putStartBlocks(s.startBlocks);
 	}
+	if (s.handicap > 0) {
+		setHandicap(s.handicap);
+	}
+	if (s.gameSpeed > 0) {
+		setGameSpeed(s.gameSpeed);
+	}
 }
 
 //Instead of creating new object new game is called, to prevent memory leaks

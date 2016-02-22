@@ -54,6 +54,8 @@ struct BlockGameStartInfo {
 	bool AI = false;
 	bool vsMode = false;
 	int startBlocks = -1;
+	int handicap = 0;
+	int gameSpeed = 0;
 };
 
 struct GarbageStruct {
@@ -137,8 +139,6 @@ public:
 	BlockGame();
 	virtual ~BlockGame();
 
-	void setGameSpeed(int globalSpeedLevel);
-	void setHandicap(int globalHandicap);
 	int getAIlevel()  const;
 	
 	virtual void AddText(int x, int y, const std::string& text, int time) const  {}
@@ -170,6 +170,10 @@ public:
 	int GetCursorY() const;
 	void MoveCursorTo(int x, int y);
 	bool GetIsWinner() const;
+    bool isSinglePuzzle() const;
+    int getLevel() const;
+	bool GetAIenabled() const;
+	bool IsNearDeath() const;
 	void NewGame(const BlockGameStartInfo &s);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
@@ -177,8 +181,6 @@ public:
 	bool CreateGreyGarbage();
 	//prints "Game Over" and ends game
 	void SetGameOver();
-	bool GetAIenabled() const;
-	bool IsNearDeath() const;
 	//Moves the cursor, receaves N,S,E or W as a char an moves as desired
 	void MoveCursor(char way);
 	//switches the two blocks at the cursor position, unless game over
@@ -188,11 +190,8 @@ public:
 	void Update(unsigned int newtick);
 	//Prints "winner" and ends game
 	void setPlayerWon();
-	//void SetGameOver();
 	//Prints "draw" and ends the game
 	void setDraw();
-    bool isSinglePuzzle() const;
-    int getLevel() const;
     void setGarbageTarget(BlockGame* garbageTarget);
     BlockGame* getGarbageTarget() const;
 private:
@@ -207,6 +206,8 @@ private:
 	void putStartBlocks(int n);
 	//decreases hang for all hanging blocks and wait for waiting blocks
 	void ReduceStuff();
+	void setGameSpeed(int globalSpeedLevel);
+	void setHandicap(int globalHandicap);
 	//Clears garbage, must take one the lower left corner!
 	int GarbageClearer(int x, int y, int number, bool aLineToClear, int chain);
 	//Marks garbage that must be cleared
