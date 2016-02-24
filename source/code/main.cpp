@@ -78,7 +78,6 @@ http://www.blockattack.net
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "joypad.h"         //Used for joypads
-#include "listFiles.h"      //Used to show files on screen
 #include "stats.h"          //Saves general stats 
 //#include "uploadReplay.h"   //Takes care of everything libcurl related
 
@@ -981,92 +980,6 @@ void OpenScoresDisplay() {
 }
 
 
-//Open a puzzle file
-bool OpenFileDialogbox(int x, int y, char* name) {
-	bool done = false;  //We are done!
-	int mousex, mousey;
-	ListFiles lf = ListFiles();
-	string folder = (string)SHAREDIR+(string)"/puzzles";
-	if (verboseLevel) {
-		cout << "Looking in " << folder << endl;
-	}
-	lf.setDirectory(folder.c_str());
-#ifdef __unix__
-	string homeFolder = (string)getenv("HOME")+(string)"/.gamesaves/blockattack/puzzles";
-	lf.setDirectory2(homeFolder.c_str());
-#endif
-	while (!done && !Config::getInstance()->isShuttingDown()) {
-		DrawIMG(backgroundImage,screen,0,0);
-		DrawIMG(bForward,screen,x+460,y+420);
-		nf_button_font.draw(screen, x+20+60, y+420+10, NFont::CENTER, _("Forward"));
-		DrawIMG(bBack,screen,x+20,y+420);
-		nf_button_font.draw(screen, x+20+60, y+420+10, NFont::CENTER, _("Back"));
-		const int nrOfFiles = 10;
-		for (int i=0; i<nrOfFiles; i++) {
-			NFont_Write(screen, x+10,y+10+36*i,lf.getFileName(i).c_str());
-		}
-
-		SDL_Event event;
-
-		while ( SDL_PollEvent(&event) ) {
-			if ( event.type == SDL_QUIT ) {
-				Config::getInstance()->setShuttingDown(5);
-				done = true;
-			}
-
-			if ( event.type == SDL_KEYDOWN ) {
-				if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
-					done = true;
-				}
-
-				if ( (event.key.keysym.sym == SDLK_RIGHT) ) {
-					lf.forward();
-				}
-
-				if ( (event.key.keysym.sym == SDLK_LEFT) ) {
-					lf.back();
-				}
-			}
-
-		} //while(event)
-
-		SDL_GetMouseState(&mousex,&mousey);
-
-		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
-			bMouseUp=true;
-		}
-
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-			bMouseUp = false;
-
-			//The Forward Button:
-			if ( (mousex>x+460) && (mousex<x+460+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) ) {
-				lf.forward();
-			}
-
-			//The back button:
-			if ( (mousex>x+20) && (mousex<x+20+buttonXsize) && (mousey>y+420) && (mousey<y+420+40) ) {
-				lf.back();
-			}
-
-			for (int i=0; i<10; i++) {
-				if ( (mousex>x+10) && (mousex<x+480) && (mousey>y+10+i*36) && (mousey<y+10+i*36+32) ) {
-					if (lf.fileExists(i)) {
-						strncpy(name,lf.getFileName(i).c_str(),28); //Problems occurs then larger than 28 (maybe 29)
-						done=true; //The user have, clicked the purpose of this function is now complete
-					}
-				}
-			}
-		}
-
-		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
-		SDL_RenderPresent(screen); //Update screen
-	}
-	return true;
-}
-
-
 //Draws the balls and explosions
 static void DrawBalls() {
 	for (int i = 0; i< maxNumberOfBalls; i++) {
@@ -1450,23 +1363,6 @@ int PuzzleLevelSelect(int Type) {
 	}
 	DrawIMG(backgroundImage, screen, 0, 0);
 	return levelNr;
-}
-
-//This function will promt for the user to select another file for puzzle mode
-void changePuzzleLevels() {
-	char theFileName[30];
-	snprintf(theFileName, sizeof(theFileName), "%s", PuzzleGetName().c_str());
-	for (int i=PuzzleGetName().length(); i<30; i++) {
-		theFileName[i]=' ';
-	}
-	theFileName[29]=0;
-	if (OpenFileDialogbox(200,100,theFileName)) {
-		for (int i=28; ((theFileName[i]==' ')&&(i>0)); i--) {
-			theFileName[i]=0;
-		}
-		PuzzleSetName(theFileName);
-	}
-
 }
 
 static BlockGameSdl* player1;
