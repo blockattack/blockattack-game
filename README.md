@@ -1,8 +1,9 @@
 # blockattack-game [![Build Status](https://travis-ci.org/blockattack/blockattack-game.svg?branch=master)](https://travis-ci.org/blockattack/blockattack-game)
-Block Attack - Rise of the Blocks - the game
+Block Attack - Rise of the Blocks - the game<br/>
 A Tetris Attack Clone under the GPL.
 
-www.blockattack.net
+Homepage: http://www.blockattack.net<br/>
+Source: https://github.com/blockattack/blockattack-game
 
 ##Screen shot
 ![Block Attack - Rise of the Blocks 2.0.0 snapshot](/source/misc/screenshots/screen_shot_2016_01_19.png?raw=true "Screen shot from 2016-01-19")
@@ -20,7 +21,7 @@ www.blockattack.net
   * jsoncpp
 
 # Building
-The only supported build method is using the Makefile
+The only supported build method is using the Makefile<br/>
 To build do:
 ```
 ./packdata.sh
