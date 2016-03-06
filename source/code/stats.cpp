@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 blockattack - Block Attack - Rise of the Blocks
-Copyright (C) 2005-2012 Poul Sander
+Copyright (C) 2005-2016 Poul Sander
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
@@ -25,6 +25,8 @@ http://blockattack.net
 #include "common.h"
 #include "os.hpp"
 #include "physfs_stream.hpp"
+#include "sago/SagoMisc.hpp"
+#include <sstream>
 
 using namespace std;
 
@@ -61,14 +63,12 @@ Stats* Stats::getInstance() {
 }
 
 void Stats::save() {
-	PhysFS::ofstream outFile(statsFileName, ios::trunc);
-	if (outFile) {
-		//outFile << statMap.size() << endl;
-		map<string,unsigned int>::iterator iter;
-		for (iter = statMap.begin(); iter != statMap.end(); iter++) {
-			outFile << iter->first << " " << iter->second << endl;
-		}
+	std::stringstream outFile;
+	map<string,unsigned int>::iterator iter;
+	for (iter = statMap.begin(); iter != statMap.end(); iter++) {
+		outFile << iter->first << " " << iter->second << endl;
 	}
+	sago::WriteFileContent(statsFileName, outFile.str());
 }
 
 unsigned int Stats::getNumberOf(const string& statName) {

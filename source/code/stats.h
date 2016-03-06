@@ -17,16 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
-//
-// File:   stats.h
-// Author: poul
-//
-// Created on 11. februar 2008, 20:19
-//
 
 #ifndef _STATS_H
 #define	_STATS_H
