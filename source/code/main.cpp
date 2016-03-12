@@ -31,7 +31,7 @@ http://www.blockattack.net
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "2.0.0 SNAPSHOT"
+#define VERSION_NUMBER "2.0.0-SNAPSHOT"
 #endif
 
 //If DEBUG is defined: AI info and FPS will be written to screen
@@ -83,6 +83,7 @@ http://www.blockattack.net
 
 #include "common.h"
 #include <boost/program_options.hpp>
+#include <SDL2/SDL_timer.h>
 
 /*******************************************************************************
 * All variables and constant has been moved to mainVars.inc for the overview.  *
@@ -181,6 +182,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	smiley[2] = holder.GetSprite("smileys2");
 	smiley[3] = holder.GetSprite("smileys3");
 	transCover = holder.GetSprite("trans_cover");
+	bExit = holder.GetSprite("b_exit");
 	bSkip = holder.GetSprite("b_blank");
 	bNext = holder.GetSprite("b_blank");
 	bRetry = holder.GetSprite("b_blank");
@@ -1177,6 +1179,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
 		strHolder = itoa(theGame2->GetSpeedLevel());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
+		//draw exit
+		bExit.Draw(screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);		
 	}
 	//player2 finnish
 
@@ -2185,6 +2189,7 @@ int runGame(int gametype, int level) {
 			if ((!singlePuzzle)&&(!editorMode)) {
 				//read mouse events
 				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+					//This is the mouse events
 					bMouseUp = false;
 					DrawIMG(backgroundImage, screen, 0, 0);
 
@@ -2220,7 +2225,10 @@ int runGame(int gametype, int level) {
 						retryLevel(theGame, SDL_GetTicks());
 					}
 
-
+					if (mousex > xsize-bExitOffset && mousex < xsize-bExitOffset+bExitSize && 
+							mousey > ysize-bExitOffset && mousey < ysize-bExitOffset+bExitSize) {
+						done = 1;
+					}
 					//cout << "Mouse x: " << mousex << ", mouse y: " << mousey << endl;
 				}
 

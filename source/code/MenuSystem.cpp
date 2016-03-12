@@ -127,21 +127,6 @@ void Menu::drawSelf() {
 	mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 }
 
-void Menu::performClick(int x,int y) {
-	vector<Button*>::iterator it;
-	for (it = buttons.begin(); it < buttons.end(); it++) {
-		Button* b = (*it);
-		if (b->isClicked(x,y)) {
-			b->doAction();
-		}
-		if (b->isPopOnRun()) {
-			running = false;
-		}
-	}
-	if (exit.isClicked(x,y)) {
-		running = false;
-	}
-}
 
 void Menu::placeButtons() {
 	int nextY = 100;

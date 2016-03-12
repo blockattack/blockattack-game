@@ -106,7 +106,6 @@ private:
 //        SDL_Surface *background; //Pointer to the background image
 
 	void drawSelf();        //Private function to draw the screen
-	void performClick(int x, int y); //Private function to call then a click is detected.
 	void placeButtons(); //Rearanges the buttons to the correct place.
 public:
 	//numberOfItems is the expected numberOfItems for vector initialization
