@@ -77,7 +77,6 @@ http://www.blockattack.net
 
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
-#include "joypad.h"         //Used for joypads
 #include "stats.h"          //Saves general stats 
 //#include "uploadReplay.h"   //Takes care of everything libcurl related
 
@@ -1575,10 +1574,6 @@ int main(int argc, char* argv[]) {
 
 		SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
 
-		Joypad_init();    //Prepare the joysticks
-		Joypad joypad1 = Joypad();    //Creates a joypad
-		Joypad joypad2 = Joypad();    //Creates a joypad
-
 		theTextManager = TextManager();
 
 		//Open Audio
@@ -1630,8 +1625,6 @@ int main(int argc, char* argv[]) {
 			SoundEnabled = (bool)configSettings->getInt("soundenabled");
 			mouseplay1 = (bool)configSettings->getInt("mouseplay1");
 			mouseplay2 = (bool)configSettings->getInt("mouseplay2");
-			joyplay1 = (bool)configSettings->getInt("joypad1");
-			joyplay2 = (bool)configSettings->getInt("joypad2");
 
 			if (configSettings->exists("sdl2_player1keyup")) {
 				keySettings[0].up = (SDL_Keycode)configSettings->getInt("sdl2_player1keyup");
@@ -1830,9 +1823,6 @@ int runGame(int gametype, int level) {
 	theGame.name = player1name;
 	theGame2.name = player2name;
 
-	Joypad joypad1 = Joypad();    //Creates a joypad
-	Joypad joypad2 = Joypad();    //Creates a joypad
-
 	if (singlePuzzle) {
 		LoadPuzzleStages();
 		BlockGameStartInfo s;
@@ -2015,106 +2005,6 @@ int runGame(int gametype, int level) {
 					}
 				}
 			} //while event PollEvent - read keys
-
-			/**********************************************************************
-			***************************** Joypad start ****************************
-			**********************************************************************/
-
-			//Gameplay
-			if (joyplay1||joyplay2) {
-				if (joypad1.working && !theGame.GetAIenabled()) {
-					if (joyplay1) {
-						joypad1.update();
-						if (joypad1.up) {
-							theGame.MoveCursor('N');
-						}
-						if (joypad1.down) {
-							theGame.MoveCursor('S');
-						}
-						if (joypad1.left) {
-							theGame.MoveCursor('W');
-						}
-						if (joypad1.right) {
-							theGame.MoveCursor('E');
-						}
-						if (joypad1.but1) {
-							theGame.SwitchAtCursor();
-						}
-						if (joypad1.but2) {
-							theGame.PushLine();
-						}
-					}
-					else {
-						joypad1.update();
-						if (joypad1.up) {
-							theGame2.MoveCursor('N');
-						}
-						if (joypad1.down) {
-							theGame2.MoveCursor('S');
-						}
-						if (joypad1.left) {
-							theGame2.MoveCursor('W');
-						}
-						if (joypad1.right) {
-							theGame2.MoveCursor('E');
-						}
-						if (joypad1.but1) {
-							theGame2.SwitchAtCursor();
-						}
-						if (joypad1.but2) {
-							theGame2.PushLine();
-						}
-					}
-				}
-				if (joypad2.working && !theGame2.GetAIenabled()) {
-					if (!joyplay2) {
-						joypad2.update();
-						if (joypad2.up) {
-							theGame.MoveCursor('N');
-						}
-						if (joypad2.down) {
-							theGame.MoveCursor('S');
-						}
-						if (joypad2.left) {
-							theGame.MoveCursor('W');
-						}
-						if (joypad2.right) {
-							theGame.MoveCursor('E');
-						}
-						if (joypad2.but1) {
-							theGame.SwitchAtCursor();
-						}
-						if (joypad2.but2) {
-							theGame.PushLine();
-						}
-					}
-					else {
-						joypad2.update();
-						if (joypad2.up) {
-							theGame2.MoveCursor('N');
-						}
-						if (joypad2.down) {
-							theGame2.MoveCursor('S');
-						}
-						if (joypad2.left) {
-							theGame2.MoveCursor('W');
-						}
-						if (joypad2.right) {
-							theGame2.MoveCursor('E');
-						}
-						if (joypad2.but1) {
-							theGame2.SwitchAtCursor();
-						}
-						if (joypad2.but2) {
-							theGame2.PushLine();
-						}
-					}
-				}
-			}
-
-			/**********************************************************************
-			***************************** Joypad end ******************************
-			**********************************************************************/
 
 			SDL_GetMouseState(&mousex,&mousey);
 
