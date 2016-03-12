@@ -193,6 +193,48 @@ bool isUpEvent(const SDL_Event& event) {
 	return false;
 }
 
+bool isDownEvent(const SDL_Event& event) {
+	if ( event.type == SDL_KEYDOWN ) {
+		if (event.key.keysym.sym == SDLK_DOWN) {
+			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN || event.cbutton.button == SDL_CONTROLLERBUTTONDOWN ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isEscapeEvent(const SDL_Event& event) {
+	if ( event.type == SDL_KEYDOWN ) {
+		if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isConfirmEvent(const SDL_Event& event) {
+	if ( event.type == SDL_KEYDOWN ) {
+		if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
+			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A || event.cbutton.button == SDL_CONTROLLER_BUTTON_B ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void Menu::run() {
 	running = true;
 	bool bMouseUp = false;
@@ -218,53 +260,29 @@ void Menu::run() {
 					marked = buttons.size();    //not -1, since exit is after the last element in the list
 				}
 			}
-
-			if ( event.type == SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
-					running = false;
-				}
-
-				if (event.key.keysym.sym == SDLK_DOWN) {
-					marked++;
-					if (marked> (int)buttons.size()) {
-						marked = 0;
-					}
-				}
-
-				if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
-					if (marked < (int)buttons.size()) {
-						buttons.at(marked)->doAction();
-						if (buttons.at(marked)->isPopOnRun()) {
-							running = false;
-						}
-					}
-					if (marked == (int)buttons.size()) {
-						running = false;
-					}
+			
+			if (isDownEvent(event)) {
+				marked++;
+				if (marked> (int)buttons.size()) {
+					marked = 0;
 				}
 			}
 			
-			if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-				std::cout << "Game controller key pressed" << std::endl;
-				if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN || event.cbutton.button == SDL_CONTROLLERBUTTONDOWN ) {
-					marked++;
-					if (marked> (int)buttons.size()) {
-						marked = 0;
-					}
-				}
-				if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A || event.cbutton.button == SDL_CONTROLLER_BUTTON_B ) {
-					if (marked < (int)buttons.size()) {
-						buttons.at(marked)->doAction();
-						if (buttons.at(marked)->isPopOnRun()) {
-							running = false;
-						}
-					}
-					if (marked == (int)buttons.size()) {
+			if (isEscapeEvent(event)) {
+				running = false;
+			}
+			
+			if (isConfirmEvent(event)) {
+				if (marked < (int)buttons.size()) {
+					buttons.at(marked)->doAction();
+					if (buttons.at(marked)->isPopOnRun()) {
 						running = false;
 					}
 				}
+				if (marked == (int)buttons.size()) {
+					running = false;
+				}
 			}
-
 
 		}
 
