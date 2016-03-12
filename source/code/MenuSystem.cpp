@@ -179,6 +179,20 @@ Menu::Menu(SDL_Renderer* screen, const string& title, bool submenu) {
 	}
 }
 
+bool isUpEvent(const SDL_Event& event) {
+	if ( event.type == SDL_KEYDOWN ) {
+		if (event.key.keysym.sym == SDLK_UP) {
+			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP || event.cbutton.button == SDL_CONTROLLERBUTTONUP ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void Menu::run() {
 	running = true;
 	bool bMouseUp = false;
@@ -197,17 +211,17 @@ void Menu::run() {
 				Config::getInstance()->setShuttingDown(5);
 				running = false;
 			}
+			
+			if (isUpEvent(event)) {
+				marked--;
+				if (marked<0) {
+					marked = buttons.size();    //not -1, since exit is after the last element in the list
+				}
+			}
 
 			if ( event.type == SDL_KEYDOWN ) {
 				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
 					running = false;
-				}
-
-				if (event.key.keysym.sym == SDLK_UP) {
-					marked--;
-					if (marked<0) {
-						marked = buttons.size();    //not -1, since exit is after the last element in the list
-					}
 				}
 
 				if (event.key.keysym.sym == SDLK_DOWN) {
@@ -218,6 +232,27 @@ void Menu::run() {
 				}
 
 				if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
+					if (marked < (int)buttons.size()) {
+						buttons.at(marked)->doAction();
+						if (buttons.at(marked)->isPopOnRun()) {
+							running = false;
+						}
+					}
+					if (marked == (int)buttons.size()) {
+						running = false;
+					}
+				}
+			}
+			
+			if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+				std::cout << "Game controller key pressed" << std::endl;
+				if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN || event.cbutton.button == SDL_CONTROLLERBUTTONDOWN ) {
+					marked++;
+					if (marked> (int)buttons.size()) {
+						marked = 0;
+					}
+				}
+				if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A || event.cbutton.button == SDL_CONTROLLER_BUTTON_B ) {
 					if (marked < (int)buttons.size()) {
 						buttons.at(marked)->doAction();
 						if (buttons.at(marked)->isPopOnRun()) {

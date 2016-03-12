@@ -81,8 +81,8 @@ http://www.blockattack.net
 //#include "uploadReplay.h"   //Takes care of everything libcurl related
 
 #include "common.h"
+#include "gamecontroller.h"
 #include <boost/program_options.hpp>
-#include <SDL2/SDL_timer.h>
 
 /*******************************************************************************
 * All variables and constant has been moved to mainVars.inc for the overview.  *
@@ -1569,6 +1569,10 @@ int main(int argc, char* argv[]) {
 		if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 			sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
 		}
+		if (SDL_Init(SDL_INIT_GAMECONTROLLER ) != 0) {
+			cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << endl;
+		} 
+		InitGameControllers();
 		TTF_Init();
 		atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
 
