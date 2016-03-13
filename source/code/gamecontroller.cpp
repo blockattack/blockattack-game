@@ -35,3 +35,75 @@ void InitGameControllers() {
 		}
 	}
 }
+
+bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
+	if (playerNumber != 1) {
+		return false;
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
+	if (playerNumber != 1) {
+		return false;
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
+	if (playerNumber != 1) {
+		return false;
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
+	if (playerNumber != 1) {
+		return false;
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event) {
+	if (playerNumber != 1) {
+		return false;
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A || event.cbutton.button == SDL_CONTROLLER_BUTTON_B ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isPlayerPushEvent(int playerNumber, const SDL_Event& event) {
+	if (playerNumber != 1) {
+		return false;
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER || event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER ) {
+			return true;
+		}
+	}
+	return false;
+}

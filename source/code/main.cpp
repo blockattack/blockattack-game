@@ -1922,6 +1922,10 @@ int runGame(int gametype, int level) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
 				}
+				
+				if (theGame.isGameOver() && isEscapeEvent(event)) {
+					done = 1;
+				}
 
 				if ( event.type == SDL_KEYDOWN ) {
 					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
@@ -1998,6 +2002,25 @@ int runGame(int gametype, int level) {
 					if ( event.key.keysym.sym == SDLK_F12 ) {
 						done=1;
 					}
+				}
+				
+				if (isPlayerUpEvent(1, event)) {
+					theGame.MoveCursor('N');
+				}
+				if (isPlayerDownEvent(1, event)) {
+					theGame.MoveCursor('S');
+				}
+				if (isPlayerLeftEvent(1, event)) {
+					theGame.MoveCursor('W');
+				}
+				if (isPlayerRightEvent (1, event)) {
+					theGame.MoveCursor('E');
+				}
+				if (isPlayerSwitchEvent(1, event)) {
+					theGame.SwitchAtCursor();
+				}
+				if (isPlayerPushEvent(1, event)) {
+					theGame.PushLine();
 				}
 			} //while event PollEvent - read keys
 

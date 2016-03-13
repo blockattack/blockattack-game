@@ -21,4 +21,13 @@ http://www.blockattack.net
 ===========================================================================
 */
 
+#include "SDL.h"
+
 void InitGameControllers();
+
+bool isPlayerDownEvent(int playerNumber, const SDL_Event& event);
+bool isPlayerUpEvent(int playerNumber, const SDL_Event& event);
+bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event);
+bool isPlayerRightEvent(int playerNumber, const SDL_Event& event);
+bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event);
+bool isPlayerPushEvent(int playerNumber, const SDL_Event& event);
