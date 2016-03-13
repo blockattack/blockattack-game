@@ -1219,10 +1219,6 @@ int PuzzleLevelSelect(int Type) {
 	if (Type == 0) {
 		LoadPuzzleStages();
 	}
-
-	//Keeps track of background;
-	SDL_GetTicks();
-
 	if (Type == 0) {
 		nrOfLevels = PuzzleGetNumberOfPuzzles();
 	}
@@ -1234,9 +1230,6 @@ int PuzzleLevelSelect(int Type) {
 	}
 
 	while (!levelSelected) {
-		SDL_GetTicks();
-
-
 		DrawIMG(backgroundImage, screen, 0, 0);
 		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
 		if (Type == 0) {
