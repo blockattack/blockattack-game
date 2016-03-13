@@ -167,14 +167,14 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 			page = 0;
 		}
 	}
-	
+
 	if (isRightEvent(event)) {
 		page--;
 		if (page<0) {
 			page = numberOfPages-1;
 		}
 	}
-	
+
 	if (isConfirmEvent(event) || isEscapeEvent(event)) {
 		isActive = false;
 	}

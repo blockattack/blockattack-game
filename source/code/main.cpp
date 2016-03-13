@@ -1266,38 +1266,36 @@ int PuzzleLevelSelect(int Type) {
 				levelNr = -1;
 				levelSelected = true;
 			}
-			if ( event.type == SDL_KEYDOWN ) {
-				if ( event.key.keysym.sym == SDLK_ESCAPE ) {
-					levelNr = -1;
-					levelSelected = true;
+			if (isEscapeEvent(event)) {
+				levelNr = -1;
+				levelSelected = true;
+			}
+			if (isConfirmEvent(event)) {
+				levelNr = selected;
+				levelSelected = true;
+			}
+			if (isRightEvent(event)) {
+				++selected;
+				if (selected >= nrOfLevels) {
+					selected = 0;
 				}
-				if ( event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
-					levelNr = selected;
-					levelSelected = true;
+			}
+			if (isLeftEvent(event)) {
+				--selected;
+				if (selected < 0) {
+					selected = nrOfLevels-1;
 				}
-				if ( event.key.keysym.sym == SDLK_RIGHT ) {
-					++selected;
-					if (selected >= nrOfLevels) {
-						selected = 0;
-					}
-				}
-				if ( event.key.keysym.sym == SDLK_LEFT ) {
-					--selected;
-					if (selected < 0) {
-						selected = nrOfLevels-1;
-					}
-				}
-				if ( event.key.keysym.sym == SDLK_DOWN ) {
-					selected+=10;
-					if (selected >= nrOfLevels) {
-						selected-=10;
-					}
-				}
-				if ( event.key.keysym.sym == SDLK_UP ) {
+			}
+			if (isDownEvent(event)) {
+				selected+=10;
+				if (selected >= nrOfLevels) {
 					selected-=10;
-					if (selected < 0) {
-						selected+=10;
-					}
+				}
+			}
+			if (isUpEvent(event)) {
+				selected-=10;
+				if (selected < 0) {
+					selected+=10;
 				}
 			}
 		}
