@@ -186,7 +186,7 @@ bool isUpEvent(const SDL_Event& event) {
 		}
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP || event.cbutton.button == SDL_CONTROLLERBUTTONUP ) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP ) {
 			return true;
 		}
 	}
@@ -200,7 +200,35 @@ bool isDownEvent(const SDL_Event& event) {
 		}
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN || event.cbutton.button == SDL_CONTROLLERBUTTONDOWN ) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isLeftEvent(const SDL_Event& event) {
+	if ( event.type == SDL_KEYDOWN ) {
+		if (event.key.keysym.sym == SDLK_LEFT) {
+			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isRightEvent(const SDL_Event& event) {
+	if ( event.type == SDL_KEYDOWN ) {
+		if (event.key.keysym.sym == SDLK_DOWN) {
+			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ) {
 			return true;
 		}
 	}
@@ -268,7 +296,7 @@ void Menu::run() {
 				}
 			}
 			
-			if (isEscapeEvent(event)) {
+			if (isEscapeEvent(event) && isSubmenu) {
 				running = false;
 			}
 			

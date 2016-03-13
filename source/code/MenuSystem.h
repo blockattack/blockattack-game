@@ -133,5 +133,17 @@ public:
 	std::string getFile(SDL_Surface **screen);
 };
 
+bool isUpEvent(const SDL_Event& event);
+
+bool isDownEvent(const SDL_Event& event);
+
+bool isLeftEvent(const SDL_Event& event);
+
+bool isRightEvent(const SDL_Event& event);
+
+bool isEscapeEvent(const SDL_Event& event);
+
+bool isConfirmEvent(const SDL_Event& event);
+
 #endif	/* _MENUSYSTEM_H */
 

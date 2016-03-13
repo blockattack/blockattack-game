@@ -25,6 +25,7 @@ http://www.blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "stats.h"
+#include "MenuSystem.h"
 
 using namespace std;
 
@@ -159,26 +160,23 @@ void ScoresDisplay::Draw(SDL_Renderer* target) {
 }
 
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
-	if ( event.type == SDL_KEYDOWN ) {
-		if ( (event.key.keysym.sym == SDLK_RIGHT)) {
-			page++;
-			if (page>=numberOfPages) {
-				page = 0;
-			}
+	
+	if (isLeftEvent(event)) {
+		page++;
+		if (page>=numberOfPages) {
+			page = 0;
 		}
-		else if ( (event.key.keysym.sym == SDLK_LEFT)) {
-			page--;
-			if (page<0) {
-				page = numberOfPages-1;
-			}
+	}
+	
+	if (isRightEvent(event)) {
+		page--;
+		if (page<0) {
+			page = numberOfPages-1;
 		}
-
-		if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
-			isActive = false;
-		}
-		else if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
-			isActive = false;
-		}
+	}
+	
+	if (isConfirmEvent(event) || isEscapeEvent(event)) {
+		isActive = false;
 	}
 }
 
