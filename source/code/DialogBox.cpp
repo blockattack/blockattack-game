@@ -67,7 +67,7 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	}
 }
 
-void DialogBox::ProcessInput(const SDL_Event& event, bool &processed) {
+void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 	if (event.type == SDL_TEXTINPUT) {
 		if ((rk->ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
 			Mix_PlayChannel(1, typingChunk, 0);

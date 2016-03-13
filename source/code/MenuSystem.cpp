@@ -281,25 +281,25 @@ void Menu::run() {
 				Config::getInstance()->setShuttingDown(5);
 				running = false;
 			}
-			
+
 			if (isUpEvent(event)) {
 				marked--;
 				if (marked<0) {
 					marked = buttons.size();    //not -1, since exit is after the last element in the list
 				}
 			}
-			
+
 			if (isDownEvent(event)) {
 				marked++;
 				if (marked> (int)buttons.size()) {
 					marked = 0;
 				}
 			}
-			
+
 			if (isEscapeEvent(event) && isSubmenu) {
 				running = false;
 			}
-			
+
 			if (isConfirmEvent(event)) {
 				if (marked < (int)buttons.size()) {
 					buttons.at(marked)->doAction();

@@ -160,7 +160,7 @@ void ScoresDisplay::Draw(SDL_Renderer* target) {
 }
 
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
-	
+
 	if (isLeftEvent(event)) {
 		page++;
 		if (page>=numberOfPages) {

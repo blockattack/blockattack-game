@@ -39,11 +39,10 @@ struct StageClearElement {
 	bool cleared = false;
 	int time = 0;
 	int score = 0;
-	
+
 	template<class Archive>
-	void serialize(Archive & archive)
-	{
-		archive( cereal::make_nvp("cleared", cleared), cereal::make_nvp("time", time), cereal::make_nvp("score", score) ); 
+	void serialize(Archive& archive) {
+		archive( cereal::make_nvp("cleared", cleared), cereal::make_nvp("time", time), cereal::make_nvp("score", score) );
 	}
 };
 
@@ -56,7 +55,7 @@ Sint32 totalScore = 0;
 Sint32 totalTime = 0;
 
 using namespace std;
-		
+
 static void SaveStageClearStages() {
 	std::stringstream ss;
 	{
@@ -67,7 +66,7 @@ static void SaveStageClearStages() {
 }
 
 void StageClearSetClear(int Level, int score, int time) {
-	
+
 	stages.at(Level).cleared = true;
 	int gameEndedAfter = time;
 	if (stages.at(Level).score<score) {

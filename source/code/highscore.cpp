@@ -28,17 +28,17 @@ http://www.blockattack.net
 #include "cereal/types/vector.hpp"
 #include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
-#include <algorithm> 
+#include <algorithm>
 
 namespace cereal {
-	
+
 template<class Archive>
-void save(Archive & archive, record const & m) {
+void save(Archive& archive, record const& m) {
 	archive( cereal::make_nvp("Name", m.name), cereal::make_nvp("Score", m.score) );
 }
 
 template<class Archive>
-void load(Archive & archive, record & m) {
+void load(Archive& archive, record& m) {
 	archive( cereal::make_nvp("Name", m.name), cereal::make_nvp("Score", m.score) );
 }
 
@@ -47,7 +47,9 @@ void load(Archive & archive, record & m) {
 /*
  This sorts in reverse order. So the highest will be first
  */
-bool record_sorter (const record& i,const record& j) { return (i.score > j.score); }
+bool record_sorter (const record& i,const record& j) {
+	return (i.score > j.score);
+}
 
 Highscore::Highscore(const std::string& type) {
 	this->type = type;
@@ -61,9 +63,9 @@ Highscore::Highscore(const std::string& type) {
 				archive(cereal::make_nvp("highscore", table));
 			}
 		}
-		catch (cereal::Exception &e) {
+		catch (cereal::Exception& e) {
 			std::cerr << "Failed to read highscore " << filename << " due to formatting errors. Resetting the file. Reason: " <<
-				e.what() << std::endl;
+			          e.what() << std::endl;
 			table.clear();
 		}
 	}
@@ -111,7 +113,7 @@ void Highscore::addScore(const std::string& newName, int newScore) {
 
 record Highscore::getScoreNumber(int room) {
 	record ret;
-	if(room < static_cast<int>(table.size()) ) {
+	if (room < static_cast<int>(table.size()) ) {
 		ret = table.at(room);
 	}
 	return ret;

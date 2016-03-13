@@ -1179,7 +1179,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		strHolder = itoa(theGame2->GetSpeedLevel());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
 		//draw exit
-		bExit.Draw(screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);		
+		bExit.Draw(screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);
 	}
 	//player2 finnish
 
@@ -1562,7 +1562,7 @@ int main(int argc, char* argv[]) {
 		}
 		if (SDL_Init(SDL_INIT_GAMECONTROLLER ) != 0) {
 			cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << endl;
-		} 
+		}
 		InitGameControllers();
 		TTF_Init();
 		atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
@@ -1782,8 +1782,8 @@ int main(int argc, char* argv[]) {
 		Stats::getInstance()->save();
 
 		Config::getInstance()->save();
-		
-		
+
+
 
 	}
 	catch (exception& e) {
@@ -1922,7 +1922,7 @@ int runGame(int gametype, int level) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
 				}
-				
+
 				if (theGame.isGameOver() && isEscapeEvent(event)) {
 					done = 1;
 				}
@@ -2003,7 +2003,7 @@ int runGame(int gametype, int level) {
 						done=1;
 					}
 				}
-				
+
 				if (isPlayerUpEvent(1, event)) {
 					theGame.MoveCursor('N');
 				}
@@ -2124,7 +2124,7 @@ int runGame(int gametype, int level) {
 					        &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
 						nextLevel(theGame, SDL_GetTicks());
-						
+
 					}
 					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
 					        &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
@@ -2133,8 +2133,8 @@ int runGame(int gametype, int level) {
 						retryLevel(theGame, SDL_GetTicks());
 					}
 
-					if (mousex > xsize-bExitOffset && mousex < xsize-bExitOffset+bExitSize && 
-							mousey > ysize-bExitOffset && mousey < ysize-bExitOffset+bExitSize) {
+					if (mousex > xsize-bExitOffset && mousex < xsize-bExitOffset+bExitSize &&
+					        mousey > ysize-bExitOffset && mousey < ysize-bExitOffset+bExitSize) {
 						done = 1;
 					}
 					//cout << "Mouse x: " << mousex << ", mouse y: " << mousey << endl;

@@ -27,7 +27,7 @@ http://www.blockattack.net
 
 void InitGameControllers() {
 	std::cout << "Number of Game controllers: " << SDL_NumJoysticks() << std::endl;
-	SDL_GameController *controller = nullptr;
+	SDL_GameController* controller = nullptr;
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 		if (SDL_IsGameController(i)) {
 			controller = SDL_GameControllerOpen(i);

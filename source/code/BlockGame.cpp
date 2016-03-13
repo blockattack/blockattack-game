@@ -252,8 +252,8 @@ bool BlockGame::GetIsWinner()  const {
 }
 
 
-void BlockGame::NewGame(const BlockGameStartInfo &s) {
-	NewGame(s.ticks);	
+void BlockGame::NewGame(const BlockGameStartInfo& s) {
+	NewGame(s.ticks);
 	if (s.timeTrial) {
 		timetrial = true;
 		putStartBlocks();

@@ -32,7 +32,7 @@ using namespace std;
 
 Stats* Stats::instance = nullptr;
 
-const char * const statsFileName = "statsFile";
+const char* const statsFileName = "statsFile";
 
 Stats::Stats() {
 	statMap.clear();
