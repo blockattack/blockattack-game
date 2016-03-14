@@ -1489,6 +1489,7 @@ int main(int argc, char* argv[]) {
 		("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
 		("priority", "Causes the game to not sleep between frames.")
 		("verbose-basic", "Enables basic verbose messages")
+		("verbose-game-controller", "Enables verbose messages regarding controllers")
 		("print-search-path", "Prints the search path and quits")
 		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
 		        "Default: \"%s\"", LOCALEDIR).c_str())
@@ -1530,6 +1531,9 @@ int main(int argc, char* argv[]) {
 		}
 		if (vm.count("verbose-basic")) {
 			verboseLevel++;
+		}
+		if (vm.count("verbose-game-controller")) {
+			GameControllerSetVerbose(true);
 		}
 		if (vm.count("print-search-path")) {
 			for (const string& s : search_paths) {

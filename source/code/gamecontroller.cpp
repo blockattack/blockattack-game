@@ -23,15 +23,39 @@ http://www.blockattack.net
 
 #include "gamecontroller.h"
 #include "SDL_gamecontroller.h"
+#include "sago/platform_folders.h"
 #include <iostream>
 
+static bool verbose = false;
+
+void GameControllerSetVerbose(bool value) {
+	verbose = value;
+}
+
+static const char* GameControllerGetName(SDL_GameController *gamecontroller) {
+	const char* result = SDL_GameControllerName(gamecontroller);
+	if (!result) {
+		result = "Unnamed";
+	}
+	return result;
+}
+
 void InitGameControllers() {
-	std::cout << "Number of Game controllers: " << SDL_NumJoysticks() << std::endl;
+	std::string configFile = sago::getConfigHome()+"/blockattack/gamecontrollerdb.txt";
+	int errorCode = SDL_GameControllerAddMappingsFromFile(configFile.c_str());
+	if (errorCode == -1 && verbose) {
+		std::cerr << "Could not load mapping file: " << configFile << std::endl;
+	}
+	if (verbose) {
+		std::cout << "Number of Game controllers: " << SDL_NumJoysticks() << std::endl;
+	}
 	SDL_GameController* controller = nullptr;
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 		if (SDL_IsGameController(i)) {
 			controller = SDL_GameControllerOpen(i);
-			std::cout << "Supported game controller detected: " << SDL_GameControllerName(controller) << std::endl;
+			if (verbose) {
+				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  std::endl;
+			}
 		}
 	}
 }
