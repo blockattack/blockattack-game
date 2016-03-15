@@ -1,2 +1,6 @@
 to regenerate the manpage:
+gzip -9 -c blockattack.man > blockattack.6.gz
+
+COLUMNS=300 help2man --no-info --section=6 ../Game/blockattack > blockattack.man
+
 docbook-to-man blockattack.sgml|gzip -9 > blockattack.6.gz
