@@ -1483,9 +1483,20 @@ int main(int argc, char* argv[]) {
 		bindtextdomain (PACKAGE, LOCALEDIR);
 		bind_textdomain_codeset(PACKAGE, "utf-8");
 		textdomain (PACKAGE);
-		boost::program_options::options_description desc("Allowed options");
+		int consoleWidth = boost::program_options::options_description::m_default_line_length;
+		const char* columnsEnv = getenv("COLUMNS"); // Allows using this: COLUMNS=300 help2man
+		if (columnsEnv) {
+			consoleWidth = atoi(columnsEnv);
+		}
+		const char* commandname = "blockattack";
+		if (argv[0]) {
+			//NULL on Windows
+			commandname = argv[0];
+		}
+		boost::program_options::options_description desc("Allowed options", consoleWidth);
 		desc.add_options()
 		("help,h", "Displays this message")
+		("version", "Display the version information")
 		("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
 		("priority", "Causes the game to not sleep between frames.")
 		("verbose-basic", "Enables basic verbose messages")
@@ -1517,11 +1528,22 @@ int main(int argc, char* argv[]) {
 			savepath = getPathToSaveFiles();
 		}
 		if (vm.count("help")) {
-			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n"
-			                      "%s\n", VERSION_NUMBER, "www.blockattack.net");
+			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
+			                      "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
+			cout << "Usage: "<< commandname << " [OPTION]..." << endl;
 			cout << desc << endl;
-			cout << "The game is available under the GPL, see COPYING for details." << endl;
-			return 1;
+			cout << "Examples:" << endl;
+			cout << "\tblockattack\t Start the game normally" << endl;
+			cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << endl;
+			return 0;
+		}
+		if (vm.count("version")) {
+			cout << "blockattack : Block Attack - Rise of the Blocks " << VERSION_NUMBER << endl;
+			cout << "Copyright (C) 2005-2016 Poul Sander" << endl;
+			cout << "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" << endl;
+			cout << "This is free software: you are free to change and redistribute it." << endl;
+			cout << "There is NO WARRANTY, to the extent permitted by law." << endl;
+			return 0;
 		}
 		if (vm.count("nosound")) {
 			NoSound = true;
