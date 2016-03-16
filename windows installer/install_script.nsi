@@ -2,9 +2,9 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Block Attack - Rise Of the Blocks"
-!define PRODUCT_VERSION "1.4.1"
+!define PRODUCT_VERSION "2.0.0-SNAPSHOT"
 !define PRODUCT_PUBLISHER "Poul Sander"
-!define PRODUCT_WEB_SITE "http://blockattack.net"
+!define PRODUCT_WEB_SITE "http://www.blockattack.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\block_attack.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -37,7 +37,7 @@ var ICONS_GROUP
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\block_attack.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\blockattack.exe"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -58,14 +58,7 @@ ShowUnInstDetails show
 Section "Game Files" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite try
-  File "..\Game\block_attack.exe"
-  File "..\Game\libpng1.dll"
-  File "..\Game\SDL_image.dll"
-  File "..\Game\SDL_mixer.dll"
-  File "..\Game\SDL.dll"
-  File "..\Game\jpeg.dll"
-  File "..\Game\zlib1.dll"
-  File "..\Game\zlib.dll"
+  File "..\Game\blockattack.exe"
   File "..\Game\blockattack.data"
   SetOutPath "$INSTDIR"
   File "..\Game\COPYING.TXT"
@@ -73,18 +66,8 @@ Section "Game Files" SEC01
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Block Attack - Rise Of the Blocks.lnk" "$INSTDIR\block_attack.exe"
-  CreateShortCut "$DESKTOP\Block Attack - Rise Of the Blocks.lnk" "$INSTDIR\block_attack.exe"
-  !insertmacro MUI_STARTMENU_WRITE_END
-SectionEnd
-
-Section "Manual" SEC03
-  SetOutPath "$INSTDIR\docs"
-  File "..\block_attack_manual.pdf"
-
-; Shortcuts
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Manual.lnk" "$INSTDIR\DOCS\block_attack_manual.pdf"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Block Attack - Rise Of the Blocks.lnk" "$INSTDIR\blockattack.exe"
+  CreateShortCut "$DESKTOP\Block Attack - Rise Of the Blocks.lnk" "$INSTDIR\blockattack.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
@@ -102,7 +85,7 @@ Section -Post
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\block_attack.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\block_attack.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\blockattack.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -111,7 +94,6 @@ SectionEnd
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "The Game files, must be installed!"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "The Manual"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -256,6 +238,7 @@ Section Uninstall
   Delete "$INSTDIR\SDL_image.dll"
   Delete "$INSTDIR\libpng1.dll"
   Delete "$INSTDIR\block_attack.exe"
+  Delete "$INSTDIR\blockattack.exe"
   Delete "$INSTDIR\gmon.out"
   Delete "$INSTDIR\stderr.txt"
   Delete "$INSTDIR\stdout.txt"
