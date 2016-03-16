@@ -1711,7 +1711,7 @@ int main(int argc, char* argv[]) {
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 		//Open video
 		int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
-		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks",
+		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             xsize, ysize,
