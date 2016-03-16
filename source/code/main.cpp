@@ -29,10 +29,7 @@ http://www.blockattack.net
 
 #include <string.h>
 
-
-#ifndef VERSION_NUMBER
-#define VERSION_NUMBER "2.0.0-SNAPSHOT"
-#endif
+#include "version.h"
 
 //If DEBUG is defined: AI info and FPS will be written to screen
 #ifndef DEBUG
