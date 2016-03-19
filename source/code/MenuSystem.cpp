@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
@@ -25,6 +25,7 @@ http://blockattack.net
 #include "MenuSystem.h"
 #include "common.h"
 #include "global.hpp"
+#include "gamecontroller.h"
 
 static int mousex;
 static int mousey;
@@ -190,6 +191,16 @@ bool isUpEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value < -deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -202,6 +213,16 @@ bool isDownEvent(const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN ) {
 			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value > deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
 		}
 	}
 	return false;
@@ -218,6 +239,16 @@ bool isLeftEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value < -deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -230,6 +261,16 @@ bool isRightEvent(const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ) {
 			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value > deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
 		}
 	}
 	return false;

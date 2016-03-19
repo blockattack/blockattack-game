@@ -25,8 +25,16 @@ http://www.blockattack.net
 #include "SDL_gamecontroller.h"
 #include "sago/platform_folders.h"
 #include <iostream>
+#include <map>
 
 static bool verbose = false;
+
+struct ControllerStatus {
+	std::map<int, bool> AxisInDeadZone;
+};
+
+static std::map<SDL_JoystickID, ControllerStatus> controllerStatusMap;
+
 
 void GameControllerSetVerbose(bool value) {
 	verbose = value;
@@ -60,6 +68,24 @@ void InitGameControllers() {
 	}
 }
 
+void checkDeadZone(const SDL_Event& event) {
+	if (event.type != SDL_CONTROLLERAXISMOTION) {
+		return;  //assert?
+	}
+	int value = event.caxis.value;
+	if (value > -deadZoneLimit && value < deadZoneLimit) {
+		controllerStatusMap[event.caxis.which].AxisInDeadZone[event.caxis.axis] = true;
+	}
+}
+
+bool getDeadZone(SDL_JoystickID id, int axis) {
+	return controllerStatusMap[id].AxisInDeadZone[axis];
+}
+
+void setDeadZone(SDL_JoystickID id, int axis, bool value) {
+	controllerStatusMap[id].AxisInDeadZone[axis] = value;
+}
+
 bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 	if (playerNumber != 1) {
 		return false;
@@ -67,6 +93,16 @@ bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN ) {
 			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value > deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
 		}
 	}
 	return false;
@@ -81,6 +117,16 @@ bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
 			return true;
 		}
 	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value < -deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -93,6 +139,16 @@ bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
 			return true;
 		}
 	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value < -deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -103,6 +159,16 @@ bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ) {
 			return true;
+		}
+	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent &a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value > deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
 		}
 	}
 	return false;
