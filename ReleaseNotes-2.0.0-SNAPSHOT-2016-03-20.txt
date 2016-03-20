@@ -1,0 +1,27 @@
+This is a SNAPSHOT of the current development branch towards 2.0.0
+
+While this contains some regressions it will still be far supperior to the old versions thanks to better keyboard and gamepad support.
+
+
+Compared to the old 1.4.2 a number of changes:
+* Uses SDL2. This means textures and sprites instead of old surfaces.
+* New config format
+* TTF font support
+* Translation support
+* New keyboard and game controller friendly menu system
+* Better behind the scenes handeling
+* Build by a CMake system
+* Location of saved games changed in Linux
+
+
+Some known regressions:
+* All gamecontrollers are assigned to player 1
+* No mouse/touch play. I want to introduce this in a new way
+* No stored replays.
+* No net play. 
+
+The last 3 elements are all related to 
+
+Some regressins that will not be fixed:
+* Only SDL2 supported gamecontrollers are supported
+* Old configs and some saves are lost then converting to 2.0.0+
