@@ -253,6 +253,7 @@ bool BlockGame::GetIsWinner()  const {
 
 
 void BlockGame::NewGame(const BlockGameStartInfo& s) {
+	this->recordStats = s.recordStats;
 	NewGame(s.ticks);
 	if (s.timeTrial) {
 		timetrial = true;
@@ -306,10 +307,10 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 	if (s.vsMode) {
 		vsMode = true;
 		AI_Enabled = s.AI;
-		if (!AI_Enabled) {
+		if (recordStats) {
 			Stats::getInstance()->addOne("VSgamesStarted");
 		}
-		else {
+		if (AI_Enabled) {
 			name = "CPU";
 			setAIlevel(s.level);
 		}
@@ -372,12 +373,12 @@ void BlockGame::NewGame( unsigned int ticks) {
 void BlockGame::setPlayerWon() {
 	if (!bGameOver || !hasWonTheGame) {
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
-		if (!AI_Enabled) {
+		if (recordStats) {
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
 		bGameOver = true;
 		PlayerWonEvent();
-		if (!AI_Enabled) {
+		if (recordStats) {
 			Stats::getInstance()->addOne("totalWins");
 			if (garbageTarget->AI_Enabled) {
 				//We have defeated an AI
@@ -395,13 +396,13 @@ void BlockGame::setPlayerWon() {
 //Prints "draw" and ends the game
 void BlockGame::setDraw() {
 	bGameOver = true;
-	if (!AI_Enabled) {
+	if (recordStats) {
 		TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 	}
 	hasWonTheGame = false;
 	bDraw = true;
 	DrawEvent();
-	if (!AI_Enabled) {
+	if (recordStats) {
 		Stats::getInstance()->addOne("totalDraws");
 	}
 }
@@ -1017,9 +1018,6 @@ void BlockGame::ClearBlocks() {
 		}
 	}
 
-	//Create garbage as a result
-	//if((vsMode)&&(chainSize[chain]>1)) garbageTarget->CreateGarbage(6,chainSize[chain]-1);
-
 	//Calculate chain
 	chain=0;
 	for (int i=0; i<6; i++) {
@@ -1042,7 +1040,7 @@ void BlockGame::ClearBlocks() {
 				if (chainSize[i]>4) {
 					LongChainDoneEvent();
 				}
-				if (chainSize[i]>1 && !puzzleMode && !AI_Enabled) {
+				if (chainSize[i]>1 && !puzzleMode && recordStats) {
 					Stats::getInstance()->addOne((string)"chainX"+itoa(chainSize[i]));
 				}
 				chainUsed[i]=false;
@@ -1055,7 +1053,7 @@ void BlockGame::ClearBlocks() {
 void BlockGame::SetGameOver() {
 	if (!bGameOver) {
 		gameEndedAfter = ticks-gameStartedAt; //We game ends now!
-		if (!AI_Enabled) {
+		if (recordStats) {
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
 	}
@@ -1211,7 +1209,7 @@ void BlockGame::PushLineInternal() {
 		AI_LineOffset++;
 		nrPushedPixel=(int)((double)(pushedPixelAt-gameStartedAt)/(1000.0*speed));
 
-		if (!AI_Enabled) {
+		if (recordStats) {
 			Stats::getInstance()->addOne("linesPushed");
 		}
 	} //if !bGameOver

@@ -52,6 +52,7 @@ struct BlockGameStartInfo {
 	bool singlePuzzle = false;
 	int level = 0;
 	bool AI = false;
+	bool recordStats = true;
 	bool vsMode = false;
 	int startBlocks = -1;
 	int handicap = 0;
@@ -126,6 +127,7 @@ protected:
 	bool hasWonTheGame;
 	int AI_MoveSpeed;   //How often will the computer move? milliseconds
 	bool AI_Enabled;
+	bool recordStats = true;
 
 	int handicap;
 	
