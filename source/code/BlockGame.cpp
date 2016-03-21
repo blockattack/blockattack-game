@@ -873,7 +873,9 @@ void BlockGame::ClearBlocks() {
 					grey++;
 				}
 				if ((vsMode) && (grey>2) && (board[j][i]%10000000==6)) {
-					garbageTarget->CreateGreyGarbage();
+					GarbageStruct s;
+					s.setGarbage(6, 1, true);
+					this->garbageSendQueue.push_back(s);
 				}
 				if ((board[j][i]>-1)&&(board[j][i]%10000000<7)) {
 					board[j][i]+=BLOCKWAIT+10*FALLTIME;
@@ -925,7 +927,8 @@ void BlockGame::ClearBlocks() {
 		}
 	} //This was there text was added
 
-	if (vsMode)
+	if (vsMode) {
+		GarbageStruct s;
 		switch (combo) {
 		case 0:
 		case 1:
@@ -933,53 +936,59 @@ void BlockGame::ClearBlocks() {
 		case 3:
 			break;
 		case 4:
-			garbageTarget->CreateGarbage(3, 1);
+			s.setGarbage(3,1);
 			break;
 		case 5:
-			garbageTarget->CreateGarbage(4, 1);
+			s.setGarbage(4,1);
 			break;
 		case 6:
-			garbageTarget->CreateGarbage(5, 1);
+			s.setGarbage(5,1);
 			break;
 		case 7:
-			garbageTarget->CreateGarbage(6, 1);
+			s.setGarbage(6,1);
 			break;
 		case 8:
-			garbageTarget->CreateGarbage(4, 1);
-			garbageTarget->CreateGarbage(4, 1);
+			s.setGarbage(4,1);
+			s.setGarbage(4,1);
 			break;
 		case 9:
-			garbageTarget->CreateGarbage(5, 1);
-			garbageTarget->CreateGarbage(4, 1);
+			s.setGarbage(5,1);
+			s.setGarbage(4,1);
 			break;
 		case 10:
-			garbageTarget->CreateGarbage(5, 1);
-			garbageTarget->CreateGarbage(5, 1);
+			s.setGarbage(5,1);
+			s.setGarbage(5,1);
 			break;
 		case 11:
-			garbageTarget->CreateGarbage(6, 1);
-			garbageTarget->CreateGarbage(5, 1);
+			s.setGarbage(6,1);
+			s.setGarbage(5,1);
 			break;
 		case 12:
-			garbageTarget->CreateGarbage(6, 1);
-			garbageTarget->CreateGarbage(6, 1);
+			s.setGarbage(6,1);
+			s.setGarbage(6,1);
 			break;
 		case 13:
-			garbageTarget->CreateGarbage(5, 1);
-			garbageTarget->CreateGarbage(5, 1);
-			garbageTarget->CreateGarbage(4, 1);
+			s.setGarbage(5,1);
+			s.setGarbage(5,1);
+			s.setGarbage(4,1);
 			break;
 		default:
-			garbageTarget->CreateGarbage(5, 1);
-			garbageTarget->CreateGarbage(5, 1);
-			garbageTarget->CreateGarbage(4, 1);
+			s.setGarbage(5,1);
+			s.setGarbage(5,1);
+			s.setGarbage(4,1);
 			break;
 		}
-	for (int i=0; i<30; i++)
-		for (int j=0; j<6; j++)
+		if (s.width > 0) {
+			garbageSendQueue.push_back(s);
+		}
+	}
+	for (int i=0; i<30; i++) {
+		for (int j=0; j<6; j++) {
 			if (garbageToBeCleared[j][i]) {
 				GarbageClearer(j, i, board[j][i]%1000000, true, chain); //Clears the blocks and all blocks connected to it.
 			}
+		}
+	}
 
 	chain=0;
 
@@ -1026,7 +1035,9 @@ void BlockGame::ClearBlocks() {
 		for (int i=0; i<NUMBEROFCHAINS; i++) {
 			if (chainUsed[i]==true) {
 				if ((vsMode)&&(chainSize[i]>1)) {
-					garbageTarget->CreateGarbage(6, chainSize[i]-1);
+					GarbageStruct s;
+					s.setGarbage(6,chainSize[i]-1);
+					this->garbageSendQueue.push_back(s);
 				}
 				if (chainSize[i]>4) {
 					LongChainDoneEvent();
@@ -1852,6 +1863,13 @@ void BlockGame::setGarbageTarget(BlockGame* garbageTarget) {
 
 BlockGame* BlockGame::getGarbageTarget() const {
 	return garbageTarget;
+}
+
+void BlockGame::PopSendGarbage(std::vector<GarbageStruct>& poppedData) {
+	for (const GarbageStruct& g : this->garbageSendQueue) {
+		poppedData.push_back(g);
+	}
+	this->garbageSendQueue.clear();
 }
 
 //Play the next level

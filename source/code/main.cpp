@@ -2254,6 +2254,26 @@ int runGame(int gametype, int level) {
 					theGame.setPlayerWon();
 					//twoPlayers = false;
 				}
+				vector<GarbageStruct> gs;
+				theGame.PopSendGarbage(gs);
+				for (const GarbageStruct& g : gs ) {
+					if (g.greyGarbage) {
+						theGame2.CreateGreyGarbage();
+					}
+					else {
+						theGame2.CreateGarbage(g.width, g.height);
+					}
+				}
+				gs.clear();
+				theGame2.PopSendGarbage(gs);
+				for (const GarbageStruct& g : gs ) {
+					if (g.greyGarbage) {
+						theGame.CreateGreyGarbage();
+					}
+					else {
+						theGame.CreateGarbage(g.width, g.height);
+					}
+				}
 			}
 
 		if (theGame.isGameOver() && registerTTHighscorePlayer1) {

@@ -60,8 +60,13 @@ struct BlockGameStartInfo {
 
 struct GarbageStruct {
 	bool greyGarbage = false;
-	int width = 6;
-	int height = 1;
+	int width = 0;
+	int height = 0;
+	void setGarbage(int w, int h, bool g = false) {
+		greyGarbage = g;
+		width = w;
+		height = h;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +128,8 @@ protected:
 	bool AI_Enabled;
 
 	int handicap;
-
+	
+	std::vector<GarbageStruct> garbageSendQueue;
 
 	int AIlineToClear;
 
@@ -179,6 +185,7 @@ public:
 	bool CreateGarbage(int wide, int height);
 	//Creates garbage using a given wide and height
 	bool CreateGreyGarbage();
+	void PopSendGarbage(std::vector<GarbageStruct>& poppedData);
 	//prints "Game Over" and ends game
 	void SetGameOver();
 	//Moves the cursor, receaves N,S,E or W as a char an moves as desired
