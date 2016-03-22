@@ -166,7 +166,6 @@ void BlockGame::setHandicap(int globalHandicap) {
 //Set the move speed of the AI based on the aiLevel parameter
 //Also enables AI
 void BlockGame::setAIlevel(int aiLevel) {
-	AI_Enabled = true;
 	AI_MoveSpeed=120-(20*(aiLevel-3));
 };
 
@@ -254,6 +253,9 @@ bool BlockGame::GetIsWinner()  const {
 
 void BlockGame::NewGame(const BlockGameStartInfo& s) {
 	this->recordStats = s.recordStats;
+	if (s.AI) {
+		recordStats = false;
+	}
 	NewGame(s.ticks);
 	if (s.timeTrial) {
 		timetrial = true;
@@ -309,6 +311,10 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 		AI_Enabled = s.AI;
 		if (recordStats) {
 			Stats::getInstance()->addOne("VSgamesStarted");
+		}
+		if (s.vsAI) {
+			setAIlevel(s.level);
+			vsAI = true;
 		}
 		if (AI_Enabled) {
 			name = "CPU";
@@ -380,12 +386,12 @@ void BlockGame::setPlayerWon() {
 		PlayerWonEvent();
 		if (recordStats) {
 			Stats::getInstance()->addOne("totalWins");
-			if (garbageTarget->AI_Enabled) {
+			if (vsAI) {
 				//We have defeated an AI
 				Stats::getInstance()->addOne("defeatedAI"+itoa(garbageTarget->getAIlevel()));
 			}
 		}
-		if (AI_Enabled && !(garbageTarget->AI_Enabled)) {
+		if (AI_Enabled && vsAI) {
 			//The AI have defeated a human player
 			Stats::getInstance()->addOne("defeatedByAI"+itoa(getAIlevel()));
 		}

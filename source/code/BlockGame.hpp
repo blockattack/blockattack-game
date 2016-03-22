@@ -52,8 +52,16 @@ struct BlockGameStartInfo {
 	bool singlePuzzle = false;
 	int level = 0;
 	bool AI = false;
+	/**
+	 * True means that stats will be recorded.
+	 * If AI is true then this will be overruled to false 
+	 */
 	bool recordStats = true;
 	bool vsMode = false;
+	/**
+	 * Set to true if we are fighting an AI. level should be the AI level we are fighting
+	 */
+	bool vsAI = false;
 	int startBlocks = -1;
 	int handicap = 0;
 	int gameSpeed = 0;
@@ -128,6 +136,7 @@ protected:
 	int AI_MoveSpeed;   //How often will the computer move? milliseconds
 	bool AI_Enabled;
 	bool recordStats = true;
+	bool vsAI = false;  //Set to true for single player vs
 
 	int handicap;
 	
@@ -271,7 +280,6 @@ private:
 ////////
 //////////////////////////////////////////////////////////////////
 	//Set the move speed of the AI based on the aiLevel parameter
-	//Also enables AI
 	void setAIlevel(int aiLevel);
 	void PushLineInternal();
 	//Updates evrything, if not called nothing happends

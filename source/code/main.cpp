@@ -1898,10 +1898,11 @@ int runGame(int gametype, int level) {
 				BlockGameStartInfo startInfo;
 				startInfo.ticks = SDL_GetTicks();
 				startInfo.vsMode = true;
+				startInfo.vsAI = true;
+				startInfo.level = theAIlevel;
 				theGame.NewGame(startInfo);
 				theGame.setGarbageTarget(&theGame2);
 				startInfo.AI = true;
-				startInfo.level = theAIlevel;
 				theGame2.NewGame(startInfo);
 				theGame2.setGarbageTarget(&theGame);
 				DrawIMG(backgroundImage, screen, 0, 0);
