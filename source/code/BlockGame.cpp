@@ -83,7 +83,6 @@ BlockGame::BlockGame() {
 	srand((int)time(nullptr));
 	nrFellDown = 0;
 	nrPushedPixel = 0;
-	garbageTarget = this;
 	nrStops=0;
 	//topx = tx;
 	//topy = ty;
@@ -388,7 +387,7 @@ void BlockGame::setPlayerWon() {
 			Stats::getInstance()->addOne("totalWins");
 			if (vsAI) {
 				//We have defeated an AI
-				Stats::getInstance()->addOne("defeatedAI"+itoa(garbageTarget->getAIlevel()));
+				Stats::getInstance()->addOne("defeatedAI"+itoa(getAIlevel()));
 			}
 		}
 		if (AI_Enabled && vsAI) {
@@ -1859,14 +1858,6 @@ bool BlockGame::isSinglePuzzle() const {
 
 int BlockGame::getLevel() const {
 	return Level;
-}
-
-void BlockGame::setGarbageTarget(BlockGame* garbageTarget) {
-	this->garbageTarget = garbageTarget;
-}
-
-BlockGame* BlockGame::getGarbageTarget() const {
-	return garbageTarget;
 }
 
 void BlockGame::PopSendGarbage(std::vector<GarbageStruct>& poppedData) {

@@ -1456,9 +1456,7 @@ static void StartTwoPlayerVs() {
 	startInfo.handicap = player1handicap;
 	startInfo2.handicap = player2handicap;
 	player1->NewGame(startInfo);
-	player1->setGarbageTarget(player2);
 	player2->NewGame(startInfo2);
-	player2->setGarbageTarget(player1);
 	//vsMode = true;
 	twoPlayers = true;
 	player1->name = player1name;
@@ -1901,10 +1899,8 @@ int runGame(int gametype, int level) {
 				startInfo.vsAI = true;
 				startInfo.level = theAIlevel;
 				theGame.NewGame(startInfo);
-				theGame.setGarbageTarget(&theGame2);
 				startInfo.AI = true;
 				theGame2.NewGame(startInfo);
-				theGame2.setGarbageTarget(&theGame);
 				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers = true; //Single player, but AI plays
 				theGame.name = player1name;

@@ -117,7 +117,6 @@ protected:
 	unsigned int gameEndedAfter;		//How long did the game last?
 	int linesCleared;
 	int TowerHeight;
-	BlockGame *garbageTarget;
 	int board[7][30];
 	int stop;
 	int speedLevel;
@@ -210,8 +209,6 @@ public:
 	void setPlayerWon();
 	//Prints "draw" and ends the game
 	void setDraw();
-    void setGarbageTarget(BlockGame* garbageTarget);
-    BlockGame* getGarbageTarget() const;
 private:
 	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
@@ -275,9 +272,8 @@ private:
 	void AI_ClearVertical();
 	bool firstLineCreated;
 	void AI_Move();
-//////////////////////////////////////////////////////////////////////////
-///////////////////////////// AI ends here! //////////////////////////////
-////////
+//////////////////////////////////////////////////////////////////
+///////////////////////////// AI ends here! //////////////////////
 //////////////////////////////////////////////////////////////////
 	//Set the move speed of the AI based on the aiLevel parameter
 	void setAIlevel(int aiLevel);
