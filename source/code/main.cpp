@@ -625,7 +625,7 @@ public:
 private:
 	//Draws all the bricks to the board (including garbage)
 	void PaintBricks() const {
-		for (int i=0; ((i<13)&&(i<30)); i++)
+		for (int i=0; ((i<13)&&(i<30)); i++) {
 			for (int j=0; j<6; j++) {
 				if ((board[j][i]%10 != -1) && (board[j][i]%10 < 7) && ((board[j][i]/1000000)%10==0)) {
 					DrawImgBoardBounded(bricks[board[j][i]%10],  j*bsize, bsize*12-i*bsize-pixels);
@@ -646,7 +646,7 @@ private:
 					else {
 						left = board[j-1][i];
 					}
-					if (j>5) {
+					if (j>=5) {
 						right = -1;
 					}
 					else {
@@ -713,6 +713,7 @@ private:
 					}
 				}
 			}
+		}
 		const int j = 0;
 
 		int garbageSize=0;
