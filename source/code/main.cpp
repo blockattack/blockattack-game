@@ -627,7 +627,7 @@ private:
 	void PaintBricks() const {
 		for (int i=0; ((i<13)&&(i<30)); i++) {
 			for (int j=0; j<6; j++) {
-				int basicBrick = board[j][i]%10;
+				int basicBrick = board[j][i]%10; //The basic brick, stored on the least significant digit
 				if ((basicBrick > -1) && (basicBrick < 7) && ((board[j][i]/1000000)%10==0)) {
 					DrawImgBoardBounded(bricks[basicBrick],  j*bsize, bsize*12-i*bsize-pixels);
 					if ((board[j][i]/BLOCKWAIT)%10==1) {

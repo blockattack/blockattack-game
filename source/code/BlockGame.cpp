@@ -1453,80 +1453,66 @@ void BlockGame::AI_ClearTower() {
 void BlockGame::AI_ClearHori() {
 	//   cout << "AI: ClearHori";
 	int lowestLine = AIlineToClear;
-	//AIcolorToClear
-	bool found =true;
-	/*for(int i; (i<12)&&(!found);i++)
-	 * {
-	 * if(horiInLine(i)>2)
-	 * {
-	 * int lowestLine = i;
-	 * found = true;
-	 * }
-	 * }*/
 	for (int i=0; i<7; i++) {
 		if (nrOfType(lowestLine, i)>2) {
 			AIcolorToClear = i;
 		}
 	}
-	if (found) {
-		if (cursory>lowestLine-1) {
-			MoveCursor('S');
+	if (cursory>lowestLine-1) {
+		MoveCursor('S');
+	}
+	else if (cursory<lowestLine-1) {
+		MoveCursor('N');
+	}
+	else if (nrOfType(lowestLine, AIcolorToClear)>2) {
+		int left=0, right=0;
+		if (board[0][lowestLine]==AIcolorToClear) {
+			left++;
 		}
-		else if (cursory<lowestLine-1) {
-			MoveCursor('N');
+		if (board[1][lowestLine]==AIcolorToClear) {
+			left++;
 		}
-		else if (nrOfType(lowestLine, AIcolorToClear)>2) {
-			int left=0, right=0;
-			if (board[0][lowestLine]==AIcolorToClear) {
-				left++;
+		if (board[2][lowestLine]==AIcolorToClear) {
+			left++;
+		}
+		if (board[3][lowestLine]==AIcolorToClear) {
+			right++;
+		}
+		if (board[4][lowestLine]==AIcolorToClear) {
+			right++;
+		}
+		if (board[5][lowestLine]==AIcolorToClear) {
+			right++;
+		}
+		int xplace = 0;
+		if (left<right) {
+			//   cout << ", right>left";
+			int count=0;
+			for (int i=0; (i<4)&&(count<1); i++)
+				if ((board[i][lowestLine]==AIcolorToClear)&&((i==0)||(board[i+1][lowestLine]!=AIcolorToClear))) {
+					count++;
+					xplace = i;
+				}
+		}
+		else {
+			//   cout << ", left>=right";
+			int count=0;
+			for (int i=3; (i<=5)&&(count<1); i++) {
+				if ((board[i][lowestLine]==AIcolorToClear)&&(board[i-1][lowestLine]!=AIcolorToClear)) {
+					count++;
+					xplace = --i;
+				}
 			}
-			if (board[1][lowestLine]==AIcolorToClear) {
-				left++;
-			}
-			if (board[2][lowestLine]==AIcolorToClear) {
-				left++;
-			}
-			if (board[3][lowestLine]==AIcolorToClear) {
-				right++;
-			}
-			if (board[4][lowestLine]==AIcolorToClear) {
-				right++;
-			}
-			if (board[5][lowestLine]==AIcolorToClear) {
-				right++;
-			}
-			int xplace = 0;
-			if (left<right) {
-				//   cout << ", right>left";
-				int count=0;
-				for (int i=0; (i<4)&&(count<1); i++)
-					if ((board[i][lowestLine]==AIcolorToClear)&&((i==0)||(board[i+1][lowestLine]!=AIcolorToClear))) {
-						count++;
-						xplace = i;
-					}
-			}
-			else {
-				//   cout << ", left>=right";
-				int count=0;
-				for (int i=3; (i<=5)&&(count<1); i++)
-					if ((board[i][lowestLine]==AIcolorToClear)&&(board[i-1][lowestLine]!=AIcolorToClear)) {
-						count++;
-						xplace = --i;
-					}
-			}
-			//cout << ", xplace: " << xplace;
-			if (cursorx<xplace) {
-				MoveCursor('E');
-			}
-			else if (cursorx>xplace) {
-				MoveCursor('W');
-			}
-			else if (cursorx==xplace) {
-				SwitchAtCursor();
-			}
-			else {
-				AIstatus = 0;
-			}
+		}
+		//cout << ", xplace: " << xplace;
+		if (cursorx<xplace) {
+			MoveCursor('E');
+		}
+		else if (cursorx>xplace) {
+			MoveCursor('W');
+		}
+		else if (cursorx==xplace) {
+			SwitchAtCursor();
 		}
 		else {
 			AIstatus = 0;
