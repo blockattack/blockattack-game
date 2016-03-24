@@ -343,7 +343,7 @@ public:
 	int addBall(int x, int y,bool right,int color) {
 		int ballNumber = 0;
 		//Find a free ball
-		while ((ballUsed[ballNumber])&&(ballNumber<maxNumberOfBalls)) {
+		while (ballNumber<maxNumberOfBalls && ballUsed[ballNumber]) {
 			ballNumber++;
 		}
 		//Could not find a free ball, return -1
