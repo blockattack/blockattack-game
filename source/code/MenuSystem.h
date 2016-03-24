@@ -65,10 +65,10 @@ private:
 
 public:
 	//Is the button marked?
-	bool marked;
+	bool marked = false;
 	//Where is the button on the screen
-	int x;
-	int y;
+	int x = 0;
+	int y = 0;
 
 	Button();
 	Button(const Button& b);
@@ -89,7 +89,7 @@ public:
 	int getHeight();
 
 	//May hold any other information the callback might need
-	int iGeneric1;
+	int iGeneric1 = 0;
 };
 
 
@@ -100,7 +100,7 @@ private:
 	Button exit; //The exit button is special since it does not have a callback function
 	bool isSubmenu; //True if the menu is a submenu
 	int marked; //The index of the marked button (for keyboard up/down)
-	bool running; //The menu is running. The menu will terminate then this is false
+	bool running = true; //The menu is running. The menu will terminate then this is false
 	SDL_Renderer *screen; //Pointer to the screen to draw to
 	std::string title;
 //        SDL_Surface *background; //Pointer to the background image
