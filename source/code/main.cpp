@@ -377,14 +377,14 @@ static BallManager theBallManager;
 //a explosions, non moving
 class AnExplosion {
 private:
-	int x;
-	int y;
-	Uint8 frameNumber;
+	int x = 0;
+	int y = 0;
+	Uint8 frameNumber = 0;
 #define frameLength 80
 	//How long an image in an animation should be showed
 #define maxFrame 4
 	//How many images there are in the animation
-	unsigned long int placeTime; //Then the explosion occored
+	unsigned long int placeTime = 0; //Then the explosion occored
 public:
 
 	AnExplosion() {

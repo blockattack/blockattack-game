@@ -613,7 +613,7 @@ bool BlockGame::CreateGarbage(int wide, int height) {
 			height = 12;
 		}
 		int startPosition = 12;
-		while ((!(LineEmpty(startPosition))) || (startPosition == 29)) {
+		while (!LineEmpty(startPosition) && startPosition < 29) {
 			startPosition++;
 		}
 		if (startPosition == 29) {
