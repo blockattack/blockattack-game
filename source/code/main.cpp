@@ -430,7 +430,7 @@ public:
 
 	int addExplosion(int x, int y) {
 		int explosionNumber = 0;
-		while ((explosionUsed[explosionNumber])&&(explosionNumber<maxNumberOfBalls)) {
+		while ( explosionNumber<maxNumberOfBalls && explosionUsed[explosionNumber]) {
 			explosionNumber++;
 		}
 		if (explosionNumber==maxNumberOfBalls) {
