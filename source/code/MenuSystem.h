@@ -36,14 +36,14 @@ http://blockattack.net
 struct ButtonGfx
 {
 	//Holds the graphic for a button that is selected
-	sago::SagoSprite* marked;
+	sago::SagoSprite* marked = nullptr;
 	//Holds the graphic for a button that is not selected
-	sago::SagoSprite* unmarked;
+	sago::SagoSprite* unmarked = nullptr;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
-	int xsize;
-	int ysize;
+	int xsize = 0;
+	int ysize = 0;
 	//A TTFont used for writing the label on the buttons
-	NFont* thefont;
+	NFont* thefont = nullptr;
 	void setSurfaces(sago::SagoSprite* marked, sago::SagoSprite* unmarked);
 };
 
@@ -59,9 +59,9 @@ private:
 	void (*action)(Button *b);
 
 	//If true the menu should also be closed then the button is clicked
-	bool popOnRun;
+	bool popOnRun = false;
 
-	ButtonGfx *gfx;
+	ButtonGfx *gfx = nullptr;
 
 public:
 	//Is the button marked?
@@ -98,13 +98,11 @@ class Menu
 private:
 	std::vector<Button*> buttons; //Vector holder the buttons
 	Button exit; //The exit button is special since it does not have a callback function
-	bool isSubmenu; //True if the menu is a submenu
-	int marked; //The index of the marked button (for keyboard up/down)
+	bool isSubmenu = false; //True if the menu is a submenu
+	int marked = 0; //The index of the marked button (for keyboard up/down)
 	bool running = true; //The menu is running. The menu will terminate then this is false
-	SDL_Renderer *screen; //Pointer to the screen to draw to
+	SDL_Renderer *screen = nullptr; //Pointer to the screen to draw to
 	std::string title;
-//        SDL_Surface *background; //Pointer to the background image
-
 	void drawSelf();        //Private function to draw the screen
 	void placeButtons(); //Rearanges the buttons to the correct place.
 public:
@@ -126,7 +124,7 @@ class FileMenu
 private:
 	std::string pm_path;
 	std::string pm_fileending;
-	bool pm_hidden_files;
+	bool pm_hidden_files = false;
 public:
 	FileMenu(const std::string& path, const std::string& fileending, bool hidden_files = false);
 

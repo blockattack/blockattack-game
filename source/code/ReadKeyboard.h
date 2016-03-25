@@ -34,7 +34,7 @@ Added to project 5/11-2004
 class ReadKeyboard
 {
 private:
-	int maxLength;
+	int maxLength = 0;
 	std::string::iterator position;
 	std::string text_string;
 	void putchar(const std::string& );

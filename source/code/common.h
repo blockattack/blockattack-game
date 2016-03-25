@@ -42,10 +42,10 @@ http://www.blockattack.net
 
 struct commonTime
 {
-	unsigned int days;
-	unsigned int hours;
-	unsigned int minutes;
-	unsigned int seconds;
+	unsigned int days = 0;
+	unsigned int hours = 0;
+	unsigned int minutes = 0;
+	unsigned int seconds = 0;
 };
 
 std::string itoa(int num) __attribute__((const));
@@ -119,7 +119,7 @@ private:
 	void load();
 
 	/* tells if the user has requested a shutdown */
-	long shuttingDown;
+	long shuttingDown = 0;
 protected:
 
 	Config();
