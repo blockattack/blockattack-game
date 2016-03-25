@@ -115,10 +115,11 @@ BlockGame::BlockGame() {
 	pushedPixelAt = gameStartedAt;
 	nextGarbageNumber = 10;
 	handicap=0;
-	for (int i=0; i<7; i++)
+	for (int i=0; i<7; i++) {
 		for (int j=0; j<30; j++) {
 			board[i][j] = -1;
 		}
+	}
 	for (int i=0; i<NUMBEROFCHAINS; i++) {
 		chainUsed[i]=false;
 		chainSize[i] = 0;

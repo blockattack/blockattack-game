@@ -462,11 +462,11 @@ static ExplosionManager theExplosionManager;
 //text pop-up
 class TextMessage {
 private:
-	int x;
-	int y;
+	int x = 0;
+	int y = 0;
 	string textt;
-	unsigned long int time;
-	unsigned long int placeTime; //Then the text was placed
+	unsigned long int time = 0;
+	unsigned long int placeTime = 0; //Then the text was placed
 public:
 
 	TextMessage() {

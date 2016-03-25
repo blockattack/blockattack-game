@@ -109,41 +109,45 @@ private:
 
 //public:
 protected:
-	int lastCounter;
+	int lastCounter = 0;
 	std::string strHolder;
-	bool bDraw;
-	unsigned int ticks;
-	unsigned int gameStartedAt;
-	unsigned int gameEndedAfter;		//How long did the game last?
-	int linesCleared;
-	int TowerHeight;
+	bool bDraw = false;
+	unsigned int ticks = 0;
+	unsigned int gameStartedAt = 0;
+	unsigned int gameEndedAfter = 0;		//How long did the game last?
+	int linesCleared = 0;
+	int TowerHeight = 0;
 	int board[7][30];
-	int stop;
-	int speedLevel;
-	int pixels;
-	int MovesLeft;
-	bool timetrial, stageClear, vsMode, puzzleMode;
-	int stageClearLimit; //stores number of lines user must clear to win
-	int combo;
-	int chain;
-	int cursorx; //stores cursor position
-	int cursory; // -||-
-	double speed, baseSpeed; //factor for speed. Lower value = faster gameplay
-	int score;
-	bool bGameOver;
-	bool hasWonTheGame;
-	int AI_MoveSpeed;   //How often will the computer move? milliseconds
-	bool AI_Enabled;
+	int stop = 0;
+	int speedLevel = 0;
+	int pixels = 0;
+	int MovesLeft = 0;
+	bool timetrial = false;
+	bool stageClear = false;
+	bool vsMode = false;
+	bool puzzleMode = false;
+	int stageClearLimit = 0; //stores number of lines user must clear to win
+	int combo = 0;
+	int chain = 0;
+	int cursorx = 0; //stores cursor position
+	int cursory = 0; // -||-
+	double speed = 0.0;
+	double baseSpeed = 0.0; //factor for speed. Lower value = faster gameplay
+	int score = 0;
+	bool bGameOver = false;
+	bool hasWonTheGame = false;
+	int AI_MoveSpeed = 0;   //How often will the computer move? milliseconds
+	bool AI_Enabled = false;
 	bool recordStats = true;
 	bool vsAI = false;  //Set to true for single player vs
 
-	int handicap;
+	int handicap = 0;
 	
 	std::vector<GarbageStruct> garbageSendQueue;
 
-	int AIlineToClear;
+	int AIlineToClear = 0;
 
-	short AIstatus;   //Status flags:
+	short AIstatus = 0;   //Status flags:
 	//0: nothing, 2: clear tower, 3: clear horisontal, 4: clear vertical
 	//1: make more lines, 5: make 2 lines, 6: make 1 line
 
