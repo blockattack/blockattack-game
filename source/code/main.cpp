@@ -48,7 +48,6 @@ http://www.blockattack.net
 #include <SDL_mixer.h>      //Used for sound & music
 #include <SDL_image.h>      //To load PNG images!
 #include <physfs.h>         //Abstract file system. To use containers
-#include "physfs_stream.hpp" //To use C++ style file streams
 #include "Libs/NFont.h"
 //#include "ttfont.h"        //To use True Type Fonts in SDL
 //#include "config.h"

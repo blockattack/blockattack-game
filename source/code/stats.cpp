@@ -24,7 +24,6 @@ http://www.blockattack.net
 #include "stats.h"
 #include "common.h"
 #include "os.hpp"
-#include "physfs_stream.hpp"
 #include "sago/SagoMisc.hpp"
 #include <sstream>
 
@@ -40,17 +39,17 @@ Stats::Stats() {
 }
 
 void Stats::load() {
-	PhysFS::ifstream inFile(statsFileName);
+	string fileContent = sago::GetFileContent(statsFileName);
+	stringstream inFile(fileContent);
 	string key;
-	char value[MAX_VAR_LENGTH];
+	string value;
 	if (inFile) {
 		while (!inFile.eof()) {
 			inFile >> key; // The key is first on line
 			inFile.get(); //Take the space
-			inFile.getline(value, MAX_VAR_LENGTH); //The rest of the line is the value.
+			getline(inFile, value); //The rest of the line is the value.
 			statMap[key] = str2int(value);
 		}
-		inFile.close();
 	}
 }
 

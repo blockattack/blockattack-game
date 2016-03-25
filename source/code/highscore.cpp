@@ -23,7 +23,6 @@ http://www.blockattack.net
 
 #include "highscore.h"
 #include "os.hpp"
-#include "physfs_stream.hpp"
 #include "cereal/cereal.hpp"
 #include "cereal/types/vector.hpp"
 #include "cereal/archives/json.hpp"
@@ -96,9 +95,7 @@ bool Highscore::isHighScore(int newScore) {
 	if (newScore>table.back().score) {
 		return true;
 	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 void Highscore::addScore(const std::string& newName, int newScore) {

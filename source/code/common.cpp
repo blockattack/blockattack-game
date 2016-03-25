@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
@@ -28,7 +28,6 @@ http://blockattack.net
 #include "sago/SagoMiscSdl2.hpp"
 #include "sago/SagoMisc.hpp"
 #include <stdarg.h>
-#include "physfs_stream.hpp"
 
 using namespace std;
 using boost::format;
@@ -176,7 +175,8 @@ Config::Config() {
 }
 
 void Config::load() {
-	PhysFS::ifstream inFile("configFile");
+	string filecontent = sago::GetFileContent("configFile");
+	stringstream inFile(filecontent);
 	string key;
 	string previuskey;
 	char value[MAX_VAR_LENGTH];
