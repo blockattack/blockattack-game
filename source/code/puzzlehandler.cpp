@@ -26,7 +26,6 @@ http://blockattack.net
 #include <iostream>
 #include "stats.h"
 #include <physfs.h>         //Abstract file system. To use containers
-#include "physfs_stream.hpp"
 #include "cereal/cereal.hpp"
 #include "cereal/types/vector.hpp"
 #include "cereal/archives/json.hpp"
@@ -112,7 +111,8 @@ int LoadPuzzleStages( ) {
 		std::cerr << "Warning: File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
 		return -1; //file doesn't exist
 	}
-	PhysFS::ifstream inFile(((std::string)("puzzles/"+puzzleName)).c_str());
+	std::string fileContent = sago::GetFileContent(((std::string)("puzzles/"+puzzleName)).c_str());
+	std::stringstream inFile(fileContent);
 
 	inFile >> nrOfPuzzles;
 	if (nrOfPuzzles>maxNrOfPuzzleStages) {
