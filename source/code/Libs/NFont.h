@@ -278,6 +278,7 @@ class NFONT_EXPORT NFont
     Uint16 getHeight(const char* formatted_text, ...) const NFONT_FORMAT(2);
     Uint16 getWidth(const char* formatted_text, ...) NFONT_FORMAT(2);
     Rectf getCharacterOffset(Uint16 position_index, int column_width, const char* formatted_text, ...) NFONT_FORMAT(4);
+    Uint16 getPositionFromOffset(float x, float y, int column_width, NFont::AlignEnum align, const char* formatted_text, ...) NFONT_FORMAT(6);
     Uint16 getColumnHeight(Uint16 width, const char* formatted_text, ...) NFONT_FORMAT(3);
     int getSpacing() const;
     int getLineSpacing() const;
