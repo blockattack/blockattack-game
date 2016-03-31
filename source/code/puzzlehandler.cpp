@@ -118,8 +118,11 @@ int LoadPuzzleStages( ) {
 	if (nrOfPuzzles>maxNrOfPuzzleStages) {
 		nrOfPuzzles=maxNrOfPuzzleStages;
 	}
-	for (int k=0; (k<nrOfPuzzles) /*&&(!inFile.eof())*/ ; k++) {
-		inFile >> nrOfMovesAllowed[k];
+	if (nrOfPuzzles < 0) {
+		nrOfPuzzles = 0;
+	}
+	for (int k=0; k<nrOfPuzzles ; k++) {
+		inFile >> nrOfMovesAllowed.at(k);
 		for (int i=11; i>=0; i--)
 			for (int j=0; j<6; j++) {
 				inFile >> puzzleLevels[k][j][i];
