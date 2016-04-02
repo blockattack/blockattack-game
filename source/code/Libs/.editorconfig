@@ -1,0 +1,2 @@
+#Because this folder contains external libraries we ignore the global code standard completly.
+root = true

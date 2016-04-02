@@ -9,6 +9,7 @@ nbproject
 .*
 -.travis.yml
 -.gitignore
+!.editorconfig
 *.patch
 Game/blockattack*
 cmake_install.cmake
