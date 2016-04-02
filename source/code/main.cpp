@@ -106,8 +106,6 @@ static void PhysFsSetSearchPath(const vector<string>& paths, const string& savep
 
 
 static void PhysFsCreateFolders() {
-	//We first create the folder there we will save (only on UNIX systems)
-	//we call the external command "mkdir"... the user might have renamed this, but we hope he hasn't
 	PHYSFS_mkdir("screenshots");
 	PHYSFS_mkdir("replays");
 	PHYSFS_mkdir("puzzles");
@@ -270,12 +268,12 @@ void ResetFullscreen() {
 //The small things that are faaling when you clear something
 class ABall {
 private:
-	double x;
-	double y;
-	double velocityY;
-	double velocityX;
-	int color;
-	unsigned long int lastTime;
+	double x = 0.0;
+	double y = 0.0;
+	double velocityY = 0.0;
+	double velocityX = 0.0;
+	int color = 0;
+	unsigned long int lastTime = 0;
 public:
 
 	ABall() {
