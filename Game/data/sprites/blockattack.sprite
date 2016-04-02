@@ -166,6 +166,16 @@
 	"frame_time" : 400,
 	"originx" : 4, //This tells the game that the top left corner is placed a little different
 	"originy" : 4
+},
+
+"touchcursor" : {
+	"texture" : "touchcursor",
+	"topx" : 0,
+	"topy" : 0,
+	"height" : 52,
+	"width" : 52,
+	"originx" : 1,
+	"originy" : 1
 }
 
 }

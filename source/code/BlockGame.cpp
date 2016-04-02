@@ -1161,8 +1161,11 @@ void BlockGame::MoveCursor(char way) {
 
 //switches the two blocks at the cursor position, unless game over
 void BlockGame::SwitchAtCursor() {
-	Update();  //Ensure that everything is in a stable state.
-	if ((board[cursorx][cursory+1]<7) && (board[cursorx+1][cursory+1]<7) && (!bGameOver) && ((!puzzleMode)||(MovesLeft>0)) && (gameStartedAt<ticks)) {
+	if (bGameOver) {
+		return;
+	}
+	ClearBlocks();  //Ensure that everything that floats are marked as floating
+	if ((board[cursorx][cursory+1]<7) && (board[cursorx+1][cursory+1]<7) && ((!puzzleMode)||(MovesLeft>0)) && (gameStartedAt<ticks)) {
 		int temp = board[cursorx][cursory+1];
 		board[cursorx][cursory+1] = board[cursorx+1][cursory+1];
 		board[cursorx+1][cursory+1] = temp;

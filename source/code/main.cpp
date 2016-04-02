@@ -223,11 +223,11 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
-void DrawIMG(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
+void DrawIMG(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
 	sprite.Draw(target, SDL_GetTicks() ,x,y);
 }
 
-void DrawIMG_Bounded(sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
+void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
 	SDL_Rect bounds;
 	bounds.x = minx;
 	bounds.y = miny;
@@ -551,11 +551,11 @@ public:
 		topy = ty;
 	}
 
-	void DrawImgBoard(sago::SagoSprite& img, int x, int y) const {
+	void DrawImgBoard(const sago::SagoSprite& img, int x, int y) const {
 		DrawIMG(img, screen, x+topx, y+topy);
 	}
 
-	void DrawImgBoardBounded(sago::SagoSprite& img, int x, int y) const {
+	void DrawImgBoardBounded(const sago::SagoSprite& img, int x, int y) const {
 		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight());
 	}
 
@@ -846,7 +846,16 @@ public:
 		}
 #endif
 		if (!bGameOver) {
-			DrawImgBoard(cursor,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
+			bool touched = false;
+			int mx = 0;
+			int my = 0;
+			this->GetMouseCursor(touched, mx, my);
+			if (touched) {
+				DrawImgBoard(spriteHolder->GetSprite("touchcursor"),mx*bsize, 11*bsize-my*bsize-pixels);
+			}
+			else {
+				DrawImgBoard(cursor,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
+			}
 		}
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
