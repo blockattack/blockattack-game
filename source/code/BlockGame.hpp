@@ -131,6 +131,8 @@ protected:
 	int chain = 0;
 	int cursorx = 0; //stores cursor position
 	int cursory = 0; // -||-
+	int mouse_cursorx = -1;  //Stores the mouse hold cursor. -1 if nothing is selected.
+	int mouse_cursory = -1;
 	double speed = 0.0;
 	double baseSpeed = 0.0; //factor for speed. Lower value = faster gameplay
 	int score = 0;
@@ -189,6 +191,10 @@ public:
 	int GetCursorX() const;
 	int GetCursorY() const;
 	void MoveCursorTo(int x, int y);
+	void GetMouseCursor(bool& pressed, int& x, int&y) const;
+	void MouseDown(int x, int y);  //Send then the mouse is pressed 
+	void MouseMove(int x);  //Send then the mouse moves
+	void MouseUp();  //Send then the mouse goes up
 	bool GetIsWinner() const;
     bool isSinglePuzzle() const;
     int getLevel() const;

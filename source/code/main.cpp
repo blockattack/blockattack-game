@@ -569,6 +569,24 @@ public:
 	int GetTopY() const {
 		return topy;
 	}
+	
+	/**
+	 * Retrives the coordinate to a given brick based on mouse input.
+	 * @param match true if the coordinate are within borders
+	 * @param mousex mouse coordinate input
+	 * @param mousey mouse coordiante input
+	 * @param x brick x. Unchanged if outside border
+	 * @param y brick y. Unchanged if outside border
+	 */
+	void GetBrickCoordinateFromMouse(bool& match, int mousex, int mousey, int& x, int& y) const {
+		if (mousex < topx || mousex > topx+50*6 || mousey < topy || mousey > topy+50*12) {
+			match = false;
+			return;
+		}
+		match = true;
+		x = (mousex-topx) / 50;
+		y = (50*12+topy-mousey-pixels) / 50;
+	}
 
 	void AddText(int x, int y, const std::string& text, int time) const override {
 		theTextManager.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
@@ -1584,14 +1602,14 @@ int main(int argc, char* argv[]) {
 		if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 			sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
 		}
-		if (SDL_Init(SDL_INIT_GAMECONTROLLER ) != 0) {
+		if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER ) != 0) {
 			cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << endl;
 		}
 		InitGameControllers();
 		TTF_Init();
 		atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
 
-		SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
+		//SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
 
 		theTextManager = TextManager();
 
@@ -2045,67 +2063,63 @@ int runGame(int gametype, int level) {
 				if (isPlayerPushEvent(1, event)) {
 					theGame.PushLine();
 				}
+				
+				if (event.type == SDL_MOUSEBUTTONDOWN) {
+					cout << "Mouse button down event" << endl;
+					if (event.button.button == SDL_BUTTON_LEFT) {
+						cout << "Pressed at " << event.button.x << "," << event.button.y << endl;
+						bool pressed = false;
+						int x = 0;
+						int y = 0;
+						theGame.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						if (pressed) {
+							theGame.MouseDown(x, y);
+						}
+						theGame2.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						if (pressed) {
+							theGame2.MouseDown(x, y);
+						}
+					} 
+				}
+				if (event.type == SDL_MOUSEBUTTONUP) {
+					if (event.button.button == SDL_BUTTON_LEFT) {
+						cout << "Button released" << endl;
+						theGame.MouseUp();
+						theGame2.MouseUp();
+					}
+				}
+				if (event.type == SDL_MOUSEMOTION) {
+					//cout << "Moved" << endl;
+					bool pressed = false;
+					int x = 0;
+					int y = 0;
+					theGame.GetMouseCursor(pressed, x, y);
+					if (pressed) {
+						int mx = 0;
+						int my = 0;
+						theGame.GetBrickCoordinateFromMouse(pressed, event.motion.x, event.motion.y, mx, my);
+						if (pressed) {
+							if (mx != x) {
+								theGame.MouseMove(mx);
+							}
+						}
+					}
+					theGame2.GetMouseCursor(pressed, x, y);
+					if (pressed) {
+						int mx = 0;
+						int my = 0;
+						theGame2.GetBrickCoordinateFromMouse(pressed, event.motion.x, event.motion.y, mx, my);
+						if (pressed) {
+							if (mx != x) {
+								theGame2.MouseMove(mx);
+							}
+						}
+					}
+					
+				}
 			} //while event PollEvent - read keys
 
 			SDL_GetMouseState(&mousex,&mousey);
-
-			/********************************************************************
-			**************** Here comes mouse play ******************************
-			********************************************************************/
-
-			if ((mouseplay1)&&( ( (!editorMode)&&(!theGame.GetAIenabled()) ) ||(editorModeTest))) //player 1
-				if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600)) {
-					int yLine, xLine;
-					yLine = ((100+600)-(mousey-100+theGame.GetPixels()))/50;
-					xLine = (mousex-50+25)/50;
-					yLine-=2;
-					xLine-=1;
-					if ((yLine>10)&&(theGame.GetTowerHeight()<12)) {
-						yLine=10;
-					}
-					if (((theGame.GetPixels()==50)||(theGame.GetPixels()==0)) && (yLine>11)) {
-						yLine=11;
-					}
-					if (yLine<0) {
-						yLine=0;
-					}
-					if (xLine<0) {
-						xLine=0;
-					}
-					if (xLine>4) {
-						xLine=4;
-					}
-					theGame.MoveCursorTo(xLine,yLine);
-				}
-
-			if ((mouseplay2)&&(!editorMode)&&(!theGame2.GetAIenabled())) //player 2
-				if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600)) {
-					int yLine, xLine;
-					yLine = ((100+600)-(mousey-100+theGame2.GetPixels()))/50;
-					xLine = (mousex-(xsize-500)+25)/50;
-					yLine-=2;
-					xLine-=1;
-					if ((yLine>10)&&(theGame2.GetTowerHeight()<12)) {
-						yLine=10;
-					}
-					if (((theGame2.GetPixels()==50)||(theGame2.GetPixels()==0)) && (yLine>11)) {
-						yLine=11;
-					}
-					if (yLine<0) {
-						yLine=0;
-					}
-					if (xLine<0) {
-						xLine=0;
-					}
-					if (xLine>4) {
-						xLine=4;
-					}
-					theGame2.MoveCursorTo(xLine,yLine);
-				}
-
-			/********************************************************************
-			**************** Here ends mouse play *******************************
-			********************************************************************/
 
 			// If the mouse button is released, make bMouseUp equal true
 			if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
@@ -2123,24 +2137,6 @@ int runGame(int gametype, int level) {
 					//This is the mouse events
 					bMouseUp = false;
 					DrawIMG(backgroundImage, screen, 0, 0);
-
-
-					/********************************************************************
-					**************** Here comes mouse play ******************************
-					********************************************************************/
-					{
-						if (mouseplay1 && !theGame.GetAIenabled()) //player 1
-							if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600)) {
-								theGame.SwitchAtCursor();
-							}
-						if (mouseplay2 && !theGame2.GetAIenabled()) //player 2
-							if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600)) {
-								theGame2.SwitchAtCursor();
-							}
-					}
-					/********************************************************************
-					**************** Here ends mouse play *******************************
-					********************************************************************/
 
 					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
 					        &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
@@ -2166,25 +2162,6 @@ int runGame(int gametype, int level) {
 				//Mouse button 2:
 				if ((SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(3))==SDL_BUTTON(3) && bMouseUp2) {
 					bMouseUp2=false; //The button is pressed
-					/********************************************************************
-					**************** Here comes mouse play ******************************
-					********************************************************************/
-
-					if (mouseplay1 && !theGame.GetAIenabled()) {
-						//player 1
-						if ((mousex > 50)&&(mousey>100)&&(mousex<50+300)&&(mousey<100+600)) {
-							theGame.PushLine();
-						}
-					}
-					if (mouseplay2 && !theGame2.GetAIenabled()) {
-						//player 2
-						if ((mousex > xsize-500)&&(mousey>100)&&(mousex<xsize-500+300)&&(mousey<100+600)) {
-							theGame2.PushLine();
-						}
-					}
-					/********************************************************************
-					**************** Here ends mouse play *******************************
-					********************************************************************/
 				}
 			} //if !singlePuzzle
 			else {

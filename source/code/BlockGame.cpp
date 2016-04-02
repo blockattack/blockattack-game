@@ -1161,6 +1161,7 @@ void BlockGame::MoveCursor(char way) {
 
 //switches the two blocks at the cursor position, unless game over
 void BlockGame::SwitchAtCursor() {
+	Update();  //Ensure that everything is in a stable state.
 	if ((board[cursorx][cursory+1]<7) && (board[cursorx+1][cursory+1]<7) && (!bGameOver) && ((!puzzleMode)||(MovesLeft>0)) && (gameStartedAt<ticks)) {
 		int temp = board[cursorx][cursory+1];
 		board[cursorx][cursory+1] = board[cursorx+1][cursory+1];
@@ -1854,6 +1855,54 @@ void BlockGame::PopSendGarbage(std::vector<GarbageStruct>& poppedData) {
 	this->garbageSendQueue.clear();
 }
 
+void BlockGame::GetMouseCursor(bool& pressed, int& x, int&y) const {
+	if (mouse_cursorx < 0 || mouse_cursory < 0 || mouse_cursorx >=6 || mouse_cursory > 13) {
+		pressed = false;
+		x = 0;
+		y = 0;
+		return;
+	}
+	pressed = true;
+	x = mouse_cursorx;
+	y = mouse_cursory;
+}
+
+void BlockGame::MouseDown(int x, int y) {
+	if (AI_Enabled) {
+		//AI may not use mouse move. It must use the controller
+		return;
+	}
+	mouse_cursorx = x;
+	mouse_cursory = y;
+} 
+
+void BlockGame::MouseMove(int x) {
+	if (AI_Enabled) {
+		//AI may not use mouse move. It must use the controller
+		return;
+	}
+	if (mouse_cursorx < 0) {
+		return;
+	}
+	if (x < 0 || x >= 6) {
+		return;
+	}
+	if (x > mouse_cursorx) {
+		MoveCursorTo(mouse_cursorx, mouse_cursory);
+		++mouse_cursorx;
+		SwitchAtCursor();
+	}
+	if (x < mouse_cursorx) {
+		--mouse_cursorx;
+		MoveCursorTo(mouse_cursorx, mouse_cursory);
+		SwitchAtCursor();
+	}
+}
+
+void BlockGame::MouseUp() {
+	mouse_cursorx = -1;
+	mouse_cursory = -1;
+}
 //Play the next level
 void nextLevel(BlockGame& g, unsigned int ticks) {
 	BlockGameStartInfo s;
