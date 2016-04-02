@@ -40,7 +40,7 @@ void GameControllerSetVerbose(bool value) {
 	verbose = value;
 }
 
-static const char* GameControllerGetName(SDL_GameController *gamecontroller) {
+static const char* GameControllerGetName(SDL_GameController* gamecontroller) {
 	const char* result = SDL_GameControllerName(gamecontroller);
 	if (!result) {
 		result = "Unnamed";
@@ -97,7 +97,7 @@ bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value > deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
@@ -119,7 +119,7 @@ bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value < -deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
@@ -141,7 +141,7 @@ bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value < -deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
@@ -163,7 +163,7 @@ bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value > deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);

@@ -1525,7 +1525,7 @@ int main(int argc, char* argv[]) {
 		}
 		if (vm.count("help")) {
 			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
-									"Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
+			                      "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
 			                      "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
 			cout << "Usage: "<< commandname << " [OPTION]..." << endl;
 			cout << desc << endl;

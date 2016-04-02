@@ -193,7 +193,7 @@ bool isUpEvent(const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value < -deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
@@ -217,7 +217,7 @@ bool isDownEvent(const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value > deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
@@ -241,7 +241,7 @@ bool isLeftEvent(const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value < -deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
@@ -265,7 +265,7 @@ bool isRightEvent(const SDL_Event& event) {
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
 		checkDeadZone(event);
-		const SDL_ControllerAxisEvent &a = event.caxis;
+		const SDL_ControllerAxisEvent& a = event.caxis;
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value > deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
