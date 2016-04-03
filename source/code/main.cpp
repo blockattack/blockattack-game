@@ -910,11 +910,6 @@ public:
 		}
 	}
 
-
-	void Update(int newtick) {
-		BlockGame::Update(newtick);
-	}
-
 private:
 	int topx, topy;
 };
