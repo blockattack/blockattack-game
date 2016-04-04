@@ -1700,9 +1700,7 @@ int runGame(int gametype, int level) {
 				}
 				
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
-					cout << "Mouse button down event" << endl;
 					if (event.button.button == SDL_BUTTON_LEFT) {
-						cout << "Pressed at " << event.button.x << "," << event.button.y << endl;
 						bool pressed = false;
 						int x = 0;
 						int y = 0;
@@ -1715,10 +1713,22 @@ int runGame(int gametype, int level) {
 							theGame2.MouseDown(x, y);
 						}
 					} 
+					if (event.button.button == SDL_BUTTON_RIGHT) {
+						bool pressed = false;
+						int x = 0;
+						int y = 0;
+						theGame.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						if (pressed) {
+							theGame.PushLine();
+						}
+						theGame2.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						if (pressed) {
+							theGame2.PushLine();
+						}
+					}
 				}
 				if (event.type == SDL_MOUSEBUTTONUP) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
-						cout << "Button released" << endl;
 						theGame.MouseUp();
 						theGame2.MouseUp();
 					}
