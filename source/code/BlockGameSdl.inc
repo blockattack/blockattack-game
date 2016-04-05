@@ -56,13 +56,27 @@ public:
 	 * @param y brick y. Unchanged if outside border
 	 */
 	void GetBrickCoordinateFromMouse(bool& match, int mousex, int mousey, int& x, int& y) const {
-		if (mousex < topx || mousex > topx+50*6 || mousey < topy || mousey > topy+50*12) {
+		if (!IsInTheBoard(mousex, mousey)) {
 			match = false;
 			return;
 		}
 		match = true;
 		x = (mousex-topx) / 50;
 		y = (50*12+topy-mousey-pixels) / 50;
+	}
+	
+	bool IsInTheBoard(int mousex, int mousey) const {
+		if (mousex < topx || mousex > topx+50*6 || mousey < topy || mousey > topy+50*12) {
+			return false;
+		}
+		return true;
+	}
+	
+	bool IsUnderTheBoard(int mousex, int mousey) const {
+		if (mousex < topx || mousex > topx+50*6 || mousey < topy+50*12) {
+			return false;
+		}
+		return true;
 	}
 
 	void AddText(int x, int y, const std::string& text, int time) const override {

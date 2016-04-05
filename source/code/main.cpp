@@ -1698,7 +1698,8 @@ int runGame(int gametype, int level) {
 				if (isPlayerPushEvent(1, event)) {
 					theGame.PushLine();
 				}
-				
+				static int mouseDownX = 0;
+				static int mouseDownY = 0;
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						bool pressed = false;
@@ -1712,6 +1713,8 @@ int runGame(int gametype, int level) {
 						if (pressed) {
 							theGame2.MouseDown(x, y);
 						}
+						mouseDownX = event.button.x;
+						mouseDownY = event.button.y;
 					} 
 					if (event.button.button == SDL_BUTTON_RIGHT) {
 						bool pressed = false;
@@ -1729,8 +1732,16 @@ int runGame(int gametype, int level) {
 				}
 				if (event.type == SDL_MOUSEBUTTONUP) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
+						int x = event.button.x;
+						int y = event.button.y;
 						theGame.MouseUp();
 						theGame2.MouseUp();
+						if (theGame.IsInTheBoard(x,y) && theGame.IsUnderTheBoard(mouseDownX, mouseDownY)) {
+							theGame.PushLine();
+						}
+						if (theGame2.IsInTheBoard(x,y) && theGame2.IsUnderTheBoard(mouseDownX, mouseDownY)) {
+							theGame2.PushLine();
+						}
 					}
 				}
 				if (event.type == SDL_MOUSEMOTION) {
