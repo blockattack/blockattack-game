@@ -254,7 +254,7 @@ bool isLeftEvent(const SDL_Event& event) {
 
 bool isRightEvent(const SDL_Event& event) {
 	if ( event.type == SDL_KEYDOWN ) {
-		if (event.key.keysym.sym == SDLK_DOWN) {
+		if (event.key.keysym.sym == SDLK_RIGHT) {
 			return true;
 		}
 	}
