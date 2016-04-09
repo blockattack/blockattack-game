@@ -31,6 +31,7 @@ static bool verbose = false;
 
 struct ControllerStatus {
 	std::map<int, bool> AxisInDeadZone;
+	int player = 1;
 };
 
 static std::map<SDL_JoystickID, ControllerStatus> controllerStatusMap;
@@ -61,8 +62,12 @@ void InitGameControllers() {
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 		if (SDL_IsGameController(i)) {
 			controller = SDL_GameControllerOpen(i);
+			SDL_Joystick *j = SDL_GameControllerGetJoystick(controller);
+			SDL_JoystickID instanceId = SDL_JoystickInstanceID(j);
+			controllerStatusMap[instanceId].player = 1;
 			if (verbose) {
 				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  std::endl;
+				std::cout << "Assigned to player: " << controllerStatusMap[instanceId].player << std::endl;
 			}
 		}
 	}
@@ -86,8 +91,25 @@ void setDeadZone(SDL_JoystickID id, int axis, bool value) {
 	controllerStatusMap[id].AxisInDeadZone[axis] = value;
 }
 
+static bool skipThisPlayer(int playerNumber, const SDL_Event& event) {
+
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		ControllerStatus& cs = controllerStatusMap[event.cbutton.which];
+		if (cs.player == playerNumber) {
+			return false;
+		}
+	}
+	if (event.type == SDL_CONTROLLERAXISMOTION ) {
+		ControllerStatus& cs = controllerStatusMap[event.caxis.which];
+		if (cs.player == playerNumber) {
+			return false;
+		}
+	}
+	return true;
+}
+
 bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
-	if (playerNumber != 1) {
+	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
@@ -96,8 +118,8 @@ bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 		}
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
-		checkDeadZone(event);
 		const SDL_ControllerAxisEvent& a = event.caxis;
+		checkDeadZone(event);
 		if (getDeadZone(a.which, a.axis)) {
 			if (event.caxis.value > deadZoneLimit) {
 				setDeadZone(a.which,a.axis,false);
@@ -109,7 +131,7 @@ bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 }
 
 bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
-	if (playerNumber != 1) {
+	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
@@ -131,7 +153,7 @@ bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
 }
 
 bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
-	if (playerNumber != 1) {
+	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
@@ -153,7 +175,7 @@ bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
 }
 
 bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
-	if (playerNumber != 1) {
+	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
@@ -175,7 +197,7 @@ bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
 }
 
 bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event) {
-	if (playerNumber != 1) {
+	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
@@ -187,7 +209,7 @@ bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event) {
 }
 
 bool isPlayerPushEvent(int playerNumber, const SDL_Event& event) {
-	if (playerNumber != 1) {
+	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {

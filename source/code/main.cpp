@@ -1698,6 +1698,24 @@ int runGame(int gametype, int level) {
 				if (isPlayerPushEvent(1, event)) {
 					theGame.PushLine();
 				}
+				if (isPlayerUpEvent(2, event)) {
+					theGame2.MoveCursor('N');
+				}
+				if (isPlayerDownEvent(2, event)) {
+					theGame2.MoveCursor('S');
+				}
+				if (isPlayerLeftEvent(2, event)) {
+					theGame2.MoveCursor('W');
+				}
+				if (isPlayerRightEvent (2, event)) {
+					theGame2.MoveCursor('E');
+				}
+				if (isPlayerSwitchEvent(2, event)) {
+					theGame2.SwitchAtCursor();
+				}
+				if (isPlayerPushEvent(2, event)) {
+					theGame2.PushLine();
+				}
 				static int mouseDownX = 0;
 				static int mouseDownY = 0;
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
