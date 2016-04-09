@@ -34,7 +34,7 @@ http://blockattack.net
 #include "BlockGame.hpp"
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
-#include <boost/lexical_cast.hpp>
+#include <sstream>
 
 using namespace std;
 
@@ -133,8 +133,6 @@ BlockGame::~BlockGame() {
 }
 
 void BlockGame::setGameSpeed(int globalSpeedLevel) {
-	boost::format f("%1%");
-	f % globalSpeedLevel;
 	switch (globalSpeedLevel) {
 	case 0:
 		baseSpeed=0.5;
@@ -158,8 +156,6 @@ void BlockGame::setGameSpeed(int globalSpeedLevel) {
 }
 
 void BlockGame::setHandicap(int globalHandicap) {
-	boost::format f("%1%");
-	f % globalHandicap;
 	handicap=1000*((int)globalHandicap);
 }
 
