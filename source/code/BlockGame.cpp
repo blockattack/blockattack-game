@@ -127,10 +127,6 @@ BlockGame::BlockGame() {
 	lastCounter = -1;           //To prevent the final chunk to be played when stating the program
 }   //Constructor
 
-//Deconstructor, never really used... game used to crash when called, cause of the way sBoard was created
-//It should work now and can be used if we want to assign more players in network games that we need to free later
-BlockGame::~BlockGame() {
-}
 
 void BlockGame::setGameSpeed(int globalSpeedLevel) {
 	switch (globalSpeedLevel) {

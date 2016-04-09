@@ -159,7 +159,7 @@ public:
 
 public:
 	BlockGame();
-	virtual ~BlockGame();
+	virtual ~BlockGame() = default;
 
 	int getAIlevel()  const;
 	
