@@ -216,6 +216,13 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 		typingChunk = holder.GetDataHolder().getSoundPtr("typing");
 		counterChunk = holder.GetDataHolder().getSoundPtr("counter");
 		counterFinalChunk = holder.GetDataHolder().getSoundPtr("counter_final");
+		const int soundVolume = 84;  //0-128
+		Mix_VolumeChunk(boing, soundVolume);
+		Mix_VolumeChunk(applause, soundVolume);
+		Mix_VolumeChunk(photoClick, soundVolume);
+		Mix_VolumeChunk(typingChunk, soundVolume);
+		Mix_VolumeChunk(counterChunk, soundVolume);
+		Mix_VolumeChunk(counterFinalChunk, soundVolume);
 	} //All sound has been loaded or not
 	return 0;
 } //InitImages()
