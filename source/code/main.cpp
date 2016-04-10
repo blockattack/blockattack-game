@@ -1847,21 +1847,21 @@ int runGame(int gametype, int level) {
 		//Sees if music is stopped and if music is enabled
 		if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled)&&(!bNearDeath)) {
 			// then starts playing it.
-			Mix_VolumeMusic(MIX_MAX_VOLUME);
 			Mix_PlayMusic(bgMusic, -1); //music loop
+			Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
 		}
 
 		if (bNearDeath!=bNearDeathPrev) {
 			if (bNearDeath) {
 				if (!NoSound &&(MusicEnabled)) {
-					Mix_VolumeMusic(MIX_MAX_VOLUME);
 					Mix_PlayMusic(highbeatMusic, 1);
+					Mix_VolumeMusic((MIX_MAX_VOLUME*5)/10);
 				}
 			}
 			else {
 				if (!NoSound &&(MusicEnabled)) {
-					Mix_VolumeMusic(MIX_MAX_VOLUME);
 					Mix_PlayMusic(bgMusic, -1);
+					Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
 				}
 			}
 		}
