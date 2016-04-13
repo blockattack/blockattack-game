@@ -276,24 +276,13 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 			speed = 100000;
 
 			//Now push the blines up
-			for (int i=19; i>0; i--)
+			for (int i=19; i>0; i--) {
 				for (int j=0; j<6; j++) {
 					board[j][i] = board[j][i-1];
 				}
+			}
 			for (int j=0; j<6; j++) {
-				board[j][0] = rand() % 6;
-				if (j > 0) {
-					if (board[j][0] == board[j-1][0]) {
-						board[j][0] = rand() % 6;
-					}
-				}
-				if (board[j][0] == board[j][1]) {
-					board[j][0] = 6;
-				}
-				if (board[j][0] == board[j][1]) {
-					board[j][0] = 6;
-				}
-
+				board[j][0] = 5; 
 			}
 		}
 		this->singlePuzzle = s.singlePuzzle;
@@ -676,7 +665,7 @@ int BlockGame::GarbageClearer(int x, int y, int number, bool aLineToClear, int c
 		return -1;
 	}
 	if (aLineToClear) {
-		board[x][y] = rand() % 6;
+		board[x][y] = this->rand2() % 6;
 		board[x][y] += 10*HANGTIME+BLOCKHANG+CHAINPLACE*chain;
 	}
 	garbageToBeCleared[x][y] = false;
