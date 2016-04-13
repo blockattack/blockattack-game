@@ -57,7 +57,7 @@ void setPathToSaveFiles(const std::string& path) {
 
 void OsCreateSaveFolder() {
 #if defined(__unix__)
-	std::string cmd = "mkdir -p "+getPathToSaveFiles()+"/";
+	std::string cmd = "mkdir -p '"+getPathToSaveFiles()+"/'";
 	int retcode = system(cmd.c_str());
 	if (retcode != 0) {
 		std::cerr << "Failed to create: " << getPathToSaveFiles()+"/" << std::endl;
