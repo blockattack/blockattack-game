@@ -632,20 +632,17 @@ bool BlockGame::CreateGarbage(int wide, int height) {
 //Creates garbage using a given wide and height
 bool BlockGame::CreateGreyGarbage() {
 	int startPosition = 12;
-	while ((!(LineEmpty(startPosition))) || (startPosition == 29)) {
+	while ( startPosition <= 29 && !LineEmpty(startPosition) ) {
 		startPosition++;
 	}
-	if (startPosition == 29) {
+	if (startPosition >= 29) {
 		return false;    //failed to place blocks
 	}
 	if (29-startPosition<1) {
 		return false;    //not enough space
 	}
-	int start, end;
-	{
-		start=0;
-		end=6;
-	}
+	int start = 0;
+	int end = 6;
 	for (int i = startPosition; i <startPosition+1; i++) {
 		for (int j = start; j < end; j++) {
 			board[j][i] = 2*1000000+nextGarbageNumber;
