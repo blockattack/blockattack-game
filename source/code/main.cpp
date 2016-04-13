@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 blockattack - Block Attack - Rise of the Blocks
-Copyright (C) 2005-2012 Poul Sander
+Copyright (C) 2005-2016 Poul Sander
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -1138,7 +1138,7 @@ int main(int argc, char* argv[]) {
 		bind_textdomain_codeset(PACKAGE, "utf-8");
 		textdomain (PACKAGE);
 		int consoleWidth = boost::program_options::options_description::m_default_line_length;
-		const char* columnsEnv = getenv("COLUMNS"); // Allows using this: COLUMNS=300 help2man
+		const char* columnsEnv = getenv("COLUMNS"); // Allows using "COLUMNS=300 help2man" for generating the man page without bad line breaks.
 		if (columnsEnv) {
 			consoleWidth = atoi(columnsEnv);
 		}
@@ -1158,7 +1158,7 @@ int main(int argc, char* argv[]) {
 		("print-search-path", "Prints the search path and quits")
 		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
 		        "Default: \"%s\"", LOCALEDIR).c_str())
-		("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory must exsist."
+		("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
 		        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
 
 		;
