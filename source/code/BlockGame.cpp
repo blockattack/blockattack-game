@@ -80,7 +80,6 @@ int BlockGame::firstUnusedChain() {
 
 //Constructor
 BlockGame::BlockGame() {
-	srand((int)time(nullptr));
 	AI_MoveSpeed=100;
 	baseSpeed = 0.5;           //All other speeds are relative to this
 	speed = baseSpeed;
