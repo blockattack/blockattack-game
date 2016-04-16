@@ -397,11 +397,6 @@ bool BlockGame::hasStaticContent() const {
 	return false;                   //Return false if no static object found
 }
 
-/*
- * Generates some blocks so the user don't see a board without blocks
- */
-//void putStartBlocks(int);
-
 void BlockGame::putStartBlocks() {
 	putStartBlocks(time(0));
 }
