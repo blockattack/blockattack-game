@@ -606,9 +606,6 @@ bool BlockGame::CreateGreyGarbage() {
 	if (startPosition >= 29) {
 		return false;    //failed to place blocks
 	}
-	if (29-startPosition<1) {
-		return false;    //not enough space
-	}
 	int start = 0;
 	int end = 6;
 	for (int i = startPosition; i <startPosition+1; i++) {
