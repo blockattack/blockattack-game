@@ -24,8 +24,10 @@ http://www.blockattack.net
 #include "gamecontroller.h"
 #include "SDL_gamecontroller.h"
 #include "sago/platform_folders.h"
+#include "common.h"
 #include <iostream>
 #include <map>
+#include <SDL2/SDL_joystick.h>
 
 static bool verbose = false;
 
@@ -49,6 +51,37 @@ static const char* GameControllerGetName(SDL_GameController* gamecontroller) {
 	return result;
 }
 
+static std::string GetGuidAsHex(const SDL_JoystickGUID& guid) {
+	std::string ret;
+	char buffer[3];
+	for(size_t j = 0; j < 16; j++) {
+		snprintf(buffer, sizeof(buffer), "%02X", guid.data[j]);
+		ret += buffer;
+	}
+	return ret;
+}
+
+static std::map<std::string, int> gamecontrollers_assigned; 
+
+static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
+	Config::getInstance()->setDefault("gc_AllToOnePlayer", "0");
+	int fixedPlayer = Config::getInstance()->getInt("gc_AllToOnePlayer");
+	if (fixedPlayer > 0 && fixedPlayer <= 2) {
+		return fixedPlayer;
+	}
+	std::string guidAsHex= GetGuidAsHex(guid);
+	std::string configName = "gc_assign_"+guidAsHex;
+	Config::getInstance()->setDefault(configName, "1");
+	int player = Config::getInstance()->getInt(configName) + gamecontrollers_assigned[guidAsHex];
+	gamecontrollers_assigned[guidAsHex]++; //Next controller with same guid should be assigned to different player.
+	std::cout << "Guid: " << guidAsHex << std::endl;
+	
+	if (player%2==0) {
+		return 2;  //Even number means player 2
+	}
+	return 1;
+}
+
 void InitGameControllers() {
 	std::string configFile = sago::getConfigHome()+"/blockattack/gamecontrollerdb.txt";
 	int errorCode = SDL_GameControllerAddMappingsFromFile(configFile.c_str());
@@ -64,7 +97,9 @@ void InitGameControllers() {
 			controller = SDL_GameControllerOpen(i);
 			SDL_Joystick *j = SDL_GameControllerGetJoystick(controller);
 			SDL_JoystickID instanceId = SDL_JoystickInstanceID(j);
-			controllerStatusMap[instanceId].player = 1;
+			SDL_JoystickGUID guid = SDL_JoystickGetGUID(j);
+			int assingToPlayer = GetNextPlayerByGui(guid);
+			controllerStatusMap[instanceId].player = assingToPlayer;
 			if (verbose) {
 				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  std::endl;
 				std::cout << "Assigned to player: " << controllerStatusMap[instanceId].player << std::endl;
