@@ -81,31 +81,7 @@ int BlockGame::firstUnusedChain() {
 //Constructor
 BlockGame::BlockGame() {
 	srand((int)time(nullptr));
-	nrFellDown = 0;
-	nrPushedPixel = 0;
-	nrStops=0;
-	//topx = tx;
-	//topy = ty;
-	cursorx = 2;
-	cursory = 3;
-	stop = 0;
-	pixels = 0;
-	score = 0;
-	bGameOver = false;
-	bDraw = false;
-	timetrial = false;
-	stageClear = false;
-	vsMode = false;
-	puzzleMode = false;
-	linesCleared = 0;
-	AI_Enabled = false;
 	AI_MoveSpeed=100;
-	AIlineToClear = 0;
-	AIcolorToClear = 0;
-	hasWonTheGame = false;
-	combo=0;                      //counts
-	chain=0;
-	hangTicks = 0;
 	baseSpeed = 0.5;           //All other speeds are relative to this
 	speed = baseSpeed;
 	speedLevel = 1;
@@ -119,10 +95,6 @@ BlockGame::BlockGame() {
 		for (int j=0; j<30; j++) {
 			board[i][j] = -1;
 		}
-	}
-	for (int i=0; i<NUMBEROFCHAINS; i++) {
-		chainUsed[i]=false;
-		chainSize[i] = 0;
 	}
 	lastCounter = -1;           //To prevent the final chunk to be played when stating the program
 }   //Constructor

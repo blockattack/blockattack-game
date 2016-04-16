@@ -84,25 +84,26 @@ struct GarbageStruct {
 class BlockGame
 {
 private:
-	int prevTowerHeight;
-	bool bGarbageFallLeft;
+	int prevTowerHeight = 0;
+	bool bGarbageFallLeft = false;
 	bool singlePuzzle = false;
 
-	int nextGarbageNumber;
-	int pushedPixelAt;
-	int nrPushedPixel, nrFellDown;
-	unsigned int nrStops;
+	int nextGarbageNumber = 0;
+	int pushedPixelAt = 0;
+	int nrPushedPixel = 0;
+	int nrFellDown = 0;
+	unsigned int nrStops = 0;
 	bool garbageToBeCleared[7][30];
-	unsigned int lastAImove;
+	unsigned int lastAImove = 0;
 
-	int AI_LineOffset; //how many lines have changed since command
-	int hangTicks;    //How many times have hang been decreased?
+	int AI_LineOffset = 0; //how many lines have changed since command
+	int hangTicks = 0;    //How many times have hang been decreased?
 	//int the two following index 0 may NOT be used (what the fuck did I meen?)
-	int chainSize[NUMBEROFCHAINS]; //Contains the chains
-	bool chainUsed[NUMBEROFCHAINS];   //True if the chain is used
+	int chainSize[NUMBEROFCHAINS]{}; //Contains the chains
+	bool chainUsed[NUMBEROFCHAINS]{};   //True if the chain is used
 
-	unsigned int nextRandomNumber;
-	int Level; //Only used in stageClear and puzzle (not implemented)
+	unsigned int nextRandomNumber = 0;
+	int Level = 0; //Only used in stageClear and puzzle (not implemented)
 
 	int rand2();
 	int firstUnusedChain();
@@ -129,8 +130,8 @@ protected:
 	int stageClearLimit = 0; //stores number of lines user must clear to win
 	int combo = 0;
 	int chain = 0;
-	int cursorx = 0; //stores cursor position
-	int cursory = 0; // -||-
+	int cursorx = 2; //stores cursor position
+	int cursory = 3; // -||-
 	int mouse_cursorx = -1;  //Stores the mouse hold cursor. -1 if nothing is selected.
 	int mouse_cursory = -1;
 	double speed = 0.0;
