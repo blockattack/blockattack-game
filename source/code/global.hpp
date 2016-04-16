@@ -58,6 +58,7 @@ extern bool NoSound;
 extern int verboseLevel;
 extern Highscore theTopScoresEndless;      //Stores highscores for endless
 extern Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
+extern std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 
 
 #endif	/* _GLOBAL_HPP */

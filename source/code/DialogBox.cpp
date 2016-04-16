@@ -30,6 +30,38 @@ static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& t
 	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
 
+static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width) {
+	
+	std::string name = "ui_rect_white_";
+	const int size = 32;
+	SDL_Rect bounds_ns = {topx, topy+size, width, height-2*size};  //bounds for south
+	SDL_Rect bounds_e = {topx, topy, width-size, height};
+	const sago::SagoSprite& n = spriteHolder->GetSprite(name+"n");
+	const sago::SagoSprite& s = spriteHolder->GetSprite(name+"s");
+	const sago::SagoSprite& e = spriteHolder->GetSprite(name+"e");
+	const sago::SagoSprite& w = spriteHolder->GetSprite(name+"w");
+	const sago::SagoSprite& fill = spriteHolder->GetSprite(name+"fill");
+	for (int i = 1; i < width/size; ++i) {
+		n.DrawBounded(target, SDL_GetTicks(), topx+i*size, topy, bounds_e);
+		for (int j = 1; j < height/size; ++j) {
+			w.DrawBounded(target, SDL_GetTicks(), topx, topy+j*size, bounds_ns);
+			fill.Draw(target, SDL_GetTicks(),topx+i*size, topy+j*size);
+			e.DrawBounded(target, SDL_GetTicks(), topx+width-size, topy+j*size, bounds_ns);
+		}
+		s.DrawBounded(target, SDL_GetTicks(), topx+i*size, topy+height-size, bounds_e);
+	}
+	//Corners
+	const sago::SagoSprite& nw = spriteHolder->GetSprite(name+"nw");
+	const sago::SagoSprite& ne = spriteHolder->GetSprite(name+"ne");
+	const sago::SagoSprite& se = spriteHolder->GetSprite(name+"se");
+	const sago::SagoSprite& sw = spriteHolder->GetSprite(name+"sw");
+	nw.Draw(target, SDL_GetTicks(), topx, topy);
+	ne.Draw(target, SDL_GetTicks(), topx+width-size, topy);
+	se.Draw(target, SDL_GetTicks(), topx+width-size, topy+height-size);
+	sw.Draw(target, SDL_GetTicks(), topx, topy+height-size);
+	
+}
+
 bool OpenDialogbox(int x, int y, std::string& name) {
 	DialogBox d(x, y, name);
 	RunGameState(d);
@@ -57,7 +89,9 @@ bool DialogBox::IsActive() {
 
 void DialogBox::Draw(SDL_Renderer* target) {
 	backgroundImage.Draw(screen, SDL_GetTicks(), 0, 0);
-	dialogBox.Draw(screen, SDL_GetTicks(), x, y);
+	//dialogBox.Draw(screen, SDL_GetTicks(), x, y);
+	DrawRect(screen, 200, 100, 200, 600);
+	DrawRect(screen, 226, 164, 54, 600-2*26);
 	NFont_Write(screen, x+40,y+76,rk->GetString());
 	std::string strHolder = rk->GetString();
 	strHolder.erase((int)rk->CharsBeforeCursor());
