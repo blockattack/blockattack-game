@@ -1,4 +1,4 @@
-# blockattack-game [![Build Status](https://travis-ci.org/blockattack/blockattack-game.svg?branch=master)](https://travis-ci.org/blockattack/blockattack-game)
+# blockattack-game [![Build Status](https://travis-ci.org/blockattack/blockattack-game.svg?branch=master)](https://travis-ci.org/blockattack/blockattack-game) [![Coverity Status](https://scan.coverity.com/projects/8278/badge.svg)](https://scan.coverity.com/projects/8278)
 Block Attack - Rise of the Blocks - the game<br/>
 A Tetris Attack Clone under the GPL.
 
