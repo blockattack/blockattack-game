@@ -256,7 +256,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////
 	//First the helpet functions:
 	int nrOfType(int line, int type);
-	int AIcolorToClear;
+	int AIcolorToClear = 0;
 	//See if a combo can be made in this line
 	int horiInLine(int line);
 	bool horiClearPossible();
@@ -281,7 +281,7 @@ private:
 	int closestTo(int line, int type, int place);
 	//The AI will try to clear blocks vertically
 	void AI_ClearVertical();
-	bool firstLineCreated;
+	bool firstLineCreated = 0;
 	void AI_Move();
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// AI ends here! //////////////////////
