@@ -1275,22 +1275,19 @@ int main(int argc, char* argv[]) {
 		}
 
 
-		keySettings[0].up= SDLK_UP;
-		keySettings[0].down = SDLK_DOWN;
-		keySettings[0].left = SDLK_LEFT;
-		keySettings[0].right = SDLK_RIGHT;
-		keySettings[0].change = SDLK_RCTRL;
-		keySettings[0].push = SDLK_RSHIFT;
+		keySettings[player1keys].up= SDLK_UP;
+		keySettings[player1keys].down = SDLK_DOWN;
+		keySettings[player1keys].left = SDLK_LEFT;
+		keySettings[player1keys].right = SDLK_RIGHT;
+		keySettings[player1keys].change = SDLK_RCTRL;
+		keySettings[player1keys].push = SDLK_RSHIFT;
 
-		keySettings[2].up= SDLK_w;
-		keySettings[2].down = SDLK_s;
-		keySettings[2].left = SDLK_a;
-		keySettings[2].right = SDLK_d;
-		keySettings[2].change = SDLK_LCTRL;
-		keySettings[2].push = SDLK_LSHIFT;
-
-		player1keys=0;
-		player2keys=2;
+		keySettings[player2keys].up= SDLK_w;
+		keySettings[player2keys].down = SDLK_s;
+		keySettings[player2keys].left = SDLK_a;
+		keySettings[player2keys].right = SDLK_d;
+		keySettings[player2keys].change = SDLK_LCTRL;
+		keySettings[player2keys].push = SDLK_LSHIFT;
 
 		player1name = _("Player 1");
 		player2name = _("Player 2");
@@ -1302,8 +1299,6 @@ int main(int argc, char* argv[]) {
 			bFullscreen = (bool)configSettings->getInt("fullscreen");
 			MusicEnabled = (bool)configSettings->getInt("musicenabled");
 			SoundEnabled = (bool)configSettings->getInt("soundenabled");
-			mouseplay1 = (bool)configSettings->getInt("mouseplay1");
-			mouseplay2 = (bool)configSettings->getInt("mouseplay2");
 
 			if (configSettings->exists("sdl2_player1keyup")) {
 				keySettings[0].up = (SDL_Keycode)configSettings->getInt("sdl2_player1keyup");
@@ -1426,10 +1421,6 @@ int main(int argc, char* argv[]) {
 			configSettings->setInt("fullscreen",(int)bFullscreen);
 			configSettings->setInt("musicenabled",(int)MusicEnabled);
 			configSettings->setInt("soundenabled",(int)SoundEnabled);
-			configSettings->setInt("mouseplay1",(int)mouseplay1);
-			configSettings->setInt("mouseplay2",(int)mouseplay2);
-			configSettings->setInt("joypad1",(int)joyplay1);
-			configSettings->setInt("joypad2",(int)joyplay2);
 
 			configSettings->setInt("sdl2_player1keyup",(int)keySettings[0].up);
 			configSettings->setInt("sdl2_player1keydown",(int)keySettings[0].down);

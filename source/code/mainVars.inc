@@ -186,11 +186,8 @@ char FPS[10];
 int verboseLevel = 0;
 
 //keySetup
-int player1keys, player2keys;
-bool mouseplay1=false;  //The mouse works on the play field
-bool mouseplay2=false;  //Same for player2
-bool joyplay1=false;    //Player one uses the joypad
-bool joyplay2=false;    //Player two uses the joypad
+const int player1keys = 0;
+const int player2keys = 2;
 
 //Stores the controls
 struct control
