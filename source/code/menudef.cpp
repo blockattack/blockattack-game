@@ -46,7 +46,6 @@ struct control {
 	SDL_Keycode push;
 };
 
-bool OpenDialogbox(int x, int y, std::string& name);
 void OpenScoresDisplay();
 extern control keySettings[3];
 
@@ -145,13 +144,13 @@ static void buttonActionFullscreen(Button* b) {
 }
 
 static void buttonActionPlayer1Name(Button* b) {
-	if (OpenDialogbox(200, 100, player1name)) {
+	if ( OpenDialogbox(200, 100, player1name, _("Enter player 1 name:")) ) {
 		return;    //must save if true
 	}
 }
 
 static void buttonActionPlayer2Name(Button* b) {
-	if (OpenDialogbox(200, 100, player2name)) {
+	if ( OpenDialogbox(200, 100, player2name, _("Enter player 2 name:")) ) {
 		return;    //must save if true
 	}
 }

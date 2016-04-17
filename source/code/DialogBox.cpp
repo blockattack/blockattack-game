@@ -69,8 +69,8 @@ static void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height,
 	DrawRect(target, topx, topy, height, width, name);
 }
 
-bool OpenDialogbox(int x, int y, std::string& name) {
-	DialogBox d(x, y, name);
+bool OpenDialogbox(int x, int y, std::string& name, const std::string& header) {
+	DialogBox d(x, y, name, header);
 	RunGameState(d);
 	if (d.IsUpdated()) {
 		name = d.GetName();
@@ -79,7 +79,7 @@ bool OpenDialogbox(int x, int y, std::string& name) {
 	return false;
 }
 
-DialogBox::DialogBox(int x, int y, const std::string& name) {
+DialogBox::DialogBox(int x, int y, const std::string& name, const std::string& header) : header(header) {
 	this->x = x;
 	this->y = y;
 	SetName(name);
@@ -97,7 +97,7 @@ bool DialogBox::IsActive() {
 void DialogBox::Draw(SDL_Renderer* target) {
 	backgroundImage.Draw(screen, SDL_GetTicks(), 0, 0);
 	DrawRectYellow(screen, x, y, 200, 600);
-	nf_button_font.draw(screen, x+300, y+20, NFont::CENTER, _("Enter player name:"));
+	nf_button_font.draw(screen, x+300, y+20, NFont::CENTER, "%s", header.c_str());
 	nf_button_font.draw(screen, x+150, y+140, NFont::CENTER, _("Enter to accept"));
 	nf_button_font.draw(screen, x+450, y+140, NFont::CENTER, _("Esc to cancel"));
 	DrawRectWhite(screen, x+26, y+64, 54, 600-2*26);

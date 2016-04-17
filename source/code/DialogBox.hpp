@@ -33,7 +33,7 @@ http://www.blockattack.net
 
 class DialogBox : public sago::GameStateInterface {
 public:
-	DialogBox(int x, int y, const std::string& name);
+	DialogBox(int x, int y, const std::string& name, const std::string& header);
 	DialogBox(const DialogBox& orig) = delete;
 	virtual ~DialogBox();
 	
@@ -49,6 +49,7 @@ private:
 	int x; 
 	int y;
 	std::string name;
+	std::string header;
 	bool updated = false;
 	SDL_TextInput textInputScope;
 };
