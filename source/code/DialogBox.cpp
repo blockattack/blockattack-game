@@ -30,9 +30,7 @@ static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& t
 	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
 
-static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width) {
-	
-	std::string name = "ui_rect_white_";
+static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
 	const int size = 32;
 	SDL_Rect bounds_ns = {topx, topy+size, width, height-2*size};  //bounds for south
 	SDL_Rect bounds_e = {topx, topy, width-size, height};
@@ -59,7 +57,16 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 	ne.Draw(target, SDL_GetTicks(), topx+width-size, topy);
 	se.Draw(target, SDL_GetTicks(), topx+width-size, topy+height-size);
 	sw.Draw(target, SDL_GetTicks(), topx, topy+height-size);
-	
+}
+
+static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, int width) {
+	std::string name = "ui_rect_white_";
+	DrawRect(target, topx, topy, height, width, name);
+}
+
+static void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width) {
+	std::string name = "ui_rect_yellow_";
+	DrawRect(target, topx, topy, height, width, name);
 }
 
 bool OpenDialogbox(int x, int y, std::string& name) {
@@ -90,8 +97,8 @@ bool DialogBox::IsActive() {
 void DialogBox::Draw(SDL_Renderer* target) {
 	backgroundImage.Draw(screen, SDL_GetTicks(), 0, 0);
 	//dialogBox.Draw(screen, SDL_GetTicks(), x, y);
-	DrawRect(screen, 200, 100, 200, 600);
-	DrawRect(screen, 226, 164, 54, 600-2*26);
+	DrawRectYellow(screen, 200, 100, 200, 600);
+	DrawRectWhite(screen, 226, 164, 54, 600-2*26);
 	NFont_Write(screen, x+40,y+76,rk->GetString());
 	std::string strHolder = rk->GetString();
 	strHolder.erase((int)rk->CharsBeforeCursor());
