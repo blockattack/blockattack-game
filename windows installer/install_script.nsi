@@ -15,7 +15,7 @@
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
+!define MUI_ICON "../source/misc/icons/blockattack.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 
 ; Welcome page
@@ -62,6 +62,8 @@ Section "Game Files" SEC01
   File "..\Game\blockattack.data"
   SetOutPath "$INSTDIR"
   File "..\Game\COPYING.TXT"
+  SetOutPath "$INSTDIR\locale\da\LC_MESSAGES"
+  File "../source/misc/translation/locale/da/LC_MESSAGES/blockattack_roftb.mo"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -269,6 +271,7 @@ Section Uninstall
   RMDir "$INSTDIR\gfx\animations"
   RMDir "$INSTDIR\gfx"
   RMDir "$INSTDIR\docs"
+  RMDir /r "$INSTDIR\locale"
   RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-21 13:21+0100\n"
+"POT-Creation-Date: 2016-04-18 20:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,356 +17,338 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../code/main.cpp:774
-msgid "Score:"
+#: ../../code/DialogBox.cpp:101
+msgid "Enter to accept"
 msgstr ""
 
-#: ../../code/main.cpp:775
-msgid "Time:"
+#: ../../code/DialogBox.cpp:102
+msgid "Esc to cancel"
 msgstr ""
 
-#: ../../code/main.cpp:776
-msgid "Chain:"
-msgstr ""
-
-#: ../../code/main.cpp:777
-msgid "Speed:"
-msgstr ""
-
-#: ../../code/main.cpp:786
-msgid "Moves left: "
-msgstr ""
-
-#: ../../code/main.cpp:792 ../../code/main.cpp:810
-msgid "Retry"
-msgstr ""
-
-#: ../../code/main.cpp:796 ../../code/main.cpp:814
-#: ../../code/ScoresDisplay.cpp:154
-msgid "Next"
-msgstr ""
-
-#: ../../code/main.cpp:800 ../../code/main.cpp:818
-msgid "Skip"
-msgstr ""
-
-#: ../../code/main.cpp:1001
-msgid "Forward"
-msgstr ""
-
-#: ../../code/main.cpp:1003 ../../code/MenuSystem.cpp:169
-#: ../../code/MenuSystem.cpp:177 ../../code/MenuSystem.cpp:190
-#: ../../code/ScoresDisplay.cpp:152
-msgid "Back"
-msgstr ""
-
-#: ../../code/main.cpp:1100 ../../code/main.cpp:1214
+#: ../../code/main.cpp:670 ../../code/main.cpp:784
 msgid "AI"
 msgstr ""
 
-#: ../../code/main.cpp:1103
+#: ../../code/main.cpp:673
 msgid "Playing field"
 msgstr ""
 
-#: ../../code/main.cpp:1175
+#: ../../code/main.cpp:745
 msgid "Time Trial"
 msgstr ""
 
-#: ../../code/main.cpp:1176
+#: ../../code/main.cpp:746
 msgid "Score as much as possible in 2 minutes"
 msgstr ""
 
-#: ../../code/main.cpp:1180
+#: ../../code/main.cpp:750
 msgid "Stage Clear"
 msgstr ""
 
-#: ../../code/main.cpp:1181
+#: ../../code/main.cpp:751
 msgid "You must clear a number of lines. Speed is rapidly increased."
 msgstr ""
 
-#: ../../code/main.cpp:1184
+#: ../../code/main.cpp:754
 msgid "Puzzle"
 msgstr ""
 
-#: ../../code/main.cpp:1185
+#: ../../code/main.cpp:755
 msgid "Clear the entire board with a limited number of moves."
 msgstr ""
 
-#: ../../code/main.cpp:1188
+#: ../../code/main.cpp:758
 msgid "Endless"
 msgstr ""
 
-#: ../../code/main.cpp:1189
+#: ../../code/main.cpp:759
 msgid "Score as much as possible. No time limit."
 msgstr ""
 
-#: ../../code/main.cpp:1193
+#: ../../code/main.cpp:763
 msgid "Objective:"
 msgstr ""
 
-#: ../../code/main.cpp:1199
+#: ../../code/main.cpp:769
 msgid "Movement keys:"
 msgstr ""
 
-#: ../../code/main.cpp:1202
+#: ../../code/main.cpp:772
 msgid "Switch: "
 msgstr ""
 
-#: ../../code/main.cpp:1204
+#: ../../code/main.cpp:774
 msgid "Restart: "
 msgstr ""
 
-#: ../../code/main.cpp:1207
+#: ../../code/main.cpp:777
 msgid "Push line: "
 msgstr ""
 
-#: ../../code/main.cpp:1327
+#: ../../code/main.cpp:892
 msgid "Select Puzzle"
 msgstr ""
 
-#: ../../code/main.cpp:1330
+#: ../../code/main.cpp:895
 msgid "Stage Clear Level Select"
 msgstr ""
 
-#: ../../code/main.cpp:1434
+#: ../../code/main.cpp:997
 #, c-format
 msgid "Best score: %i"
 msgstr ""
 
-#: ../../code/main.cpp:1435
+#: ../../code/main.cpp:998
 #, c-format
 msgid "Time used: %s"
 msgstr ""
 
-#: ../../code/main.cpp:1438
+#: ../../code/main.cpp:1001
 #, c-format
 msgid "Time used: %d : %02d"
 msgstr ""
 
-#: ../../code/main.cpp:1443
+#: ../../code/main.cpp:1006
 msgid "Total score: %1% in %2%:%3%"
 msgstr ""
 
-#: ../../code/main.cpp:1705
+#: ../../code/main.cpp:1292
 msgid "Player 1"
 msgstr ""
 
-#: ../../code/main.cpp:1706
+#: ../../code/main.cpp:1293
 msgid "Player 2"
 msgstr ""
 
-#: ../../code/menudef.cpp:133 ../../code/menudef.cpp:192
+#: ../../code/menudef.cpp:132 ../../code/menudef.cpp:191
 msgid "Music: On"
 msgstr ""
 
-#: ../../code/menudef.cpp:133 ../../code/menudef.cpp:192
+#: ../../code/menudef.cpp:132 ../../code/menudef.cpp:191
 msgid "Music: Off"
 msgstr ""
 
-#: ../../code/menudef.cpp:138 ../../code/menudef.cpp:194
+#: ../../code/menudef.cpp:137 ../../code/menudef.cpp:193
 msgid "Sound: On"
 msgstr ""
 
-#: ../../code/menudef.cpp:138 ../../code/menudef.cpp:194
+#: ../../code/menudef.cpp:137 ../../code/menudef.cpp:193
 msgid "Sound: Off"
 msgstr ""
 
-#: ../../code/menudef.cpp:143 ../../code/menudef.cpp:196
+#: ../../code/menudef.cpp:142 ../../code/menudef.cpp:195
 msgid "Fullscreen: On"
 msgstr ""
 
-#: ../../code/menudef.cpp:143 ../../code/menudef.cpp:196
+#: ../../code/menudef.cpp:142 ../../code/menudef.cpp:195
 msgid "Fullscreen: Off"
 msgstr ""
 
-#: ../../code/menudef.cpp:164
+#: ../../code/menudef.cpp:147
+msgid "Enter player 1 name:"
+msgstr ""
+
+#: ../../code/menudef.cpp:153
+msgid "Enter player 2 name:"
+msgstr ""
+
+#: ../../code/menudef.cpp:163
 msgid "Change key bindings"
 msgstr ""
 
-#: ../../code/menudef.cpp:165
+#: ../../code/menudef.cpp:164
 msgid "Left"
 msgstr ""
 
-#: ../../code/menudef.cpp:166
+#: ../../code/menudef.cpp:165
 msgid "Right"
 msgstr ""
 
-#: ../../code/menudef.cpp:167
+#: ../../code/menudef.cpp:166
 msgid "Up"
 msgstr ""
 
-#: ../../code/menudef.cpp:168
+#: ../../code/menudef.cpp:167
 msgid "Down"
 msgstr ""
 
-#: ../../code/menudef.cpp:169
+#: ../../code/menudef.cpp:168
 msgid "Push"
 msgstr ""
 
-#: ../../code/menudef.cpp:170
+#: ../../code/menudef.cpp:169
 msgid "Change"
 msgstr ""
 
-#: ../../code/menudef.cpp:189
+#: ../../code/menudef.cpp:188
 msgid "Configuration"
 msgstr ""
 
-#: ../../code/menudef.cpp:199
+#: ../../code/menudef.cpp:198
 msgid "Change player 1's name"
 msgstr ""
 
-#: ../../code/menudef.cpp:201
+#: ../../code/menudef.cpp:200
 msgid "Change player 2's name"
 msgstr ""
 
-#: ../../code/menudef.cpp:203
+#: ../../code/menudef.cpp:202
 msgid "Change player 1's keys"
 msgstr ""
 
-#: ../../code/menudef.cpp:205
+#: ../../code/menudef.cpp:204
 msgid "Change player 2's keys"
 msgstr ""
 
-#: ../../code/menudef.cpp:217
+#: ../../code/menudef.cpp:216
 msgid "Single player VS"
 msgstr ""
 
-#: ../../code/menudef.cpp:240
+#: ../../code/menudef.cpp:239
 msgid "Very easy"
 msgstr ""
 
-#: ../../code/menudef.cpp:241
+#: ../../code/menudef.cpp:240
 msgid "Easy"
 msgstr ""
 
-#: ../../code/menudef.cpp:242
+#: ../../code/menudef.cpp:241
 msgid "Below normal"
 msgstr ""
 
-#: ../../code/menudef.cpp:243
+#: ../../code/menudef.cpp:242
 msgid "Normal"
 msgstr ""
 
-#: ../../code/menudef.cpp:244
+#: ../../code/menudef.cpp:243
 msgid "Above normal"
 msgstr ""
 
-#: ../../code/menudef.cpp:245
+#: ../../code/menudef.cpp:244
 msgid "Hard"
 msgstr ""
 
-#: ../../code/menudef.cpp:246
+#: ../../code/menudef.cpp:245
 msgid "Hardest"
 msgstr ""
 
-#: ../../code/menudef.cpp:258
+#: ../../code/menudef.cpp:257
 msgid "Multiplayer"
 msgstr ""
 
-#: ../../code/menudef.cpp:260
+#: ../../code/menudef.cpp:259
 msgid "Two player - time trial"
 msgstr ""
 
-#: ../../code/menudef.cpp:262
+#: ../../code/menudef.cpp:261
 msgid "Two player - vs"
 msgstr ""
 
-#: ../../code/menudef.cpp:271
+#: ../../code/menudef.cpp:270
 msgid "Block Attack - Rise of the blocks"
 msgstr ""
 
-#: ../../code/menudef.cpp:273
+#: ../../code/menudef.cpp:272
 msgid "Single player - endless"
 msgstr ""
 
-#: ../../code/menudef.cpp:275
+#: ../../code/menudef.cpp:274
 msgid "Single player - time trial"
 msgstr ""
 
-#: ../../code/menudef.cpp:277
+#: ../../code/menudef.cpp:276
 msgid "Single player - stage clear"
 msgstr ""
 
-#: ../../code/menudef.cpp:279
+#: ../../code/menudef.cpp:278
 msgid "Single player - puzzle mode"
 msgstr ""
 
-#: ../../code/menudef.cpp:281
+#: ../../code/menudef.cpp:280
 msgid "Single player - vs"
 msgstr ""
 
-#: ../../code/menudef.cpp:283
+#: ../../code/menudef.cpp:282
 msgid "Multi player"
 msgstr ""
 
-#: ../../code/menudef.cpp:285
+#: ../../code/menudef.cpp:284
 msgid "Configure"
 msgstr ""
 
-#: ../../code/menudef.cpp:287
+#: ../../code/menudef.cpp:286
 msgid "Highscores"
 msgstr ""
 
-#: ../../code/MenuSystem.cpp:180 ../../code/MenuSystem.cpp:193
+#: ../../code/MenuSystem.cpp:155 ../../code/MenuSystem.cpp:163
+#: ../../code/MenuSystem.cpp:176 ../../code/ScoresDisplay.cpp:153
+msgid "Back"
+msgstr ""
+
+#: ../../code/MenuSystem.cpp:166 ../../code/MenuSystem.cpp:179
 msgid "Exit"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:41
+#: ../../code/ScoresDisplay.cpp:42
 msgid "Endless:"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:44
+#: ../../code/ScoresDisplay.cpp:45
 msgid "Time Trial:"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:67
+#: ../../code/ScoresDisplay.cpp:68
 msgid "Stats"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:69
+#: ../../code/ScoresDisplay.cpp:70
 msgid "Chains"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:77
+#: ../../code/ScoresDisplay.cpp:78
 msgid "Lines Pushed: "
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:82
+#: ../../code/ScoresDisplay.cpp:83
 msgid "Puzzles solved: "
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:87
+#: ../../code/ScoresDisplay.cpp:88
 msgid "Run time: "
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:90 ../../code/ScoresDisplay.cpp:103
+#: ../../code/ScoresDisplay.cpp:91 ../../code/ScoresDisplay.cpp:104
 #, c-format
 msgid "Days: %i"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:92 ../../code/ScoresDisplay.cpp:105
+#: ../../code/ScoresDisplay.cpp:93 ../../code/ScoresDisplay.cpp:106
 #, c-format
 msgid "Hours: %i"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:94 ../../code/ScoresDisplay.cpp:107
+#: ../../code/ScoresDisplay.cpp:95 ../../code/ScoresDisplay.cpp:108
 #, c-format
 msgid "Minutes: %i"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:96 ../../code/ScoresDisplay.cpp:109
+#: ../../code/ScoresDisplay.cpp:97 ../../code/ScoresDisplay.cpp:110
 #, c-format
 msgid "Seconds: %i"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:100
+#: ../../code/ScoresDisplay.cpp:101
 msgid "Play time: "
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:113
+#: ../../code/ScoresDisplay.cpp:114
 msgid "VS CPU (win/loss)"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:157
+#: ../../code/ScoresDisplay.cpp:155
+msgid "Next"
+msgstr ""
+
+#: ../../code/ScoresDisplay.cpp:158
 msgid "Page %1% of %2%"
 msgstr ""
