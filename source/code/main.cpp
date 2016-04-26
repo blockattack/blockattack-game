@@ -1156,6 +1156,7 @@ int main(int argc, char* argv[]) {
 		("verbose-basic", "Enables basic verbose messages")
 		("verbose-game-controller", "Enables verbose messages regarding controllers")
 		("print-search-path", "Prints the search path and quits")
+		("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
 		        "Default: \"%s\"", LOCALEDIR).c_str())
 		("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
@@ -1239,6 +1240,10 @@ int main(int argc, char* argv[]) {
 		theExplosionManager = ExplosionManager();
 
 		PuzzleSetName("puzzle.levels");
+		if (vm.count("puzzle-level-file")) {
+			string s = vm["puzzle-level-file"].as<string>();
+			PuzzleSetName(s);
+		}
 
 		//Init SDL
 		if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
