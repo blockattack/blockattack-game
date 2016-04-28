@@ -97,7 +97,7 @@ void InitMenues() {
 	standardButton.thefont = &nf_scoreboard_font;
 }
 
-void runGame(int gametype,int level);
+
 
 static void runSinglePlayerEndless(Button* b) {
 	runGame(0,0);

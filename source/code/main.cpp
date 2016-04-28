@@ -731,7 +731,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	}
 	//player1 finnish, player2 start
 	//DrawIMG(boardBackBack,screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
-	if (!editorMode) {
+	if (!editorMode /*&& !singlePuzzle*/ ) {
 		/*
 		 *If single player mode (and not VS)
 		 */
@@ -834,12 +834,12 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
 		strHolder = itoa(theGame2->GetSpeedLevel());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
-		//draw exit
-		bExit.Draw(screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);
 	}
 	//player2 finnish
 
 
+	//draw exit
+	bExit.Draw(screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);
 	DrawBalls();
 
 #if DEBUG
@@ -1157,6 +1157,7 @@ int main(int argc, char* argv[]) {
 		("verbose-game-controller", "Enables verbose messages regarding controllers")
 		("print-search-path", "Prints the search path and quits")
 		("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
+		("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
 		        "Default: \"%s\"", LOCALEDIR).c_str())
 		("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
@@ -1222,6 +1223,10 @@ int main(int argc, char* argv[]) {
 			}
 			cout << savepath << endl;
 			return 0;
+		}
+		if (vm.count("puzzle-single-level")) {
+			singlePuzzle = true;
+			singlePuzzleNr = vm["puzzle-single-level"].as<int>();
 		}
 		OsCreateSaveFolder();
 		PhysFsSetSearchPath(search_paths, savepath);
@@ -1358,10 +1363,10 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		if (singlePuzzle) {
+		/*if (singlePuzzle) {
 			xsize=300;
 			ysize=600;
-		}
+		}*/
 
 
 		// "Block Attack - Rise of the Blocks"
@@ -1416,8 +1421,13 @@ int main(int argc, char* argv[]) {
 		DrawIMG(backgroundImage, screen, 0, 0);
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
 		SDL_RenderPresent(screen);
-		//game loop
-		MainMenu();
+		if (singlePuzzle) {
+			runGame(3, singlePuzzleNr);
+		}
+		else {
+			//game loop
+			MainMenu();
+		}
 
 
 
@@ -1498,6 +1508,8 @@ int runGame(int gametype, int level) {
 	theGame.name = player1name;
 	theGame2.name = player2name;
 
+	bool mustsetupgame = true;
+	
 	if (singlePuzzle) {
 		LoadPuzzleStages();
 		BlockGameStartInfo s;
@@ -1505,6 +1517,7 @@ int runGame(int gametype, int level) {
 		s.level = singlePuzzleNr;
 		s.singlePuzzle = true;
 		theGame.NewGame(s);
+		mustsetupgame = false;
 	}
 	//game loop
 	int done = 0;
@@ -1512,7 +1525,6 @@ int runGame(int gametype, int level) {
 		cout << "Starting game loop" << endl;
 	}
 
-	bool mustsetupgame = true;
 
 	while (done == 0) {
 		if (mustsetupgame) {
