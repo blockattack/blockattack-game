@@ -31,7 +31,6 @@ http://www.blockattack.net
 
 using std::string;
 using std::stringstream;
-using std::ios_base;
 using std::cerr;
 using std::endl;
 using std::map;
@@ -73,7 +72,7 @@ double str2double(const string& str2parse) {
 		converter >> val;
 		return val;
 	}
-	catch (ios_base::failure& f) {
+	catch (std::ios_base::failure& f) {
 		return 0.0;
 	}
 }
@@ -106,7 +105,7 @@ int str2int(const string& str2parse) {
 		converter >> val;
 		return val;
 	}
-	catch (ios_base::failure& f) {
+	catch (std::ios_base::failure& f) {
 		return 0;
 	}
 }
