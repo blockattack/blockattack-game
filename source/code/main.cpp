@@ -85,7 +85,12 @@ http://www.blockattack.net
 *******************************************************************************/
 #include "mainVars.inc"
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::exception;
+using std::vector;
 
 
 static int InitImages(sago::SagoSpriteHolder& holder);

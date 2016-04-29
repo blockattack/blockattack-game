@@ -29,7 +29,10 @@
 #include <string.h>
 #include <memory>
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 namespace sago {
 

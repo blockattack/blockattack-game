@@ -27,7 +27,10 @@ http://www.blockattack.net
 #include "stats.h"
 #include "MenuSystem.h"
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
 	nf_standard_blue_font.draw(target, x, y, "%s", text);

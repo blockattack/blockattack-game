@@ -27,7 +27,12 @@ http://www.blockattack.net
 #include "sago/SagoMisc.hpp"
 #include <sstream>
 
-using namespace std;
+using std::string;
+using std::stringstream;
+using std::cerr;
+using std::endl;
+using std::map;
+using std::vector;
 
 Stats* Stats::instance = nullptr;
 

@@ -29,7 +29,13 @@ http://www.blockattack.net
 #include "sago/SagoMisc.hpp"
 #include <stdarg.h>
 
-using namespace std;
+using std::string;
+using std::stringstream;
+using std::ios_base;
+using std::cerr;
+using std::endl;
+using std::map;
+using std::vector;
 using boost::format;
 
 static stringstream converter;

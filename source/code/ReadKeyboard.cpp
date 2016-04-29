@@ -25,7 +25,9 @@ http://blockattack.net
 #include "utf8.h"
 #include <iostream>
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::endl;
 
 ReadKeyboard::ReadKeyboard(void) {
 	maxLength = 16;

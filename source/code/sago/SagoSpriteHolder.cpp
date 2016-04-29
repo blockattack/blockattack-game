@@ -39,7 +39,11 @@
 //I truely hate the C way of checking for equal. Usually read: "if not X compares to Y then they must be equal"
 #define strequal(X,Y) strcmp(X,Y)==0
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::vector;
 
 namespace sago {
 

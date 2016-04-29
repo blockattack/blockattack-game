@@ -27,7 +27,10 @@ http://blockattack.net
 #include "MenuSystem.h"
 #include "common.h"
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 #if 0
 //Menu

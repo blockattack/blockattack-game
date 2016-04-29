@@ -36,7 +36,11 @@ http://blockattack.net
 #include "stageclearhandler.hpp"
 #include <sstream>
 
-using namespace std;
+using std::string;
+using std::stringstream;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 
 static stringstream converter;

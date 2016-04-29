@@ -30,7 +30,11 @@ http://www.blockattack.net
 static int mousex;
 static int mousey;
 
-using namespace std;
+using std::string;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::vector;
 
 
 ButtonGfx standardButton;
