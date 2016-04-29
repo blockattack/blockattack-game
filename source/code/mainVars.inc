@@ -173,7 +173,8 @@ bool twoPlayers;    //True if two players are playing
 //Old Stage Clear Buble
 static int oldBubleX, oldBubleY;
 
-static bool singlePuzzle = false; //if true we are just in a little 300x600 window
+//Allows starting the game with just a single puzzle. Mainly to be able to open a puzzle directly from the level editor
+static bool singlePuzzle = false; 
 static int singlePuzzleNr = 0;
 static std::string singlePuzzleFile;
 

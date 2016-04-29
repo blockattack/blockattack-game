@@ -669,10 +669,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	if (theGame->GetAIenabled()) {
 		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("AI") );
 	}
-	else if (editorMode) {
+	else if (editorMode || singlePuzzle) {
 		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("Playing field") );
 	}
-	else if (!singlePuzzle) {
+	else {
 		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,player1name);
 	}
 	if (theGame->isTimeTrial()) {
@@ -1820,7 +1820,7 @@ int runGame(int gametype, int level) {
 				bMouseUp2=true;
 			}
 
-			if ((!singlePuzzle)&&(!editorMode)) {
+			if (!editorMode ) {
 				//read mouse events
 				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 					//This is the mouse events
@@ -1852,9 +1852,6 @@ int runGame(int gametype, int level) {
 				if ((SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(3))==SDL_BUTTON(3) && bMouseUp2) {
 					bMouseUp2=false; //The button is pressed
 				}
-			} //if !singlePuzzle
-			else {
-
 			}
 		} //if !bScreenBocked;
 
