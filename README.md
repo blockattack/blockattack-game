@@ -26,6 +26,10 @@ To build do:
 ```
 ./packdata.sh
 cmake .
+# or
+# cmake -DCMAKE_BUILD_TYPE=Debug .
+# or
+# cmake -DCMAKE_BUILD_TYPE=Release .
 make
 ```
 The result should be in the "Game"-folder. To run

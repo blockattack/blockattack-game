@@ -31,11 +31,6 @@ http://www.blockattack.net
 
 #include "version.h"
 
-//If DEBUG is defined: AI info and FPS will be written to screen
-#ifndef DEBUG
-#define DEBUG 1
-#endif
-
 #define WITH_SDL 1
 
 #include "sago/SagoSpriteHolder.hpp"

@@ -195,7 +195,7 @@ void Config::load() {
 			inFile.get(); //Read the space between the key and the content
 			inFile.getline(value,MAX_VAR_LENGTH);
 #if DEBUG
-			cout << "Config "<< "read: " << key << " with:\"" << value << "\"" << endl;
+			cerr << "Config "<< "read: " << key << " with:\"" << value << "\"" << endl;
 #endif
 			configMap[key] = (string)value;
 		}
