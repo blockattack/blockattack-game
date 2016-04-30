@@ -81,7 +81,7 @@ void WriteFileContent(const char* filename, const std::string& content) {
 		cerr << "Failed to open file for writing, " << PHYSFS_getLastError() << endl;
 		return;
 	}
-	PHYSFS_write(myfile, content.c_str(), 1, content.length()+1);
+	PHYSFS_write(myfile, content.c_str(), sizeof(char), content.length());
 	PHYSFS_close(myfile);
 }
 
