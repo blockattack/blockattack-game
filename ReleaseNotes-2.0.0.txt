@@ -1,0 +1,31 @@
+This is Block Attack - Rise of the Blocks - version 2.0.0
+
+This is the largest change since 1.1.0 more than ten years ago!
+The game now uses SDL2 and have a more keyboard, game pad and even touch friendly design!
+
+Compared to the old 1.4.2 a number of changes:
+* Uses SDL2. This means textures and sprites instead of old surfaces.
+* New config file format
+* TTF font support
+* Translation support (includes a Danish translation)
+* New keyboard and game controller friendly menu system
+* Better behind the scenes handling
+* Build by a CMake system
+* Location of saved games changed in Linux
+* Better game controller support (although limited to SDL2 supported controllers)
+* Better mouse play
+* More modern icon
+* Linux saves are now stored under $HOME/.local/share/blockattack 
+
+Some known regressions:
+* It is not possible to store replays
+* There are no network support.
+
+The new back-end will allow it to be implemented smarter in the future. The old version was too difficult to use anyway. 
+
+Some regressions that will not be fixed:
+* Only SDL2 supported game controllers are supported
+* Old config and some saves are lost then converting to 2.0.0+
+
+
+Feedback can be given on http://www.blockattack.net or https://github.com/blockattack/blockattack-game
