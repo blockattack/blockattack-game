@@ -9,6 +9,7 @@ set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/blockattack" CACHE STRING "I
 set(INSTALL_MAN_DIR "/usr/share/man/man6" CACHE STRING "Install the man page to this directory")
 set(INSTALL_APPLICATIONS_DIR "/usr/share/applications" CACHE STRING "Install the .desktop file to this directory")
 set(INSTALL_ICONS_DIR "/usr/share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
+set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install translation to this dir")
 
 # This sets up the exe icon for windows under mingw.
 # Taken from https://hansonry.wordpress.com/2010/12/15/windows-application-icon-using-mingw-and-cmake/
@@ -29,6 +30,7 @@ endif()
 if (NOT WIN32)
 #The path to the data dir must be compiled into the binary
 add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
+add_definitions(-DLOCALEDIR=\"${INSTALL_LOCALE_DIR}\")
 endif()
 
 #Compiler options
@@ -78,3 +80,4 @@ install(FILES source/misc/icons/blockattack128.xpm DESTINATION "${INSTALL_ICONS_
 install(FILES source/misc/icons/blockattack256.xpm DESTINATION "${INSTALL_ICONS_DIR}/256x256/apps" RENAME blockattack.xpm )
 install(FILES source/misc/icons/blockattack64.xpm DESTINATION "${INSTALL_ICONS_DIR}/64x64/apps" RENAME blockattack.xpm )
 install(FILES source/misc/icons/blockattack32.xpm DESTINATION "${INSTALL_ICONS_DIR}/32x32/apps" RENAME blockattack.xpm )
+install(DIRECTORY source/misc/translation/locale/ DESTINATION "${INSTALL_LOCALE_DIR}")
