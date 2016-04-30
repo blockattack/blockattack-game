@@ -50,7 +50,7 @@ and libutfcpp copied from "source/misc/travis_help/utf8_v2_3_4/source/" to "/pat
 
 Compiled with:
 ```
-i686-w64-mingw32.static-cmake . && make
+i686-w64-mingw32.static-cmake -DCMAKE_BUILD_TYPE=Release . && make
 ```
 
 # Reporting bugs
