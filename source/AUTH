@@ -4,7 +4,7 @@ Most graphics are by Iwan Gabovitch aka qubodup.
 
 All of qubodup's graphics are in the Public domain
 Data from the OpenArena team is under GPL v2
-Data from the Trackballs team is under GPL v2
+Data from the Dietrich Radel (originally part of Trackballs) is under GPL v2
 Poul Sander's files are multi licensed under "GPL v2 or later" OR "CC-BY-SA any version"
 
 Misc:
@@ -32,7 +32,7 @@ black_line.png			Poul Sander
 blue.png			qubodup
 board_back_back.png		qubodup
 bomb.png			Poul Sander
-chain_frame.png		Poul Sander
+chain_frame.png			Poul Sander
 counter_1.png			Poul Sander
 counter_2.png			Poul Sander
 counter_3.png			Poul Sander
@@ -95,8 +95,8 @@ counter_final.ogg		openarena-svn900:/sound/feedback/hit.wav
 applause.ogg			(CC-BY 3.0) Blender Foundation - Cut by LeeZH (http://opengameart.org/content/applause)
 
 /music/
-bgmusic.ogg			Trackballs team (http://trackballs.sourceforge.net/) v 1.2 (GPL2), copy of tb_design.ogg
-highbeat.ogg			Trackballs team (http://trackballs.sourceforge.net/) v 1.2 (GPL2), derived from tb_genesis.ogg
+bgmusic.ogg			"Life by Design", by Dietrich Radel (GPL)
+highbeat.ogg			derived from "Genesis (In The Beginning)", by Dietrich Radel (GPL)
 
 
 

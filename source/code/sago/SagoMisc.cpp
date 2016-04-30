@@ -38,7 +38,7 @@ namespace sago {
 
 
 std::vector<std::string> GetFileList(const char* dir) {
-	std::vector<std::string> ret;
+	vector<string> ret;
 	char** rc = PHYSFS_enumerateFiles(dir);
 	for (char** i = rc; *i != NULL; i++) {
 		ret.push_back(*i);
@@ -52,9 +52,9 @@ bool FileExists(const char* filename) {
 }
 
 std::string GetFileContent(const char* filename) {
-	std::string ret;
+	string ret;
 	if (!PHYSFS_exists(filename)) {
-		std::cerr << "GetFileContent - File does not exists: " << filename << std::endl;
+		cerr << "GetFileContent - File does not exists: " << filename << endl;
 		return ret;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(filename);
@@ -65,7 +65,7 @@ std::string GetFileContent(const char* filename) {
 		delete [] m_data;
 		m_data = nullptr;
 		PHYSFS_close(myfile);
-		std::cerr << "Error: Curropt data file: " << filename << std::endl;
+		cerr << "Error: Curropt data file: " << filename << endl;
 		return ret;
 	}
 	PHYSFS_close(myfile);
