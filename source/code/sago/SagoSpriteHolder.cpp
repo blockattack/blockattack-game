@@ -42,7 +42,6 @@
 using std::string;
 using std::cerr;
 using std::cout;
-using std::endl;
 using std::vector;
 
 namespace sago {
@@ -77,8 +76,8 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 	Json::Reader reader;
 	bool parsingSuccessful = reader.parse( content, root );
 	if ( !parsingSuccessful ) {
-		cerr << "Failed to parse: " << fullfile << endl
-		     << reader.getFormattedErrorMessages() << endl;
+		cerr << "Failed to parse: " << fullfile << "\n"
+		     << reader.getFormattedErrorMessages() << "\n";
 		return;
 	}
 	for (Json::Value::iterator it = root.begin(); it != root.end() ; ++it) {
@@ -110,13 +109,13 @@ void SagoSpriteHolder::ReadSprites() {
 	for (std::string& item : spritefiles  ) {
 		if (boost::algorithm::ends_with(item,".sprite")) {
 			if (data->verbose) {
-				cout << "Found " << item << endl;
+				cout << "Found " << item << "\n";
 			}
 			ReadSpriteFile(item);
 		}
 		else {
 			if (data->verbose) {
-				cout << "Ignoreing " << item << endl;
+				cout << "Ignoreing " << item << "\n";
 			}
 		}
 	}

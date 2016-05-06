@@ -31,7 +31,6 @@
 
 using std::string;
 using std::cerr;
-using std::endl;
 using std::vector;
 
 namespace sago {
@@ -54,7 +53,7 @@ bool FileExists(const char* filename) {
 std::string GetFileContent(const char* filename) {
 	string ret;
 	if (!PHYSFS_exists(filename)) {
-		cerr << "GetFileContent - File does not exists: " << filename << endl;
+		cerr << "GetFileContent - File does not exists: " << filename << "\n";
 		return ret;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(filename);
@@ -65,7 +64,7 @@ std::string GetFileContent(const char* filename) {
 		delete [] m_data;
 		m_data = nullptr;
 		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file: " << filename << endl;
+		cerr << "Error: Curropt data file: " << filename << "\n";
 		return ret;
 	}
 	PHYSFS_close(myfile);
@@ -78,7 +77,7 @@ std::string GetFileContent(const char* filename) {
 void WriteFileContent(const char* filename, const std::string& content) {
 	PHYSFS_file* myfile = PHYSFS_openWrite(filename);
 	if (!myfile) {
-		cerr << "Failed to open file for writing, " << PHYSFS_getLastError() << endl;
+		cerr << "Failed to open file for writing, " << PHYSFS_getLastError() << "\n";
 		return;
 	}
 	PHYSFS_write(myfile, content.c_str(), sizeof(char), content.length());

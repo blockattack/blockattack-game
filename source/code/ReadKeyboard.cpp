@@ -27,7 +27,6 @@ http://blockattack.net
 
 using std::string;
 using std::cerr;
-using std::endl;
 
 ReadKeyboard::ReadKeyboard(void) {
 	maxLength = 16;

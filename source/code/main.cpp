@@ -83,7 +83,6 @@ http://www.blockattack.net
 using std::string;
 using std::cerr;
 using std::cout;
-using std::endl;
 using std::exception;
 using std::vector;
 
@@ -558,7 +557,7 @@ static TextManager theTextManager;
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
 void writeScreenShot() {
 	if (verboseLevel) {
-		cout << "Saving screenshot" << endl;
+		cout << "Saving screenshot" << "\n";
 	}
 	int rightNow = (int)time(nullptr);
 	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+itoa(rightNow)+".bmp";
@@ -1170,8 +1169,8 @@ int main(int argc, char* argv[]) {
 			boost::program_options::notify(vm);
 		}
 		catch (exception& e) {
-			cerr << e.what() << endl;
-			cerr << desc << endl;
+			cerr << e.what() << "\n";
+			cerr << desc << "\n";
 			throw;
 		}
 		if (vm.count("bind-text-domain")) {
@@ -1187,22 +1186,22 @@ int main(int argc, char* argv[]) {
 			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
 			                      "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
 			                      "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
-			cout << "Usage: "<< commandname << " [OPTION]..." << endl;
-			cout << desc << endl;
-			cout << "Examples:" << endl;
-			cout << "\tblockattack          \tStart the game normally" << endl;
-			cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << endl;
-			cout << endl;
-			cout << "Report bugs to the issue tracker here: <https://github.com/blockattack/blockattack-game/issues>" << endl;
+			cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
+			cout << desc << "\n";
+			cout << "Examples:" << "\n";
+			cout << "\tblockattack          \tStart the game normally" << "\n";
+			cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << "\n";
+			cout << "\n";
+			cout << "Report bugs to the issue tracker here: <https://github.com/blockattack/blockattack-game/issues>" << "\n";
 			return 0;
 		}
 		if (vm.count("version")) {
-			cout << "blockattack " << VERSION_NUMBER << endl;
-			cout << endl;
-			cout << "Copyright (C) 2005-2016 Poul Sander" << endl;
-			cout << "License GPLv2+: GNU GPL version 2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> or later <http://gnu.org/licenses/gpl.html>" << endl;
-			cout << "This is free software: you are free to change and redistribute it." << endl;
-			cout << "There is NO WARRANTY, to the extent permitted by law." << endl;
+			cout << "blockattack " << VERSION_NUMBER << "\n";
+			cout << "\n";
+			cout << "Copyright (C) 2005-2016 Poul Sander" << "\n";
+			cout << "License GPLv2+: GNU GPL version 2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> or later <http://gnu.org/licenses/gpl.html>" << "\n";
+			cout << "This is free software: you are free to change and redistribute it." << "\n";
+			cout << "There is NO WARRANTY, to the extent permitted by law." << "\n";
 			return 0;
 		}
 		if (vm.count("nosound")) {
@@ -1219,9 +1218,9 @@ int main(int argc, char* argv[]) {
 		}
 		if (vm.count("print-search-path")) {
 			for (const string& s : search_paths) {
-				cout << s << endl;
+				cout << s << "\n";
 			}
-			cout << savepath << endl;
+			cout << savepath << "\n";
 			return 0;
 		}
 		if (vm.count("puzzle-single-level")) {
@@ -1255,7 +1254,7 @@ int main(int argc, char* argv[]) {
 			sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
 		}
 		if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER ) != 0) {
-			cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << endl;
+			cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << "\n";
 		}
 		InitGameControllers();
 		TTF_Init();
@@ -1269,8 +1268,8 @@ int main(int argc, char* argv[]) {
 		if (!NoSound) {
 			//If sound has not been disabled, then load the sound system
 			if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
-				cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << endl
-				     << "Sound will be disabled!" << endl;
+				cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << "\n"
+				     << "Sound will be disabled!" << "\n";
 				NoSound = true; //Tries to stop all sound from playing/loading
 			}
 		}
@@ -1278,10 +1277,10 @@ int main(int argc, char* argv[]) {
 
 		if (verboseLevel) {
 			//Copyright notice:
-			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << endl << "http://www.blockattack.net" << endl << "Copyright 2004-2016 Poul Sander" << endl <<
-			     "A SDL2 based game (see www.libsdl.org)" << endl <<
-			     "The game is availeble under the GPL, see COPYING for details." << endl;
-			cout << "-------------------------------------------" << endl;
+			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2016 Poul Sander" << "\n" <<
+			     "A SDL2 based game (see www.libsdl.org)" << "\n" <<
+			     "The game is availeble under the GPL, see COPYING for details." << "\n";
+			cout << "-------------------------------------------" << "\n";
 		}
 
 
@@ -1354,12 +1353,12 @@ int main(int argc, char* argv[]) {
 				player2name = configSettings->getString("player2name");
 			}
 			if (verboseLevel) {
-				cout << "Data loaded from config file" << endl;
+				cout << "Data loaded from config file" << "\n";
 			}
 		}
 		else {
 			if (verboseLevel) {
-				cout << "Unable to load options file, using default values" << endl;
+				cout << "Unable to load options file, using default values" << "\n";
 			}
 		}
 
@@ -1387,7 +1386,7 @@ int main(int argc, char* argv[]) {
 		SetSDLIcon(sdlWindow);
 
 		if (verboseLevel) {
-			cout << "Images loaded" << endl;
+			cout << "Images loaded" << "\n";
 		}
 
 		BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
@@ -1461,12 +1460,12 @@ int main(int argc, char* argv[]) {
 		commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
 		if (verboseLevel) {
-			cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << endl;
+			cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << "\n";
 		}
 
 		ct = TimeHandler::addTime("totalTime",ct);
 		if (verboseLevel) {
-			cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << endl;
+			cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
 		}
 
 		Stats::getInstance()->save();
@@ -1522,7 +1521,7 @@ int runGame(int gametype, int level) {
 	//game loop
 	int done = 0;
 	if (verboseLevel) {
-		cout << "Starting game loop" << endl;
+		cout << "Starting game loop" << "\n";
 	}
 
 
@@ -1778,7 +1777,7 @@ int runGame(int gametype, int level) {
 					}
 				}
 				if (event.type == SDL_MOUSEMOTION) {
-					//cout << "Moved" << endl;
+					//cout << "Moved" << "\n";
 					bool pressed = false;
 					int x = 0;
 					int y = 0;
@@ -1845,7 +1844,7 @@ int runGame(int gametype, int level) {
 					        mousey > ysize-bExitOffset && mousey < ysize-bExitOffset+bExitSize) {
 						done = 1;
 					}
-					//cout << "Mouse x: " << mousex << ", mouse y: " << mousey << endl;
+					//cout << "Mouse x: " << mousex << ", mouse y: " << mousey << "\n";
 				}
 
 				//Mouse button 2:

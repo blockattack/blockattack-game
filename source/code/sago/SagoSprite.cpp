@@ -62,7 +62,7 @@ SagoSprite::~SagoSprite() {
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) const {
 	if (!data->tex) {
-		std::cerr << "Texture is null!" << std::endl;
+		std::cerr << "Texture is null!\n";
 	}
 	SDL_Rect rect = data->imgCord;
 	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);

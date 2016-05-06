@@ -64,7 +64,7 @@ Highscore::Highscore(const std::string& type) {
 		}
 		catch (cereal::Exception& e) {
 			std::cerr << "Failed to read highscore " << filename << " due to formatting errors. Resetting the file. Reason: " <<
-			          e.what() << std::endl;
+			          e.what() << "\n";
 			table.clear();
 		}
 	}

@@ -32,7 +32,6 @@ http://www.blockattack.net
 using std::string;
 using std::stringstream;
 using std::cerr;
-using std::endl;
 using std::map;
 using std::vector;
 using boost::format;
@@ -195,7 +194,7 @@ void Config::load() {
 			inFile.get(); //Read the space between the key and the content
 			inFile.getline(value,MAX_VAR_LENGTH);
 #if DEBUG
-			cerr << "Config read: " << key << " with:\"" << value << "\"" << endl;
+			cerr << "Config read: " << key << " with:\"" << value << "\"" << "\n";
 #endif
 			configMap[key] = (string)value;
 		}
@@ -214,7 +213,7 @@ void Config::save() {
 	std::stringstream outFile;
 	map<string,string>::iterator iter;
 	for (iter = configMap.begin(); iter != configMap.end(); iter++) {
-		outFile << iter->first << " " << iter->second << endl;
+		outFile << iter->first << " " << iter->second << "\n";
 	}
 	outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing
 	//This is checked on load too in case a user changes it himself.

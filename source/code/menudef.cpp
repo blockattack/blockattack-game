@@ -29,13 +29,12 @@ http://blockattack.net
 
 using std::string;
 using std::cerr;
-using std::endl;
 using std::vector;
 
 #if 0
 //Menu
 static void PrintHi(Button* b) {
-	cout << "Hi" <<endl;
+	cout << "Hi" <<"\n";
 }
 #endif
 
@@ -56,7 +55,7 @@ extern control keySettings[3];
 static string getKeyName(SDL_Keycode key) {
 	string keyname(SDL_GetKeyName(key));
 	if (verboseLevel) {
-		cout << key << " translated to " << keyname << endl;
+		cout << key << " translated to " << keyname << "\n";
 	}
 	return keyname;
 }

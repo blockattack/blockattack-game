@@ -33,7 +33,6 @@ static int mousey;
 using std::string;
 using std::cerr;
 using std::cout;
-using std::endl;
 using std::vector;
 
 
@@ -45,7 +44,7 @@ void ButtonGfx::setSurfaces(sago::SagoSprite* marked, sago::SagoSprite* unmarked
 	xsize=(marked)->GetWidth();
 	ysize=(marked)->GetHeight();
 	if (verboseLevel) {
-		cout << "Surfaces set, size: " <<xsize << " , " << ysize << endl;
+		cout << "Surfaces set, size: " <<xsize << " , " << ysize << "\n";
 	}
 }
 
@@ -93,7 +92,7 @@ void Button::doAction() {
 
 void Button::drawToScreen() {
 #if DEBUG
-	//cout << "Painting button: " << label << " at: " << x << "," << y << endl;
+	//cout << "Painting button: " << label << " at: " << x << "," << y << "\n";
 #endif
 	if (marked) {
 		gfx->marked->Draw(screen, SDL_GetTicks(), x, y);

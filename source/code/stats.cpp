@@ -30,7 +30,6 @@ http://www.blockattack.net
 using std::string;
 using std::stringstream;
 using std::cerr;
-using std::endl;
 using std::map;
 using std::vector;
 
@@ -70,7 +69,7 @@ void Stats::save() {
 	std::stringstream outFile;
 	map<string,unsigned int>::iterator iter;
 	for (iter = statMap.begin(); iter != statMap.end(); iter++) {
-		outFile << iter->first << " " << iter->second << endl;
+		outFile << iter->first << " " << iter->second << "\n";
 	}
 	sago::WriteFileContent(statsFileName, outFile.str());
 }

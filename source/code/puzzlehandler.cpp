@@ -33,7 +33,6 @@ http://blockattack.net
 
 using std::string;
 using std::cerr;
-using std::endl;
 using std::vector;
 
 const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
@@ -80,7 +79,7 @@ void LoadClearData() {
 				archive(cereal::make_nvp("cleared", puzzleCleared));
 			}
 			catch (cereal::Exception& e) {
-				std::cerr << "Failed to read \"" << puzzleSavePath << "\". File will be regenerated. Reason: " << e.what() << std::endl;
+				std::cerr << "Failed to read \"" << puzzleSavePath << "\". File will be regenerated. Reason: " << e.what() << "\n";
 				puzzleCleared.clear();
 			}
 		}
@@ -111,7 +110,7 @@ void PuzzleSetClear(int Level) {
 /*Loads all the puzzle levels*/
 int LoadPuzzleStages( ) {
 	if (!PHYSFS_exists(((std::string)("puzzles/"+puzzleName)).c_str())) {
-		std::cerr << "Warning: File not in blockattack.data: " << ("puzzles/"+puzzleName) << endl;
+		std::cerr << "Warning: File not in blockattack.data: " << ("puzzles/"+puzzleName) << "\n";
 		return -1; //file doesn't exist
 	}
 	std::string fileContent = sago::GetFileContent(((std::string)("puzzles/"+puzzleName)).c_str());

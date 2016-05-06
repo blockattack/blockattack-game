@@ -56,7 +56,6 @@ Sint32 totalTime = 0;
 
 using std::string;
 using std::cerr;
-using std::endl;
 using std::vector;
 
 static void SaveStageClearStages() {
@@ -91,7 +90,7 @@ void LoadStageClearStages() {
 				archive(cereal::make_nvp("stages", stages));
 			}
 			catch (cereal::Exception& e) {
-				std::cerr << "Failed to load file \"" << stageClearSaveName << "\". Reason: " << e.what() << std::endl;
+				std::cerr << "Failed to load file \"" << stageClearSaveName << "\". Reason: " << e.what() << "\n";
 				stages.clear();
 			}
 		}

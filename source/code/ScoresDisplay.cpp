@@ -29,7 +29,6 @@ http://www.blockattack.net
 
 using std::string;
 using std::cerr;
-using std::endl;
 using std::vector;
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {

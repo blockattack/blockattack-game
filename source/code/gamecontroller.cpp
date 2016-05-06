@@ -74,7 +74,7 @@ static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
 	Config::getInstance()->setDefault(configName, "1");
 	int player = Config::getInstance()->getInt(configName) + gamecontrollers_assigned[guidAsHex];
 	gamecontrollers_assigned[guidAsHex]++; //Next controller with same guid should be assigned to different player.
-	//std::cout << "Guid: " << guidAsHex << std::endl;
+	//std::cout << "Guid: " << guidAsHex << "\n";
 	
 	if (player%2==0) {
 		return 2;  //Even number means player 2
@@ -86,10 +86,10 @@ void InitGameControllers() {
 	std::string configFile = sago::getConfigHome()+"/blockattack/gamecontrollerdb.txt";
 	int errorCode = SDL_GameControllerAddMappingsFromFile(configFile.c_str());
 	if (errorCode == -1 && verbose) {
-		std::cerr << "Could not load mapping file: " << configFile << std::endl;
+		std::cerr << "Could not load mapping file: " << configFile << "\n";
 	}
 	if (verbose) {
-		std::cout << "Number of Game controllers: " << SDL_NumJoysticks() << std::endl;
+		std::cout << "Number of Game controllers: " << SDL_NumJoysticks() << "\n";
 	}
 	SDL_GameController* controller = nullptr;
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
@@ -101,8 +101,8 @@ void InitGameControllers() {
 			int assingToPlayer = GetNextPlayerByGui(guid);
 			controllerStatusMap[instanceId].player = assingToPlayer;
 			if (verbose) {
-				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  std::endl;
-				std::cout << "Assigned to player: " << controllerStatusMap[instanceId].player << std::endl;
+				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  "\n";
+				std::cout << "Assigned to player: " << controllerStatusMap[instanceId].player << "\n";
 			}
 		}
 	}

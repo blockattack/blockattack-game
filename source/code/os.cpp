@@ -60,7 +60,7 @@ void OsCreateSaveFolder() {
 	std::string cmd = "mkdir -p '"+getPathToSaveFiles()+"/'";
 	int retcode = system(cmd.c_str());
 	if (retcode != 0) {
-		std::cerr << "Failed to create: " << getPathToSaveFiles()+"/" << std::endl;
+		std::cerr << "Failed to create: " << getPathToSaveFiles()+"/" << "\n";
 	}
 #elif defined(_WIN32)
 	//Now for Windows NT/2k/xp/2k3 etc.

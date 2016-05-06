@@ -46,7 +46,7 @@ struct SagoDataHolder::SagoDataHolderData {
 };
 
 static void printFileWeLoad(const std::string& value) {
-	std::cout << "Loading " << value << std::endl;
+	std::cout << "Loading " << value << "\n";
 }
 
 SagoDataHolder::SagoDataHolder(SDL_Renderer* renderer) {
@@ -93,7 +93,7 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error: Curropt data file: " << path << std::endl;
+		std::cerr << "Error: Curropt data file: " << path << "\n";
 		return ret;
 	}
 	PHYSFS_close(myfile);
@@ -101,7 +101,7 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 	//The above might fail an return null.
 	if (!rw) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error. Curropt data file!" << std::endl;
+		std::cerr << "Error. Curropt data file!\n";
 		return NULL;
 	}
 	SDL_Surface* surface = IMG_Load_RW(rw,true);
@@ -109,7 +109,7 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 	ret = SDL_CreateTextureFromSurface(data->renderer, surface);
 
 	if (!ret) {
-		std::cerr << "getTextureFailed to load " << path << std::endl;
+		std::cerr << "getTextureFailed to load " << path << "\n";
 	}
 	SDL_FreeSurface(surface);
 	data->textures[textureName] = ret;
@@ -126,7 +126,7 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 		printFileWeLoad(path);
 	}
 	if (!PHYSFS_exists(path.c_str())) {
-		std::cerr << "getFontPtr - Font does not exists: " << path << std::endl;
+		std::cerr << "getFontPtr - Font does not exists: " << path << "\n";
 		return ret;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
@@ -135,7 +135,7 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error: Curropt data file: " << path << std::endl;
+		std::cerr << "Error: Curropt data file: " << path << "\n";
 		return ret;
 	}
 	PHYSFS_close(myfile);
@@ -145,13 +145,13 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 	//The above might fail an return null.
 	if (!rw) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error: Curropt data file!" << std::endl;
+		std::cerr << "Error: Curropt data file!\n";
 		return ret;
 	}
 
 	ret = TTF_OpenFontRW(rw, SDL_FALSE, ptsize);
 	if (!ret) {
-		std::cerr << "Error openening font: " << fontName << " because: " << TTF_GetError() << std::endl;
+		std::cerr << "Error openening font: " << fontName << " because: " << TTF_GetError() << "\n";
 	}
 	data->fonts[fontName][ptsize] = ret;
 	data->dataToFree.push_back(std::move(m_data));
@@ -169,7 +169,7 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 		printFileWeLoad(path);
 	}
 	if (!PHYSFS_exists(path.c_str())) {
-		std::cerr << "getMusicPtr - Music file does not exists: " << path << std::endl;
+		std::cerr << "getMusicPtr - Music file does not exists: " << path << "\n";
 		return ret;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
@@ -178,7 +178,7 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error: Curropt data file: " << path << std::endl;
+		std::cerr << "Error: Curropt data file: " << path << "\n";
 		return ret;
 	}
 	PHYSFS_close(myfile);
@@ -187,14 +187,14 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 	//The above might fail an return null.
 	if (!rw) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error. Curropt data file!" << std::endl;
+		std::cerr << "Error. Curropt data file!\n";
 		return NULL;
 	}
 
 	ret = Mix_LoadMUS_RW(rw, SDL_TRUE);  //SDL_TRUE causes rw to be freed
 
 	if (!ret) {
-		std::cerr << "getMusicPtr to load " << path << " because: " << Mix_GetError() << std::endl;
+		std::cerr << "getMusicPtr to load " << path << " because: " << Mix_GetError() << "\n";
 	}
 	data->music[musicName] = ret;
 	data->dataToFree.push_back(std::move(m_data));
@@ -212,7 +212,7 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 		printFileWeLoad(path);
 	}
 	if (!PHYSFS_exists(path.c_str())) {
-		std::cerr << "getSoundPtr - Sound file does not exists: " << path << std::endl;
+		std::cerr << "getSoundPtr - Sound file does not exists: " << path << "\n";
 		return ret;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
@@ -221,7 +221,7 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error: Curropt data file: " << path << std::endl;
+		std::cerr << "Error: Curropt data file: " << path << "\n";
 		return ret;
 	}
 	PHYSFS_close(myfile);
@@ -230,7 +230,7 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 	//The above might fail an return null.
 	if (!rw) {
 		PHYSFS_close(myfile);
-		std::cerr << "Error. Curropt data file!" << std::endl;
+		std::cerr << "Error. Curropt data file!\n";
 		return NULL;
 	}
 
