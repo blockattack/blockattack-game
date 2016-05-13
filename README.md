@@ -53,6 +53,24 @@ Compiled with:
 i686-w64-mingw32.static-cmake -DCMAKE_BUILD_TYPE=Release . && make
 ```
 
+# Source Structure
+This project is a bit unconversionel because I didn't know any better at the time.
+
+ * Game - The output is placed here
+ * man - The manual file and the script to generate it. May be moved to source/misc at some point
+ * source/code/ - The source code
+ * source/code/Libs - External libs that are compiled into the project because they are either header only (Cereal) or not designed for use as a shared library (NFont).
+ * source/code/sago - Source code. Not designed to be specific to Block Attack - Rise of the Blocks
+ * source/assets - Source for the assets if relevant. For instance svg source for the graphics.
+ * source/misc - Misc stuff. Code related tool that are used for development but not part of the final product.
+ * source/misc/astyle - Helper script that enforces code style using the "astyle"-program
+ * source/misc/cmake - Files needed by CMake
+ * source/misc/icons - Icons for the installer
+ * source/misc/screenshots - Screen shots like the one in this README file.
+ * source/misc/translation - Translations and related tools and scripts
+ * source/misc/travis_help - Helper files for Travis CI
+ * windows installer - Information needed to Windows installer. May be moved to source/misc at some point
+
 # Reporting bugs
 
 Please report bugs on github: https://github.com/blockattack/blockattack-game/issues
