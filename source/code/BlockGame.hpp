@@ -78,6 +78,12 @@ struct GarbageStruct {
 	}
 };
 
+struct BlockGameAction {
+	unsigned int tick = 0;
+	bool isUpdate = false;
+	
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +180,8 @@ public:
 	virtual void TimeTrialEndEvent() const  {}
 	virtual void EndlessHighscoreEvent() const  {}
 	
+	void DoAction (const BlockGameAction& action);
+	
 	int GetScore() const;
 	int GetHandicap() const;
 	bool isGameOver() const;
@@ -215,7 +223,6 @@ public:
 	void SwitchAtCursor();
 	//Generates a new line and moves the field one block up (restart puzzle mode)
 	void PushLine();
-	void Update(unsigned int newtick);
 	//Prints "winner" and ends game
 	void setPlayerWon();
 	//Prints "draw" and ends the game

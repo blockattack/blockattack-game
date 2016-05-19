@@ -1785,8 +1785,10 @@ void BlockGame::UpdateInternal(unsigned int newtick) {
 	}
 }
 
-void BlockGame::Update(unsigned int newtick) {
-	UpdateInternal(newtick);
+void BlockGame::DoAction (const BlockGameAction& action) {
+	if (action.isUpdate) {
+		UpdateInternal(action.tick);
+	}
 }
 
 bool BlockGame::isSinglePuzzle() const {

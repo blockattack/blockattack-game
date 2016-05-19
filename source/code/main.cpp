@@ -1883,8 +1883,11 @@ int runGame(int gametype, int level) {
 		//set bNearDeath to false theGame*.Update() will change to true as needed
 		bNearDeath = theGame.IsNearDeath() || theGame2.IsNearDeath();
 		//Updates the objects
-		theGame.Update(SDL_GetTicks());
-		theGame2.Update(SDL_GetTicks());
+		BlockGameAction a;
+		a.isUpdate = true;
+		a.tick = SDL_GetTicks();
+		theGame.DoAction(a);
+		theGame2.DoAction(a);
 
 //see if anyone has won (two players only)
 #if NETWORK
