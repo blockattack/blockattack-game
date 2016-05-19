@@ -1896,24 +1896,32 @@ int runGame(int gametype, int level) {
 			if (twoPlayers) {
 				if ((theGame.isGameOver()) && (theGame2.isGameOver())) {
 					if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap()) {
-						theGame.setPlayerWon();
+						BlockGameAction a;
+						a.setPlayerWon = true;
+						theGame.DoAction(a);
 					}
 					else if (theGame.GetScore()+theGame.GetHandicap()<theGame2.GetScore()+theGame2.GetHandicap()) {
-						theGame2.setPlayerWon();
+						BlockGameAction a;
+						a.setPlayerWon = true;
+						theGame2.DoAction(a);
 					}
 					else {
-						theGame.setDraw();
-						theGame2.setDraw();
+						BlockGameAction a;
+						a.setDraw = true;
+						theGame.DoAction(a);
+						theGame2.DoAction(a);
 					}
 					//twoPlayers = false;
 				}
 				if ((theGame.isGameOver()) && (!theGame2.isGameOver())) {
-					theGame2.setPlayerWon();
-					//twoPlayers = false;
+					BlockGameAction a;
+					a.setPlayerWon = true;
+					theGame2.DoAction(a);
 				}
 				if ((!theGame.isGameOver()) && (theGame2.isGameOver())) {
-					theGame.setPlayerWon();
-					//twoPlayers = false;
+					BlockGameAction a;
+					a.setPlayerWon = true;
+					theGame.DoAction(a);
 				}
 				vector<GarbageStruct> gs;
 				theGame.PopSendGarbage(gs);

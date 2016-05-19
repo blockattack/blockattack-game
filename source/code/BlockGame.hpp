@@ -81,7 +81,8 @@ struct GarbageStruct {
 struct BlockGameAction {
 	unsigned int tick = 0;
 	bool isUpdate = false;
-	
+	bool setDraw = false;
+	bool setPlayerWon = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -223,10 +224,6 @@ public:
 	void SwitchAtCursor();
 	//Generates a new line and moves the field one block up (restart puzzle mode)
 	void PushLine();
-	//Prints "winner" and ends game
-	void setPlayerWon();
-	//Prints "draw" and ends the game
-	void setDraw();
 private:
 	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
@@ -296,6 +293,10 @@ private:
 	//Set the move speed of the AI based on the aiLevel parameter
 	void setAIlevel(int aiLevel);
 	void PushLineInternal();
+	//Prints "winner" and ends game
+	void setPlayerWon();
+	//Prints "draw" and ends the game
+	void setDraw();
 	//Updates evrything, if not called nothing happends
 	void Update();
 	void UpdateInternal(unsigned int newtick);

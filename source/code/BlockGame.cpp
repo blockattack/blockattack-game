@@ -1789,6 +1789,12 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	if (action.isUpdate) {
 		UpdateInternal(action.tick);
 	}
+	if (action.setDraw) {
+		setDraw();
+	}
+	if (action.setPlayerWon) {
+		setPlayerWon();
+	}
 }
 
 bool BlockGame::isSinglePuzzle() const {
