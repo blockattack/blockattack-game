@@ -1884,7 +1884,7 @@ int runGame(int gametype, int level) {
 		bNearDeath = theGame.IsNearDeath() || theGame2.IsNearDeath();
 		//Updates the objects
 		BlockGameAction a;
-		a.isUpdate = true;
+		a.action = BlockGameAction::Action::UPDATE;
 		a.tick = SDL_GetTicks();
 		theGame.DoAction(a);
 		theGame2.DoAction(a);
@@ -1897,17 +1897,17 @@ int runGame(int gametype, int level) {
 				if ((theGame.isGameOver()) && (theGame2.isGameOver())) {
 					if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap()) {
 						BlockGameAction a;
-						a.setPlayerWon = true;
+						a.action = BlockGameAction::Action::SET_WON;
 						theGame.DoAction(a);
 					}
 					else if (theGame.GetScore()+theGame.GetHandicap()<theGame2.GetScore()+theGame2.GetHandicap()) {
 						BlockGameAction a;
-						a.setPlayerWon = true;
+						a.action = BlockGameAction::Action::SET_WON;
 						theGame2.DoAction(a);
 					}
 					else {
 						BlockGameAction a;
-						a.setDraw = true;
+						a.action = BlockGameAction::Action::SET_DRAW;
 						theGame.DoAction(a);
 						theGame2.DoAction(a);
 					}
@@ -1915,12 +1915,12 @@ int runGame(int gametype, int level) {
 				}
 				if ((theGame.isGameOver()) && (!theGame2.isGameOver())) {
 					BlockGameAction a;
-					a.setPlayerWon = true;
+					a.action = BlockGameAction::Action::SET_WON;
 					theGame2.DoAction(a);
 				}
 				if ((!theGame.isGameOver()) && (theGame2.isGameOver())) {
 					BlockGameAction a;
-					a.setPlayerWon = true;
+					a.action = BlockGameAction::Action::SET_WON;
 					theGame.DoAction(a);
 				}
 				vector<GarbageStruct> gs;

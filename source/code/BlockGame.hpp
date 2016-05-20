@@ -79,10 +79,9 @@ struct GarbageStruct {
 };
 
 struct BlockGameAction {
+	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON};
+	Action action = Action::NONE;
 	unsigned int tick = 0;
-	bool isUpdate = false;
-	bool setDraw = false;
-	bool setPlayerWon = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

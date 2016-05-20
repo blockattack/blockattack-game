@@ -1786,13 +1786,13 @@ void BlockGame::UpdateInternal(unsigned int newtick) {
 }
 
 void BlockGame::DoAction (const BlockGameAction& action) {
-	if (action.isUpdate) {
+	if (action.action == BlockGameAction::Action::UPDATE) {
 		UpdateInternal(action.tick);
 	}
-	if (action.setDraw) {
+	if (action.action == BlockGameAction::Action::SET_DRAW) {
 		setDraw();
 	}
-	if (action.setPlayerWon) {
+	if (action.action == BlockGameAction::Action::SET_WON) {
 		setPlayerWon();
 	}
 }
