@@ -3,12 +3,20 @@ project (blockattack)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${blockattack_SOURCE_DIR}/source/misc/cmake")
 set(BIN_DIR ${blockattack_SOURCE_DIR}/Game)
 
+SET(CPACK_PACKAGE_VERSION "2.1.0-SNAPSHOT")
+SET(CPACK_PACKAGE_VERSION_MAJOR "2")
+SET(CPACK_PACKAGE_VERSION_MINOR "1")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Block Attack - Rise of the Blocks ${CPACK_PACKAGE_VERSION}")
+SET(CPACK_PACKAGE_VENDOR "Poul Sander")
+INCLUDE(CPack)
+
 # Define install paths
-set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE STRING "Install executable in this directory")
-set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/blockattack" CACHE STRING "Install data to this directory")
-set(INSTALL_MAN_DIR "/usr/share/man/man6" CACHE STRING "Install the man page to this directory")
-set(INSTALL_APPLICATIONS_DIR "/usr/share/applications" CACHE STRING "Install the .desktop file to this directory")
-set(INSTALL_ICONS_DIR "/usr/share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
+set(INSTALL_BIN_DIR "bin" CACHE STRING "Install executable in this directory")
+set(INSTALL_DATA_DIR "share/blockattack" CACHE STRING "Install data to this directory")
+set(INSTALL_MAN_DIR "man/man6" CACHE STRING "Install the man page to this directory")
+set(INSTALL_APPLICATIONS_DIR "applications" CACHE STRING "Install the .desktop file to this directory")
+set(INSTALL_ICONS_DIR "icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
 set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install translation to this dir")
 
 # This sets up the exe icon for windows under mingw.
@@ -29,8 +37,8 @@ endif()
 
 if (NOT WIN32)
 #The path to the data dir must be compiled into the binary
-add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
-add_definitions(-DLOCALEDIR=\"${INSTALL_LOCALE_DIR}\")
+add_definitions(-DSHAREDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_DATA_DIR}\")
+add_definitions(-DLOCALEDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_LOCALE_DIR}\")
 endif()
 
 #Compiler options
