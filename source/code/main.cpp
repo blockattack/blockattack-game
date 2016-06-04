@@ -1647,22 +1647,22 @@ int runGame(int gametype, int level) {
 						//player1:
 						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'N';
+							a.way = 'N';
 							theGame.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].down ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'S';
+							a.way = 'S';
 							theGame.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].left) ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'W';
+							a.way = 'W';
 							theGame.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].right) ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'E';
+							a.way = 'E';
 							theGame.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].push ) {
@@ -1678,22 +1678,22 @@ int runGame(int gametype, int level) {
 						//player2:
 						if ( event.key.keysym.sym == keySettings[player2keys].up ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'N';
+							a.way = 'N';
 							theGame2.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].down ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'S';
+							a.way = 'S';
 							theGame2.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].left) ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'W';
+							a.way = 'W';
 							theGame2.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].right) ) {
 							a.action = BlockGameAction::Action::MOVE;
-							a.value1 = 'E';
+							a.way = 'E';
 							theGame2.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].push ) {
@@ -1736,22 +1736,22 @@ int runGame(int gametype, int level) {
 
 				if (isPlayerUpEvent(1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'N';
+					a.way = 'N';
 					theGame.DoAction(a);
 				}
 				if (isPlayerDownEvent(1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'S';
+					a.way = 'S';
 					theGame.DoAction(a);
 				}
 				if (isPlayerLeftEvent(1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'W';
+					a.way = 'W';
 					theGame.DoAction(a);
 				}
 				if (isPlayerRightEvent (1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'E';
+					a.way = 'E';
 					theGame.DoAction(a);
 				}
 				if (isPlayerSwitchEvent(1, event)) {
@@ -1764,22 +1764,22 @@ int runGame(int gametype, int level) {
 				}
 				if (isPlayerUpEvent(2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'N';
+					a.way = 'N';
 					theGame2.DoAction(a);
 				}
 				if (isPlayerDownEvent(2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'S';
+					a.way = 'S';
 					theGame2.DoAction(a);
 				}
 				if (isPlayerLeftEvent(2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'W';
+					a.way = 'W';
 					theGame2.DoAction(a);
 				}
 				if (isPlayerRightEvent (2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
-					a.value1 = 'E';
+					a.way = 'E';
 					theGame2.DoAction(a);
 				}
 				if (isPlayerSwitchEvent(2, event)) {

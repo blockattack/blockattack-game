@@ -81,8 +81,8 @@ struct GarbageStruct {
 struct BlockGameAction {
 	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, SET_GAME_OVER, MOVE, SWITCH, PUSH};
 	Action action = Action::NONE;
-	unsigned int tick = 0;
-	int value1 = 0;
+	unsigned int tick = 0;  //< Used for update
+	char way = '\0';  //< The direction to move the cursor: 'N', 'E', 'S' or 'W'
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,6 +181,7 @@ public:
 	virtual void TimeTrialEndEvent() const  {}
 	virtual void EndlessHighscoreEvent() const  {}
 	
+	void NewGame(const BlockGameStartInfo &s);
 	void DoAction (const BlockGameAction& action);
 	
 	int GetScore() const;
@@ -210,7 +211,6 @@ public:
     int getLevel() const;
 	bool GetAIenabled() const;
 	bool IsNearDeath() const;
-	void NewGame(const BlockGameStartInfo &s);
 	//Creates garbage using a given wide and height
 	bool CreateGarbage(int wide, int height);
 	//Creates garbage using a given wide and height

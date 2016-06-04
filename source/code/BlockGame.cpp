@@ -1802,7 +1802,7 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 		PushLine();
 	}
 	if (action.action == BlockGameAction::Action::MOVE) {
-		char direction = action.value1;
+		char direction = action.way;
 		MoveCursor(direction);
 	}
 	if (action.action == BlockGameAction::Action::SWITCH) {
