@@ -23,12 +23,12 @@ http://blockattack.net
 #include "global.hpp"
 #include <iostream>
 #include <stdlib.h>
-#include "menu/MenuItem.hpp"
 #include "MenuSystem.h"
 #include "common.h"
 
 using std::string;
 using std::cerr;
+using std::cout;
 using std::vector;
 
 #if 0
