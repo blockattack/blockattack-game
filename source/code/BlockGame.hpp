@@ -79,10 +79,11 @@ struct GarbageStruct {
 };
 
 struct BlockGameAction {
-	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, SET_GAME_OVER, MOVE, SWITCH, PUSH};
+	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, SET_GAME_OVER, MOVE, SWITCH, PUSH, PUSH_GARBAGE};
 	Action action = Action::NONE;
 	unsigned int tick = 0;  //< Used for update
 	char way = '\0';  //< The direction to move the cursor: 'N', 'E', 'S' or 'W'
+	std::vector<GarbageStruct> garbage;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +184,13 @@ public:
 	
 	void NewGame(const BlockGameStartInfo &s);
 	void DoAction (const BlockGameAction& action);
+	/**
+	 * This function returns all the garbage.
+	 * This is actual const in the way that it does not change the games state
+	 * Technically it is not const because it empties the queue that are stored inside the object even if not part of the game state.
+	 * @param poppedData
+	 */
+	void PopSendGarbage(std::vector<GarbageStruct>& poppedData);
 	
 	int GetScore() const;
 	int GetHandicap() const;
@@ -211,11 +219,6 @@ public:
     int getLevel() const;
 	bool GetAIenabled() const;
 	bool IsNearDeath() const;
-	//Creates garbage using a given wide and height
-	bool CreateGarbage(int wide, int height);
-	//Creates garbage using a given wide and height
-	bool CreateGreyGarbage();
-	void PopSendGarbage(std::vector<GarbageStruct>& poppedData);
 private:
 	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
@@ -255,6 +258,10 @@ private:
 	void MoveCursor(char way);
 	//switches the two blocks at the cursor position, unless game over
 	void SwitchAtCursor();
+	//Creates garbage using a given wide and height
+	bool CreateGarbage(int wide, int height);
+	//Creates garbage using a given wide and height
+	bool CreateGreyGarbage();
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// AI starts here! ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////

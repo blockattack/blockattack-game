@@ -1808,6 +1808,16 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	if (action.action == BlockGameAction::Action::SWITCH) {
 		SwitchAtCursor();
 	}
+	if (action.action == BlockGameAction::Action::PUSH_GARBAGE) {
+		for (const GarbageStruct& i : action.garbage) {
+			if (i.greyGarbage) {
+				CreateGreyGarbage();
+			}
+			else {
+				CreateGarbage(i.width, i.height);
+			}
+		}
+	}
 }
 
 bool BlockGame::isSinglePuzzle() const {

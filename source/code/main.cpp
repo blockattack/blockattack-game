@@ -1988,22 +1988,18 @@ int runGame(int gametype, int level) {
 				vector<GarbageStruct> gs;
 				theGame.PopSendGarbage(gs);
 				for (const GarbageStruct& g : gs ) {
-					if (g.greyGarbage) {
-						theGame2.CreateGreyGarbage();
-					}
-					else {
-						theGame2.CreateGarbage(g.width, g.height);
-					}
+					BlockGameAction a;
+					a.action = BlockGameAction::Action::PUSH_GARBAGE;
+					a.garbage.push_back(g);
+					theGame2.DoAction(a);
 				}
 				gs.clear();
 				theGame2.PopSendGarbage(gs);
 				for (const GarbageStruct& g : gs ) {
-					if (g.greyGarbage) {
-						theGame.CreateGreyGarbage();
-					}
-					else {
-						theGame.CreateGarbage(g.width, g.height);
-					}
+					BlockGameAction a;
+					a.action = BlockGameAction::Action::PUSH_GARBAGE;
+					a.garbage.push_back(g);
+					theGame.DoAction(a);
 				}
 			}
 
