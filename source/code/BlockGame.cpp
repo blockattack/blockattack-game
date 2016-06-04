@@ -1795,8 +1795,18 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	if (action.action == BlockGameAction::Action::SET_WON) {
 		setPlayerWon();
 	}
+	if (action.action == BlockGameAction::Action::SET_GAME_OVER) {
+		SetGameOver();
+	}
 	if (action.action == BlockGameAction::Action::PUSH) {
 		PushLine();
+	}
+	if (action.action == BlockGameAction::Action::MOVE) {
+		char direction = action.value1;
+		MoveCursor(direction);
+	}
+	if (action.action == BlockGameAction::Action::SWITCH) {
+		SwitchAtCursor();
 	}
 }
 

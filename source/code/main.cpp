@@ -1028,7 +1028,10 @@ static void StartSinglePlayerEndless() {
 	startInfo.startBlocks = startInfo.ticks;
 	player1->NewGame(startInfo);
 	twoPlayers =false;
-	player2->SetGameOver();
+	BlockGameAction a;
+	a.action = BlockGameAction::Action::SET_GAME_OVER;
+	a.tick = startInfo.ticks;
+	player2->DoAction(a);
 	player1->name = player1name;
 	player2->name = player2name;
 	registerEndlessHighscore = true;
@@ -1040,7 +1043,10 @@ static void StartSinglePlayerTimeTrial() {
 	startInfo.timeTrial = true;
 	player1->NewGame(startInfo);
 	twoPlayers =false;
-	player2->SetGameOver();
+	BlockGameAction a;
+	a.action = BlockGameAction::Action::SET_GAME_OVER;
+	a.tick = startInfo.ticks;
+	player2->DoAction(a);
 	//vsMode = false;
 	player1->name = player1name;
 	player2->name = player2name;
@@ -1058,7 +1064,10 @@ static int StartSinglePlayerPuzzle(int level) {
 	player1->NewGame(startInfo);
 	DrawIMG(backgroundImage, screen, 0, 0);
 	twoPlayers = false;
-	player2->SetGameOver();
+	BlockGameAction a;
+	a.action = BlockGameAction::Action::SET_GAME_OVER;
+	a.tick = startInfo.ticks;
+	player2->DoAction(a);
 	//vsMode = true;
 	player1->name = player1name;
 	player2->name = player2name;
@@ -1400,8 +1409,11 @@ int main(int argc, char* argv[]) {
 		    theGame2.GetTopY()=10000;
 		    theGame2.GetTopX()=10000;
 		}*/
-		theGame.SetGameOver();      //sets the game over in the beginning
-		theGame2.SetGameOver();
+		
+		BlockGameAction a;
+		a.action = BlockGameAction::Action::SET_GAME_OVER;
+		theGame.DoAction(a);
+		theGame2.DoAction(a);
 
 
 		//Takes names from file instead
@@ -1500,8 +1512,10 @@ int runGame(int gametype, int level) {
 	player2 = &theGame2;
 	theGame.DoPaintJob();           //Makes sure what there is something to paint
 	theGame2.DoPaintJob();
-	theGame.SetGameOver();      //sets the game over in the beginning
-	theGame2.SetGameOver();
+	BlockGameAction a;
+	a.action = BlockGameAction::Action::SET_GAME_OVER;
+	theGame.DoAction(a);
+	theGame2.DoAction(a);
 
 	//Takes names from file instead
 	theGame.name = player1name;
@@ -1546,7 +1560,9 @@ int runGame(int gametype, int level) {
 				theGame.NewGame(s);
 				DrawIMG(backgroundImage, screen, 0, 0);
 				twoPlayers =false;
-				theGame2.SetGameOver();
+				BlockGameAction a;
+				a.action = BlockGameAction::Action::SET_GAME_OVER;
+				theGame2.DoAction(a);
 				theGame.name = player1name;
 				theGame2.name = player2name;
 			}
@@ -1630,45 +1646,63 @@ int runGame(int gametype, int level) {
 					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled())) {
 						//player1:
 						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
-							theGame.MoveCursor('N');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'N';
+							theGame.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].down ) {
-							theGame.MoveCursor('S');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'S';
+							theGame.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].left) ) {
-							theGame.MoveCursor('W');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'W';
+							theGame.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player1keys].right) ) {
-							theGame.MoveCursor('E');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'E';
+							theGame.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].push ) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].change ) {
-							theGame.SwitchAtCursor();
+							a.action = BlockGameAction::Action::SWITCH;
+							theGame.DoAction(a);
 						}
 					}
 					if (!editorMode && !theGame2.GetAIenabled()) {
 						//player2:
 						if ( event.key.keysym.sym == keySettings[player2keys].up ) {
-							theGame2.MoveCursor('N');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'N';
+							theGame2.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].down ) {
-							theGame2.MoveCursor('S');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'S';
+							theGame2.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].left) ) {
-							theGame2.MoveCursor('W');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'W';
+							theGame2.DoAction(a);
 						}
 						if ( (event.key.keysym.sym == keySettings[player2keys].right) ) {
-							theGame2.MoveCursor('E');
+							a.action = BlockGameAction::Action::MOVE;
+							a.value1 = 'E';
+							theGame2.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].push ) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame2.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].change ) {
-							theGame2.SwitchAtCursor();
+							a.action = BlockGameAction::Action::SWITCH;
+							theGame2.DoAction(a);
 						}
 					}
 					//common:
@@ -1701,38 +1735,56 @@ int runGame(int gametype, int level) {
 				}
 
 				if (isPlayerUpEvent(1, event)) {
-					theGame.MoveCursor('N');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'N';
+					theGame.DoAction(a);
 				}
 				if (isPlayerDownEvent(1, event)) {
-					theGame.MoveCursor('S');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'S';
+					theGame.DoAction(a);
 				}
 				if (isPlayerLeftEvent(1, event)) {
-					theGame.MoveCursor('W');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'W';
+					theGame.DoAction(a);
 				}
 				if (isPlayerRightEvent (1, event)) {
-					theGame.MoveCursor('E');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'E';
+					theGame.DoAction(a);
 				}
 				if (isPlayerSwitchEvent(1, event)) {
-					theGame.SwitchAtCursor();
+					a.action = BlockGameAction::Action::SWITCH;
+					theGame.DoAction(a);
 				}
 				if (isPlayerPushEvent(1, event)) {
 					a.action = BlockGameAction::Action::PUSH;
 					theGame.DoAction(a);
 				}
 				if (isPlayerUpEvent(2, event)) {
-					theGame2.MoveCursor('N');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'N';
+					theGame2.DoAction(a);
 				}
 				if (isPlayerDownEvent(2, event)) {
-					theGame2.MoveCursor('S');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'S';
+					theGame2.DoAction(a);
 				}
 				if (isPlayerLeftEvent(2, event)) {
-					theGame2.MoveCursor('W');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'W';
+					theGame2.DoAction(a);
 				}
 				if (isPlayerRightEvent (2, event)) {
-					theGame2.MoveCursor('E');
+					a.action = BlockGameAction::Action::MOVE;
+					a.value1 = 'E';
+					theGame2.DoAction(a);
 				}
 				if (isPlayerSwitchEvent(2, event)) {
-					theGame2.SwitchAtCursor();
+					a.action = BlockGameAction::Action::SWITCH;
+					theGame2.DoAction(a);
 				}
 				if (isPlayerPushEvent(2, event)) {
 					a.action = BlockGameAction::Action::PUSH;

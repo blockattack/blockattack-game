@@ -79,9 +79,10 @@ struct GarbageStruct {
 };
 
 struct BlockGameAction {
-	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, PUSH};
+	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, SET_GAME_OVER, MOVE, SWITCH, PUSH};
 	Action action = Action::NONE;
 	unsigned int tick = 0;
+	int value1 = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,12 +216,6 @@ public:
 	//Creates garbage using a given wide and height
 	bool CreateGreyGarbage();
 	void PopSendGarbage(std::vector<GarbageStruct>& poppedData);
-	//prints "Game Over" and ends game
-	void SetGameOver();
-	//Moves the cursor, receaves N,S,E or W as a char an moves as desired
-	void MoveCursor(char way);
-	//switches the two blocks at the cursor position, unless game over
-	void SwitchAtCursor();
 private:
 	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
@@ -254,6 +249,12 @@ private:
 	void FindTowerHeight();
 	//Generates a new line and moves the field one block up (restart puzzle mode)
 	void PushLine();
+	//prints "Game Over" and ends game
+	void SetGameOver();
+	//Moves the cursor, receaves N,S,E or W as a char an moves as desired
+	void MoveCursor(char way);
+	//switches the two blocks at the cursor position, unless game over
+	void SwitchAtCursor();
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// AI starts here! ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
