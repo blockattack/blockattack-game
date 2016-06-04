@@ -79,7 +79,7 @@ struct GarbageStruct {
 };
 
 struct BlockGameAction {
-	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON};
+	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, PUSH};
 	Action action = Action::NONE;
 	unsigned int tick = 0;
 };
@@ -221,8 +221,6 @@ public:
 	void MoveCursor(char way);
 	//switches the two blocks at the cursor position, unless game over
 	void SwitchAtCursor();
-	//Generates a new line and moves the field one block up (restart puzzle mode)
-	void PushLine();
 private:
 	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
@@ -254,6 +252,8 @@ private:
 	void PushPixels();
 	//See how high the tower is, saved in integer TowerHeight
 	void FindTowerHeight();
+	//Generates a new line and moves the field one block up (restart puzzle mode)
+	void PushLine();
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// AI starts here! ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////

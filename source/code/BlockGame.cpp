@@ -1795,6 +1795,9 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	if (action.action == BlockGameAction::Action::SET_WON) {
 		setPlayerWon();
 	}
+	if (action.action == BlockGameAction::Action::PUSH) {
+		PushLine();
+	}
 }
 
 bool BlockGame::isSinglePuzzle() const {

@@ -1604,6 +1604,10 @@ int runGame(int gametype, int level) {
 
 		bool mustWriteScreenshot = false;
 
+		BlockGameAction a;
+		a.action = BlockGameAction::Action::NONE;
+		a.tick = SDL_GetTicks();
+		
 		if (true) {
 			SDL_Event event;
 
@@ -1638,7 +1642,8 @@ int runGame(int gametype, int level) {
 							theGame.MoveCursor('E');
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].push ) {
-							theGame.PushLine();
+							a.action = BlockGameAction::Action::PUSH;
+							theGame.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player1keys].change ) {
 							theGame.SwitchAtCursor();
@@ -1659,7 +1664,8 @@ int runGame(int gametype, int level) {
 							theGame2.MoveCursor('E');
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].push ) {
-							theGame2.PushLine();
+							a.action = BlockGameAction::Action::PUSH;
+							theGame2.DoAction(a);
 						}
 						if ( event.key.keysym.sym == keySettings[player2keys].change ) {
 							theGame2.SwitchAtCursor();
@@ -1710,7 +1716,8 @@ int runGame(int gametype, int level) {
 					theGame.SwitchAtCursor();
 				}
 				if (isPlayerPushEvent(1, event)) {
-					theGame.PushLine();
+					a.action = BlockGameAction::Action::PUSH;
+					theGame.DoAction(a);
 				}
 				if (isPlayerUpEvent(2, event)) {
 					theGame2.MoveCursor('N');
@@ -1728,7 +1735,8 @@ int runGame(int gametype, int level) {
 					theGame2.SwitchAtCursor();
 				}
 				if (isPlayerPushEvent(2, event)) {
-					theGame2.PushLine();
+					a.action = BlockGameAction::Action::PUSH;
+					theGame2.DoAction(a);
 				}
 				static int mouseDownX = 0;
 				static int mouseDownY = 0;
@@ -1754,11 +1762,13 @@ int runGame(int gametype, int level) {
 						int y = 0;
 						theGame.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
 						if (pressed) {
-							theGame.PushLine();
+							a.action = BlockGameAction::Action::PUSH;
+							theGame.DoAction(a);
 						}
 						theGame2.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
 						if (pressed) {
-							theGame2.PushLine();
+							a.action = BlockGameAction::Action::PUSH;
+							theGame2.DoAction(a);
 						}
 					}
 				}
@@ -1769,10 +1779,12 @@ int runGame(int gametype, int level) {
 						theGame.MouseUp();
 						theGame2.MouseUp();
 						if (theGame.IsInTheBoard(x,y) && theGame.IsUnderTheBoard(mouseDownX, mouseDownY)) {
-							theGame.PushLine();
+							a.action = BlockGameAction::Action::PUSH;
+							theGame.DoAction(a);
 						}
 						if (theGame2.IsInTheBoard(x,y) && theGame2.IsUnderTheBoard(mouseDownX, mouseDownY)) {
-							theGame2.PushLine();
+							a.action = BlockGameAction::Action::PUSH;
+							theGame2.DoAction(a);
 						}
 					}
 				}
@@ -1883,9 +1895,7 @@ int runGame(int gametype, int level) {
 		//set bNearDeath to false theGame*.Update() will change to true as needed
 		bNearDeath = theGame.IsNearDeath() || theGame2.IsNearDeath();
 		//Updates the objects
-		BlockGameAction a;
 		a.action = BlockGameAction::Action::UPDATE;
-		a.tick = SDL_GetTicks();
 		theGame.DoAction(a);
 		theGame2.DoAction(a);
 
