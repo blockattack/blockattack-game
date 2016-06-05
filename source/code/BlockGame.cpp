@@ -41,18 +41,11 @@ using std::stringstream;
 using std::cerr;
 using std::vector;
 
-
-static stringstream converter;
-
 //Function to convert numbers to string (2 diget)
 static string itoa2(int num) {
-	converter.str(std::string());
-	converter.clear();
-	if (num<10) {
-		converter << "0";
-	}
-	converter << num;
-	return converter.str();
+	char buffer[20];
+	snprintf(buffer, sizeof(buffer), "%02i", num);
+	return buffer;
 }
 
 stageButton stageButtonStatus;
