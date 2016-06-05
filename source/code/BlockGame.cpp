@@ -1782,7 +1782,15 @@ void BlockGame::UpdateInternal(unsigned int newtick) {
 }
 
 void BlockGame::DoAction (const BlockGameAction& action) {
-	replayInfo.actions.push_back(action);
+	if (action.action == BlockGameAction::Action::UPDATE && action.tick < ticks+50) {
+		return;  //Ignore if this is an update and not high enough
+	}
+	if (action.action == BlockGameAction::Action::UPDATE && replayInfo.actions.size() > 0 && replayInfo.actions.back().action == action.action) {
+		replayInfo.actions.back() = action;
+	} 
+	else {
+		replayInfo.actions.push_back(action);
+	}
 	if (action.action == BlockGameAction::Action::UPDATE) {
 		UpdateInternal(action.tick);
 	}

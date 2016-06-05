@@ -70,6 +70,7 @@ http://www.blockattack.net
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "stats.h"          //Saves general stats 
 //#include "uploadReplay.h"   //Takes care of everything libcurl related
+#include "replayhandler.hpp"
 
 #include "common.h"
 #include "gamecontroller.h"
@@ -1020,6 +1021,7 @@ static BlockGameSdl* player2;
 static bool registerEndlessHighscore = false;
 static bool registerTTHighscorePlayer1 = false;
 static bool registerTTHighscorePlayer2 = false;
+static bool saveReplay = false;
 
 static void StartSinglePlayerEndless() {
 	//1 player - endless
@@ -1051,6 +1053,7 @@ static void StartSinglePlayerTimeTrial() {
 	player1->name = player1name;
 	player2->name = player2name;
 	registerTTHighscorePlayer1 = true;
+	saveReplay = true;
 }
 
 static int StartSinglePlayerPuzzle(int level) {
@@ -2026,6 +2029,16 @@ int runGame(int gametype, int level) {
 			registerEndlessHighscore = false;
 			theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
 			theGame.EndlessHighscoreEvent();
+		}
+		if (theGame.isGameOver() && saveReplay) {
+			if (twoPlayers && theGame2.isGameOver()) {
+				saveReplay = false;
+				SaveReplay(theGame.GetBlockGameInfo(), theGame2.GetBlockGameInfo());
+			}
+			if (!twoPlayers) {
+				saveReplay = false;
+				SaveReplay(theGame.GetBlockGameInfo());
+			}
 		}
 
 		//Once evrything has been checked, update graphics
