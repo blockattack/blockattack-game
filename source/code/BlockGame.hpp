@@ -26,6 +26,10 @@ http://www.blockattack.net
 
 #include "stats.h"
 #include "common.h"
+#include <deque>
+#include "cereal/cereal.hpp"
+#include "cereal/types/deque.hpp"
+#include "cereal/types/string.hpp"
 
 #define NUMBEROFCHAINS 100
 #define BLOCKWAIT 100000
@@ -65,6 +69,13 @@ struct BlockGameStartInfo {
 	int startBlocks = -1;
 	int handicap = 0;
 	int gameSpeed = 0;
+	template <class Archive>
+	void serialize( Archive & ar )
+	{
+		ar( CEREAL_NVP(ticks), CEREAL_NVP(timeTrial), CEREAL_NVP(stageClear), CEREAL_NVP(puzzleMode), CEREAL_NVP(singlePuzzle), 
+			CEREAL_NVP(level), CEREAL_NVP(AI), CEREAL_NVP(recordStats), CEREAL_NVP(vsMode), CEREAL_NVP(vsAI), 
+			CEREAL_NVP(startBlocks), CEREAL_NVP(handicap), CEREAL_NVP(gameSpeed) );
+	}
 };
 
 struct GarbageStruct {
@@ -76,6 +87,11 @@ struct GarbageStruct {
 		width = w;
 		height = h;
 	}
+	template <class Archive>
+	void serialize( Archive & ar )
+	{
+		ar( CEREAL_NVP(greyGarbage), CEREAL_NVP(width), CEREAL_NVP(height) );
+	}
 };
 
 struct BlockGameAction {
@@ -86,6 +102,21 @@ struct BlockGameAction {
 	int x = 0;
 	int y = 0;
 	std::vector<GarbageStruct> garbage;
+	template <class Archive>
+	void serialize( Archive & ar )
+	{
+		ar( CEREAL_NVP(action), CEREAL_NVP(tick), CEREAL_NVP(way), CEREAL_NVP(x), CEREAL_NVP(y), CEREAL_NVP(garbage) );
+	}
+};
+
+struct BlockGameInfo {
+	BlockGameStartInfo startInfo;
+	std::deque<BlockGameAction> actions;
+	template <class Archive>
+	void serialize( Archive & ar )
+	{
+		ar( CEREAL_NVP(startInfo), CEREAL_NVP(actions) );
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,6 +146,8 @@ private:
 	unsigned int nextRandomNumber = 0;
 	int Level = 0; //Only used in stageClear and puzzle (not implemented)
 
+	BlockGameInfo replayInfo;
+	
 	int rand2();
 	int firstUnusedChain();
 
@@ -217,6 +250,9 @@ public:
     int getLevel() const;
 	bool GetAIenabled() const;
 	bool IsNearDeath() const;
+	const BlockGameInfo& GetBlockGameInfo() {
+		return replayInfo;
+	}
 private:
 	void NewGame(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.

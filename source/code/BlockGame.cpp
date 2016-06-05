@@ -35,6 +35,7 @@ http://blockattack.net
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
 #include <sstream>
+#include <deque>
 
 using std::string;
 using std::stringstream;
@@ -211,6 +212,8 @@ bool BlockGame::GetIsWinner()  const {
 
 
 void BlockGame::NewGame(const BlockGameStartInfo& s) {
+	replayInfo.startInfo = s;
+	replayInfo.actions.clear();
 	this->recordStats = s.recordStats;
 	if (s.AI) {
 		recordStats = false;
@@ -1779,6 +1782,7 @@ void BlockGame::UpdateInternal(unsigned int newtick) {
 }
 
 void BlockGame::DoAction (const BlockGameAction& action) {
+	replayInfo.actions.push_back(action);
 	if (action.action == BlockGameAction::Action::UPDATE) {
 		UpdateInternal(action.tick);
 	}
