@@ -211,7 +211,6 @@ public:
 	int GetTowerHeight() const;
 	int GetCursorX() const;
 	int GetCursorY() const;
-	void MoveCursorTo(int x, int y);
 	void GetMouseCursor(bool& pressed, int& x, int&y) const;
 	bool GetIsWinner() const;
     bool isSinglePuzzle() const;
@@ -264,6 +263,7 @@ private:
 	void MouseDown(int x, int y);  //Send then the mouse is pressed 
 	void MouseMove(int x);  //Send then the mouse moves
 	void MouseUp();  //Send then the mouse goes up
+	void MoveCursorTo(int x, int y);
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// AI starts here! ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
