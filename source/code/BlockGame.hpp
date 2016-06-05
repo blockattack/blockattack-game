@@ -79,10 +79,12 @@ struct GarbageStruct {
 };
 
 struct BlockGameAction {
-	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, SET_GAME_OVER, MOVE, SWITCH, PUSH, PUSH_GARBAGE};
+	enum class Action {NONE, UPDATE, SET_DRAW, SET_WON, SET_GAME_OVER, MOVE, SWITCH, PUSH, PUSH_GARBAGE, MOUSE_DOWN, MOUSE_UP, MOUSE_MOVE};
 	Action action = Action::NONE;
 	unsigned int tick = 0;  //< Used for update
 	char way = '\0';  //< The direction to move the cursor: 'N', 'E', 'S' or 'W'
+	int x = 0;
+	int y = 0;
 	std::vector<GarbageStruct> garbage;
 };
 
@@ -211,9 +213,6 @@ public:
 	int GetCursorY() const;
 	void MoveCursorTo(int x, int y);
 	void GetMouseCursor(bool& pressed, int& x, int&y) const;
-	void MouseDown(int x, int y);  //Send then the mouse is pressed 
-	void MouseMove(int x);  //Send then the mouse moves
-	void MouseUp();  //Send then the mouse goes up
 	bool GetIsWinner() const;
     bool isSinglePuzzle() const;
     int getLevel() const;
@@ -262,6 +261,9 @@ private:
 	bool CreateGarbage(int wide, int height);
 	//Creates garbage using a given wide and height
 	bool CreateGreyGarbage();
+	void MouseDown(int x, int y);  //Send then the mouse is pressed 
+	void MouseMove(int x);  //Send then the mouse moves
+	void MouseUp();  //Send then the mouse goes up
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// AI starts here! ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////

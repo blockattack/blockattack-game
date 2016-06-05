@@ -1799,11 +1799,17 @@ int runGame(int gametype, int level) {
 						int y = 0;
 						theGame.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
 						if (pressed) {
-							theGame.MouseDown(x, y);
+							a.action = BlockGameAction::Action::MOUSE_DOWN;
+							a.x = x;
+							a.y = y;
+							theGame.DoAction(a);
 						}
 						theGame2.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
 						if (pressed) {
-							theGame2.MouseDown(x, y);
+							a.action = BlockGameAction::Action::MOUSE_DOWN;
+							a.x = x;
+							a.y = y;
+							theGame2.DoAction(a);
 						}
 						mouseDownX = event.button.x;
 						mouseDownY = event.button.y;
@@ -1828,8 +1834,9 @@ int runGame(int gametype, int level) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						int x = event.button.x;
 						int y = event.button.y;
-						theGame.MouseUp();
-						theGame2.MouseUp();
+						a.action = BlockGameAction::Action::MOUSE_UP;
+						theGame.DoAction(a);
+						theGame2.DoAction(a);
 						if (theGame.IsInTheBoard(x,y) && theGame.IsUnderTheBoard(mouseDownX, mouseDownY)) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame.DoAction(a);
@@ -1852,7 +1859,9 @@ int runGame(int gametype, int level) {
 						theGame.GetBrickCoordinateFromMouse(pressed, event.motion.x, event.motion.y, mx, my);
 						if (pressed) {
 							if (mx != x) {
-								theGame.MouseMove(mx);
+								a.action = BlockGameAction::Action::MOUSE_MOVE;
+								a.x = mx;
+								theGame.DoAction(a);
 							}
 						}
 					}
@@ -1863,7 +1872,9 @@ int runGame(int gametype, int level) {
 						theGame2.GetBrickCoordinateFromMouse(pressed, event.motion.x, event.motion.y, mx, my);
 						if (pressed) {
 							if (mx != x) {
-								theGame2.MouseMove(mx);
+								a.action = BlockGameAction::Action::MOUSE_MOVE;
+								a.x = mx;
+								theGame2.DoAction(a);
 							}
 						}
 					}

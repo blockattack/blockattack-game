@@ -1818,6 +1818,15 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 			}
 		}
 	}
+	if (action.action == BlockGameAction::Action::MOUSE_DOWN) {
+		MouseDown(action.x, action.y);
+	}
+	if (action.action == BlockGameAction::Action::MOUSE_UP) {
+		MouseUp();
+	}
+	if (action.action == BlockGameAction::Action::MOUSE_MOVE) {
+		MouseMove(action.x);
+	}
 }
 
 bool BlockGame::isSinglePuzzle() const {
