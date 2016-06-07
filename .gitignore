@@ -22,3 +22,8 @@ source/manual/
 man/blockattack.6.gz
 source/misc/translation/locale
 *.mo
+install_manifest.txt
+build
+_CPack_Packages
+#Different CPack results..
+blockattack-*
