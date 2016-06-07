@@ -26,20 +26,36 @@ http://www.blockattack.net
 #include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
 
-static void SaveReplayToFile(const SavedReplayStruct& sr, const char* filename) {
+static std::tm GetLocalTime() {
+	std::time_t t = std::time(nullptr);
+    std::tm ret = *std::localtime(&t);
+	return ret;
+}
+
+static std::string CreateFileName(const std::tm& t ) {
+	std::string ret = "replays/blockattack_game_";
+	char buffer[200];
+	snprintf(buffer, sizeof(buffer), "replays/blockattack_game_%i-%02i-%02iT%02i_%02i_%02i_AUTO.replay", t.tm_year+1900, t.tm_mon+1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+	ret = buffer;
+	return ret;
+}
+
+static void SaveReplayToFile(const SavedReplayStruct& sr, const std::string& filename) {
 	std::stringstream ss;
 	{
 		cereal::JSONOutputArchive archive(ss,cereal::JSONOutputArchive::Options::NoIndent());
 		archive(cereal::make_nvp("savedReplay", sr));
 	}
-	sago::WriteFileContent(filename, ss.str());
+	sago::WriteFileContent(filename.c_str(), ss.str());
 }
 
 void SaveReplay(const BlockGameInfo& game1) {
 	SavedReplayStruct sr;
 	sr.numberOfPlayers = 1;
 	sr.playerInfo.push_back(game1);
-	SaveReplayToFile(sr, "SavedSinglePlayerGame");
+	std::tm t = GetLocalTime();
+	std::string filename = CreateFileName(t);
+	SaveReplayToFile(sr, filename);
 }
 
 void SaveReplay(const BlockGameInfo& game1, const BlockGameInfo& game2) {
@@ -47,5 +63,7 @@ void SaveReplay(const BlockGameInfo& game1, const BlockGameInfo& game2) {
 	sr.numberOfPlayers = 2;
 	sr.playerInfo.push_back(game1);
 	sr.playerInfo.push_back(game2);
-	SaveReplayToFile(sr, "SavedTwoPlayerGame");
+	std::tm t = GetLocalTime();
+	std::string filename = CreateFileName(t);
+	SaveReplayToFile(sr, filename);
 }
