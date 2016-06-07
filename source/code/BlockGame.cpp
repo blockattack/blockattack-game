@@ -325,6 +325,11 @@ void BlockGame::NewGame( unsigned int ticks) {
 	lastAImove = ticks+3000;
 }   //NewGame
 
+void BlockGame::FinalizeBlockGameInfo() {
+	replayInfo.extra.name = name;
+	replayInfo.extra.score = score;
+	replayInfo.extra.seconds = gameEndedAfter;
+}
 
 //Prints "winner" and ends game
 void BlockGame::setPlayerWon() {
@@ -346,6 +351,7 @@ void BlockGame::setPlayerWon() {
 			//The AI have defeated a human player
 			Stats::getInstance()->addOne("defeatedByAI"+itoa(getAIlevel()));
 		}
+		FinalizeBlockGameInfo();
 	}
 	hasWonTheGame = true;
 }
@@ -362,6 +368,7 @@ void BlockGame::setDraw() {
 	if (recordStats) {
 		Stats::getInstance()->addOne("totalDraws");
 	}
+	FinalizeBlockGameInfo();
 }
 
 
@@ -1004,6 +1011,7 @@ void BlockGame::SetGameOver() {
 		if (recordStats) {
 			TimeHandler::addTime("playTime",TimeHandler::ms2ct(gameEndedAfter));
 		}
+		FinalizeBlockGameInfo();
 	}
 	bGameOver = true;
 	if (stageClear) {

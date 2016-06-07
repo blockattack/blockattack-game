@@ -109,13 +109,25 @@ struct BlockGameAction {
 	}
 };
 
-struct BlockGameInfo {
-	BlockGameStartInfo startInfo;
-	std::deque<BlockGameAction> actions;
+struct BlockGameInfoExtra {
+	std::string name;
+	int score = 0;
+	int seconds = 0;
 	template <class Archive>
 	void serialize( Archive & ar )
 	{
-		ar( CEREAL_NVP(startInfo), CEREAL_NVP(actions) );
+		ar( CEREAL_NVP(name), CEREAL_NVP(score), CEREAL_NVP(seconds) );
+	}
+};
+
+struct BlockGameInfo {
+	BlockGameStartInfo startInfo;
+	std::deque<BlockGameAction> actions;
+	BlockGameInfoExtra extra;
+	template <class Archive>
+	void serialize( Archive & ar )
+	{
+		ar( CEREAL_NVP(startInfo), CEREAL_NVP(actions), CEREAL_NVP(extra) );
 	}
 };
 
@@ -300,6 +312,7 @@ private:
 	void MouseMove(int x);  //Send then the mouse moves
 	void MouseUp();  //Send then the mouse goes up
 	void MoveCursorTo(int x, int y);
+	void FinalizeBlockGameInfo();
 ///////////////////////////////////////////////////////////////////////////
 /////////////////////////// AI starts here! ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
