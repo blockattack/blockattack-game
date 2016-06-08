@@ -44,8 +44,6 @@ http://www.blockattack.net
 #include <SDL_image.h>      //To load PNG images!
 #include <physfs.h>         //Abstract file system. To use containers
 #include "Libs/NFont.h"
-//#include "ttfont.h"        //To use True Type Fonts in SDL
-//#include "config.h"
 #include <vector>
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"
@@ -69,12 +67,12 @@ http://www.blockattack.net
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "stats.h"          //Saves general stats 
-//#include "uploadReplay.h"   //Takes care of everything libcurl related
 #include "replayhandler.hpp"
 
 #include "common.h"
 #include "gamecontroller.h"
 #include <boost/program_options.hpp>
+#include <fstream>
 
 /*******************************************************************************
 * All variables and constant has been moved to mainVars.inc for the overview.  *
@@ -1162,6 +1160,7 @@ int main(int argc, char* argv[]) {
 		desc.add_options()
 		("help,h", "Displays this message")
 		("version", "Display the version information")
+		("config,c", boost::program_options::value<vector<string> >(), "Read a config file with the values. Can be given multiple times")
 		("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
 		("priority", "Causes the game to not sleep between frames.")
 		("verbose-basic", "Enables basic verbose messages")
@@ -1184,6 +1183,14 @@ int main(int argc, char* argv[]) {
 			cerr << e.what() << "\n";
 			cerr << desc << "\n";
 			throw;
+		}
+		if (vm.count("config")) {
+			vector<string> config_filenames = vm["config"].as<vector<string> >();
+			for ( const string& s : config_filenames) {
+				std::ifstream config_file(s);
+				store(parse_config_file(config_file, desc), vm);
+				notify(vm);
+			}
 		}
 		if (vm.count("bind-text-domain")) {
 			string s = vm["bind-text-domain"].as<string>();
@@ -1374,12 +1381,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		/*if (singlePuzzle) {
-			xsize=300;
-			ysize=600;
-		}*/
-
-
 		// "Block Attack - Rise of the Blocks"
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 		//Open video
@@ -1405,13 +1406,6 @@ int main(int argc, char* argv[]) {
 		BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
 		player1 = &theGame;
 		player2 = &theGame2;
-		/*if (singlePuzzle)
-		{
-		    theGame.GetTopY()=0;
-		    theGame.GetTopX()=0;
-		    theGame2.GetTopY()=10000;
-		    theGame2.GetTopX()=10000;
-		}*/
 		
 		BlockGameAction a;
 		a.action = BlockGameAction::Action::SET_GAME_OVER;
