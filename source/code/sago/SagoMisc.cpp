@@ -58,19 +58,16 @@ std::string GetFileContent(const char* filename) {
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(filename);
 	unsigned int m_size = PHYSFS_fileLength(myfile);
-	char* m_data = new char[m_size+1];
-	int length_read = PHYSFS_read (myfile, m_data, 1, m_size);
+	std::unique_ptr<char[]> m_data(new char[m_size+1]);
+	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
 	if (length_read != (int)m_size) {
-		delete [] m_data;
-		m_data = nullptr;
 		PHYSFS_close(myfile);
 		cerr << "Error: Curropt data file: " << filename << "\n";
 		return ret;
 	}
 	PHYSFS_close(myfile);
 	m_data[m_size] = 0; //ensure that we are 0 terminated
-	ret = m_data;
-	delete [] m_data;
+	ret = m_data.get();
 	return ret;
 }
 
@@ -82,6 +79,11 @@ void WriteFileContent(const char* filename, const std::string& content) {
 	}
 	PHYSFS_write(myfile, content.c_str(), sizeof(char), content.length());
 	PHYSFS_close(myfile);
+}
+
+long int StrToLong(const char* c_string) {
+	auto ret = strtol(c_string, nullptr, 10);
+	return ret;
 }
 
 }

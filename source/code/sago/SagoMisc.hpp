@@ -50,6 +50,14 @@ namespace sago {
 	
 	void WriteFileContent(const char* filename, const std::string& content);
 		
+	/**
+	 * This functions convers a string on a best effort basis
+	 * Unlike atol this does NOT cause undefined behavior if out of range
+	 * @param c_string A string that may contain a number
+	 * @return A number between LONG_MIN and LONG_MAX (both inclusive)
+	 */
+	long int StrToLong(const char* c_string);
+	
 }  //namespace sago
 
 #endif	/* SAGOMISC_HPP */
