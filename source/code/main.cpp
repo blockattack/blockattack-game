@@ -550,6 +550,7 @@ static TextManager theTextManager;
 #include "ScoresDisplay.hpp"
 
 #include "BlockGameSdl.inc"
+#include "sago/SagoMisc.hpp"
 
 
 
@@ -1149,7 +1150,7 @@ int main(int argc, char* argv[]) {
 		int consoleWidth = boost::program_options::options_description::m_default_line_length;
 		const char* columnsEnv = getenv("COLUMNS"); // Allows using "COLUMNS=300 help2man" for generating the man page without bad line breaks.
 		if (columnsEnv) {
-			consoleWidth = atoi(columnsEnv);
+			consoleWidth = sago::StrToLong(columnsEnv);
 		}
 		const char* commandname = "blockattack";
 		if (argv[0]) {
