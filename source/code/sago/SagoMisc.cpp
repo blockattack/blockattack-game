@@ -58,7 +58,7 @@ std::string GetFileContent(const char* filename) {
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(filename);
 	unsigned int m_size = PHYSFS_fileLength(myfile);
-	std::unique_ptr<char[]> m_data(new char[m_size+1]);
+	std::unique_ptr<char[]> m_data(new char[m_size]);
 	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
@@ -66,8 +66,8 @@ std::string GetFileContent(const char* filename) {
 		return ret;
 	}
 	PHYSFS_close(myfile);
-	m_data[m_size] = 0; //ensure that we are 0 terminated
-	ret = m_data.get();
+	//Now create a std::string 
+	ret = string(m_data.get(), m_data.get()+m_size);
 	return ret;
 }
 
