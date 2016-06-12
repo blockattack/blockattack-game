@@ -35,16 +35,12 @@ http://blockattack.net
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
 struct ButtonGfx
 {
-	//Holds the graphic for a button that is selected
-	sago::SagoSprite* marked = nullptr;
-	//Holds the graphic for a button that is not selected
-	sago::SagoSprite* unmarked = nullptr;
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize = 0;
 	int ysize = 0;
 	//A TTFont used for writing the label on the buttons
 	NFont* thefont = nullptr;
-	void setSurfaces(sago::SagoSprite* marked, sago::SagoSprite* unmarked);
+	void setSurfaces();
 };
 
 extern ButtonGfx standardButton;

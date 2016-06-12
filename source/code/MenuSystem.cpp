@@ -35,14 +35,14 @@ using std::cerr;
 using std::cout;
 using std::vector;
 
+const char* const menu_marked = "menu_marked";
+const char* const menu_unmarked = "menu_unmarked";
 
 ButtonGfx standardButton;
 
-void ButtonGfx::setSurfaces(sago::SagoSprite* marked, sago::SagoSprite* unmarked) {
-	this->marked = marked;
-	this->unmarked = unmarked;
-	xsize=(marked)->GetWidth();
-	ysize=(marked)->GetHeight();
+void ButtonGfx::setSurfaces() {
+	xsize = spriteHolder->GetSprite(menu_marked).GetWidth();
+	ysize = spriteHolder->GetSprite(menu_marked).GetHeight();
 	if (verboseLevel) {
 		cout << "Surfaces set, size: " <<xsize << " , " << ysize << "\n";
 	}
@@ -95,10 +95,10 @@ void Button::drawToScreen() {
 	//cout << "Painting button: " << label << " at: " << x << "," << y << "\n";
 #endif
 	if (marked) {
-		gfx->marked->Draw(screen, SDL_GetTicks(), x, y);
+		spriteHolder->GetSprite("menu_marked").Draw(screen, SDL_GetTicks(), x, y);
 	}
 	else {
-		gfx->unmarked->Draw(screen, SDL_GetTicks(), x, y);
+		spriteHolder->GetSprite("menu_unmarked").Draw(screen, SDL_GetTicks(), x, y);
 	}
 	gfx->thefont->draw(screen, x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont->getHeight("%s", label.c_str())/2, NFont::CENTER, "%s", label.c_str());
 }
