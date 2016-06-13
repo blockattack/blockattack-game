@@ -95,11 +95,12 @@ void Button::drawToScreen() {
 	//cout << "Painting button: " << label << " at: " << x << "," << y << "\n";
 #endif
 	if (marked) {
-		spriteHolder->GetSprite("menu_marked").Draw(screen, SDL_GetTicks(), x, y);
+		spriteHolder->GetSprite(menu_marked).Draw(screen, SDL_GetTicks(), x, y);
 	}
 	else {
-		spriteHolder->GetSprite("menu_unmarked").Draw(screen, SDL_GetTicks(), x, y);
+		spriteHolder->GetSprite(menu_unmarked).Draw(screen, SDL_GetTicks(), x, y);
 	}
+	
 	gfx->thefont->draw(screen, x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont->getHeight("%s", label.c_str())/2, NFont::CENTER, "%s", label.c_str());
 }
 
