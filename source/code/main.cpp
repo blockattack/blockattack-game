@@ -1299,7 +1299,7 @@ int main(int argc, char* argv[]) {
 			//Copyright notice:
 			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2016 Poul Sander" << "\n" <<
 			     "A SDL2 based game (see www.libsdl.org)" << "\n" <<
-			     "The game is availeble under the GPL, see COPYING for details." << "\n";
+			     "The game is available under the GPL, see COPYING for details." << "\n";
 			cout << "-------------------------------------------" << "\n";
 		}
 
