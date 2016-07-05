@@ -41,7 +41,6 @@ extern sago::SagoSprite  menuUnmarked;
 extern sago::SagoSprite bHighScore;
 extern sago::SagoSprite bBack;
 extern sago::SagoSprite bNext;
-extern sago::SagoSprite dialogBox;
 extern NFont nf_scoreboard_font;
 extern NFont nf_standard_blue_font;
 extern NFont nf_button_font;

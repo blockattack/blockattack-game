@@ -199,15 +199,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"dialogbox" : {
-	"texture" : "dialogbox",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 200,
-	"width" : 600,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "explosion0" : {
 	"texture" : "explosion0",
  	"topx" : 0,

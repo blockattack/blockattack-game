@@ -147,7 +147,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	iDraw = holder.GetSprite("i_draw");
 	iLoser = holder.GetSprite("i_loser");
 	iChainFrame = holder.GetSprite("chain_frame");
-	dialogBox = holder.GetSprite("dialogbox");
 	iLevelCheck = holder.GetSprite("i_level_check");
 	iLevelCheckBox = holder.GetSprite("i_level_check_box");
 	iLevelCheckBoxMarked = holder.GetSprite("i_level_check_box_marked");
