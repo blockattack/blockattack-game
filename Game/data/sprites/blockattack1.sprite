@@ -253,15 +253,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"fileDialogbox" : {
-	"texture" : "fileDialogbox",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 200,
-	"width" : 600,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "garbage_bl" : {
 	"texture" : "garbage_bl",
  	"topx" : 0,
