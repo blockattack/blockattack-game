@@ -102,31 +102,31 @@ void InitMenues() {
 
 
 static void runSinglePlayerEndless(Button* b) {
-	runGame(0,0);
+	runGame(Gametype::SinglePlayerEndless, 0);
 }
 
 static void runSinglePlayerTimeTrial(Button* b) {
-	runGame(1,0);
+	runGame(Gametype::SinglePlayerTimeTrial, 0);
 }
 
 static void runStageClear(Button* b) {
-	runGame(2,0);
+	runGame(Gametype::StageClear, 0);
 }
 
 static void runSinglePlayerPuzzle(Button* b) {
-	runGame(3,0);
+	runGame(Gametype::Puzzle, 0);
 }
 
 static void runSinglePlayerVs(Button* b) {
-	runGame(4,b->iGeneric1);
+	runGame(Gametype::SinglePlayerVs, b->iGeneric1);
 }
 
 static void runTwoPlayerTimeTrial(Button* b) {
-	runGame(10,0);
+	runGame(Gametype::TwoPlayerTimeTrial, 0);
 }
 
 static void runTwoPlayerVs(Button* b) {
-	runGame(11,0);
+	runGame(Gametype::TwoPlayerVs, 0);
 }
 
 static void buttonActionMusic(Button* b) {
@@ -257,7 +257,7 @@ static void SinglePlayerVsMenu(Button* b) {
 
 static void MultiplayerMenu(Button* b) {
 	Menu mm(screen,_("Multiplayer"),true);
-	Button bTT, bVs, bNet;
+	Button bTT, bVs;
 	bTT.setLabel(_("Two player - time trial"));
 	bTT.setAction(runTwoPlayerTimeTrial);
 	bVs.setLabel(_("Two player - vs"));

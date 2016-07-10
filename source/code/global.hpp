@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+http://www.blockattack.net
 ===========================================================================
 */
 
@@ -33,7 +33,10 @@ http://blockattack.net
 void MainMenu();
 void ResetFullscreen();
 void RunGameState(sago::GameStateInterface& state );
-int runGame(int gametype,int level);
+
+enum class Gametype { SinglePlayerEndless=0, SinglePlayerTimeTrial=1, StageClear=2, Puzzle=3, SinglePlayerVs=4, TwoPlayerTimeTrial=10, TwoPlayerVs=11  };
+
+int runGame(Gametype gametype,int level);
 bool OpenDialogbox(int x, int y, std::string& name, const std::string& header);
 
 extern sago::SagoSprite  menuMarked;

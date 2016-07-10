@@ -1430,7 +1430,7 @@ int main(int argc, char* argv[]) {
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
 		SDL_RenderPresent(screen);
 		if (singlePuzzle) {
-			runGame(3, singlePuzzleNr);
+			runGame(Gametype::Puzzle, singlePuzzleNr);
 		}
 		else {
 			//game loop
@@ -1493,7 +1493,7 @@ int main(int argc, char* argv[]) {
 }
 
 
-int runGame(int gametype, int level) {
+int runGame(Gametype gametype, int level) {
 	int mousex, mousey;   //Mouse coordinates
 	theTopScoresEndless = Highscore("endless");
 	theTopScoresTimeTrial = Highscore("timetrial");
@@ -1542,34 +1542,34 @@ int runGame(int gametype, int level) {
 			registerTTHighscorePlayer1 = false;
 			registerTTHighscorePlayer2 = false;
 			switch (gametype) {
-			case 1:
-				StartSinglePlayerTimeTrial();
-				break;
-			case 2: {
-				int myLevel = PuzzleLevelSelect(1);
-				if (myLevel == -1) {
-					return 1;
-				}
-				BlockGameStartInfo s;
-				s.ticks = SDL_GetTicks();
-				s.stageClear = true;
-				s.level = myLevel;
-				theGame.NewGame(s);
-				DrawIMG(backgroundImage, screen, 0, 0);
-				twoPlayers =false;
-				BlockGameAction a;
-				a.action = BlockGameAction::Action::SET_GAME_OVER;
-				theGame2.DoAction(a);
-				theGame.name = player1name;
-				theGame2.name = player2name;
-			}
-			break;
-			case 3:
-				if (StartSinglePlayerPuzzle(level)) {
-					return 1;
+				case Gametype::SinglePlayerTimeTrial:
+					StartSinglePlayerTimeTrial();
+					break;
+				case Gametype::StageClear: {
+					int myLevel = PuzzleLevelSelect(1);
+					if (myLevel == -1) {
+						return 1;
+					}
+					BlockGameStartInfo s;
+					s.ticks = SDL_GetTicks();
+					s.stageClear = true;
+					s.level = myLevel;
+					theGame.NewGame(s);
+					DrawIMG(backgroundImage, screen, 0, 0);
+					twoPlayers =false;
+					BlockGameAction a;
+					a.action = BlockGameAction::Action::SET_GAME_OVER;
+					theGame2.DoAction(a);
+					theGame.name = player1name;
+					theGame2.name = player2name;
 				}
 				break;
-			case 4: {
+				case Gametype::Puzzle:
+					if (StartSinglePlayerPuzzle(level)) {
+						return 1;
+					}
+					break;
+				case Gametype::SinglePlayerVs: {
 				//1 player - Vs mode
 				int theAIlevel = level; //startSingleVs();
 				BlockGameStartInfo startInfo;
@@ -1586,13 +1586,13 @@ int runGame(int gametype, int level) {
 				theGame2.name = player2name;
 			}
 			break;
-			case 10:
+				case Gametype::TwoPlayerTimeTrial:
 				StarTwoPlayerTimeTrial();
 				break;
-			case 11:
+				case Gametype::TwoPlayerVs:
 				StartTwoPlayerVs();
 				break;
-			case 0:
+				case Gametype::SinglePlayerEndless:
 			default:
 				StartSinglePlayerEndless();
 				break;
@@ -1610,7 +1610,7 @@ int runGame(int gametype, int level) {
 		SDL_RenderClear(screen);
 		DrawIMG(backgroundImage, screen, 0, 0);
 
-		//updates the balls and explosions:
+		//updates the balls and explosions:g
 		theBallManager.update();
 		theExplosionManager.update();
 		theTextManager.update();

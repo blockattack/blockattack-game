@@ -68,7 +68,7 @@ public:
 
 	Button();
 	Button(const Button& b);
-	~Button();
+	virtual ~Button();
 
 
 	//Set the text to write on the button
