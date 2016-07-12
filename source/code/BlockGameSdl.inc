@@ -21,6 +21,9 @@ http://www.blockattack.net
 ===========================================================================
 */
 
+#include "BlockGame.hpp"
+
+
 class BlockGameSdl : public BlockGame {
 public:
 	BlockGameSdl(int tx, int ty) {
@@ -38,6 +41,10 @@ public:
 
 	void PrintTextCenteredBoard(int x, int y, const char* text) {
 		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::CENTER, "%s", text);
+	}
+	
+	void PrintIntRightAlignedBoard(int x, int y, int number) {
+		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::RIGHT, "%d", number);
 	}
 
 	int GetTopX() const {
@@ -327,6 +334,9 @@ public:
 				strHolder = "Last stage";
 				nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 			}
+		}
+		if (!bGameOver && stop > 20) {
+			PrintIntRightAlignedBoard(240, -40, stop/10);
 		}
 
 #if DEBUG
