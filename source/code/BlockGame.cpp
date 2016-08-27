@@ -49,6 +49,30 @@ static string itoa2(int num) {
 	return buffer;
 }
 
+/**
+ * This function tells how long the game may pause the rise of the blocks.
+ * This decreases as the game progresses.
+ * @param stops In out variable. If larger than the max allowed 
+ * @param ticks Ticks since the game was started
+ * @param gameStartedAt Tick the game was started at.
+ */
+static void capMaxStops(int& stops, unsigned int ticks, unsigned int gameStartedAt) {
+	if (ticks < gameStartedAt || stops = 0) {
+		//Game not started or not stops, do nothing
+		return;
+	}
+	unsigned int gameTime = gameStartedAt - ticks;
+	
+	int maxSeconds = 10-( (gameTime/1000) % 30 );
+	if (maxSeconds < 3) {
+		maxSeconds = 1;
+	}
+	int cappedStops = maxSeconds * 1000;
+	if (stops > cappedStops) {
+		stops = cappedStops;
+	}
+}
+
 stageButton stageButtonStatus;
 
 static std::stringstream ss; //Used for internal formatting
@@ -1685,7 +1709,7 @@ void BlockGame::AI_Move() {
 //Updates evrything, if not called nothing happends
 void BlockGame::Update() {
 	unsigned int nowTime = ticks; //We remember the time, so it doesn't change during this call
-
+	capMaxStops(stop, nowTime, gameStartedAt);
 	{
 		FindTowerHeight();
 		if ((linesCleared-TowerHeight>stageClearLimit) && (stageClear) && (!bGameOver)) {
