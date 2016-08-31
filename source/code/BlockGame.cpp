@@ -57,7 +57,7 @@ static string itoa2(int num) {
  * @param gameStartedAt Tick the game was started at.
  */
 static void capMaxStops(int& stops, unsigned int ticks, unsigned int gameStartedAt) {
-	if (ticks < gameStartedAt || stops = 0) {
+	if (ticks < gameStartedAt || stops == 0) {
 		//Game not started or not stops, do nothing
 		return;
 	}
