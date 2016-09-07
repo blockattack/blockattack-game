@@ -219,9 +219,9 @@ public:
 
 	int getAIlevel()  const;
 	
-	virtual void AddText(int x, int y, const std::string& text, int time) const  {}
-	virtual void AddBall(int x, int y, bool right, int color) const  {}
-	virtual void AddExplosion(int x, int y) const  {}
+	virtual void AddText(int, int, const std::string&, int) const  {}
+	virtual void AddBall(int, int, bool, int) const  {}
+	virtual void AddExplosion(int, int) const  {}
 	virtual void PlayerWonEvent() const  {}
 	virtual void DrawEvent() const {}
 	virtual void BlockPopEvent() const  {}

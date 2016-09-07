@@ -1054,7 +1054,7 @@ static void StartSinglePlayerTimeTrial() {
 	saveReplay = true;
 }
 
-static int StartSinglePlayerPuzzle(int level) {
+static int StartSinglePlayerPuzzle() {
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.puzzleMode = true;
@@ -1565,7 +1565,7 @@ int runGame(Gametype gametype, int level) {
 				}
 				break;
 				case Gametype::Puzzle:
-					if (StartSinglePlayerPuzzle(level)) {
+					if (StartSinglePlayerPuzzle()) {
 						return 1;
 					}
 					break;
