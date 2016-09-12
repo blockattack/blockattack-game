@@ -99,33 +99,33 @@ void InitMenues() {
 	standardButton.thefont = &nf_scoreboard_font;
 }
 
+#define UNUSED __attribute__((unused))
 
-
-static void runSinglePlayerEndless(Button* b) {
+static void runSinglePlayerEndless(Button* b UNUSED) {
 	runGame(Gametype::SinglePlayerEndless, 0);
 }
 
-static void runSinglePlayerTimeTrial(Button* b) {
+static void runSinglePlayerTimeTrial(Button* b UNUSED) {
 	runGame(Gametype::SinglePlayerTimeTrial, 0);
 }
 
-static void runStageClear(Button* b) {
+static void runStageClear(Button* b UNUSED) {
 	runGame(Gametype::StageClear, 0);
 }
 
-static void runSinglePlayerPuzzle(Button* b) {
+static void runSinglePlayerPuzzle(Button* b UNUSED) {
 	runGame(Gametype::Puzzle, 0);
 }
 
-static void runSinglePlayerVs(Button* b) {
+static void runSinglePlayerVs(Button* b UNUSED) {
 	runGame(Gametype::SinglePlayerVs, b->iGeneric1);
 }
 
-static void runTwoPlayerTimeTrial(Button* b) {
+static void runTwoPlayerTimeTrial(Button* b UNUSED) {
 	runGame(Gametype::TwoPlayerTimeTrial, 0);
 }
 
-static void runTwoPlayerVs(Button* b) {
+static void runTwoPlayerVs(Button* b UNUSED) {
 	runGame(Gametype::TwoPlayerVs, 0);
 }
 
@@ -145,19 +145,19 @@ static void buttonActionFullscreen(Button* b) {
 	ResetFullscreen();
 }
 
-static void buttonActionPlayer1Name(Button* b) {
+static void buttonActionPlayer1Name(Button* b UNUSED) {
 	if ( OpenDialogbox(200, 100, player1name, _("Enter player 1 name:")) ) {
 		return;    //must save if true
 	}
 }
 
-static void buttonActionPlayer2Name(Button* b) {
+static void buttonActionPlayer2Name(Button* b UNUSED) {
 	if ( OpenDialogbox(200, 100, player2name, _("Enter player 2 name:")) ) {
 		return;    //must save if true
 	}
 }
 
-static void buttonActionHighscores(Button* b) {
+static void buttonActionHighscores(Button* b UNUSED) {
 	OpenScoresDisplay();
 }
 
@@ -178,15 +178,15 @@ static void ChangeKeysMenu(long playernumber) {
 	km.run();
 }
 
-static void ChangeKeysMenu1(Button* b) {
+static void ChangeKeysMenu1(Button* b UNUSED) {
 	ChangeKeysMenu(0);
 }
 
-static void ChangeKeysMenu2(Button* b) {
+static void ChangeKeysMenu2(Button* b UNUSED) {
 	ChangeKeysMenu(2);
 }
 
-static void ConfigureMenu(Button* b) {
+static void ConfigureMenu(Button* b UNUSED) {
 	Menu cm(screen,_("Configuration"),true);
 	Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
 	Button bPlayer1Keys, bPlayer2Keys;
@@ -214,7 +214,7 @@ static void ConfigureMenu(Button* b) {
 	cm.run();
 }
 
-static void SinglePlayerVsMenu(Button* b) {
+static void SinglePlayerVsMenu(Button* b UNUSED) {
 	Menu spvs(screen,_("Single player VS"),true);
 	Button d1,d2,d3,d4,d5,d6,d7;
 	d1.setAction(runSinglePlayerVs);
@@ -255,7 +255,7 @@ static void SinglePlayerVsMenu(Button* b) {
 	spvs.run();
 }
 
-static void MultiplayerMenu(Button* b) {
+static void MultiplayerMenu(Button* b UNUSED) {
 	Menu mm(screen,_("Multiplayer"),true);
 	Button bTT, bVs;
 	bTT.setLabel(_("Two player - time trial"));

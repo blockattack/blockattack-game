@@ -95,18 +95,18 @@ bool DialogBox::IsActive() {
 
 
 void DialogBox::Draw(SDL_Renderer* target) {
-	backgroundImage.Draw(screen, SDL_GetTicks(), 0, 0);
-	DrawRectYellow(screen, x, y, 200, 600);
-	nf_button_font.draw(screen, x+300, y+20, NFont::CENTER, "%s", header.c_str());
-	nf_button_font.draw(screen, x+150, y+140, NFont::CENTER, _("Enter to accept"));
-	nf_button_font.draw(screen, x+450, y+140, NFont::CENTER, _("Esc to cancel"));
-	DrawRectWhite(screen, x+26, y+64, 54, 600-2*26);
-	NFont_Write(screen, x+40, y+76,rk->GetString());
+	backgroundImage.Draw(target, SDL_GetTicks(), 0, 0);
+	DrawRectYellow(target, x, y, 200, 600);
+	nf_button_font.draw(target, x+300, y+20, NFont::CENTER, "%s", header.c_str());
+	nf_button_font.draw(target, x+150, y+140, NFont::CENTER, _("Enter to accept"));
+	nf_button_font.draw(target, x+450, y+140, NFont::CENTER, _("Esc to cancel"));
+	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
+	NFont_Write(target, x+40, y+76,rk->GetString());
 	std::string strHolder = rk->GetString();
 	strHolder.erase((int)rk->CharsBeforeCursor());
 
 	if (((SDL_GetTicks()/600)%2)==1) {
-		NFont_Write(screen, x+40+nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
+		NFont_Write(target, x+40+nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
 	}
 }
 

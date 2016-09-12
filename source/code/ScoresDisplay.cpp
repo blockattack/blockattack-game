@@ -134,7 +134,7 @@ bool ScoresDisplay::IsActive() {
 	return isActive;
 }
 
-void ScoresDisplay::Draw(SDL_Renderer* target) {
+void ScoresDisplay::Draw(SDL_Renderer*) {
 	switch (page) {
 	case 0:
 		//Highscores, endless
@@ -168,6 +168,7 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 		if (page>=numberOfPages) {
 			page = 0;
 		}
+		processed = true;
 	}
 
 	if (isRightEvent(event)) {
@@ -175,10 +176,12 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 		if (page<0) {
 			page = numberOfPages-1;
 		}
+		processed = true;
 	}
 
 	if (isConfirmEvent(event) || isEscapeEvent(event)) {
 		isActive = false;
+		processed = true;
 	}
 }
 

@@ -1131,14 +1131,129 @@ static void StartTwoPlayerVs() {
 	player2->name = player2name;
 }
 
+struct globalConfig {
+	string savepath;
+	vector<string> search_paths;
+	string puzzleName;
+};
+
+static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
+	int consoleWidth = boost::program_options::options_description::m_default_line_length;
+	const char* columnsEnv = getenv("COLUMNS"); // Allows using "COLUMNS=300 help2man" for generating the man page without bad line breaks.
+	if (columnsEnv) {
+		consoleWidth = sago::StrToLong(columnsEnv);
+	}
+	const char* commandname = "blockattack";
+	if (argv[0]) {
+		//NULL on Windows
+		commandname = argv[0];
+	}
+	boost::program_options::options_description desc("Options", consoleWidth);
+	desc.add_options()
+	("help,h", "Displays this message")
+	("version", "Display the version information")
+	("config,c", boost::program_options::value<vector<string> >(), "Read a config file with the values. Can be given multiple times")
+	("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
+	("priority", "Causes the game to not sleep between frames.")
+	("verbose-basic", "Enables basic verbose messages")
+	("verbose-game-controller", "Enables verbose messages regarding controllers")
+	("print-search-path", "Prints the search path and quits")
+	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
+	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
+	("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
+			"Default: \"%s\"", LOCALEDIR).c_str())
+	("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
+			" Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
+
+	;
+	boost::program_options::variables_map vm;
+	try {
+		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
+		boost::program_options::notify(vm);
+	}
+	catch (exception& e) {
+		cerr << e.what() << "\n";
+		cerr << desc << "\n";
+		throw;
+	}
+	if (vm.count("config")) {
+		vector<string> config_filenames = vm["config"].as<vector<string> >();
+		for ( const string& s : config_filenames) {
+			std::ifstream config_file(s);
+			store(parse_config_file(config_file, desc), vm);
+			notify(vm);
+		}
+	}
+	if (vm.count("bind-text-domain")) {
+		string s = vm["bind-text-domain"].as<string>();
+		bindtextdomain (PACKAGE, s.c_str());
+	}
+	if (vm.count("homepath")) {
+		string s = vm["homepath"].as<string>();
+		setPathToSaveFiles(s);
+		conf.savepath = getPathToSaveFiles();
+	}
+	if (vm.count("help")) {
+		cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
+							  "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
+							  "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
+		cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
+		cout << desc << "\n";
+		cout << "Examples:" << "\n";
+		cout << "\tblockattack          \tStart the game normally" << "\n";
+		cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << "\n";
+		cout << "\n";
+		cout << "Report bugs to the issue tracker here: <https://github.com/blockattack/blockattack-game/issues>" << "\n";
+		exit(0);
+	}
+	if (vm.count("version")) {
+		cout << "blockattack " << VERSION_NUMBER << "\n";
+		cout << "\n";
+		cout << "Copyright (C) 2005-2016 Poul Sander" << "\n";
+		cout << "License GPLv2+: GNU GPL version 2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> or later <http://gnu.org/licenses/gpl.html>" << "\n";
+		cout << "This is free software: you are free to change and redistribute it." << "\n";
+		cout << "There is NO WARRANTY, to the extent permitted by law." << "\n";
+		exit(0);
+	}
+	if (vm.count("nosound")) {
+		NoSound = true;
+	}
+	if (vm.count("priority")) {
+		highPriority = true;
+	}
+	if (vm.count("verbose-basic")) {
+		verboseLevel++;
+	}
+	if (vm.count("verbose-game-controller")) {
+		GameControllerSetVerbose(true);
+	}
+	if (vm.count("print-search-path")) {
+		for (const string& s : conf.search_paths) {
+			cout << s << "\n";
+		}
+		cout << conf.savepath << "\n";
+		exit(0);
+	}
+	if (vm.count("puzzle-single-level")) {
+		singlePuzzle = true;
+		singlePuzzleNr = vm["puzzle-single-level"].as<int>();
+	}
+	
+	if (vm.count("puzzle-level-file")) {
+		conf.puzzleName = vm["puzzle-level-file"].as<string>();
+	}
+		
+}
+
 //Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it
 int main(int argc, char* argv[]) {
 	try {
 		//Init the file system abstraction layer
 		PHYSFS_init(argv[0]);
-		vector<string> search_paths;
-		FsSearchParthMainAppend(search_paths);
-		string savepath = getPathToSaveFiles();
+		globalConfig config;
+		config.puzzleName = "puzzle.levels";
+		FsSearchParthMainAppend(config.search_paths);
+		config.savepath = getPathToSaveFiles();
 		highPriority = false;   //if true the game will take most resources, but increase framerate.
 		bFullscreen = false;
 		//Set default Config variables:
@@ -1146,111 +1261,11 @@ int main(int argc, char* argv[]) {
 		bindtextdomain (PACKAGE, LOCALEDIR);
 		bind_textdomain_codeset(PACKAGE, "utf-8");
 		textdomain (PACKAGE);
-		int consoleWidth = boost::program_options::options_description::m_default_line_length;
-		const char* columnsEnv = getenv("COLUMNS"); // Allows using "COLUMNS=300 help2man" for generating the man page without bad line breaks.
-		if (columnsEnv) {
-			consoleWidth = sago::StrToLong(columnsEnv);
-		}
-		const char* commandname = "blockattack";
-		if (argv[0]) {
-			//NULL on Windows
-			commandname = argv[0];
-		}
-		boost::program_options::options_description desc("Options", consoleWidth);
-		desc.add_options()
-		("help,h", "Displays this message")
-		("version", "Display the version information")
-		("config,c", boost::program_options::value<vector<string> >(), "Read a config file with the values. Can be given multiple times")
-		("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
-		("priority", "Causes the game to not sleep between frames.")
-		("verbose-basic", "Enables basic verbose messages")
-		("verbose-game-controller", "Enables verbose messages regarding controllers")
-		("print-search-path", "Prints the search path and quits")
-		("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
-		("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
-		("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
-		        "Default: \"%s\"", LOCALEDIR).c_str())
-		("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
-		        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
-
-		;
-		boost::program_options::variables_map vm;
-		try {
-			boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
-			boost::program_options::notify(vm);
-		}
-		catch (exception& e) {
-			cerr << e.what() << "\n";
-			cerr << desc << "\n";
-			throw;
-		}
-		if (vm.count("config")) {
-			vector<string> config_filenames = vm["config"].as<vector<string> >();
-			for ( const string& s : config_filenames) {
-				std::ifstream config_file(s);
-				store(parse_config_file(config_file, desc), vm);
-				notify(vm);
-			}
-		}
-		if (vm.count("bind-text-domain")) {
-			string s = vm["bind-text-domain"].as<string>();
-			bindtextdomain (PACKAGE, s.c_str());
-		}
-		if (vm.count("homepath")) {
-			string s = vm["homepath"].as<string>();
-			setPathToSaveFiles(s);
-			savepath = getPathToSaveFiles();
-		}
-		if (vm.count("help")) {
-			cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
-			                      "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
-			                      "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
-			cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
-			cout << desc << "\n";
-			cout << "Examples:" << "\n";
-			cout << "\tblockattack          \tStart the game normally" << "\n";
-			cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << "\n";
-			cout << "\n";
-			cout << "Report bugs to the issue tracker here: <https://github.com/blockattack/blockattack-game/issues>" << "\n";
-			return 0;
-		}
-		if (vm.count("version")) {
-			cout << "blockattack " << VERSION_NUMBER << "\n";
-			cout << "\n";
-			cout << "Copyright (C) 2005-2016 Poul Sander" << "\n";
-			cout << "License GPLv2+: GNU GPL version 2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> or later <http://gnu.org/licenses/gpl.html>" << "\n";
-			cout << "This is free software: you are free to change and redistribute it." << "\n";
-			cout << "There is NO WARRANTY, to the extent permitted by law." << "\n";
-			return 0;
-		}
-		if (vm.count("nosound")) {
-			NoSound = true;
-		}
-		if (vm.count("priority")) {
-			highPriority = true;
-		}
-		if (vm.count("verbose-basic")) {
-			verboseLevel++;
-		}
-		if (vm.count("verbose-game-controller")) {
-			GameControllerSetVerbose(true);
-		}
-		if (vm.count("print-search-path")) {
-			for (const string& s : search_paths) {
-				cout << s << "\n";
-			}
-			cout << savepath << "\n";
-			return 0;
-		}
-		if (vm.count("puzzle-single-level")) {
-			singlePuzzle = true;
-			singlePuzzleNr = vm["puzzle-single-level"].as<int>();
-		}
+		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
-		PhysFsSetSearchPath(search_paths, savepath);
+		PhysFsSetSearchPath(config.search_paths, config.savepath);
 		//Os create folders must be after the paramters because they can change the home folder
 		PhysFsCreateFolders();
-
 		SoundEnabled = true;
 		MusicEnabled = true;
 		twoPlayers = false; //true if two players splitscreen
@@ -1258,16 +1273,9 @@ int main(int argc, char* argv[]) {
 		theTopScoresTimeTrial = Highscore("timetrial");
 		drawBalls = true;
 		puzzleLoaded = false;
-
 		theBallManager = BallManager();
 		theExplosionManager = ExplosionManager();
-
-		PuzzleSetName("puzzle.levels");
-		if (vm.count("puzzle-level-file")) {
-			string s = vm["puzzle-level-file"].as<string>();
-			PuzzleSetName(s);
-		}
-
+		PuzzleSetName(config.puzzleName);
 		//Init SDL
 		if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 			sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
@@ -1278,9 +1286,6 @@ int main(int argc, char* argv[]) {
 		InitGameControllers();
 		TTF_Init();
 		atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
-
-		//SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
-
 		theTextManager = TextManager();
 
 		//Open Audio
