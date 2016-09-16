@@ -2,5 +2,4 @@ to regenerate the manpage:
 gzip -9 -c blockattack.man > blockattack.6.gz  #This is done by the package script
 
 This line will regenerate the source file. This should be committed as not all platforms can generate it.
-COLUMNS=300 help2man --no-info --section=6 ../Game/blockattack > blockattack.man
-
+COLUMNS=300 help2man --no-info --section=6 ../Game/blockattack | sed 's@'"$HOME"'@$HOME@g' > blockattack.man
