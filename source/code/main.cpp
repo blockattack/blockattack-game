@@ -1131,10 +1131,40 @@ static void StartTwoPlayerVs() {
 	player2->name = player2name;
 }
 
+#ifdef ALLOW_RESIZE
+static void ClampResolution(SDL_Window* win) {
+	int w = 0;
+	int h = 0;
+	bool changed = false;
+	SDL_GetWindowSize(win, &w, &h);
+	if (w < 800) {
+		w = 800;
+		changed = true;
+	}
+	if (w > 1024) {
+		w = 1024;
+		changed = true;
+	}
+	if (h < 600) {
+		h = 600;
+		changed = true;
+	}
+	if (h > 768) {
+		h = 768;
+		changed = true;
+	}
+	if (changed) {
+		SDL_SetWindowSize(win, w, h);
+		cerr << "Changed to " << w << "," << h << "\n"; 
+	}
+}
+#endif
+
 struct globalConfig {
 	string savepath;
 	vector<string> search_paths;
 	string puzzleName;
+	bool allowResize = false;
 };
 
 static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
@@ -1158,6 +1188,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("verbose-basic", "Enables basic verbose messages")
 	("verbose-game-controller", "Enables verbose messages regarding controllers")
 	("print-search-path", "Prints the search path and quits")
+	("allow-resize", "Allow experimental windows resize support")
 	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 	("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
@@ -1237,6 +1268,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	if (vm.count("puzzle-single-level")) {
 		singlePuzzle = true;
 		singlePuzzleNr = vm["puzzle-single-level"].as<int>();
+	}
+	if(vm.count("allow-resize")) {
+		conf.allowResize = true;
 	}
 	
 	if (vm.count("puzzle-level-file")) {
@@ -1387,9 +1421,12 @@ int main(int argc, char* argv[]) {
 		}
 
 		// "Block Attack - Rise of the Blocks"
-		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 		//Open video
 		int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
+		if (config.allowResize) {
+			createWindowParams |= SDL_WINDOW_RESIZABLE;
+		}
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
@@ -1398,7 +1435,9 @@ int main(int argc, char* argv[]) {
 		dieOnNullptr(sdlWindow, "Unable to create window");
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 		dieOnNullptr(renderer, "Unable to create render");
-		SDL_RenderSetLogicalSize(renderer, xsize, ysize);
+		if (config.allowResize) {
+			SDL_RenderSetLogicalSize(renderer, xsize, ysize);
+		}
 		screen = renderer;
 		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
@@ -1625,7 +1664,6 @@ int runGame(Gametype gametype, int level) {
 		BlockGameAction a;
 		a.action = BlockGameAction::Action::NONE;
 		a.tick = SDL_GetTicks();
-		
 		if (true) {
 			SDL_Event event;
 
@@ -1634,7 +1672,15 @@ int runGame(Gametype gametype, int level) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
 				}
-
+#if ALLOW_RESIZE
+				if (event.type == SDL_WINDOWEVENT ) {
+					if (event.window.event == SDL_WINDOWEVENT_RESIZED ) {
+						cout << "Resized\n";
+						ClampResolution(sdlWindow);
+					}
+				}
+#endif
+				
 				if (theGame.isGameOver() && isEscapeEvent(event)) {
 					done = 1;
 				}
