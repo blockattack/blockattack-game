@@ -132,7 +132,7 @@ static std::string getLinuxFolderDefault(const char* envName, const char* defaul
 }
 
 static void appendExtraFoldersTokenizer(const char* envName, const char* envValue, std::vector<std::string>& folders) {
-	std::vector<char> buffer(envValue, envValue + strlen(envValue));
+	std::vector<char> buffer(envValue, envValue + strlen(envValue)+1);
 	char *saveptr;
 	const char* p = strtok_r (buffer.data(), ":", &saveptr);
 	while (p != NULL) {
