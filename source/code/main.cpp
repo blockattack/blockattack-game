@@ -111,13 +111,13 @@ static void PhysFsCreateFolders() {
 
 //Load all image files to memory
 static int InitImages(sago::SagoSpriteHolder& holder) {
-	bricks[0] = holder.GetSprite("blue");
-	bricks[1] = holder.GetSprite("green");
-	bricks[2] = holder.GetSprite("purple");
-	bricks[3] = holder.GetSprite("red");
-	bricks[4] = holder.GetSprite("turkish");
-	bricks[5] = holder.GetSprite("yellow");
-	bricks[6] = holder.GetSprite("grey");
+	bricks[0] = holder.GetSprite("block_blue");
+	bricks[1] = holder.GetSprite("block_green");
+	bricks[2] = holder.GetSprite("block_purple");
+	bricks[3] = holder.GetSprite("block_red");
+	bricks[4] = holder.GetSprite("block_turkish");
+	bricks[5] = holder.GetSprite("block_yellow");
+	bricks[6] = holder.GetSprite("block_grey");
 	bomb = holder.GetSprite("block_bomb");
 	backgroundImage = holder.GetSprite("background");
 	bHighScore = holder.GetSprite("b_highscore");

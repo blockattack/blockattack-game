@@ -127,15 +127,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"blue" : {
-	"texture" : "blue",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 50,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "board_back_back" : {
 	"texture" : "board_back_back",
  	"topx" : 0,
@@ -379,24 +370,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"green" : {
-	"texture" : "green",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 50,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"grey" : {
-	"texture" : "grey",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 50,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "i_check_box_area" : {
 	"texture" : "i_check_box_area",
  	"topx" : 0,
@@ -514,24 +487,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"purple" : {
-	"texture" : "purple",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 50,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"red" : {
-	"texture" : "red",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 50,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "smileys0" : {
 	"texture" : "smileys0",
  	"topx" : 0,
@@ -570,24 +525,6 @@
 },
 "trans_cover" : {
 	"texture" : "trans_cover",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 50,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"turkish" : {
-	"texture" : "turkish",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 50,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"yellow" : {
-	"texture" : "yellow",
  	"topx" : 0,
 	"topy" : 0,
 	"height" : 50,
