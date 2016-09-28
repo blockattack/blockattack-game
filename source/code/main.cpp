@@ -224,8 +224,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	return 0;
 } //InitImages()
 
-
-
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 void DrawIMG(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
 	sprite.Draw(target, SDL_GetTicks() ,x,y);
@@ -268,6 +266,12 @@ void ResetFullscreen() {
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
+static void DrawBackground(SDL_Renderer* target) {
+	int w = 0;
+	int h = 0;
+	SDL_GetWindowSize(sdlWindow, &w, &h);
+	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, w, h);
+}
 
 //The small things that are faaling when you clear something
 class ABall {
@@ -658,7 +662,7 @@ static void DrawBalls() {
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);
-	DrawIMG(backgroundImage,screen,0,0);
+	DrawBackground(screen);
 	theGame->DoPaintJob();
 	theGame2->DoPaintJob();
 	string strHolder;
@@ -884,7 +888,7 @@ int PuzzleLevelSelect(int Type) {
 	}
 
 	while (!levelSelected) {
-		DrawIMG(backgroundImage, screen, 0, 0);
+		DrawBackground(screen);
 		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
 		if (Type == 0) {
 			NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
@@ -1009,7 +1013,7 @@ int PuzzleLevelSelect(int Type) {
 		SDL_RenderPresent(screen); //draws it all to the screen
 
 	}
-	DrawIMG(backgroundImage, screen, 0, 0);
+	DrawBackground(screen);
 	return levelNr;
 }
 
@@ -1063,7 +1067,7 @@ static int StartSinglePlayerPuzzle() {
 		return 1;
 	}
 	player1->NewGame(startInfo);
-	DrawIMG(backgroundImage, screen, 0, 0);
+	DrawBackground(screen);
 	twoPlayers = false;
 	BlockGameAction a;
 	a.action = BlockGameAction::Action::SET_GAME_OVER;
@@ -1165,6 +1169,7 @@ struct globalConfig {
 	vector<string> search_paths;
 	string puzzleName;
 	bool allowResize = false;
+	bool autoScale = true;
 };
 
 static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
@@ -1189,6 +1194,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("verbose-game-controller", "Enables verbose messages regarding controllers")
 	("print-search-path", "Prints the search path and quits")
 	("allow-resize", "Allow experimental windows resize support")
+	("no-auto-scale", "Do not automaticcally auto scale")
 	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 	("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
@@ -1272,7 +1278,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	if(vm.count("allow-resize")) {
 		conf.allowResize = true;
 	}
-	
+	if(vm.count("no-auto-scale")) {
+		conf.autoScale = false;
+	}
 	if (vm.count("puzzle-level-file")) {
 		conf.puzzleName = vm["puzzle-level-file"].as<string>();
 	}
@@ -1435,7 +1443,7 @@ int main(int argc, char* argv[]) {
 		dieOnNullptr(sdlWindow, "Unable to create window");
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 		dieOnNullptr(renderer, "Unable to create render");
-		if (config.allowResize) {
+		if (config.allowResize && config.autoScale) {
 			SDL_RenderSetLogicalSize(renderer, xsize, ysize);
 		}
 		screen = renderer;
@@ -1470,7 +1478,7 @@ int main(int argc, char* argv[]) {
 			theGame.NewGame(s);
 		}
 		SDL_RenderClear(screen);
-		DrawIMG(backgroundImage, screen, 0, 0);
+		DrawBackground(screen);
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
 		SDL_RenderPresent(screen);
 		if (singlePuzzle) {
@@ -1599,7 +1607,7 @@ int runGame(Gametype gametype, int level) {
 					s.stageClear = true;
 					s.level = myLevel;
 					theGame.NewGame(s);
-					DrawIMG(backgroundImage, screen, 0, 0);
+					DrawBackground(screen);
 					twoPlayers =false;
 					BlockGameAction a;
 					a.action = BlockGameAction::Action::SET_GAME_OVER;
@@ -1624,7 +1632,7 @@ int runGame(Gametype gametype, int level) {
 				theGame.NewGame(startInfo);
 				startInfo.AI = true;
 				theGame2.NewGame(startInfo);
-				DrawIMG(backgroundImage, screen, 0, 0);
+				DrawBackground(screen);
 				twoPlayers = true; //Single player, but AI plays
 				theGame.name = player1name;
 				theGame2.name = player2name;
@@ -1642,7 +1650,7 @@ int runGame(Gametype gametype, int level) {
 				break;
 			};
 			mustsetupgame = false;
-			DrawIMG(backgroundImage, screen, 0, 0);
+			DrawBackground(screen);
 			DrawEverything(xsize,ysize,&theGame,&theGame2);
 			SDL_RenderPresent(screen);
 		}
@@ -1652,8 +1660,7 @@ int runGame(Gametype gametype, int level) {
 		}
 
 		SDL_RenderClear(screen);
-		DrawIMG(backgroundImage, screen, 0, 0);
-
+		DrawBackground(screen);
 		//updates the balls and explosions:g
 		theBallManager.update();
 		theExplosionManager.update();
@@ -1688,8 +1695,7 @@ int runGame(Gametype gametype, int level) {
 				if ( event.type == SDL_KEYDOWN ) {
 					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
 						done=1;
-						DrawIMG(backgroundImage, screen, 0, 0);
-
+						DrawBackground(screen);
 					}
 					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled())) {
 						//player1:
@@ -1947,7 +1953,7 @@ int runGame(Gametype gametype, int level) {
 				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 					//This is the mouse events
 					bMouseUp = false;
-					DrawIMG(backgroundImage, screen, 0, 0);
+					DrawBackground(screen);
 
 					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
 					        &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)

@@ -61,6 +61,10 @@ SagoSprite::~SagoSprite() {
 }
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) const {
+	DrawScaled(target, frameTime, x, y, data->imgCord.w, data->imgCord.h);
+}
+
+void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h) const {
 	if (!data->tex) {
 		std::cerr << "Texture is null!\n";
 	}
@@ -69,6 +73,12 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) cons
 	SDL_Rect pos = rect;
 	pos.x = x;
 	pos.y = y;
+	if (w > 0) {
+		pos.w = w;
+	}
+	if (h > 0) {
+		pos.h = h;
+	}
 	SDL_RenderCopy(target, data->tex, &rect, &pos);
 }
 
