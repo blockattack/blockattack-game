@@ -267,10 +267,8 @@ void ResetFullscreen() {
 }
 
 void DrawBackground(SDL_Renderer* target) {
-	int w = 0;
-	int h = 0;
-	SDL_GetWindowSize(sdlWindow, &w, &h);
-	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, w, h);
+	SDL_GetWindowSize(sdlWindow, &xsize, &ysize);
+	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, xsize, ysize);
 }
 
 //The small things that are faaling when you clear something
@@ -311,11 +309,9 @@ public:
 		if (y<1.0) {
 			velocityY=10.0;
 		}
-		int h = 0;
-		SDL_GetWindowSize(sdlWindow, nullptr, &h);
-		if ((velocityY>minVelocity) && (y>(double)(h-ballSize)) && (y<h)) {
+		if ((velocityY>minVelocity) && (y>(ysize-ballSize)) && (y<ysize)) {
 			velocityY = -0.70*velocityY;
-			y = h-ballSize;
+			y = ysize-ballSize;
 		}
 		lastTime = currentTime;
 	}
@@ -365,14 +361,11 @@ public:
 
 	void update() {
 		currentTime = SDL_GetTicks();
-		int h = 0;
-		int w = 0;
-		SDL_GetWindowSize(sdlWindow, &w, &h);
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
 			if (ballUsed[i]) {
 				ballArray[i].update();
-				if (ballArray[i].getY()>h+100 || ballArray[i].getX()>w || ballArray[i].getX()<-ballSize) {
+				if (ballArray[i].getY()>ysize+100 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize) {
 					ballUsed[i] = false;
 				}
 			}
