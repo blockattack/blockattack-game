@@ -37,9 +37,16 @@ static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
 
 const int numberOfPages = 3;
 
+void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
+	DrawBackground(screen);
+	nextX = xsize-buttonXsize-20;
+	backY = ysize-buttonYsize-20;
+	nextY = backY;
+}
+
 //Draws the highscores
 void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
-	DrawBackground(screen);
+	DrawBackgroundAndCalcPlacements();
 	if (endless) {
 		nf_standard_blue_font.draw(screen, x+100,y+100, "%s",_("Endless:") );
 	}
@@ -64,7 +71,7 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 }
 
 void ScoresDisplay::DrawStats() {
-	DrawBackground(screen);
+	DrawBackgroundAndCalcPlacements();
 	int y = 5;
 	const int y_spacing = 30;
 	NFont_Write(screen, 10,y,_("Stats") );

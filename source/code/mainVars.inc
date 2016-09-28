@@ -160,8 +160,8 @@ static Uint8 player2handicap=0;
 
 unsigned long int currentTime;      //contains the current time, so we don't call SDL_GetTickets() too often...
 
-static int xsize = 1024;
-static int ysize = 768;
+int xsize = 1024;
+int ysize = 768;
 
 //Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
 std::string player1name;

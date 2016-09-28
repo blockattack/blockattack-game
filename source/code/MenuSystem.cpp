@@ -41,10 +41,10 @@ const char* const menu_unmarked = "menu_unmarked";
 ButtonGfx standardButton;
 
 void ButtonGfx::setSurfaces() {
-	xsize = spriteHolder->GetSprite(menu_marked).GetWidth();
-	ysize = spriteHolder->GetSprite(menu_marked).GetHeight();
+	this->xsize = spriteHolder->GetSprite(menu_marked).GetWidth();
+	this->ysize = spriteHolder->GetSprite(menu_marked).GetHeight();
 	if (verboseLevel) {
-		cout << "Surfaces set, size: " <<xsize << " , " << ysize << "\n";
+		cout << "Surfaces set, size: " << this->xsize << " , " << this->ysize << "\n";
 	}
 }
 
@@ -121,7 +121,6 @@ int Button::getHeight() {
 }
 
 void Menu::drawSelf() {
-	SDL_RenderClear(screen);
 	DrawBackground(screen);
 	vector<Button*>::iterator it;
 	for (it = buttons.begin(); it < buttons.end(); it++) {

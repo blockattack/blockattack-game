@@ -267,6 +267,7 @@ void ResetFullscreen() {
 }
 
 void DrawBackground(SDL_Renderer* target) {
+	SDL_RenderClear(target);
 	SDL_GetWindowSize(sdlWindow, &xsize, &ysize);
 	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, xsize, ysize);
 }
@@ -625,12 +626,6 @@ void OpenScoresDisplay() {
 	ScoresDisplay d;
 	d.scoreX = buttonXsize*2;
 	d.scoreY = 0;
-	d.backX = 20;
-	d.backY = ysize-buttonYsize-20;
-	d.nextX = xsize-buttonXsize-20;
-	d.nextY = d.backY;
-	d.xsize = xsize;
-	d.ysize = ysize;
 	d.buttonXsize = buttonXsize;
 	d.buttonYsize = buttonYsize;
 	RunGameState(d);
@@ -1475,7 +1470,6 @@ int main(int argc, char* argv[]) {
 			s.singlePuzzle = true;
 			theGame.NewGame(s);
 		}
-		SDL_RenderClear(screen);
 		DrawBackground(screen);
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
 		SDL_RenderPresent(screen);
@@ -1619,33 +1613,33 @@ int runGame(Gametype gametype, int level) {
 						return 1;
 					}
 					break;
-				case Gametype::SinglePlayerVs: {
-				//1 player - Vs mode
-				int theAIlevel = level; //startSingleVs();
-				BlockGameStartInfo startInfo;
-				startInfo.ticks = SDL_GetTicks();
-				startInfo.vsMode = true;
-				startInfo.vsAI = true;
-				startInfo.level = theAIlevel;
-				theGame.NewGame(startInfo);
-				startInfo.AI = true;
-				theGame2.NewGame(startInfo);
-				DrawBackground(screen);
-				twoPlayers = true; //Single player, but AI plays
-				theGame.name = player1name;
-				theGame2.name = player2name;
-			}
-			break;
+				case Gametype::SinglePlayerVs: 
+					{
+						//1 player - Vs mode
+						int theAIlevel = level; //startSingleVs();
+						BlockGameStartInfo startInfo;
+						startInfo.ticks = SDL_GetTicks();
+						startInfo.vsMode = true;
+						startInfo.vsAI = true;
+						startInfo.level = theAIlevel;
+						theGame.NewGame(startInfo);
+						startInfo.AI = true;
+						theGame2.NewGame(startInfo);
+						DrawBackground(screen);
+						twoPlayers = true; //Single player, but AI plays
+						theGame.name = player1name;
+						theGame2.name = player2name;
+					}
+					break;
 				case Gametype::TwoPlayerTimeTrial:
-				StarTwoPlayerTimeTrial();
-				break;
+					StarTwoPlayerTimeTrial();
+					break;
 				case Gametype::TwoPlayerVs:
-				StartTwoPlayerVs();
-				break;
+					StartTwoPlayerVs();
+					break;
 				case Gametype::SinglePlayerEndless:
-			default:
-				StartSinglePlayerEndless();
-				break;
+				default:
+					StartSinglePlayerEndless();
 			};
 			mustsetupgame = false;
 			DrawBackground(screen);
@@ -1657,7 +1651,6 @@ int runGame(Gametype gametype, int level) {
 			SDL_Delay(1);
 		}
 
-		SDL_RenderClear(screen);
 		DrawBackground(screen);
 		//updates the balls and explosions:g
 		theBallManager.update();
@@ -1958,8 +1951,8 @@ int runGame(Gametype gametype, int level) {
 					        &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
 						nextLevel(theGame, SDL_GetTicks());
-
 					}
+					
 					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
 					        &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
 					        &&(mousey > theGame.GetTopY()+cordRetryButton.y)&&(mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {

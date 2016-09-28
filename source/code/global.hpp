@@ -63,6 +63,9 @@ extern Highscore theTopScoresEndless;      //Stores highscores for endless
 extern Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
 extern std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 
+//The xsize and ysize are updated everytime the background is drawn
+extern int xsize;
+extern int ysize;
 
 #endif	/* _GLOBAL_HPP */
 

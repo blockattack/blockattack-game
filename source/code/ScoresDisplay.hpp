@@ -41,19 +41,18 @@ public:
 	//button coodinates:
 	int scoreX = 0;
 	int scoreY = 0;
-	int backX = 20;
-	int backY = 0;
-	int nextX = 0;
-	int nextY = 0;
-	int xsize = 0;
-	int ysize = 0;
 	int buttonXsize = 0;
 	int buttonYsize = 0;
 private:
 	void DrawHighscores(int x, int y, bool endless);
 	void DrawStats();
+	void DrawBackgroundAndCalcPlacements();
 	bool isActive = true;
 	bool bMouseUp = false;
+	int backX = 20;
+	int backY = 0;
+	int nextX = 0;
+	int nextY = 0;
 };
 
 #endif /* SCORESDISPLAY_HPP */
