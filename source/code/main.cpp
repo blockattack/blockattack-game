@@ -266,9 +266,17 @@ void ResetFullscreen() {
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
+static bool logicalRenderer = false;
+
 void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
-	SDL_GetWindowSize(sdlWindow, &xsize, &ysize);
+	if (logicalRenderer) {
+		xsize = 1024;
+		ysize = 768;
+	}
+	else {
+		SDL_GetWindowSize(sdlWindow, &xsize, &ysize);
+	}
 	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, xsize, ysize);
 }
 
@@ -1436,8 +1444,9 @@ int main(int argc, char* argv[]) {
 		dieOnNullptr(sdlWindow, "Unable to create window");
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 		dieOnNullptr(renderer, "Unable to create render");
-		if (config.allowResize && config.autoScale) {
+		if (config.autoScale) {
 			SDL_RenderSetLogicalSize(renderer, xsize, ysize);
+			logicalRenderer = true;
 		}
 		screen = renderer;
 		ResetFullscreen();
