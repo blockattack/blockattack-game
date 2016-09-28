@@ -96,6 +96,8 @@ bool DialogBox::IsActive() {
 
 void DialogBox::Draw(SDL_Renderer* target) {
 	DrawBackground(screen);
+	this->x = xsize/2-300;
+	this->y = ysize/2-100;
 	DrawRectYellow(target, x, y, 200, 600);
 	nf_button_font.draw(target, x+300, y+20, NFont::CENTER, "%s", header.c_str());
 	nf_button_font.draw(target, x+150, y+140, NFont::CENTER, _("Enter to accept"));
