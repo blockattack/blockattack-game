@@ -82,7 +82,8 @@ public:
 	void setPopOnRun(bool popOnRun);
 	bool isPopOnRun() const;
 	void setGfx(ButtonGfx* gfx); //Draws to screen
-	int getHeight();
+	int getHeight() const;
+	int getWidth() const;
 
 	//May hold any other information the callback might need
 	int iGeneric1 = 0;

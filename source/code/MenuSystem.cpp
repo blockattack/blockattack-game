@@ -116,8 +116,12 @@ void Button::setGfx(ButtonGfx* gfx) {
 	this->gfx = gfx;
 }
 
-int Button::getHeight() {
+int Button::getHeight() const {
 	return this->gfx->ysize;
+}
+
+int Button::getWidth() const {
+	return this->gfx->xsize;
 }
 
 void Menu::drawSelf() {
@@ -134,12 +138,12 @@ void Menu::drawSelf() {
 
 void Menu::placeButtons() {
 	int nextY = 100;
-	const int X = 50;
-	vector<Button*>::iterator it;
-	for (it = buttons.begin(); it < buttons.end(); it++) {
-		(*it)->x = X;
-		(*it)->y = nextY;
-		nextY += (*it)->getHeight()+10;
+	int X = 50;
+	for (Button* it : buttons) {
+		X = (xsize - it->getWidth())/2;
+		it->x = X;
+		it->y = nextY;
+		nextY += it->getHeight()+10;
 	}
 	exit.x = X;
 	exit.y = nextY;
@@ -316,10 +320,7 @@ void Menu::run() {
 		if (!(highPriority)) {
 			SDL_Delay(10);
 		}
-
-
 		SDL_Event event;
-
 		while ( SDL_PollEvent(&event) ) {
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
@@ -397,7 +398,7 @@ void Menu::run() {
 				running = false;
 			}
 		}
-
+		placeButtons();
 		drawSelf();
 		SDL_RenderPresent(screen);
 	}
