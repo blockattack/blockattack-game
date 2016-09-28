@@ -122,7 +122,7 @@ int Button::getHeight() {
 
 void Menu::drawSelf() {
 	SDL_RenderClear(screen);
-	backgroundImage.Draw(screen, SDL_GetTicks(), 0, 0);
+	DrawBackground(screen);
 	vector<Button*>::iterator it;
 	for (it = buttons.begin(); it < buttons.end(); it++) {
 		(*it)->drawToScreen();

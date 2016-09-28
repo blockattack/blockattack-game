@@ -38,6 +38,7 @@ enum class Gametype { SinglePlayerEndless=0, SinglePlayerTimeTrial=1, StageClear
 
 int runGame(Gametype gametype,int level);
 bool OpenDialogbox(int x, int y, std::string& name, const std::string& header);
+void DrawBackground(SDL_Renderer* target);
 
 extern sago::SagoSprite  menuMarked;
 extern sago::SagoSprite  menuUnmarked;
@@ -55,7 +56,6 @@ extern std::string player2name;
 extern SDL_Renderer *screen;        //The whole screen;
 extern Mix_Chunk *typingChunk;
 extern sago::SagoSprite mouse;
-extern sago::SagoSprite backgroundImage;
 extern bool highPriority;
 extern bool NoSound;	
 extern int verboseLevel;

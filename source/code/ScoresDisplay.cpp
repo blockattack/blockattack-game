@@ -39,7 +39,7 @@ const int numberOfPages = 3;
 
 //Draws the highscores
 void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
-	backgroundImage.Draw(screen, 0, 0, 0);
+	DrawBackground(screen);
 	if (endless) {
 		nf_standard_blue_font.draw(screen, x+100,y+100, "%s",_("Endless:") );
 	}
@@ -64,7 +64,7 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 }
 
 void ScoresDisplay::DrawStats() {
-	backgroundImage.Draw(screen, 0, 0, 0);
+	DrawBackground(screen);
 	int y = 5;
 	const int y_spacing = 30;
 	NFont_Write(screen, 10,y,_("Stats") );
