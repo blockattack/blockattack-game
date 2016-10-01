@@ -1,0 +1,12 @@
+This is Block Attack - Rise of the Blocks - version 2.0.1
+
+This is a small bugfix release that fixes 2 bugs:
+ * The "Get Ready" animation used the wrong sprite
+ * My homepath was hardcoded in the Makefile (Linux only)
+
+Known problems:
+ * Resolution is still fixed at 1024x768
+ * Fonts are messed up in some rare cases (opserved on a Windows 10 machine with High DPI) 
+
+
+Feedback can be given on http://www.blockattack.net or https://github.com/blockattack/blockattack-game
