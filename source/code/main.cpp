@@ -136,7 +136,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	balls[5] = holder.GetSprite("ball_yellow");
 	balls[6] = holder.GetSprite("ball_gray");
 	cursor = holder.GetSprite("cursor");
-	ready = holder.GetSprite("ready");
+	ready = holder.GetSprite("block_ready");
 	explosion[0] = holder.GetSprite("explosion0");
 	explosion[1] = holder.GetSprite("explosion1");
 	explosion[2] = holder.GetSprite("explosion2");
