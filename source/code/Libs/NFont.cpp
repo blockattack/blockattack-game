@@ -441,12 +441,6 @@ NFont::NFont()
     init();
 }
 
-NFont::NFont(const NFont& font)
-{
-    init();
-    // FIXME: Duplicate font data
-}
-
 #ifdef NFONT_USE_SDL_GPU
 NFont::NFont(TTF_Font* ttf)
 {
@@ -509,12 +503,6 @@ NFont::~NFont()
     FC_FreeFont(font);
 }
 
-
-NFont& NFont::operator=(const NFont& font)
-{
-    // FIXME: Duplicate font data
-    return *this;
-}
 
 void NFont::init()
 {
@@ -1082,25 +1070,11 @@ void NFont::setLineSpacing(int LineSpacing)
     FC_SetLineSpacing(font, LineSpacing);
 }
 
-void NFont::setBaseline()
-{
-
-}
-
-void NFont::setBaseline(Uint16 Baseline)
-{
-
-}
-
 void NFont::setDefaultColor(const Color& color)
 {
     FC_SetDefaultColor(font, color.to_SDL_Color());
 }
 
-void NFont::enableTTFOwnership()
-{
-
-}
 
 
 
