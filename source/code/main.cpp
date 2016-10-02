@@ -1165,6 +1165,11 @@ static void ClampResolution(SDL_Window* win) {
 }
 #endif
 
+static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
+	game1.SetTopXY(50, 100);
+	game2.SetTopXY(xsize-500,100);
+}
+
 struct globalConfig {
 	string savepath;
 	vector<string> search_paths;
@@ -1480,6 +1485,7 @@ int main(int argc, char* argv[]) {
 			theGame.NewGame(s);
 		}
 		DrawBackground(screen);
+		MoveBlockGameSdls(theGame, theGame2);
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
 		SDL_RenderPresent(screen);
 		if (singlePuzzle) {
@@ -1652,6 +1658,7 @@ int runGame(Gametype gametype, int level) {
 			};
 			mustsetupgame = false;
 			DrawBackground(screen);
+			MoveBlockGameSdls(theGame, theGame2);
 			DrawEverything(xsize,ysize,&theGame,&theGame2);
 			SDL_RenderPresent(screen);
 		}
@@ -2093,6 +2100,7 @@ int runGame(Gametype gametype, int level) {
 		}
 
 		//Once evrything has been checked, update graphics
+		MoveBlockGameSdls(theGame, theGame2);
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
 		SDL_GetMouseState(&mousex,&mousey);
 		//Draw the mouse:

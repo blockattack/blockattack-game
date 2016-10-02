@@ -30,6 +30,7 @@ public:
 		topx = tx;
 		topy = ty;
 	}
+	
 
 	void DrawImgBoard(const sago::SagoSprite& img, int x, int y) const {
 		DrawIMG(img, screen, x+topx, y+topy);
@@ -45,6 +46,11 @@ public:
 	
 	void PrintIntRightAlignedBoard(int x, int y, int number) {
 		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::RIGHT, "%d", number);
+	}
+	
+	void SetTopXY(int tx, int ty) {
+		topx = tx;
+		topy = ty;
 	}
 
 	int GetTopX() const {
