@@ -1200,7 +1200,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("verbose-game-controller", "Enables verbose messages regarding controllers")
 	("print-search-path", "Prints the search path and quits")
 	("allow-resize", "Allow experimental windows resize support")
-	("no-auto-scale", "Do not automaticcally auto scale")
+	("no-auto-scale", "Do not automatically auto scale")
 	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 	("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
