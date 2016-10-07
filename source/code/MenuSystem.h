@@ -49,17 +49,15 @@ extern ButtonGfx standardButton;
 class Button
 {
 private:
-	//The label. This is written on the button
-	std::string label;
 	//Pointer to a callback function.
 	void (*action)(Button *b);
 
 	//If true the menu should also be closed then the button is clicked
 	bool popOnRun = false;
 
-	ButtonGfx *gfx = nullptr;
-
 public:
+	//The label. This is written on the button
+	std::string label;
 	//Is the button marked?
 	bool marked = false;
 	//Where is the button on the screen
@@ -78,10 +76,8 @@ public:
 
 	bool isClicked(int x,int y); //Returns true if (x,y) is within the borders of the button
 	virtual void doAction(); //Run the callback function
-	void drawToScreen(void);
 	void setPopOnRun(bool popOnRun);
 	bool isPopOnRun() const;
-	void setGfx(ButtonGfx* gfx); //Draws to screen
 	int getHeight() const;
 	int getWidth() const;
 

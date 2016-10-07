@@ -26,6 +26,7 @@ http://www.blockattack.net
 #include "common.h"
 #include "global.hpp"
 #include "gamecontroller.h"
+#include "BlockGame.hpp"
 
 static int mousex;
 static int mousey;
@@ -49,7 +50,6 @@ void ButtonGfx::setSurfaces() {
 }
 
 Button::Button() {
-	gfx = &standardButton;
 	label = "";
 	marked = false;
 	action = nullptr;
@@ -60,7 +60,6 @@ Button::~Button() {
 }
 
 Button::Button(const Button& b) {
-	gfx = b.gfx;
 	label = b.label;
 	marked = b.marked;
 	action = b.action;
@@ -76,7 +75,7 @@ void Button::setAction(void (*action2run)(Button*)) {
 }
 
 bool Button::isClicked(int x,int y) {
-	if ( x >= this->x && y >= this->y && x<= this->x+gfx->xsize && y <= this->y + gfx->ysize) {
+	if ( x >= this->x && y >= this->y && x<= this->x+standardButton.xsize && y <= this->y + standardButton.ysize) {
 		return true;
 	}
 	return false;
@@ -90,20 +89,6 @@ void Button::doAction() {
 	cerr << "Warning: button \"" << label << "\" has no action assigned!";
 }
 
-void Button::drawToScreen() {
-#if DEBUG
-	//cout << "Painting button: " << label << " at: " << x << "," << y << "\n";
-#endif
-	if (marked) {
-		spriteHolder->GetSprite(menu_marked).Draw(screen, SDL_GetTicks(), x, y);
-	}
-	else {
-		spriteHolder->GetSprite(menu_unmarked).Draw(screen, SDL_GetTicks(), x, y);
-	}
-	
-	gfx->thefont->draw(screen, x+gfx->xsize/2,y+gfx->ysize/2-gfx->thefont->getHeight("%s", label.c_str())/2, NFont::CENTER, "%s", label.c_str());
-}
-
 void Button::setPopOnRun(bool popOnRun) {
 	this->popOnRun = popOnRun;
 }
@@ -112,25 +97,33 @@ bool Button::isPopOnRun() const {
 	return popOnRun;
 }
 
-void Button::setGfx(ButtonGfx* gfx) {
-	this->gfx = gfx;
-}
 
 int Button::getHeight() const {
-	return this->gfx->ysize;
+	return standardButton.ysize;
 }
 
 int Button::getWidth() const {
-	return this->gfx->xsize;
+	return standardButton.xsize;
+}
+
+static void drawToScreen(Button &b) {
+	if (b.marked) {
+		spriteHolder->GetSprite(menu_marked).Draw(screen, SDL_GetTicks(), b.x, b.y);
+	}
+	else {
+		spriteHolder->GetSprite(menu_unmarked).Draw(screen, SDL_GetTicks(), b.x, b.y);
+	}
+	
+	standardButton.thefont->draw(screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2-standardButton.thefont->getHeight("%s",  b.label.c_str())/2, NFont::CENTER, "%s", b.label.c_str());
 }
 
 void Menu::drawSelf() {
 	DrawBackground(screen);
 	vector<Button*>::iterator it;
 	for (it = buttons.begin(); it < buttons.end(); it++) {
-		(*it)->drawToScreen();
+		drawToScreen(**it);
 	}
-	exit.drawToScreen();
+	drawToScreen(exit);
 	standardButton.thefont->draw(screen, 50, 50, "%s", title.c_str());
 	mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 }
