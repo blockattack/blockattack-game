@@ -50,7 +50,7 @@ class Button
 {
 private:
 	//Pointer to a callback function.
-	void (*action)(Button *b);
+	void (*action)(void);
 
 	//If true the menu should also be closed then the button is clicked
 	bool popOnRun = false;
@@ -72,7 +72,7 @@ public:
 	//Set the text to write on the button
 	void setLabel(const std::string& text);
 	//Set the action to run
-	void setAction(void (*action2run)(Button*));
+	void setAction(void (*action2run)(void));
 
 	virtual void doAction(); //Run the callback function
 	void setPopOnRun(bool popOnRun);

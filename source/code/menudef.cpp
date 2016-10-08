@@ -99,65 +99,72 @@ void InitMenues() {
 	standardButton.thefont = &nf_scoreboard_font;
 }
 
-#define UNUSED __attribute__((unused))
-
-static void runSinglePlayerEndless(Button* b UNUSED) {
+static void runSinglePlayerEndless() {
 	runGame(Gametype::SinglePlayerEndless, 0);
 }
 
-static void runSinglePlayerTimeTrial(Button* b UNUSED) {
+static void runSinglePlayerTimeTrial() {
 	runGame(Gametype::SinglePlayerTimeTrial, 0);
 }
 
-static void runStageClear(Button* b UNUSED) {
+static void runStageClear() {
 	runGame(Gametype::StageClear, 0);
 }
 
-static void runSinglePlayerPuzzle(Button* b UNUSED) {
+static void runSinglePlayerPuzzle() {
 	runGame(Gametype::Puzzle, 0);
 }
 
-static void runSinglePlayerVs(Button* b UNUSED) {
-	runGame(Gametype::SinglePlayerVs, b->iGeneric1);
-}
+class RunSinglePlayerVsButton : public Button {
+	virtual void doAction() override {
+		runGame(Gametype::SinglePlayerVs, iGeneric1);
+	}
+};
 
-static void runTwoPlayerTimeTrial(Button* b UNUSED) {
+static void runTwoPlayerTimeTrial() {
 	runGame(Gametype::TwoPlayerTimeTrial, 0);
 }
 
-static void runTwoPlayerVs(Button* b UNUSED) {
+static void runTwoPlayerVs() {
 	runGame(Gametype::TwoPlayerVs, 0);
 }
 
-static void buttonActionMusic(Button* b) {
-	MusicEnabled = !MusicEnabled;
-	b->setLabel(MusicEnabled? _("Music: On") : _("Music: Off"));
-}
+class MusicButton : public Button {
+	virtual void doAction() override {
+		MusicEnabled = !MusicEnabled;
+		setLabel(MusicEnabled? _("Music: On") : _("Music: Off"));
+	}
 
-static void buttonActionSound(Button* b) {
-	SoundEnabled = !SoundEnabled;
-	b->setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
-}
+};
 
-static void buttonActionFullscreen(Button* b) {
-	bFullscreen = !bFullscreen;
-	b->setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
-	ResetFullscreen();
-}
+class SoundButton : public Button {
+	virtual void doAction() override {
+		SoundEnabled = !SoundEnabled;
+		setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
+	}
+};
 
-static void buttonActionPlayer1Name(Button* b UNUSED) {
+class FullscreenButton : public Button {
+	virtual void doAction() override {
+		bFullscreen = !bFullscreen;
+		setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
+		ResetFullscreen();
+	}
+};
+
+static void buttonActionPlayer1Name() {
 	if ( OpenDialogbox(200, 100, player1name, _("Enter player 1 name:")) ) {
 		return;    //must save if true
 	}
 }
 
-static void buttonActionPlayer2Name(Button* b UNUSED) {
+static void buttonActionPlayer2Name() {
 	if ( OpenDialogbox(200, 100, player2name, _("Enter player 2 name:")) ) {
 		return;    //must save if true
 	}
 }
 
-static void buttonActionHighscores(Button* b UNUSED) {
+static void buttonActionHighscores() {
 	OpenScoresDisplay();
 }
 
@@ -178,24 +185,24 @@ static void ChangeKeysMenu(long playernumber) {
 	km.run();
 }
 
-static void ChangeKeysMenu1(Button* b UNUSED) {
+static void ChangeKeysMenu1() {
 	ChangeKeysMenu(0);
 }
 
-static void ChangeKeysMenu2(Button* b UNUSED) {
+static void ChangeKeysMenu2() {
 	ChangeKeysMenu(2);
 }
 
-static void ConfigureMenu(Button* b UNUSED) {
+static void ConfigureMenu() {
 	Menu cm(screen,_("Configuration"),true);
-	Button bMusic,bSound,buttonFullscreen,bPlayer1Name,bPlayer2Name;
+	Button bPlayer1Name,bPlayer2Name;
 	Button bPlayer1Keys, bPlayer2Keys;
+	MusicButton bMusic;
+	SoundButton bSound;
+	FullscreenButton buttonFullscreen;
 	bMusic.setLabel(MusicEnabled? _("Music: On") : _("Music: Off") );
-	bMusic.setAction(buttonActionMusic);
 	bSound.setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
-	bSound.setAction(buttonActionSound);
 	buttonFullscreen.setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
-	buttonFullscreen.setAction(buttonActionFullscreen);
 	bPlayer1Name.setAction(buttonActionPlayer1Name);
 	bPlayer1Name.setLabel(_("Change player 1's name") );
 	bPlayer2Name.setAction(buttonActionPlayer2Name);
@@ -214,16 +221,9 @@ static void ConfigureMenu(Button* b UNUSED) {
 	cm.run();
 }
 
-static void SinglePlayerVsMenu(Button* b UNUSED) {
+static void SinglePlayerVsMenu() {
 	Menu spvs(screen,_("Single player VS"),true);
-	Button d1,d2,d3,d4,d5,d6,d7;
-	d1.setAction(runSinglePlayerVs);
-	d2.setAction(runSinglePlayerVs);
-	d3.setAction(runSinglePlayerVs);
-	d4.setAction(runSinglePlayerVs);
-	d5.setAction(runSinglePlayerVs);
-	d6.setAction(runSinglePlayerVs);
-	d7.setAction(runSinglePlayerVs);
+	RunSinglePlayerVsButton d1,d2,d3,d4,d5,d6,d7;
 	d1.setPopOnRun(true);
 	d2.setPopOnRun(true);
 	d3.setPopOnRun(true);
@@ -255,7 +255,7 @@ static void SinglePlayerVsMenu(Button* b UNUSED) {
 	spvs.run();
 }
 
-static void MultiplayerMenu(Button* b UNUSED) {
+static void MultiplayerMenu() {
 	Menu mm(screen,_("Multiplayer"),true);
 	Button bTT, bVs;
 	bTT.setLabel(_("Two player - time trial"));

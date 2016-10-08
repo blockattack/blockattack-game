@@ -70,13 +70,13 @@ void Button::setLabel(const string& text) {
 	label = text;
 }
 
-void Button::setAction(void (*action2run)(Button*)) {
+void Button::setAction(void (*action2run)(void)) {
 	action = action2run;
 }
 
 void Button::doAction() {
 	if (action) {
-		action(this);
+		action();
 		return;
 	}
 	cerr << "Warning: button \"" << label << "\" has no action assigned!";
