@@ -74,7 +74,6 @@ public:
 	//Set the action to run
 	void setAction(void (*action2run)(Button*));
 
-	bool isClicked(int x,int y); //Returns true if (x,y) is within the borders of the button
 	virtual void doAction(); //Run the callback function
 	void setPopOnRun(bool popOnRun);
 	bool isPopOnRun() const;

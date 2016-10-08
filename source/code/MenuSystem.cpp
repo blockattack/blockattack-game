@@ -74,13 +74,6 @@ void Button::setAction(void (*action2run)(Button*)) {
 	action = action2run;
 }
 
-bool Button::isClicked(int x,int y) {
-	if ( x >= this->x && y >= this->y && x<= this->x+standardButton.xsize && y <= this->y + standardButton.ysize) {
-		return true;
-	}
-	return false;
-}
-
 void Button::doAction() {
 	if (action) {
 		action(this);
@@ -115,6 +108,14 @@ static void drawToScreen(const Button &b) {
 	}
 	
 	standardButton.thefont->draw(screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2-standardButton.thefont->getHeight("%s",  b.label.c_str())/2, NFont::CENTER, "%s", b.label.c_str());
+}
+
+
+static bool isClicked(const Button &b, int x,int y) {
+	if ( x >= b.x && y >= b.y && x<= b.x+standardButton.xsize && y <= b.y + standardButton.ysize) {
+		return true;
+	}
+	return false;
 }
 
 void Menu::drawSelf() {
@@ -363,11 +364,11 @@ void Menu::run() {
 
 		if (abs(mousex-oldmousex)>5 || abs(mousey-oldmousey)>5) {
 			for (int i=0; i< (int)buttons.size(); ++i) {
-				if (buttons.at(i)->isClicked(mousex,mousey)) {
+				if (isClicked(*buttons.at(i),mousex,mousey)) {
 					marked = i;
 				}
 			}
-			if (exit.isClicked(mousex,mousey)) {
+			if (isClicked(exit, mousex, mousey)) {
 				marked = buttons.size();
 			}
 			oldmousex = mousex;
@@ -378,7 +379,7 @@ void Menu::run() {
 		if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
 			bMouseUp = false;
 			for (int i=0; i< (int)buttons.size(); ++i) {
-				if (buttons.at(i)->isClicked(mousex,mousey)) {
+				if (isClicked(*buttons.at(i),mousex,mousey)) {
 					buttons.at(i)->doAction();
 					if (buttons.at(i)->isPopOnRun()) {
 						running = false;
@@ -386,7 +387,7 @@ void Menu::run() {
 					mousex = 0;
 				}
 			}
-			if (exit.isClicked(mousex,mousey)) {
+			if (isClicked(exit, mousex, mousey)) {
 				running = false;
 			}
 		}
