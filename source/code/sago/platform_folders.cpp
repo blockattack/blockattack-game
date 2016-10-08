@@ -3,7 +3,7 @@
 
   The original files are hosted here: https://github.com/sago007/PlatformFolders
 
-  Copyright (c) 2015 Poul Sander
+  Copyright (c) 2015-2016 Poul Sander
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation files
@@ -39,14 +39,33 @@
 
 #define strtok_r strtok_s
 
+static std::string win32_utf16_to_utf8(const wchar_t* wstr)
+{
+	std::string res;
+	// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
+	int actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+	if (actualSize > 0) {
+		//If the converted UTF-8 string could not be in the initial buffer. Allocate one that can hold it.
+		std::vector<char> buffer(actualSize);
+		actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &buffer[0], buffer.size(), NULL, NULL);
+		res = buffer.data();
+	}
+	if (actualSize == 0) {
+		// WideCharToMultiByte return 0 for errors.
+		std::string errorMsg = "UTF16 to UTF8 failed with error code: " + GetLastError();
+		throw std::runtime_error(errorMsg.c_str());
+	}
+	return res;
+}
+
 static std::string GetWindowsFolder(int folderId, const char* errorMsg) {
-	char szPath[MAX_PATH];
+	wchar_t szPath[MAX_PATH];
 	szPath[0] = 0;
-	if ( !SUCCEEDED( SHGetFolderPathA( NULL, folderId, NULL, 0, szPath ) ) )
+	if ( !SUCCEEDED( SHGetFolderPathW( NULL, folderId, NULL, 0, szPath ) ) )
 	{
 		throw std::runtime_error(errorMsg);
 	}
-	return szPath;
+	return win32_utf16_to_utf8(szPath);
 }
 
 static std::string GetAppData() {
@@ -132,9 +151,9 @@ static std::string getLinuxFolderDefault(const char* envName, const char* defaul
 }
 
 static void appendExtraFoldersTokenizer(const char* envName, const char* envValue, std::vector<std::string>& folders) {
-	std::vector<char> buffer(envValue, envValue + strlen(envValue)+1);
+	std::vector<char> buffer(envValue, envValue + strlen(envValue) + 1);
 	char *saveptr;
-	const char* p = strtok_r (buffer.data(), ":", &saveptr);
+	const char* p = strtok_r ( &buffer[0], ":", &saveptr);
 	while (p != NULL) {
 		if (p[0] == '/') {
 			folders.push_back(p);
@@ -142,7 +161,7 @@ static void appendExtraFoldersTokenizer(const char* envName, const char* envValu
 		else {
 			//Unless the system is wrongly configured this should never happen... But of course some systems will be incorectly configured.
 			//The XDG documentation indicates that the folder should be ignored but that the program should continue.
-			std::cerr << "Skipping path \"" << p << "\" in \"" << envName << "\" because it does not start with a \"/\"" << "\n";
+			std::cerr << "Skipping path \"" << p << "\" in \"" << envName << "\" because it does not start with a \"/\"\n";
 		}
 		p = strtok_r (NULL, ":", &saveptr);
 	}

@@ -92,10 +92,10 @@ void appendAdditionalDataDirectories(std::vector<std::string>& homes);
  * This does not normally include the path returned by GetConfigHome().
  * If you want all the folders you should do something like:
  * @code{.cpp}
- * vector<string> folders;
- * folders.push_back(getConfigHome());
- * appendAdditionalConfigDirectories(folders);
- * for (string s& : folders) {
+ * std::vector<std::string> folders;
+ * folders.push_back(sago::getConfigHome());
+ * sago::appendAdditionalConfigDirectories(folders);
+ * for (std::string s& : folders) {
  *     s+="/My Program Name/";
  * }
  * @endcode
@@ -163,7 +163,7 @@ private:
 	PlatformFolders(const PlatformFolders&);
 	PlatformFolders& operator=(const PlatformFolders&);
 	struct PlatformFoldersData;
-	mutable PlatformFoldersData *data;
+	PlatformFoldersData *data;
 };
 
 }  //namespace sago
