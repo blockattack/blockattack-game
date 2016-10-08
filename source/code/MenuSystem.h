@@ -77,8 +77,6 @@ public:
 	virtual void doAction(); //Run the callback function
 	void setPopOnRun(bool popOnRun);
 	bool isPopOnRun() const;
-	int getHeight() const;
-	int getWidth() const;
 
 	//May hold any other information the callback might need
 	int iGeneric1 = 0;

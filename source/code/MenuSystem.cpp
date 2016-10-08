@@ -90,15 +90,6 @@ bool Button::isPopOnRun() const {
 	return popOnRun;
 }
 
-
-int Button::getHeight() const {
-	return standardButton.ysize;
-}
-
-int Button::getWidth() const {
-	return standardButton.xsize;
-}
-
 static void drawToScreen(const Button &b) {
 	if (b.marked) {
 		spriteHolder->GetSprite(menu_marked).Draw(screen, SDL_GetTicks(), b.x, b.y);
@@ -133,10 +124,10 @@ void Menu::placeButtons() {
 	int nextY = 100;
 	int X = 50;
 	for (Button* it : buttons) {
-		X = (xsize - it->getWidth())/2;
+		X = (xsize - standardButton.xsize)/2;
 		it->x = X;
 		it->y = nextY;
-		nextY += it->getHeight()+10;
+		nextY += standardButton.ysize+10;
 	}
 	exit.x = X;
 	exit.y = nextY;
