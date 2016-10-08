@@ -106,7 +106,7 @@ int Button::getWidth() const {
 	return standardButton.xsize;
 }
 
-static void drawToScreen(Button &b) {
+static void drawToScreen(const Button &b) {
 	if (b.marked) {
 		spriteHolder->GetSprite(menu_marked).Draw(screen, SDL_GetTicks(), b.x, b.y);
 	}
@@ -119,9 +119,8 @@ static void drawToScreen(Button &b) {
 
 void Menu::drawSelf() {
 	DrawBackground(screen);
-	vector<Button*>::iterator it;
-	for (it = buttons.begin(); it < buttons.end(); it++) {
-		drawToScreen(**it);
+	for (const Button* b : buttons) {
+		drawToScreen(*b);
 	}
 	drawToScreen(exit);
 	standardButton.thefont->draw(screen, 50, 50, "%s", title.c_str());
