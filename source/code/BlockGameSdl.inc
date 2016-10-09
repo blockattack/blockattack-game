@@ -301,7 +301,7 @@ public:
 		}
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
-			strHolder = _("Moves left: ") + itoa(MovesLeft);
+			strHolder = _("Moves left: ") + std::to_string(MovesLeft);
 			nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 
 		}
@@ -347,7 +347,7 @@ public:
 
 #if DEBUG
 		if (AI_Enabled&&(!bGameOver)) {
-			strHolder = "AI_status: " + itoa(AIstatus)+ ", "+ itoa(AIlineToClear);
+			strHolder = "AI_status: " + std::to_string(AIstatus)+ ", "+ std::to_string(AIlineToClear);
 			//NFont_Write(   5, 5, strHolder.c_str());
 			nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
 		}

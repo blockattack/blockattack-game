@@ -38,21 +38,6 @@ using boost::format;
 
 static stringstream converter;
 
-//Function to convert numbers to string
-string itoa(int num) {
-	converter.str(std::string());
-	converter.clear();
-	converter << num;
-	return converter.str();
-}
-
-string double2str(double num) {
-	converter.str(std::string());
-	converter.clear();
-	converter << num;
-	return converter.str();
-}
-
 bool strequals(const char* a, const char* b) {
 	return strcmp(a,b) == 0;
 }
@@ -245,11 +230,11 @@ void Config::setString(const string& varName, const string& content) {
 }
 
 void Config::setInt(const string& varName, int content) {
-	configMap[varName] = itoa(content);
+	configMap[varName] = std::to_string(content);
 }
 
 void Config::setValue(const string& varName,double content) {
-	configMap[varName] = double2str(content);
+	configMap[varName] = std::to_string(content);
 }
 
 string Config::getString(const string& varName) {

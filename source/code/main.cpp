@@ -37,7 +37,7 @@ http://www.blockattack.net
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>           //Used for srand()
-#include <sstream>          //Still used by itoa2
+#include <sstream>          //Still used by std::to_string2
 #include <string>
 #include "SDL.h"            //The SDL libary, used for most things
 #include <SDL_mixer.h>      //Used for sound & music
@@ -570,7 +570,7 @@ void writeScreenShot() {
 		cout << "Saving screenshot" << "\n";
 	}
 	int rightNow = (int)time(nullptr);
-	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+itoa(rightNow)+".bmp";
+	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+std::to_string(rightNow)+".bmp";
 	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurface(0, 1024, 768, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_RenderReadPixels(screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
 	SDL_SaveBMP(sreenshotSurface, buf.c_str());
@@ -667,7 +667,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	theGame->DoPaintJob();
 	theGame2->DoPaintJob();
 	string strHolder;
-	strHolder = itoa(theGame->GetScore()+theGame->GetHandicap());
+	strHolder = std::to_string(theGame->GetScore()+theGame->GetHandicap());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
 	if (theGame->GetAIenabled()) {
 		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("AI") );
@@ -697,10 +697,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			seconds=0;
 		}
 		if (seconds>9) {
-			strHolder = itoa(minutes)+":"+itoa(seconds);
+			strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
 		}
 		else {
-			strHolder = itoa(minutes)+":0"+itoa(seconds);
+			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
 		//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
 		NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
@@ -715,17 +715,17 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			seconds=(theGame->GetGameEndedAt()/1000)%60;
 		}
 		if (seconds>9) {
-			strHolder = itoa(minutes)+":"+itoa(seconds);
+			strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
 		}
 		else {
-			strHolder = itoa(minutes)+":0"+itoa(seconds);
+			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
 		NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
 	}
-	strHolder = itoa(theGame->GetChains());
+	strHolder = std::to_string(theGame->GetChains());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+200,strHolder.c_str());
 	//drawspeedLevel:
-	strHolder = itoa(theGame->GetSpeedLevel());
+	strHolder = std::to_string(theGame->GetSpeedLevel());
 	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
 	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY())) {
 		oldBubleX = theGame->GetTopX()+280;
@@ -781,7 +781,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			}
 
 		}
-		strHolder = itoa(theGame2->GetScore()+theGame2->GetHandicap());
+		strHolder = std::to_string(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
 		if (theGame2->GetAIenabled()) {
 			NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,_("AI") );
@@ -808,10 +808,10 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				seconds=0;
 			}
 			if (seconds>9) {
-				strHolder = itoa(minutes)+":"+itoa(seconds);
+				strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
 			}
 			else {
-				strHolder = itoa(minutes)+":0"+itoa(seconds);
+				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 			}
 			//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
 			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
@@ -826,16 +826,16 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				seconds=(theGame2->GetGameEndedAt()/1000)%60;
 			}
 			if (seconds>9) {
-				strHolder = itoa(minutes)+":"+itoa(seconds);
+				strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
 			}
 			else {
-				strHolder = itoa(minutes)+":0"+itoa(seconds);
+				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 			}
 			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
 		}
-		strHolder = itoa(theGame2->GetChains());
+		strHolder = std::to_string(theGame2->GetChains());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
-		strHolder = itoa(theGame2->GetSpeedLevel());
+		strHolder = std::to_string(theGame2->GetSpeedLevel());
 		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
 	}
 	//player2 finnish

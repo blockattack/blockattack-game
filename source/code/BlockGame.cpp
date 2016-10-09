@@ -262,10 +262,11 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 			puzzleMode = true;
 			Level = s.level;
 			MovesLeft = PuzzleNumberOfMovesAllowed(Level);
-			for (int i=0; i<6; i++)
+			for (int i=0; i<6; i++) {
 				for (int j=0; j<12; j++) {
 					board[i][j+1] = PuzzleGetBrick(Level,i,j);
 				}
+			}
 			baseSpeed = 100000;
 			speed = 100000;
 
@@ -338,10 +339,11 @@ void BlockGame::NewGame( unsigned int ticks) {
 	pushedPixelAt = gameStartedAt;
 	nextGarbageNumber = 10;
 	handicap=0;
-	for (int i=0; i<7; i++)
+	for (int i=0; i<7; i++) {
 		for (int j=0; j<30; j++) {
 			board[i][j] = -1;
 		}
+	}
 	for (int i=0; i<NUMBEROFCHAINS; i++) {
 		chainUsed[i]=false;
 		chainSize[i] = 0;
@@ -368,12 +370,12 @@ void BlockGame::setPlayerWon() {
 			Stats::getInstance()->addOne("totalWins");
 			if (vsAI) {
 				//We have defeated an AI
-				Stats::getInstance()->addOne("defeatedAI"+itoa(getAIlevel()));
+				Stats::getInstance()->addOne("defeatedAI"+std::to_string(getAIlevel()));
 			}
 		}
 		if (AI_Enabled && vsAI) {
 			//The AI have defeated a human player
-			Stats::getInstance()->addOne("defeatedByAI"+itoa(getAIlevel()));
+			Stats::getInstance()->addOne("defeatedByAI"+std::to_string(getAIlevel()));
 		}
 		FinalizeBlockGameInfo();
 	}
@@ -399,31 +401,36 @@ void BlockGame::setDraw() {
 //Test if LineNr is an empty line, returns false otherwise.
 bool BlockGame::LineEmpty(int lineNr) const {
 	bool empty = true;
-	for (int i = 0; i <7; i++)
+	for (int i = 0; i <7; i++) {
 		if (board[i][lineNr] != -1) {
 			empty = false;
 		}
+	}
 	return empty;
 }
 
 //Test if the entire board is empty (used for Puzzles)
 bool BlockGame::BoardEmpty() const {
 	bool empty = true;
-	for (int i=0; i<6; i++)
-		for (int j=1; j<13; j++)
+	for (int i=0; i<6; i++) {
+		for (int j=1; j<13; j++) {
 			if (board[i][j] != -1) {
 				empty = false;
 			}
+		}
+	}
 	return empty;
 }
 
 //Anything that the user can't move? In that case Game Over cannot occur
 bool BlockGame::hasStaticContent() const {
-	for (int i=0; i<6; i++)
-		for (int j=1; j<13; j++)
+	for (int i=0; i<6; i++) {
+		for (int j=1; j<13; j++) {
 			if (board[i][j] >= 10000000) {  //Higher than this means combos (garbage is static, but the stack is static but nothing to do about it)
 				return true;    //They are static
 			}
+		}
+	}
 	return false;                   //Return false if no static object found
 }
 
@@ -554,7 +561,7 @@ void BlockGame::putStartBlocks(int n) {
 void BlockGame::ReduceStuff() {
 	int howMuchHang = (ticks - FRAMELENGTH*hangTicks)/FRAMELENGTH;
 	if (howMuchHang>0) {
-		for (int i=0; i<7; i++)
+		for (int i=0; i<7; i++) {
 			for (int j=0; j<30; j++) {
 				if ((board[i][j]/BLOCKHANG)%10==1) {
 					int hangNumber = (board[i][j]/10)%100;
@@ -577,6 +584,7 @@ void BlockGame::ReduceStuff() {
 					}
 				}
 			}
+		}
 	}
 	hangTicks+=howMuchHang;
 }
@@ -743,19 +751,21 @@ void BlockGame::ClearBlocks() {
 					combo++;
 				}
 				else {
-					if (combo>2)
+					if (combo>2) {
 						for (int k = i-combo; k<i; k++) {
 							toBeCleared[j][k] = true;
 						}
+					}
 					combo=1;
 					previus = board[j][i]%10000000;
 				}
 			} //if board
 			else {
-				if (combo>2)
+				if (combo>2) {
 					for (int k = i-combo; k<i; k++) {
 						toBeCleared[j][k] = true;
 					}
+				}
 				combo = 0;
 				previus = -1;
 			}
@@ -764,11 +774,11 @@ void BlockGame::ClearBlocks() {
 	} //for j
 
 	chain = 0;
-	for (int i=0; i<6; i++)
+	for (int i=0; i<6; i++) {
 		for (int j=0; j<30; j++) {
 			//Clears blocks marked for clearing
 			int temp=board[i][j];
-			if (1==((temp/BLOCKWAIT)%10))
+			if (1==((temp/BLOCKWAIT)%10)) {
 				if (((temp/10)%100)==0) {
 					if (chainSize[chain]<chainSize[board[i][j]/10000000]) {
 						chain = board[i][j]/10000000;
@@ -779,7 +789,9 @@ void BlockGame::ClearBlocks() {
 					AddExplosion(i, j);
 					board[i][j]=-2;
 				}
+			}
 		}
+	}
 	for (int i=0; i<7; i++) {
 		bool setChain=false;
 		for (int j=0; j<30; j++) {
@@ -791,12 +803,12 @@ void BlockGame::ClearBlocks() {
 				setChain=true;
 				BlockPopEvent();
 			}
-			if (board[i][j]!=-1)
+			if (board[i][j]!=-1) {
 				if ((setChain)&&((board[i][j]/GARBAGE)%10!=1)&&((board[i][j]/GARBAGE)%10!=2)) {
 					board[i][j]=((board[i][j]%CHAINPLACE)+CHAINPLACE*chain);
 					//somethingsGottaFall = true;
 				}
-
+			}
 		}
 	}
 	int startvalue;
@@ -897,7 +909,7 @@ void BlockGame::ClearBlocks() {
 				if (toBeCleared[j][i]) {
 					if (!dead) {
 						dead=true;
-						string tempS = itoa(chainSize[chain]);
+						string tempS = std::to_string(chainSize[chain]);
 						if (chainSize[chain]>1) {
 							AddText(j, i, tempS, 1000);
 						}
@@ -1020,7 +1032,7 @@ void BlockGame::ClearBlocks() {
 					LongChainDoneEvent();
 				}
 				if (chainSize[i]>1 && !puzzleMode && recordStats) {
-					Stats::getInstance()->addOne((string)"chainX"+itoa(chainSize[i]));
+					Stats::getInstance()->addOne((string)"chainX"+std::to_string(chainSize[i]));
 				}
 				chainUsed[i]=false;
 			}
@@ -1382,10 +1394,11 @@ double BlockGame::firstInLine(int line, int type) {
 		cerr << "Warning: first in Line: " << line << "\n";
 		return 3.0;
 	}
-	for (int i=0; i<6; i++)
+	for (int i=0; i<6; i++) {
 		if (board[i][line]==type) {
 			return (double)i;
 		}
+	}
 	return 3.0;
 }
 
@@ -1467,11 +1480,12 @@ void BlockGame::AI_ClearHori() {
 		if (left<right) {
 			//   cout << ", right>left";
 			int count=0;
-			for (int i=0; (i<4)&&(count<1); i++)
+			for (int i=0; (i<4)&&(count<1); i++) {
 				if ((board[i][lowestLine]==AIcolorToClear)&&((i==0)||(board[i+1][lowestLine]!=AIcolorToClear))) {
 					count++;
 					xplace = i;
 				}
+			}
 		}
 		else {
 			//   cout << ", left>=right";
@@ -1517,7 +1531,6 @@ bool BlockGame::veriClearPossible() {
 				AIlineToClear = i;
 				found=true;
 			}
-
 		}
 	}
 	return found;

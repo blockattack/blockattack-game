@@ -48,7 +48,7 @@ struct commonTime
 	unsigned int seconds = 0;
 };
 
-std::string itoa(int num) __attribute__((const));
+//std::string itoa(int num) __attribute__((const));
 
 bool strequals(const char* a, const char* b);
 
@@ -58,8 +58,6 @@ bool strequals(const char* a, const char* b);
  * in that way this function will always return a useable value.
  */
 int str2int(const std::string &str2parse) __attribute__((const));
-
-std::string double2str(double num) __attribute__((const));
 
 void dieOnNullptr(bool, const char* msg);
 

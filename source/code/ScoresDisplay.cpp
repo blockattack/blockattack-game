@@ -79,18 +79,18 @@ void ScoresDisplay::DrawStats() {
 	NFont_Write(screen, 10,y,_("Chains") );
 	for (int i=2; i<13; i++) {
 		y+=y_spacing;
-		NFont_Write(screen, 10,y,(itoa(i)+"X").c_str());
-		string numberAsString = itoa(Stats::getInstance()->getNumberOf("chainX"+itoa(i)));
+		NFont_Write(screen, 10,y,(std::to_string(i)+"X").c_str());
+		string numberAsString = std::to_string(Stats::getInstance()->getNumberOf("chainX"+std::to_string(i)));
 		NFont_Write(screen, 300,y,numberAsString.c_str());
 	}
 	y+=y_spacing*2;
 	NFont_Write(screen, 10,y,_("Lines Pushed: ") );
-	string numberAsString = itoa(Stats::getInstance()->getNumberOf("linesPushed"));
+	string numberAsString = std::to_string(Stats::getInstance()->getNumberOf("linesPushed"));
 	NFont_Write(screen, 300,y,numberAsString.c_str());
 
 	y+=y_spacing;
 	NFont_Write(screen, 10,y, _("Puzzles solved: ") );
-	numberAsString = itoa(Stats::getInstance()->getNumberOf("puzzlesSolved"));
+	numberAsString = std::to_string(Stats::getInstance()->getNumberOf("puzzlesSolved"));
 	NFont_Write(screen, 300,y,numberAsString.c_str());
 
 	y+=y_spacing*2;
@@ -123,9 +123,9 @@ void ScoresDisplay::DrawStats() {
 	NFont_Write(screen, x_offset,y, _("VS CPU (win/loss)") );
 	for (int i=0; i<7; i++) {
 		y += y_spacing;
-		NFont_Write(screen, x_offset,y,string("AI "+itoa(i+1)).c_str());
-		numberAsString = itoa(Stats::getInstance()->getNumberOf("defeatedAI"+itoa(i)));
-		string numberAsString2 = itoa(Stats::getInstance()->getNumberOf("defeatedByAI"+itoa(i)));
+		NFont_Write(screen, x_offset,y,string("AI "+std::to_string(i+1)).c_str());
+		numberAsString = std::to_string(Stats::getInstance()->getNumberOf("defeatedAI"+std::to_string(i)));
+		string numberAsString2 = std::to_string(Stats::getInstance()->getNumberOf("defeatedByAI"+std::to_string(i)));
 		string toPrint = numberAsString + "/" + numberAsString2;
 		NFont_Write(screen, x_offset+230,y,toPrint.c_str());
 	}
