@@ -34,9 +34,6 @@ using std::stringstream;
 using std::cerr;
 using std::map;
 using std::vector;
-using boost::format;
-
-static stringstream converter;
 
 bool strequals(const char* a, const char* b) {
 	return strcmp(a,b) == 0;
@@ -50,11 +47,7 @@ void dieOnNullptr(bool ptr, const char* msg) {
 
 double str2double(const string& str2parse) {
 	try {
-		converter.clear();
-		converter.str(str2parse);
-		double val = 0.0;
-		converter >> val;
-		return val;
+		return std::stod(str2parse);
 	}
 	catch (std::ios_base::failure& f) {
 		return 0.0;
@@ -83,11 +76,7 @@ const char* SPrintCF(const char* fmt, ...) {
 
 int str2int(const string& str2parse) {
 	try {
-		converter.clear();
-		converter.str(str2parse);
-		int val = 0;
-		converter >> val;
-		return val;
+		return std::stoi(str2parse);
 	}
 	catch (std::ios_base::failure& f) {
 		return 0;
