@@ -170,6 +170,8 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 
+	UpdateMouseCoordinates(event, mousex, mousey);
+	
 	if (isLeftEvent(event)) {
 		page++;
 		if (page>=numberOfPages) {
@@ -193,9 +195,6 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 }
 
 void ScoresDisplay::Update() {
-	int mousex, mousey;
-	SDL_GetMouseState(&mousex,&mousey);
-
 	// If the mouse button is released, make bMouseUp equal true
 	if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 		bMouseUp=true;

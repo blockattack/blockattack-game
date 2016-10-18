@@ -298,14 +298,15 @@ bool isConfirmEvent(const SDL_Event& event) {
 void Menu::run() {
 	running = true;
 	bool bMouseUp = false;
-	long oldmousex = mousex;
-	long oldmousey = mousey;
+	int oldmousex = mousex;
+	int oldmousey = mousey;
 	while (running && !Config::getInstance()->isShuttingDown()) {
 		if (!(highPriority)) {
 			SDL_Delay(10);
 		}
 		SDL_Event event;
 		while ( SDL_PollEvent(&event) ) {
+			UpdateMouseCoordinates(event, mousex, mousey);
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				running = false;
@@ -347,7 +348,7 @@ void Menu::run() {
 			buttons.at(i)->marked = (i == marked);
 		}
 		exit.marked = (marked == (int)buttons.size());
-		Uint8 buttonState = SDL_GetMouseState(&mousex,&mousey);
+		Uint8 buttonState = SDL_GetMouseState(nullptr,nullptr);
 		// If the mouse button is released, make bMouseUp equal true
 		if ( (buttonState&SDL_BUTTON(1))==0) {
 			bMouseUp=true;

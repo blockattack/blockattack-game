@@ -280,6 +280,29 @@ void DrawBackground(SDL_Renderer* target) {
 	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, xsize, ysize);
 }
 
+/**
+ * This function reads the mouse coordinates from a relevant event.
+ * Unlike SDL_GetMouseState this works even if SDL_RenderSetLogicalSize is used
+ * @param event
+ * @param mousex
+ * @param mousey
+ */
+void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey) {
+	switch(event.type) {
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			mousex = event.button.x;
+			mousey = event.button.y;
+			break;
+		case SDL_MOUSEMOTION: 
+			mousex = event.motion.x;
+			mousey = event.motion.y;
+			break;
+		default:
+			break;
+  }
+}
+
 //The small things that are faaling when you clear something
 class ABall {
 private:
@@ -598,10 +621,10 @@ void RunGameState(sago::GameStateInterface& state ) {
 		SDL_Delay(1);
 		SDL_Event event;
 
-		SDL_GetMouseState(&mousex,&mousey);
 		bool mustWriteScreenshot = false;
 
 		while ( SDL_PollEvent(&event) ) {
+			UpdateMouseCoordinates(event, mousex, mousey);
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
@@ -913,6 +936,8 @@ int PuzzleLevelSelect(int Type) {
 
 		SDL_Event event;
 		while ( SDL_PollEvent(&event) ) {
+			UpdateMouseCoordinates(event, mousex, mousey);
+			
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				levelNr = -1;
@@ -954,20 +979,22 @@ int PuzzleLevelSelect(int Type) {
 
 		SDL_GetKeyboardState(nullptr);
 
-		SDL_GetMouseState(&mousex,&mousey);
 		if (mousex != oldmousex || mousey != oldmousey) {
 			int tmpSelected = -1;
 			int j;
-			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++)
+			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++) {
 				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92)) {
 					tmpSelected = j*10;
 				}
-			if (tmpSelected != -1)
-				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++)
+			}
+			if (tmpSelected != -1) {
+				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++) {
 					if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42)) {
 						tmpSelected +=k;
 						selected = tmpSelected;
 					}
+				}
+			}
 		}
 		oldmousey = mousey;
 		oldmousex= mousex;
@@ -1682,6 +1709,7 @@ int runGame(Gametype gametype, int level) {
 			SDL_Event event;
 
 			while ( SDL_PollEvent(&event) ) {
+				UpdateMouseCoordinates(event, mousex, mousey);
 				if ( event.type == SDL_QUIT ) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
@@ -1943,8 +1971,6 @@ int runGame(Gametype gametype, int level) {
 				}
 			} //while event PollEvent - read keys
 
-			SDL_GetMouseState(&mousex,&mousey);
-
 			// If the mouse button is released, make bMouseUp equal true
 			if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
 				bMouseUp=true;
@@ -2102,7 +2128,6 @@ int runGame(Gametype gametype, int level) {
 		//Once evrything has been checked, update graphics
 		MoveBlockGameSdls(theGame, theGame2);
 		DrawEverything(xsize,ysize,&theGame,&theGame2);
-		SDL_GetMouseState(&mousex,&mousey);
 		//Draw the mouse:
 		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 		SDL_RenderPresent(screen);

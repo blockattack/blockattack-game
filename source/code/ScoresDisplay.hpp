@@ -43,6 +43,8 @@ public:
 	int scoreY = 0;
 	int buttonXsize = 0;
 	int buttonYsize = 0;
+	int mousex = 0;
+	int mousey = 0;
 private:
 	void DrawHighscores(int x, int y, bool endless);
 	void DrawStats();
