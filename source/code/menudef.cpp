@@ -96,7 +96,7 @@ void Button_changekey::doAction() {
 
 void InitMenues() {
 	standardButton.setSurfaces();
-	standardButton.thefont = &nf_scoreboard_font;
+	standardButton.thefont = &nf_button_font;
 }
 
 static void runSinglePlayerEndless() {

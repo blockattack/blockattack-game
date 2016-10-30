@@ -1000,7 +1000,7 @@ int PuzzleLevelSelect(int Type) {
 		oldmousex= mousex;
 
 		// If the mouse button is released, make bMouseUp equal true
-		if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
+		if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
 			bMouseUp=true;
 		}
 
@@ -1201,7 +1201,7 @@ struct globalConfig {
 	string savepath;
 	vector<string> search_paths;
 	string puzzleName;
-	bool allowResize = false;
+	bool allowResize = true;
 	bool autoScale = true;
 };
 
@@ -1226,7 +1226,6 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("verbose-basic", "Enables basic verbose messages")
 	("verbose-game-controller", "Enables verbose messages regarding controllers")
 	("print-search-path", "Prints the search path and quits")
-	("allow-resize", "Allow experimental windows resize support")
 	("no-auto-scale", "Do not automatically auto scale")
 	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
@@ -1307,9 +1306,6 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	if (vm.count("puzzle-single-level")) {
 		singlePuzzle = true;
 		singlePuzzleNr = vm["puzzle-single-level"].as<int>();
-	}
-	if(vm.count("allow-resize")) {
-		conf.allowResize = true;
 	}
 	if(vm.count("no-auto-scale")) {
 		conf.autoScale = false;
@@ -1972,7 +1968,7 @@ int runGame(Gametype gametype, int level) {
 			} //while event PollEvent - read keys
 
 			// If the mouse button is released, make bMouseUp equal true
-			if (!SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) {
+			if (! (SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
 				bMouseUp=true;
 			}
 
