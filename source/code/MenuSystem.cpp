@@ -42,9 +42,9 @@ const char* const menu_unmarked = "menu_unmarked";
 ButtonGfx standardButton;
 
 void ButtonGfx::setSurfaces() {
-	this->xsize = spriteHolder->GetSprite(menu_marked).GetWidth();
-	this->ysize = spriteHolder->GetSprite(menu_marked).GetHeight();
-	if (verboseLevel) {
+	this->xsize = globalData.spriteHolder->GetSprite(menu_marked).GetWidth();
+	this->ysize = globalData.spriteHolder->GetSprite(menu_marked).GetHeight();
+	if (globalData.verboseLevel) {
 		cout << "Surfaces set, size: " << this->xsize << " , " << this->ysize << "\n";
 	}
 }
@@ -92,13 +92,13 @@ bool Button::isPopOnRun() const {
 
 static void drawToScreen(const Button &b) {
 	if (b.marked) {
-		spriteHolder->GetSprite(menu_marked).Draw(screen, SDL_GetTicks(), b.x, b.y);
+		globalData.spriteHolder->GetSprite(menu_marked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 	else {
-		spriteHolder->GetSprite(menu_unmarked).Draw(screen, SDL_GetTicks(), b.x, b.y);
+		globalData.spriteHolder->GetSprite(menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 	
-	standardButton.thefont->draw(screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2-standardButton.thefont->getHeight("%s",  b.label.c_str())/2, NFont::CENTER, "%s", b.label.c_str());
+	standardButton.thefont->draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2-standardButton.thefont->getHeight("%s",  b.label.c_str())/2, NFont::CENTER, "%s", b.label.c_str());
 }
 
 
@@ -116,7 +116,7 @@ void Menu::drawSelf() {
 	}
 	drawToScreen(exit);
 	standardButton.thefont->draw(screen, 50, 50, "%s", title.c_str());
-	mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
+	globalData.mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
 }
 
 
@@ -124,7 +124,7 @@ void Menu::placeButtons() {
 	int nextY = 100;
 	int X = 50;
 	for (Button* it : buttons) {
-		X = (xsize - standardButton.xsize)/2;
+		X = (globalData.xsize - standardButton.xsize)/2;
 		it->x = X;
 		it->y = nextY;
 		nextY += standardButton.ysize+10;
@@ -301,7 +301,7 @@ void Menu::run() {
 	int oldmousex = mousex;
 	int oldmousey = mousey;
 	while (running && !Config::getInstance()->isShuttingDown()) {
-		if (!(highPriority)) {
+		if (!(globalData.highPriority)) {
 			SDL_Delay(10);
 		}
 		SDL_Event event;

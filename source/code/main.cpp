@@ -85,6 +85,7 @@ using std::cout;
 using std::exception;
 using std::vector;
 
+GlobalData globalData;
 
 static int InitImages(sago::SagoSpriteHolder& holder);
 
@@ -120,8 +121,8 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	bricks[6] = holder.GetSprite("block_grey");
 	bomb = holder.GetSprite("block_bomb");
 	backgroundImage = holder.GetSprite("background");
-	bHighScore = holder.GetSprite("b_highscore");
-	bBack = holder.GetSprite("b_blank");
+	globalData.bHighScore = holder.GetSprite("b_highscore");
+	globalData.bBack = holder.GetSprite("b_blank");
 	bForward = holder.GetSprite("b_forward");
 	blackLine = holder.GetSprite("black_line");
 	stageBobble = holder.GetSprite("i_stage_clear_limit");
@@ -174,11 +175,11 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	transCover = holder.GetSprite("trans_cover");
 	bExit = holder.GetSprite("b_exit");
 	bSkip = holder.GetSprite("b_blank");
-	bNext = holder.GetSprite("b_blank");
+	globalData.bNext = holder.GetSprite("b_blank");
 	bRetry = holder.GetSprite("b_blank");
-	mouse = holder.GetSprite("mouse");
-	menuMarked = holder.GetSprite("menu_marked");
-	menuUnmarked = holder.GetSprite("menu_unmarked");
+	globalData.mouse = holder.GetSprite("mouse");
+	globalData.menuMarked = holder.GetSprite("menu_marked");
+	globalData.menuUnmarked = holder.GetSprite("menu_unmarked");
 	backBoard = holder.GetSprite("back_board");
 
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
@@ -195,13 +196,13 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	nf_standard_small_color.g = 0;
 	nf_standard_small_color.r = 200;
 	nf_standard_small_color.a = 255;
-	nf_button_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
-	nf_standard_blue_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
-	nf_standard_small_font.load(screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
-	nf_scoreboard_font.load(screen, holder.GetDataHolder().getFontPtr("penguinattack", 20), nf_button_color);
+	globalData.nf_button_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
+	globalData.nf_standard_blue_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
+	nf_standard_small_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
+	globalData.nf_scoreboard_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("penguinattack", 20), nf_button_color);
 
 //Loads the sound if sound present
-	if (!NoSound) {
+	if (!globalData.NoSound) {
 		//And here the music:
 		bgMusic = holder.GetDataHolder().getMusicPtr("bgmusic");
 		highbeatMusic = holder.GetDataHolder().getMusicPtr("highbeat");
@@ -210,14 +211,14 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 		boing = holder.GetDataHolder().getSoundPtr("pop");
 		applause = holder.GetDataHolder().getSoundPtr("applause");
 		photoClick = holder.GetDataHolder().getSoundPtr("cameraclick");
-		typingChunk = holder.GetDataHolder().getSoundPtr("typing");
+		globalData.typingChunk = holder.GetDataHolder().getSoundPtr("typing");
 		counterChunk = holder.GetDataHolder().getSoundPtr("counter");
 		counterFinalChunk = holder.GetDataHolder().getSoundPtr("counter_final");
 		const int soundVolume = 84;  //0-128
 		Mix_VolumeChunk(boing, soundVolume);
 		Mix_VolumeChunk(applause, soundVolume);
 		Mix_VolumeChunk(photoClick, soundVolume);
-		Mix_VolumeChunk(typingChunk, soundVolume);
+		Mix_VolumeChunk(globalData.typingChunk, soundVolume);
 		Mix_VolumeChunk(counterChunk, soundVolume);
 		Mix_VolumeChunk(counterFinalChunk, soundVolume);
 	} //All sound has been loaded or not
@@ -240,29 +241,28 @@ void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x
 
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
-	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
+	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
-	nf_standard_blue_font.draw(target, x, y, "%s", text);
+	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text);
 }
 
 SDL_Window* sdlWindow;
 
 std::unique_ptr<sago::SagoDataHolder> dataHolder;
-std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 
 void ResetFullscreen() {
 	Mix_HaltMusic();  //We need to reload all data in case the screen type changes. Music must be stopped before unload.
-	if (bFullscreen) {
+	if (globalData.bFullscreen) {
 		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else {
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
-	dataHolder.reset(new sago::SagoDataHolder(screen));
-	spriteHolder.reset(new sago::SagoSpriteHolder( *(dataHolder.get()) ) );
-	InitImages(*(spriteHolder.get()) );
+	dataHolder.reset(new sago::SagoDataHolder(globalData.screen));
+	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( *(dataHolder.get()) ) );
+	InitImages(*(globalData.spriteHolder.get()) );
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -271,13 +271,13 @@ static bool logicalRenderer = false;
 void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
 	if (logicalRenderer) {
-		xsize = 1024;
-		ysize = 768;
+		globalData.xsize = 1024;
+		globalData.ysize = 768;
 	}
 	else {
-		SDL_GetWindowSize(sdlWindow, &xsize, &ysize);
+		SDL_GetWindowSize(sdlWindow, &globalData.xsize, &globalData.ysize);
 	}
-	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, xsize, ysize);
+	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
 }
 
 /**
@@ -341,9 +341,9 @@ public:
 		if (y<1.0) {
 			velocityY=10.0;
 		}
-		if ((velocityY>minVelocity) && (y>(ysize-ballSize)) && (y<ysize)) {
+		if ((velocityY>minVelocity) && (y>(globalData.ysize-ballSize)) && (y<globalData.ysize)) {
 			velocityY = -0.70*velocityY;
-			y = ysize-ballSize;
+			y = globalData.ysize-ballSize;
 		}
 		lastTime = currentTime;
 	}
@@ -397,7 +397,7 @@ public:
 
 			if (ballUsed[i]) {
 				ballArray[i].update();
-				if (ballArray[i].getY()>ysize+100 || ballArray[i].getX()>xsize || ballArray[i].getX()<-ballSize) {
+				if (ballArray[i].getY()>globalData.ysize+100 || ballArray[i].getX()>globalData.xsize || ballArray[i].getX()<-ballSize) {
 					ballUsed[i] = false;
 				}
 			}
@@ -589,18 +589,18 @@ static TextManager theTextManager;
 
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
 void writeScreenShot() {
-	if (verboseLevel) {
+	if (globalData.verboseLevel) {
 		cout << "Saving screenshot" << "\n";
 	}
 	int rightNow = (int)time(nullptr);
 	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+std::to_string(rightNow)+".bmp";
 	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurface(0, 1024, 768, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-	SDL_RenderReadPixels(screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
+	SDL_RenderReadPixels(globalData.screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
 	SDL_SaveBMP(sreenshotSurface, buf.c_str());
 	SDL_FreeSurface(sreenshotSurface);
-	if (!NoSound) {
-		if (SoundEnabled) {
-			Mix_PlayChannel(1,photoClick,0);
+	if (!globalData.NoSound) {
+		if (globalData.SoundEnabled) {
+			Mix_PlayChannel(1, photoClick, 0);
 		}
 	}
 }
@@ -616,7 +616,7 @@ void RunGameState(sago::GameStateInterface& state ) {
 	int mousex,mousey;
 	bool done = false;     //We are done!
 	while (!done && !Config::getInstance()->isShuttingDown()) {
-		state.Draw(screen);
+		state.Draw(globalData.screen);
 
 		SDL_Delay(1);
 		SDL_Event event;
@@ -641,8 +641,8 @@ void RunGameState(sago::GameStateInterface& state ) {
 
 		state.Update();
 
-		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
-		SDL_RenderPresent(screen);
+		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), mousex, mousey);
+		SDL_RenderPresent(globalData.screen);
 		if (mustWriteScreenshot) {
 			writeScreenShot();
 		}
@@ -667,17 +667,17 @@ void OpenScoresDisplay() {
 static void DrawBalls() {
 	for (int i = 0; i< maxNumberOfBalls; i++) {
 		if (theBallManager.ballUsed[i]) {
-			DrawIMG(balls[theBallManager.ballArray[i].getColor()],screen,theBallManager.ballArray[i].getX(),theBallManager.ballArray[i].getY());
+			DrawIMG(balls[theBallManager.ballArray[i].getColor()],globalData.screen,theBallManager.ballArray[i].getX(),theBallManager.ballArray[i].getY());
 		} //if used
 		if (theExplosionManager.explosionUsed[i]) {
-			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
+			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],globalData.screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
 		}
 		if (theTextManager.textUsed[i]) {
 			int x = theTextManager.textArray[i].getX()-12;
 			int y = theTextManager.textArray[i].getY()-12;
-			DrawIMG(iChainFrame,screen,x,y);
+			DrawIMG(iChainFrame,globalData.screen,x,y);
 
-			nf_standard_small_font.draw(screen, x+12,y+7, NFont::CENTER, "%s",theTextManager.textArray[i].getText());
+			nf_standard_small_font.draw(globalData.screen, x+12,y+7, NFont::CENTER, "%s",theTextManager.textArray[i].getText());
 		}
 	} //for
 }    //DrawBalls
@@ -686,20 +686,20 @@ static void DrawBalls() {
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);
-	DrawBackground(screen);
+	DrawBackground(globalData.screen);
 	theGame->DoPaintJob();
 	theGame2->DoPaintJob();
 	string strHolder;
 	strHolder = std::to_string(theGame->GetScore()+theGame->GetHandicap());
-	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
+	NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
 	if (theGame->GetAIenabled()) {
-		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("AI") );
+		NFont_Write(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("AI") );
 	}
 	else if (editorMode || singlePuzzle) {
-		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("Playing field") );
+		NFont_Write(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("Playing field") );
 	}
 	else {
-		NFont_Write(screen, theGame->GetTopX()+10,theGame->GetTopY()-34,player1name);
+		NFont_Write(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34, globalData.player1name);
 	}
 	if (theGame->isTimeTrial()) {
 		int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
@@ -726,7 +726,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
 		//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-		NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
+		NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
 	}
 	else {
 		int minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
@@ -743,27 +743,27 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		else {
 			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
-		NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
+		NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
 	}
 	strHolder = std::to_string(theGame->GetChains());
-	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+200,strHolder.c_str());
+	NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+200,strHolder.c_str());
 	//drawspeedLevel:
 	strHolder = std::to_string(theGame->GetSpeedLevel());
-	NFont_Write(screen, theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
+	NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
 	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY())) {
 		oldBubleX = theGame->GetTopX()+280;
 		oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
-		DrawIMG(stageBobble,screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
+		DrawIMG(stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
 	}
 	//player1 finnish, player2 start
-	//DrawIMG(boardBackBack,screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
+	//DrawIMG(boardBackBack,globalData.screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
 	if (!editorMode /*&& !singlePuzzle*/ ) {
 		/*
 		 *If single player mode (and not VS)
 		 */
 		if (!twoPlayers && !theGame->isGameOver()) {
 			//Blank player2's board:
-			DrawIMG(backBoard,screen,theGame2->GetTopX(),theGame2->GetTopY());
+			DrawIMG(backBoard,globalData.screen,theGame2->GetTopX(),theGame2->GetTopY());
 			//Write a description:
 			string gametypeName;
 			string infostring;
@@ -785,32 +785,32 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				infostring = _("Score as much as possible. No time limit.");
 			}
 			if (infostring.length() > 0) {
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10, gametypeName);
-				NFont_Write(screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160, _("Objective:"));
-				nf_standard_blue_font.drawBox(screen, { static_cast<float>(theGame2->GetTopX()+7),static_cast<float>(theGame2->GetTopY()+160+32), 280, 200}, "%s", infostring.c_str());
+				NFont_Write(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10, gametypeName);
+				NFont_Write(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160, _("Objective:"));
+				globalData.nf_standard_blue_font.drawBox(globalData.screen, { static_cast<float>(theGame2->GetTopX()+7),static_cast<float>(theGame2->GetTopY()+160+32), 280, 200}, "%s", infostring.c_str());
 			}
 
 			//Write the keys that are in use
 			int y = theGame2->GetTopY()+400;
-			NFont_Write(screen, theGame2->GetTopX()+7,y,_("Movement keys:") );
-			NFont_Write(screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
-			NFont_Write(screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
-			NFont_Write(screen, theGame2->GetTopX()+7,y+120,( _("Switch: ")+getKeyName(keySettings[0].change) ).c_str() );
+			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y,_("Movement keys:") );
+			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
+			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
+			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+120,( _("Switch: ")+getKeyName(keySettings[0].change) ).c_str() );
 			if (theGame->isPuzzleMode()) {
-				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Restart: ")+getKeyName(keySettings[0].push) ).c_str() );
+				NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+160,( _("Restart: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
 			else {
-				NFont_Write(screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
+				NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
 			}
 
 		}
 		strHolder = std::to_string(theGame2->GetScore()+theGame2->GetHandicap());
-		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
+		NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
 		if (theGame2->GetAIenabled()) {
-			NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,_("AI") );
+			NFont_Write(globalData.screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,_("AI") );
 		}
 		else {
-			NFont_Write(screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
+			NFont_Write(globalData.screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
 		}
 		if (theGame2->isTimeTrial()) {
 			int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();
@@ -837,7 +837,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 			}
 			//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
+			NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
 		}
 		else {
 			int minutes = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt()))/60/1000;
@@ -854,18 +854,18 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			else {
 				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 			}
-			NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
+			NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
 		}
 		strHolder = std::to_string(theGame2->GetChains());
-		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
+		NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
 		strHolder = std::to_string(theGame2->GetSpeedLevel());
-		NFont_Write(screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
+		NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
 	}
 	//player2 finnish
 
 
 	//draw exit
-	bExit.Draw(screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);
+	bExit.Draw(globalData.screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);
 	DrawBalls();
 
 #if DEBUG
@@ -879,7 +879,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		Ticks = SDL_GetTicks();
 	}
 
-	nf_standard_blue_font.draw(screen, 800, 4, "%s", FPS);
+	globalData.nf_standard_blue_font.draw(globalData.screen, 800, 4, "%s", FPS);
 #endif
 }
 
@@ -912,25 +912,25 @@ int PuzzleLevelSelect(int Type) {
 	}
 
 	while (!levelSelected) {
-		DrawBackground(screen);
-		DrawIMG(iCheckBoxArea,screen,xplace,yplace);
+		DrawBackground(globalData.screen);
+		DrawIMG(iCheckBoxArea,globalData.screen,xplace,yplace);
 		if (Type == 0) {
-			NFont_Write(screen, xplace+12,yplace+2,_("Select Puzzle") );
+			NFont_Write(globalData.screen, xplace+12,yplace+2,_("Select Puzzle") );
 		}
 		if (Type == 1) {
-			NFont_Write(screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
+			NFont_Write(globalData.screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
 		}
 		//Now drow the fields you click in (and a V if clicked):
 		for (int i = 0; i < nrOfLevels; i++) {
-			DrawIMG(iLevelCheckBox,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			DrawIMG(iLevelCheckBox,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			if (i==selected) {
-				DrawIMG(iLevelCheckBoxMarked,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+				DrawIMG(iLevelCheckBoxMarked,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			}
 			if (Type == 0 && PuzzleIsCleared(i)) {
-				DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+				DrawIMG(iLevelCheck,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			}
 			if (Type == 1 && IsStageCleared(i)) {
-				DrawIMG(iLevelCheck,screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+				DrawIMG(iLevelCheck,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
 			}
 		}
 
@@ -1031,17 +1031,17 @@ int PuzzleLevelSelect(int Type) {
 				timeString = SPrintStringF(_("Time used: %d : %02d"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
 			}
 
-			NFont_Write(screen, 200,200,scoreString.c_str());
-			NFont_Write(screen, 200,250,timeString.c_str());
+			NFont_Write(globalData.screen, 200,200,scoreString.c_str());
+			NFont_Write(globalData.screen, 200,250,timeString.c_str());
 			string totalString = (boost::format(_("Total score: %1% in %2%:%3%"))%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str();
-			NFont_Write(screen, 200,600,totalString.c_str());
+			NFont_Write(globalData.screen, 200,600,totalString.c_str());
 		}
 
-		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
-		SDL_RenderPresent(screen); //draws it all to the screen
+		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), mousex, mousey);
+		SDL_RenderPresent(globalData.screen); //draws it all to the screen
 
 	}
-	DrawBackground(screen);
+	DrawBackground(globalData.screen);
 	return levelNr;
 }
 
@@ -1064,8 +1064,8 @@ static void StartSinglePlayerEndless() {
 	a.action = BlockGameAction::Action::SET_GAME_OVER;
 	a.tick = startInfo.ticks;
 	player2->DoAction(a);
-	player1->name = player1name;
-	player2->name = player2name;
+	player1->name = globalData.player1name;
+	player2->name = globalData.player2name;
 	registerEndlessHighscore = true;
 }
 
@@ -1080,8 +1080,8 @@ static void StartSinglePlayerTimeTrial() {
 	a.tick = startInfo.ticks;
 	player2->DoAction(a);
 	//vsMode = false;
-	player1->name = player1name;
-	player2->name = player2name;
+	player1->name = globalData.player1name;
+	player2->name = globalData.player2name;
 	registerTTHighscorePlayer1 = true;
 	saveReplay = true;
 }
@@ -1095,15 +1095,15 @@ static int StartSinglePlayerPuzzle() {
 		return 1;
 	}
 	player1->NewGame(startInfo);
-	DrawBackground(screen);
+	DrawBackground(globalData.screen);
 	twoPlayers = false;
 	BlockGameAction a;
 	a.action = BlockGameAction::Action::SET_GAME_OVER;
 	a.tick = startInfo.ticks;
 	player2->DoAction(a);
 	//vsMode = true;
-	player1->name = player1name;
-	player2->name = player2name;
+	player1->name = globalData.player1name;
+	player2->name = globalData.player2name;
 	return 0;
 }
 
@@ -1132,8 +1132,8 @@ static void StarTwoPlayerTimeTrial() {
 	player1->NewGame(startInfo);
 	player2->NewGame(startInfo2);
 	twoPlayers = true;
-	player1->name = player1name;
-	player2->name = player2name;
+	player1->name = globalData.player1name;
+	player2->name = globalData.player2name;
 }
 
 static void StartTwoPlayerVs() {
@@ -1159,13 +1159,13 @@ static void StartTwoPlayerVs() {
 	player2->NewGame(startInfo2);
 	//vsMode = true;
 	twoPlayers = true;
-	player1->name = player1name;
-	player2->name = player2name;
+	player1->name = globalData.player1name;
+	player2->name = globalData.player2name;
 }
 
 static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
 	game1.SetTopXY(50, 100);
-	game2.SetTopXY(xsize-500,100);
+	game2.SetTopXY(globalData.xsize-500, 100);
 }
 
 struct globalConfig {
@@ -1256,13 +1256,13 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 		exit(0);
 	}
 	if (vm.count("nosound")) {
-		NoSound = true;
+		globalData.NoSound = true;
 	}
 	if (vm.count("priority")) {
-		highPriority = true;
+		globalData.highPriority = true;
 	}
 	if (vm.count("verbose-basic")) {
-		verboseLevel++;
+		globalData.verboseLevel++;
 	}
 	if (vm.count("verbose-game-controller")) {
 		GameControllerSetVerbose(true);
@@ -1296,8 +1296,8 @@ int main(int argc, char* argv[]) {
 		config.puzzleName = "puzzle.levels";
 		FsSearchParthMainAppend(config.search_paths);
 		config.savepath = getPathToSaveFiles();
-		highPriority = false;   //if true the game will take most resources, but increase framerate.
-		bFullscreen = false;
+		globalData.highPriority = false;   //if true the game will take most resources, but increase framerate.
+		globalData.bFullscreen = false;
 		//Set default Config variables:
 		setlocale (LC_ALL, "");
 		bindtextdomain (PACKAGE, LOCALEDIR);
@@ -1308,11 +1308,11 @@ int main(int argc, char* argv[]) {
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
 		//Os create folders must be after the paramters because they can change the home folder
 		PhysFsCreateFolders();
-		SoundEnabled = true;
-		MusicEnabled = true;
+		globalData.SoundEnabled = true;
+		globalData.MusicEnabled = true;
 		twoPlayers = false; //true if two players splitscreen
-		theTopScoresEndless = Highscore("endless");
-		theTopScoresTimeTrial = Highscore("timetrial");
+		globalData.theTopScoresEndless = Highscore("endless");
+		globalData.theTopScoresTimeTrial = Highscore("timetrial");
 		drawBalls = true;
 		puzzleLoaded = false;
 		theBallManager = BallManager();
@@ -1331,17 +1331,17 @@ int main(int argc, char* argv[]) {
 		theTextManager = TextManager();
 
 		//Open Audio
-		if (!NoSound) {
+		if (!globalData.NoSound) {
 			//If sound has not been disabled, then load the sound system
 			if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
 				cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << "\n"
 				     << "Sound will be disabled!" << "\n";
-				NoSound = true; //Tries to stop all sound from playing/loading
+				globalData.NoSound = true; //Tries to stop all sound from playing/loading
 			}
 		}
 
 
-		if (verboseLevel) {
+		if (globalData.verboseLevel) {
 			//Copyright notice:
 			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2016 Poul Sander" << "\n" <<
 			     "A SDL2 based game (see www.libsdl.org)" << "\n" <<
@@ -1364,16 +1364,16 @@ int main(int argc, char* argv[]) {
 		keySettings[player2keys].change = SDLK_LCTRL;
 		keySettings[player2keys].push = SDLK_LSHIFT;
 
-		player1name = _("Player 1");
-		player2name = _("Player 2");
+		globalData.player1name = _("Player 1");
+		globalData.player2name = _("Player 2");
 
 		Config* configSettings = Config::getInstance();
 		//configSettings->setString("aNumber"," A string");
 		//configSettings->save();
 		if (configSettings->exists("fullscreen")) { //Test if an configFile exists
-			bFullscreen = (bool)configSettings->getInt("fullscreen");
-			MusicEnabled = (bool)configSettings->getInt("musicenabled");
-			SoundEnabled = (bool)configSettings->getInt("soundenabled");
+			globalData.bFullscreen = (bool)configSettings->getInt("fullscreen");
+			globalData.MusicEnabled = (bool)configSettings->getInt("musicenabled");
+			globalData.SoundEnabled = (bool)configSettings->getInt("soundenabled");
 
 			if (configSettings->exists("sdl2_player1keyup")) {
 				keySettings[0].up = (SDL_Keycode)configSettings->getInt("sdl2_player1keyup");
@@ -1413,17 +1413,17 @@ int main(int argc, char* argv[]) {
 				keySettings[2].push = (SDL_Keycode)configSettings->getInt("sdl2_player2keypush");
 			}
 			if (configSettings->exists("player1name")) {
-				player1name = configSettings->getString("player1name");
+				globalData.player1name = configSettings->getString("player1name");
 			}
 			if (configSettings->exists("player2name")) {
-				player2name = configSettings->getString("player2name");
+				globalData.player2name = configSettings->getString("player2name");
 			}
-			if (verboseLevel) {
+			if (globalData.verboseLevel) {
 				cout << "Data loaded from config file" << "\n";
 			}
 		}
 		else {
-			if (verboseLevel) {
+			if (globalData.verboseLevel) {
 				cout << "Unable to load options file, using default values" << "\n";
 			}
 		}
@@ -1438,25 +1438,25 @@ int main(int argc, char* argv[]) {
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
-		                             xsize, ysize,
+		                             globalData.xsize, globalData.ysize,
 		                             createWindowParams );
 		dieOnNullptr(sdlWindow, "Unable to create window");
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 		dieOnNullptr(renderer, "Unable to create render");
 		if (config.autoScale) {
-			SDL_RenderSetLogicalSize(renderer, xsize, ysize);
+			SDL_RenderSetLogicalSize(renderer, globalData.xsize, globalData.ysize);
 			logicalRenderer = true;
 		}
-		screen = renderer;
+		globalData.screen = renderer;
 		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
 
-		if (verboseLevel) {
+		if (globalData.verboseLevel) {
 			cout << "Images loaded" << "\n";
 		}
 
-		BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
-		BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
+		BlockGameSdl theGame = BlockGameSdl(50, 100);            //creates game objects
+		BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500, 100);
 		player1 = &theGame;
 		player2 = &theGame2;
 		
@@ -1467,8 +1467,8 @@ int main(int argc, char* argv[]) {
 
 
 		//Takes names from file instead
-		theGame.name = player1name;
-		theGame2.name = player2name;
+		theGame.name = globalData.player1name;
+		theGame2.name = globalData.player2name;
 
 		if (singlePuzzle) {
 			LoadPuzzleStages();
@@ -1478,10 +1478,10 @@ int main(int argc, char* argv[]) {
 			s.singlePuzzle = true;
 			theGame.NewGame(s);
 		}
-		DrawBackground(screen);
+		DrawBackground(globalData.screen);
 		MoveBlockGameSdls(theGame, theGame2);
-		DrawEverything(xsize,ysize,&theGame,&theGame2);
-		SDL_RenderPresent(screen);
+		DrawEverything(globalData.xsize, globalData.ysize, &theGame, &theGame2);
+		SDL_RenderPresent(globalData.screen);
 		if (singlePuzzle) {
 			runGame(Gametype::Puzzle, singlePuzzleNr);
 		}
@@ -1494,9 +1494,9 @@ int main(int argc, char* argv[]) {
 
 		//Saves options
 		if (!editorMode) {
-			configSettings->setInt("fullscreen",(int)bFullscreen);
-			configSettings->setInt("musicenabled",(int)MusicEnabled);
-			configSettings->setInt("soundenabled",(int)SoundEnabled);
+			configSettings->setInt("fullscreen",(int)globalData.bFullscreen);
+			configSettings->setInt("musicenabled",(int)globalData.MusicEnabled);
+			configSettings->setInt("soundenabled",(int)globalData.SoundEnabled);
 
 			configSettings->setInt("sdl2_player1keyup",(int)keySettings[0].up);
 			configSettings->setInt("sdl2_player1keydown",(int)keySettings[0].down);
@@ -1512,8 +1512,8 @@ int main(int argc, char* argv[]) {
 			configSettings->setInt("sdl2_player2keychange",(int)keySettings[2].change);
 			configSettings->setInt("sdl2_player2keypush",(int)keySettings[2].push);
 
-			configSettings->setString("player1name",player1name);
-			configSettings->setString("player2name",player2name);
+			configSettings->setString("player1name", globalData.player1name);
+			configSettings->setString("player2name", globalData.player2name);
 			configSettings->save();
 		}
 
@@ -1521,12 +1521,12 @@ int main(int argc, char* argv[]) {
 		//int hours, mins, secs,
 		commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
-		if (verboseLevel) {
+		if (globalData.verboseLevel) {
 			cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << "\n";
 		}
 
 		ct = TimeHandler::addTime("totalTime",ct);
-		if (verboseLevel) {
+		if (globalData.verboseLevel) {
 			cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
 		}
 
@@ -1544,8 +1544,8 @@ int main(int argc, char* argv[]) {
 
 int runGame(Gametype gametype, int level) {
 	int mousex, mousey;   //Mouse coordinates
-	theTopScoresEndless = Highscore("endless");
-	theTopScoresTimeTrial = Highscore("timetrial");
+	globalData.theTopScoresEndless = Highscore("endless");
+	globalData.theTopScoresTimeTrial = Highscore("timetrial");
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool bNearDeath = false;                        //Play music faster or louder while tru
@@ -1553,7 +1553,7 @@ int runGame(Gametype gametype, int level) {
 	theBallManager = BallManager();
 	theExplosionManager = ExplosionManager();
 	BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
-	BlockGameSdl theGame2 = BlockGameSdl(xsize-500,100);
+	BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500,100);
 	player1 = &theGame;
 	player2 = &theGame2;
 	theGame.DoPaintJob();           //Makes sure what there is something to paint
@@ -1564,8 +1564,8 @@ int runGame(Gametype gametype, int level) {
 	theGame2.DoAction(a);
 
 	//Takes names from file instead
-	theGame.name = player1name;
-	theGame2.name = player2name;
+	theGame.name = globalData.player1name;
+	theGame2.name = globalData.player2name;
 
 	bool mustsetupgame = true;
 	
@@ -1580,7 +1580,7 @@ int runGame(Gametype gametype, int level) {
 	}
 	//game loop
 	int done = 0;
-	if (verboseLevel) {
+	if (globalData.verboseLevel) {
 		cout << "Starting game loop" << "\n";
 	}
 
@@ -1604,13 +1604,13 @@ int runGame(Gametype gametype, int level) {
 					s.stageClear = true;
 					s.level = myLevel;
 					theGame.NewGame(s);
-					DrawBackground(screen);
+					DrawBackground(globalData.screen);
 					twoPlayers =false;
 					BlockGameAction a;
 					a.action = BlockGameAction::Action::SET_GAME_OVER;
 					theGame2.DoAction(a);
-					theGame.name = player1name;
-					theGame2.name = player2name;
+					theGame.name = globalData.player1name;
+					theGame2.name = globalData.player2name;
 				}
 				break;
 				case Gametype::Puzzle:
@@ -1630,10 +1630,10 @@ int runGame(Gametype gametype, int level) {
 						theGame.NewGame(startInfo);
 						startInfo.AI = true;
 						theGame2.NewGame(startInfo);
-						DrawBackground(screen);
+						DrawBackground(globalData.screen);
 						twoPlayers = true; //Single player, but AI plays
-						theGame.name = player1name;
-						theGame2.name = player2name;
+						theGame.name = globalData.player1name;
+						theGame2.name = globalData.player2name;
 					}
 					break;
 				case Gametype::TwoPlayerTimeTrial:
@@ -1647,17 +1647,17 @@ int runGame(Gametype gametype, int level) {
 					StartSinglePlayerEndless();
 			};
 			mustsetupgame = false;
-			DrawBackground(screen);
+			DrawBackground(globalData.screen);
 			MoveBlockGameSdls(theGame, theGame2);
-			DrawEverything(xsize,ysize,&theGame,&theGame2);
-			SDL_RenderPresent(screen);
+			DrawEverything(globalData.xsize, globalData.ysize, &theGame, &theGame2);
+			SDL_RenderPresent(globalData.screen);
 		}
 
-		if (!(highPriority)) {
+		if (!(globalData.highPriority)) {
 			SDL_Delay(1);
 		}
 
-		DrawBackground(screen);
+		DrawBackground(globalData.screen);
 		//updates the balls and explosions:g
 		theBallManager.update();
 		theExplosionManager.update();
@@ -1685,7 +1685,7 @@ int runGame(Gametype gametype, int level) {
 				if ( event.type == SDL_KEYDOWN ) {
 					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
 						done=1;
-						DrawBackground(screen);
+						DrawBackground(globalData.screen);
 					}
 					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled())) {
 						//player1:
@@ -1941,7 +1941,7 @@ int runGame(Gametype gametype, int level) {
 				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 					//This is the mouse events
 					bMouseUp = false;
-					DrawBackground(screen);
+					DrawBackground(globalData.screen);
 
 					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
 					        &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
@@ -1957,8 +1957,8 @@ int runGame(Gametype gametype, int level) {
 						retryLevel(theGame, SDL_GetTicks());
 					}
 
-					if (mousex > xsize-bExitOffset && mousex < xsize-bExitOffset+bExitSize &&
-					        mousey > ysize-bExitOffset && mousey < ysize-bExitOffset+bExitSize) {
+					if (mousex > globalData.xsize-bExitOffset && mousex < globalData.xsize-bExitOffset+bExitSize &&
+					        mousey > globalData.ysize-bExitOffset && mousey < globalData.ysize-bExitOffset+bExitSize) {
 						done = 1;
 					}
 					//cout << "Mouse x: " << mousex << ", mouse y: " << mousey << "\n";
@@ -1973,7 +1973,7 @@ int runGame(Gametype gametype, int level) {
 
 
 		//Sees if music is stopped and if music is enabled
-		if ((!NoSound)&&(!Mix_PlayingMusic())&&(MusicEnabled)&&(!bNearDeath)) {
+		if ((!globalData.NoSound)&&(!Mix_PlayingMusic())&&(globalData.MusicEnabled)&&(!bNearDeath)) {
 			// then starts playing it.
 			Mix_PlayMusic(bgMusic, -1); //music loop
 			Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
@@ -1981,13 +1981,13 @@ int runGame(Gametype gametype, int level) {
 
 		if (bNearDeath!=bNearDeathPrev) {
 			if (bNearDeath) {
-				if (!NoSound &&(MusicEnabled)) {
+				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
 					Mix_PlayMusic(highbeatMusic, 1);
 					Mix_VolumeMusic((MIX_MAX_VOLUME*5)/10);
 				}
 			}
 			else {
-				if (!NoSound &&(MusicEnabled)) {
+				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
 					Mix_PlayMusic(bgMusic, -1);
 					Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
 				}
@@ -2058,15 +2058,15 @@ int runGame(Gametype gametype, int level) {
 
 		if (theGame.isGameOver() && registerTTHighscorePlayer1) {
 			registerTTHighscorePlayer1 = false;
-			theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
+			globalData.theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
 		}
 		if (theGame2.isGameOver() && registerTTHighscorePlayer2) {
 			registerTTHighscorePlayer2 = false;
-			theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
+			globalData.theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
 		}
 		if (theGame.isGameOver() && registerEndlessHighscore) {
 			registerEndlessHighscore = false;
-			theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
+			globalData.theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
 			theGame.EndlessHighscoreEvent();
 		}
 		if (theGame.isGameOver() && saveReplay) {
@@ -2082,10 +2082,10 @@ int runGame(Gametype gametype, int level) {
 
 		//Once evrything has been checked, update graphics
 		MoveBlockGameSdls(theGame, theGame2);
-		DrawEverything(xsize,ysize,&theGame,&theGame2);
+		DrawEverything(globalData.xsize, globalData.ysize, &theGame, &theGame2);
 		//Draw the mouse:
-		mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
-		SDL_RenderPresent(screen);
+		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), mousex, mousey);
+		SDL_RenderPresent(globalData.screen);
 		if (mustWriteScreenshot) {
 			writeScreenShot();
 		}

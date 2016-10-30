@@ -41,32 +41,36 @@ bool OpenDialogbox(int x, int y, std::string& name, const std::string& header);
 void DrawBackground(SDL_Renderer* target);
 void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey);
 
-extern sago::SagoSprite  menuMarked;
-extern sago::SagoSprite  menuUnmarked;
-extern sago::SagoSprite bHighScore;
-extern sago::SagoSprite bBack;
-extern sago::SagoSprite bNext;
-extern NFont nf_scoreboard_font;
-extern NFont nf_standard_blue_font;
-extern NFont nf_button_font;
-extern bool MusicEnabled;			//true if background music is enabled
-extern bool SoundEnabled;			//true if sound effects is enabled
-extern bool bFullscreen;			//true if game is running fullscreen
-extern std::string player1name;
-extern std::string player2name;
-extern SDL_Renderer *screen;        //The whole screen;
-extern Mix_Chunk *typingChunk;
-extern sago::SagoSprite mouse;
-extern bool highPriority;
-extern bool NoSound;	
-extern int verboseLevel;
-extern Highscore theTopScoresEndless;      //Stores highscores for endless
-extern Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
-extern std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
+struct GlobalData {
+	sago::SagoSprite  menuMarked;
+	sago::SagoSprite  menuUnmarked;
+	sago::SagoSprite bHighScore;
+	sago::SagoSprite bBack;
+	sago::SagoSprite bNext;
+	NFont nf_scoreboard_font;
+	NFont nf_standard_blue_font;
+	NFont nf_button_font;
+	bool MusicEnabled;			//true if background music is enabled
+	bool SoundEnabled;			//true if sound effects is enabled
+	bool bFullscreen;			//true if game is running fullscreen
+	std::string player1name;
+	std::string player2name;
+	SDL_Renderer *screen = nullptr;        //The whole screen;
+	Mix_Chunk *typingChunk;
+	sago::SagoSprite mouse;
+	bool highPriority = false;
+	bool NoSound = false;	
+	int verboseLevel = 0;
+	Highscore theTopScoresEndless;      //Stores highscores for endless
+	Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
+	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 
-//The xsize and ysize are updated everytime the background is drawn
-extern int xsize;
-extern int ysize;
+	//The xsize and ysize are updated everytime the background is drawn
+	int xsize = 1024;
+	int ysize = 768;
+};
+
+extern GlobalData globalData;
 
 #endif	/* _GLOBAL_HPP */
 

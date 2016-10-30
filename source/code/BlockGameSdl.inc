@@ -33,19 +33,19 @@ public:
 	
 
 	void DrawImgBoard(const sago::SagoSprite& img, int x, int y) const {
-		DrawIMG(img, screen, x+topx, y+topy);
+		DrawIMG(img, globalData.screen, x+topx, y+topy);
 	}
 
 	void DrawImgBoardBounded(const sago::SagoSprite& img, int x, int y) const {
-		DrawIMG_Bounded(img, screen, x+topx, y+topy, topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight());
+		DrawIMG_Bounded(img, globalData.screen, x+topx, y+topy, topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight());
 	}
 
 	void PrintTextCenteredBoard(int x, int y, const char* text) {
-		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::CENTER, "%s", text);
+		globalData.nf_button_font.draw(globalData.screen, x+topx+60, y+topy+10, NFont::CENTER, "%s", text);
 	}
 	
 	void PrintIntRightAlignedBoard(int x, int y, int number) {
-		nf_button_font.draw(screen, x+topx+60, y+topy+10, NFont::RIGHT, "%d", number);
+		globalData.nf_button_font.draw(globalData.screen, x+topx+60, y+topy+10, NFont::RIGHT, "%d", number);
 	}
 	
 	void SetTopXY(int tx, int ty) {
@@ -105,7 +105,7 @@ public:
 	}
 
 	void PlayerWonEvent() const  override {
-		if (!SoundEnabled) {
+		if (!globalData.SoundEnabled) {
 			return;
 		}
 		Mix_PlayChannel(1, applause, 0);
@@ -116,27 +116,27 @@ public:
 	}
 
 	void BlockPopEvent() const  override {
-		if (!SoundEnabled) {
+		if (!globalData.SoundEnabled) {
 			return;
 		}
 		Mix_PlayChannel(0, boing, 0);
 	}
 
 	void LongChainDoneEvent() const  override {
-		if (!SoundEnabled) {
+		if (!globalData.SoundEnabled) {
 			return;
 		}
 		Mix_PlayChannel(1, applause, 0);
 	}
 
 	void TimeTrialEndEvent() const  override {
-		if (!NoSound && SoundEnabled) {
+		if (!globalData.NoSound && globalData.SoundEnabled) {
 			Mix_PlayChannel(1,counterFinalChunk,0);
 		}
 	}
 
 	void EndlessHighscoreEvent() const  override {
-		if (!SoundEnabled) {
+		if (!globalData.SoundEnabled) {
 			return;
 		}
 		Mix_PlayChannel(1, applause, 0);
@@ -287,12 +287,12 @@ private:
 public:
 	//Draws everything
 	void DoPaintJob() {
-		DrawIMG(boardBackBack,screen,this->GetTopX()-60,this->GetTopY()-68);
+		DrawIMG(boardBackBack,globalData.screen,this->GetTopX()-60,this->GetTopY()-68);
 
-		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
-		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
-		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
-		nf_scoreboard_font.draw(screen, this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
+		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
+		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
+		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
+		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
 		DrawImgBoard(backBoard,  0, 0);
 
 		PaintBricks();
@@ -302,7 +302,7 @@ public:
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = _("Moves left: ") + std::to_string(MovesLeft);
-			nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
+			globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s", strHolder.c_str());
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
@@ -310,7 +310,7 @@ public:
 			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
 			if (getLevel()<PuzzleGetNumberOfPuzzles()-1) {
 				if (hasWonTheGame) {
-					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(globalData.bNext, cordNextButton.x, cordNextButton.y);
 					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
 				}
 				else {
@@ -320,7 +320,7 @@ public:
 			}
 			else {
 				strHolder = "Last puzzle";
-				nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
+				globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
@@ -328,7 +328,7 @@ public:
 			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
 			if (getLevel()<50-1) {
 				if (hasWonTheGame) {
-					DrawImgBoard(bNext,cordNextButton.x, cordNextButton.y);
+					DrawImgBoard(globalData.bNext, cordNextButton.x, cordNextButton.y);
 					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
 				}
 				else {
@@ -338,7 +338,7 @@ public:
 			}
 			else {
 				strHolder = "Last stage";
-				nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
+				globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s",strHolder.c_str());
 			}
 		}
 		if (!bGameOver && stop > 20) {
@@ -349,7 +349,7 @@ public:
 		if (AI_Enabled&&(!bGameOver)) {
 			strHolder = "AI_status: " + std::to_string(AIstatus)+ ", "+ std::to_string(AIlineToClear);
 			//NFont_Write(   5, 5, strHolder.c_str());
-			nf_standard_blue_font.draw(screen, topx+5, topy+5, "%s",strHolder.c_str());
+			globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s",strHolder.c_str());
 		}
 #endif
 		if (!bGameOver) {
@@ -358,7 +358,7 @@ public:
 			int my = 0;
 			this->GetMouseCursor(touched, mx, my);
 			if (touched) {
-				DrawImgBoard(spriteHolder->GetSprite("touchcursor"),mx*bsize, 11*bsize-my*bsize-pixels);
+				DrawImgBoard(globalData.spriteHolder->GetSprite("touchcursor"),mx*bsize, 11*bsize-my*bsize-pixels);
 			}
 			else {
 				DrawImgBoard(cursor,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
@@ -366,7 +366,7 @@ public:
 		}
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
-			if ( (currentCounter!=lastCounter) && (SoundEnabled)&&(!NoSound)) {
+			if ( (currentCounter!=lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
 				Mix_PlayChannel(1,counterChunk,0);
 			}
 			lastCounter = currentCounter;
@@ -385,7 +385,7 @@ public:
 			}
 		}
 		else {
-			if (SoundEnabled&&(!NoSound)&&(timetrial)&&(ticks>gameStartedAt+10000)&&(!bGameOver)) {
+			if (globalData.SoundEnabled&&(!globalData.NoSound)&&(timetrial)&&(ticks>gameStartedAt+10000)&&(!bGameOver)) {
 				int currentCounter = (ticks-(int)gameStartedAt)/1000;
 				if (currentCounter!=lastCounter) {
 					if (currentCounter>115 && currentCounter<120) {
@@ -395,8 +395,8 @@ public:
 				lastCounter = currentCounter;
 			}
 			else {
-				if ( (0==lastCounter) && (SoundEnabled)&&(!NoSound)) {
-					Mix_PlayChannel(1,counterFinalChunk,0);
+				if ( (0==lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
+					Mix_PlayChannel(1, counterFinalChunk, 0);
 				}
 				lastCounter = -1;
 			}
