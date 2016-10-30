@@ -178,8 +178,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.bNext = holder.GetSprite("b_blank");
 	bRetry = holder.GetSprite("b_blank");
 	globalData.mouse = holder.GetSprite("mouse");
-	globalData.menuMarked = holder.GetSprite("menu_marked");
-	globalData.menuUnmarked = holder.GetSprite("menu_unmarked");
 	backBoard = holder.GetSprite("back_board");
 
 	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;

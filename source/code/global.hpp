@@ -42,8 +42,6 @@ void DrawBackground(SDL_Renderer* target);
 void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey);
 
 struct GlobalData {
-	sago::SagoSprite  menuMarked;
-	sago::SagoSprite  menuUnmarked;
 	sago::SagoSprite bHighScore;
 	sago::SagoSprite bBack;
 	sago::SagoSprite bNext;
