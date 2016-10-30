@@ -1163,35 +1163,6 @@ static void StartTwoPlayerVs() {
 	player2->name = player2name;
 }
 
-#ifdef ALLOW_RESIZE
-static void ClampResolution(SDL_Window* win) {
-	int w = 0;
-	int h = 0;
-	bool changed = false;
-	SDL_GetWindowSize(win, &w, &h);
-	if (w < 800) {
-		w = 800;
-		changed = true;
-	}
-	if (w > 1024) {
-		w = 1024;
-		changed = true;
-	}
-	if (h < 600) {
-		h = 600;
-		changed = true;
-	}
-	if (h > 768) {
-		h = 768;
-		changed = true;
-	}
-	if (changed) {
-		SDL_SetWindowSize(win, w, h);
-		cerr << "Changed to " << w << "," << h << "\n"; 
-	}
-}
-#endif
-
 static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
 	game1.SetTopXY(50, 100);
 	game2.SetTopXY(xsize-500,100);
@@ -1460,7 +1431,7 @@ int main(int argc, char* argv[]) {
 		// "Block Attack - Rise of the Blocks"
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 		//Open video
-		int createWindowParams = 0; //SDL_WINDOW_RESIZABLE;
+		int createWindowParams = 0;
 		if (config.allowResize) {
 			createWindowParams |= SDL_WINDOW_RESIZABLE;
 		}
@@ -1560,11 +1531,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		Stats::getInstance()->save();
-
 		Config::getInstance()->save();
-
-
-
 	}
 	catch (exception& e) {
 		sago::SagoFatalError(e.what());
@@ -1710,14 +1677,6 @@ int runGame(Gametype gametype, int level) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
 				}
-#if ALLOW_RESIZE
-				if (event.type == SDL_WINDOWEVENT ) {
-					if (event.window.event == SDL_WINDOWEVENT_RESIZED ) {
-						cout << "Resized\n";
-						ClampResolution(sdlWindow);
-					}
-				}
-#endif
 				
 				if (theGame.isGameOver() && isEscapeEvent(event)) {
 					done = 1;
