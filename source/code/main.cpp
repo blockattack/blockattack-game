@@ -2007,7 +2007,7 @@ int runGame(Gametype gametype, int level) {
 		if (!networkPlay)
 #endif
 			if (twoPlayers) {
-				if ((theGame.isGameOver()) && (theGame2.isGameOver())) {
+				if (theGame.isGameOver() && theGame2.isGameOver() && !theGame.GetIsWinner() && !theGame2.GetIsWinner()  ) {
 					if (theGame.GetScore()+theGame.GetHandicap()>theGame2.GetScore()+theGame2.GetHandicap()) {
 						BlockGameAction a;
 						a.action = BlockGameAction::Action::SET_WON;
