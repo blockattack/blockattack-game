@@ -46,14 +46,12 @@ const char sharedir[] = SHAREDIR;
 //All graphic in the game (as pointers):
 sago::SagoSprite backgroundImage; //Stores the background image
 static sago::SagoSprite backBoard;     //Stores the background to the board
-sago::SagoSprite bBack;         //The "Back" button
 static sago::SagoSprite bForward;      //The "forward" button
 #if NETWORK
 //static sago::SagoSprite bNetwork;
 //static sago::SagoSprite bConnect;
 //static sago::SagoSprite bHost;
 #endif
-sago::SagoSprite bHighScore;    //The High Score botton
 static sago::SagoSprite blackLine;		//The seperator in stage clear
 static sago::SagoSprite stageBobble;	//The bobble instage clear
 SDL_Renderer *screen;        //The whole screen;
@@ -96,18 +94,10 @@ static sago::SagoSprite garbageGMR;
 static sago::SagoSprite transCover;        //The transperant block, covers the upcomming
 static sago::SagoSprite bSkip;
 static sago::SagoSprite bRetry;
-sago::SagoSprite bNext;
 static sago::SagoSprite bExit;
 const int bExitSize = 100;  //height and width of the exit button
 const int bExitOffset = 140; //pixels from the buttom right corner to the top left of the exit button
 
-sago::SagoSprite menuMarked;
-sago::SagoSprite menuUnmarked;
-sago::SagoSprite mouse;
-
-NFont nf_button_font;        //Font used for buttons!
-NFont nf_scoreboard_font;
-NFont nf_standard_blue_font;      //Font used instead of the old blue SFont
 static NFont nf_standard_small_font;
 
 static Mix_Music *bgMusic;         //backgroundMusic
@@ -115,27 +105,17 @@ static Mix_Music *highbeatMusic;   //Background music with higher beat
 static Mix_Chunk *boing;           //boing sound when clearing
 static Mix_Chunk *applause;        //Applause, then the player is good
 static Mix_Chunk *photoClick;      //clickSound
-Mix_Chunk *typingChunk;          //When writing
 static Mix_Chunk *counterChunk;         //When counting down
 static Mix_Chunk *counterFinalChunk;
-
-Highscore theTopScoresEndless;      //Stores highscores for endless
-Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
 
 static bool bMouseUp;              //true if the mouse(1) is unpressed
 static bool bMouseUp2;             //true if the mouse(2) is unpressed
 #if NETWORK
 static bool bNetworkOpen;			//Show the network menu
 #endif
-bool NoSound;				//if true, absolutely no sound will be played, can be set from the commandline
-//prevents crash on systems without a soundcard
-bool MusicEnabled;			//true if background music is enabled
-bool SoundEnabled;			//true if sound effects is enabled
 static bool bNearDeathPrev;                    //Near death status last time checked.
-bool bFullscreen;			//true if game is running fullscreen
 static bool puzzleLoaded;          //true if the puzzle levels have been loaded
 static bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
-bool highPriority;
 
 static bool editorMode = false;
 static bool editorModeTest = false;
@@ -160,13 +140,6 @@ static Uint8 player2handicap=0;
 
 unsigned long int currentTime;      //contains the current time, so we don't call SDL_GetTickets() too often...
 
-int xsize = 1024;
-int ysize = 768;
-
-//Stores the players names (way to long, but at least no buffer overflows (max length is 16 for display reasons))
-std::string player1name;
-std::string player2name;
-
 bool twoPlayers;    //True if two players are playing
 
 //Old Stage Clear Buble
@@ -183,7 +156,6 @@ unsigned long int Frames, Ticks;
 char FPS[10];
 #endif
 
-int verboseLevel = 0;
 
 //keySetup
 const int player1keys = 0;

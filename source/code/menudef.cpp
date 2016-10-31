@@ -54,7 +54,7 @@ extern control keySettings[3];
 //Function to return the name of a key, to be displayed...
 static string getKeyName(SDL_Keycode key) {
 	string keyname(SDL_GetKeyName(key));
-	if (verboseLevel) {
+	if (globalData.verboseLevel) {
 		cout << key << " translated to " << keyname << "\n";
 	}
 	return keyname;
@@ -96,7 +96,7 @@ void Button_changekey::doAction() {
 
 void InitMenues() {
 	standardButton.setSurfaces();
-	standardButton.thefont = &nf_scoreboard_font;
+	standardButton.thefont = &globalData.nf_button_font;
 }
 
 static void runSinglePlayerEndless() {
@@ -131,35 +131,35 @@ static void runTwoPlayerVs() {
 
 class MusicButton : public Button {
 	virtual void doAction() override {
-		MusicEnabled = !MusicEnabled;
-		setLabel(MusicEnabled? _("Music: On") : _("Music: Off"));
+		globalData.MusicEnabled = !globalData.MusicEnabled;
+		setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off"));
 	}
 
 };
 
 class SoundButton : public Button {
 	virtual void doAction() override {
-		SoundEnabled = !SoundEnabled;
-		setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
+		globalData.SoundEnabled = !globalData.SoundEnabled;
+		setLabel(globalData.SoundEnabled? _("Sound: On") : _("Sound: Off") );
 	}
 };
 
 class FullscreenButton : public Button {
 	virtual void doAction() override {
-		bFullscreen = !bFullscreen;
-		setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
+		globalData.bFullscreen = !globalData.bFullscreen;
+		setLabel(globalData.bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
 		ResetFullscreen();
 	}
 };
 
 static void buttonActionPlayer1Name() {
-	if ( OpenDialogbox(200, 100, player1name, _("Enter player 1 name:")) ) {
+	if ( OpenDialogbox(200, 100, globalData.player1name, _("Enter player 1 name:")) ) {
 		return;    //must save if true
 	}
 }
 
 static void buttonActionPlayer2Name() {
-	if ( OpenDialogbox(200, 100, player2name, _("Enter player 2 name:")) ) {
+	if ( OpenDialogbox(200, 100, globalData.player2name, _("Enter player 2 name:")) ) {
 		return;    //must save if true
 	}
 }
@@ -169,7 +169,7 @@ static void buttonActionHighscores() {
 }
 
 static void ChangeKeysMenu(long playernumber) {
-	Menu km(screen,_("Change key bindings"),true);
+	Menu km(globalData.screen,_("Change key bindings"),true);
 	Button_changekey bLeft(&keySettings[playernumber].left,_("Left") );
 	Button_changekey bRight(&keySettings[playernumber].right,_("Right") );
 	Button_changekey bUp(&keySettings[playernumber].up,_("Up") );
@@ -194,15 +194,15 @@ static void ChangeKeysMenu2() {
 }
 
 static void ConfigureMenu() {
-	Menu cm(screen,_("Configuration"),true);
+	Menu cm(globalData.screen,_("Configuration"),true);
 	Button bPlayer1Name,bPlayer2Name;
 	Button bPlayer1Keys, bPlayer2Keys;
 	MusicButton bMusic;
 	SoundButton bSound;
 	FullscreenButton buttonFullscreen;
-	bMusic.setLabel(MusicEnabled? _("Music: On") : _("Music: Off") );
-	bSound.setLabel(SoundEnabled? _("Sound: On") : _("Sound: Off") );
-	buttonFullscreen.setLabel(bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
+	bMusic.setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off") );
+	bSound.setLabel(globalData.SoundEnabled? _("Sound: On") : _("Sound: Off") );
+	buttonFullscreen.setLabel(globalData.bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
 	bPlayer1Name.setAction(buttonActionPlayer1Name);
 	bPlayer1Name.setLabel(_("Change player 1's name") );
 	bPlayer2Name.setAction(buttonActionPlayer2Name);
@@ -222,7 +222,7 @@ static void ConfigureMenu() {
 }
 
 static void SinglePlayerVsMenu() {
-	Menu spvs(screen,_("Single player VS"),true);
+	Menu spvs(globalData.screen,_("Single player VS"),true);
 	RunSinglePlayerVsButton d1,d2,d3,d4,d5,d6,d7;
 	d1.setPopOnRun(true);
 	d2.setPopOnRun(true);
@@ -256,7 +256,7 @@ static void SinglePlayerVsMenu() {
 }
 
 static void MultiplayerMenu() {
-	Menu mm(screen,_("Multiplayer"),true);
+	Menu mm(globalData.screen,_("Multiplayer"),true);
 	Button bTT, bVs;
 	bTT.setLabel(_("Two player - time trial"));
 	bTT.setAction(runTwoPlayerTimeTrial);
@@ -269,7 +269,7 @@ static void MultiplayerMenu() {
 
 void MainMenu() {
 	InitMenues();
-	Menu m(screen,_("Block Attack - Rise of the blocks"),false);
+	Menu m(globalData.screen,_("Block Attack - Rise of the blocks"),false);
 	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bMulti, bConfigure,bHighscore;
 	bHi.setLabel(_("Single player - endless") );
 	bHi.setAction(runSinglePlayerEndless);

@@ -27,18 +27,18 @@ http://www.blockattack.net
 #include "ReadKeyboard.h"
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& text) {
-	nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
+	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
 }
 
 static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
 	const int size = 32;
 	SDL_Rect bounds_ns = {topx, topy+size, width, height-2*size};  //bounds for south
 	SDL_Rect bounds_e = {topx, topy, width-size, height};
-	const sago::SagoSprite& n = spriteHolder->GetSprite(name+"n");
-	const sago::SagoSprite& s = spriteHolder->GetSprite(name+"s");
-	const sago::SagoSprite& e = spriteHolder->GetSprite(name+"e");
-	const sago::SagoSprite& w = spriteHolder->GetSprite(name+"w");
-	const sago::SagoSprite& fill = spriteHolder->GetSprite(name+"fill");
+	const sago::SagoSprite& n = globalData.spriteHolder->GetSprite(name+"n");
+	const sago::SagoSprite& s = globalData.spriteHolder->GetSprite(name+"s");
+	const sago::SagoSprite& e = globalData.spriteHolder->GetSprite(name+"e");
+	const sago::SagoSprite& w = globalData.spriteHolder->GetSprite(name+"w");
+	const sago::SagoSprite& fill = globalData.spriteHolder->GetSprite(name+"fill");
 	for (int i = 1; i < width/size; ++i) {
 		n.DrawBounded(target, SDL_GetTicks(), topx+i*size, topy, bounds_e);
 		for (int j = 1; j < height/size; ++j) {
@@ -49,10 +49,10 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 		s.DrawBounded(target, SDL_GetTicks(), topx+i*size, topy+height-size, bounds_e);
 	}
 	//Corners
-	const sago::SagoSprite& nw = spriteHolder->GetSprite(name+"nw");
-	const sago::SagoSprite& ne = spriteHolder->GetSprite(name+"ne");
-	const sago::SagoSprite& se = spriteHolder->GetSprite(name+"se");
-	const sago::SagoSprite& sw = spriteHolder->GetSprite(name+"sw");
+	const sago::SagoSprite& nw = globalData.spriteHolder->GetSprite(name+"nw");
+	const sago::SagoSprite& ne = globalData.spriteHolder->GetSprite(name+"ne");
+	const sago::SagoSprite& se = globalData.spriteHolder->GetSprite(name+"se");
+	const sago::SagoSprite& sw = globalData.spriteHolder->GetSprite(name+"sw");
 	nw.Draw(target, SDL_GetTicks(), topx, topy);
 	ne.Draw(target, SDL_GetTicks(), topx+width-size, topy);
 	se.Draw(target, SDL_GetTicks(), topx+width-size, topy+height-size);
@@ -95,27 +95,27 @@ bool DialogBox::IsActive() {
 
 
 void DialogBox::Draw(SDL_Renderer* target) {
-	DrawBackground(screen);
-	this->x = xsize/2-300;
-	this->y = ysize/2-100;
+	DrawBackground(globalData.screen);
+	this->x = globalData.xsize/2-300;
+	this->y = globalData.ysize/2-100;
 	DrawRectYellow(target, x, y, 200, 600);
-	nf_button_font.draw(target, x+300, y+20, NFont::CENTER, "%s", header.c_str());
-	nf_button_font.draw(target, x+150, y+140, NFont::CENTER, _("Enter to accept"));
-	nf_button_font.draw(target, x+450, y+140, NFont::CENTER, _("Esc to cancel"));
+	globalData.nf_button_font.draw(target, x+300, y+20, NFont::CENTER, "%s", header.c_str());
+	globalData.nf_button_font.draw(target, x+150, y+140, NFont::CENTER, _("Enter to accept"));
+	globalData.nf_button_font.draw(target, x+450, y+140, NFont::CENTER, _("Esc to cancel"));
 	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
 	NFont_Write(target, x+40, y+76,rk->GetString());
 	std::string strHolder = rk->GetString();
 	strHolder.erase((int)rk->CharsBeforeCursor());
 
 	if (((SDL_GetTicks()/600)%2)==1) {
-		NFont_Write(target, x+40+nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
+		NFont_Write(target, x+40+globalData.nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
 	}
 }
 
 void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 	if (event.type == SDL_TEXTINPUT) {
-		if ((rk->ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
-			Mix_PlayChannel(1, typingChunk, 0);
+		if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
+			Mix_PlayChannel(1, globalData.typingChunk, 0);
 		}
 	}
 
@@ -129,8 +129,8 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			isActive = false;
 		}
 		else {
-			if ((rk->ReadKey(event))&&(SoundEnabled)&&(!NoSound)) {
-				Mix_PlayChannel(1,typingChunk,0);
+			if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
+				Mix_PlayChannel(1, globalData.typingChunk, 0);
 			}
 		}
 	}
