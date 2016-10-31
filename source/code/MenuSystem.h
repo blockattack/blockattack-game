@@ -30,6 +30,7 @@ http://blockattack.net
 #include <vector>
 #include "Libs/NFont.h"
 #include "sago/SagoSprite.hpp"
+#include "sago/GameStateInterface.hpp"
 #include <memory>
 
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
@@ -83,7 +84,7 @@ public:
 };
 
 
-class Menu
+class Menu : public sago::GameStateInterface
 {
 private:
 	std::vector<Button*> buttons; //Vector holder the buttons
@@ -101,12 +102,17 @@ public:
 	Menu(SDL_Renderer *screen,bool isSubmenu);
 	Menu(SDL_Renderer *screen);
 	Menu(SDL_Renderer *screen, const std::string& title, bool isSubmenu);
-
+	virtual ~Menu() {}
+	
 	//Add a button to the menu
 	void addButton(Button *b);
 
 	//Run the menu
 	void run();
+	
+	bool IsActive() override;
+	void Draw(SDL_Renderer* target) override;
+	void ProcessInput(const SDL_Event& event, bool &processed) override;
 };
 
 class FileMenu

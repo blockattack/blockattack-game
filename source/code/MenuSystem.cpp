@@ -295,6 +295,53 @@ bool isConfirmEvent(const SDL_Event& event) {
 	return false;
 }
 
+
+bool Menu::IsActive() {
+	return running;
+}
+void Menu::Draw(SDL_Renderer* target) {
+	placeButtons();
+	drawSelf();
+	SDL_RenderPresent(target);
+}
+void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
+	if ( event.type == SDL_QUIT ) {
+		Config::getInstance()->setShuttingDown(5);
+		running = false;
+		processed = true;
+	}
+
+	if (isUpEvent(event)) {
+		marked--;
+		if (marked<0) {
+			marked = buttons.size();    //not -1, since exit is after the last element in the list
+		}
+	}
+
+	if (isDownEvent(event)) {
+		marked++;
+		if (marked> (int)buttons.size()) {
+			marked = 0;
+		}
+	}
+
+	if (isEscapeEvent(event) && isSubmenu) {
+		running = false;
+	}
+
+	if (isConfirmEvent(event)) {
+		if (marked < (int)buttons.size()) {
+			buttons.at(marked)->doAction();
+			if (buttons.at(marked)->isPopOnRun()) {
+				running = false;
+			}
+		}
+		if (marked == (int)buttons.size()) {
+			running = false;
+		}
+	}
+}
+
 void Menu::run() {
 	running = true;
 	bool bMouseUp = false;
