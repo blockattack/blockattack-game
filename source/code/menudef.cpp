@@ -182,7 +182,7 @@ static void ChangeKeysMenu(long playernumber) {
 	km.addButton(&bDown);
 	km.addButton(&bPush);
 	km.addButton(&bSwitch);
-	km.run();
+	RunGameState(km);
 }
 
 static void ChangeKeysMenu1() {
@@ -218,7 +218,7 @@ static void ConfigureMenu() {
 	cm.addButton(&bPlayer2Name);
 	cm.addButton(&bPlayer1Keys);
 	cm.addButton(&bPlayer2Keys);
-	cm.run();
+	RunGameState(cm);
 }
 
 static void SinglePlayerVsMenu() {
@@ -252,7 +252,7 @@ static void SinglePlayerVsMenu() {
 	spvs.addButton(&d5);
 	spvs.addButton(&d6);
 	spvs.addButton(&d7);
-	spvs.run();
+	RunGameState(spvs);
 }
 
 static void MultiplayerMenu() {
@@ -264,7 +264,7 @@ static void MultiplayerMenu() {
 	bVs.setAction(runTwoPlayerVs);
 	mm.addButton(&bTT);
 	mm.addButton(&bVs);
-	mm.run();
+	RunGameState(mm);
 }
 
 void MainMenu() {

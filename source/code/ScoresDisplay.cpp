@@ -170,7 +170,7 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 
-	UpdateMouseCoordinates(event, mousex, mousey);
+	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 	
 	if (isLeftEvent(event)) {
 		page++;
@@ -204,12 +204,12 @@ void ScoresDisplay::Update() {
 		bMouseUp = false;
 
 		//The Score button:
-		if ((mousex>scoreX) && (mousex<scoreX+buttonXsize) && (mousey>scoreY) && (mousey<scoreY+buttonYsize)) {
+		if ((globalData.mousex>scoreX) && (globalData.mousex<scoreX+buttonXsize) && (globalData.mousey>scoreY) && (globalData.mousey<scoreY+buttonYsize)) {
 			isActive = false;
 		}
 
 		//The back button:
-		if ((mousex>backX) && (mousex<backX+buttonXsize) && (mousey>backY) && (mousey<backY+buttonYsize)) {
+		if ((globalData.mousex>backX) && (globalData.mousex<backX+buttonXsize) && (globalData.mousey>backY) && (globalData.mousey<backY+buttonYsize)) {
 			page--;
 			if (page<0) {
 				page = numberOfPages-1;
@@ -217,7 +217,7 @@ void ScoresDisplay::Update() {
 		}
 
 		//The next button:
-		if ((mousex>nextX) && (mousex<nextX+buttonXsize) && (mousey>nextY) && (mousey<nextY+buttonYsize)) {
+		if ((globalData.mousex>nextX) && (globalData.mousex<nextX+buttonXsize) && (globalData.mousey>nextY) && (globalData.mousey<nextY+buttonYsize)) {
 			page++;
 			if (page>=numberOfPages) {
 				page = 0;

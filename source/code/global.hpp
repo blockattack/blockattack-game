@@ -66,6 +66,8 @@ struct GlobalData {
 	//The xsize and ysize are updated everytime the background is drawn
 	int xsize = 1024;
 	int ysize = 768;
+	int mousex = 0;
+	int mousey = 0;
 };
 
 extern GlobalData globalData;

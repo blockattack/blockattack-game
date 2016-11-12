@@ -28,8 +28,8 @@ http://www.blockattack.net
 #include "gamecontroller.h"
 #include "BlockGame.hpp"
 
-static int mousex;
-static int mousey;
+static int oldmousex = 0;
+static int oldmousey = 0;
 
 using std::string;
 using std::cerr;
@@ -116,7 +116,6 @@ void Menu::drawSelf(SDL_Renderer* target) {
 	}
 	drawToScreen(exit);
 	standardButton.thefont->draw(target, 50, 50, "%s", title.c_str());
-	globalData.mouse.Draw(target, SDL_GetTicks(), mousex, mousey);
 }
 
 
@@ -304,7 +303,7 @@ void Menu::Draw(SDL_Renderer* target) {
 	drawSelf(target);
 }
 void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
-	UpdateMouseCoordinates(event, mousex, mousey);
+	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 	if ( event.type == SDL_QUIT ) {
 		Config::getInstance()->setShuttingDown(5);
 		running = false;
@@ -353,50 +352,34 @@ void Menu::Update() {
 		bMouseUp=true;
 	}
 
-	if (abs(mousex-oldmousex)>5 || abs(mousey-oldmousey)>5) {
+	if (abs(globalData.mousex-oldmousex)>5 || abs(globalData.mousey-oldmousey)>5) {
 		for (int i=0; i< (int)buttons.size(); ++i) {
-			if (isClicked(*buttons.at(i),mousex,mousey)) {
+			if (isClicked(*buttons.at(i), globalData.mousex, globalData.mousey)) {
 				marked = i;
 			}
 		}
-		if (isClicked(exit, mousex, mousey)) {
+		if (isClicked(exit, globalData.mousex, globalData.mousey)) {
 			marked = buttons.size();
 		}
-		oldmousex = mousex;
-		oldmousey = mousey;
+		oldmousex = globalData.mousex;
+		oldmousey = globalData.mousey;
 	}
 
 	//mouse clicked
 	if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
 		for (int i=0; i< (int)buttons.size(); ++i) {
-			if (isClicked(*buttons.at(i),mousex,mousey)) {
+			if (isClicked(*buttons.at(i), globalData.mousex, globalData.mousey)) {
 				buttons.at(i)->doAction();
 				if (buttons.at(i)->isPopOnRun()) {
 					running = false;
 				}
-				mousex = 0;
+				globalData.mousex = 0;
 			}
 		}
-		if (isClicked(exit, mousex, mousey)) {
+		if (isClicked(exit,  globalData.mousex, globalData.mousey)) {
 			running = false;
 		}
 	}
 }
 
-void Menu::run() {
-	running = true;
-	while (running && !Config::getInstance()->isShuttingDown()) {
-		if (!(globalData.highPriority)) {
-			SDL_Delay(10);
-		}
-		SDL_Event event;
-		bool processed = false;
-		while ( SDL_PollEvent(&event) ) {
-			ProcessInput(event,processed);
-		}
-		Update();
-		Draw(screen);
-		SDL_RenderPresent(screen);
-	}
-}

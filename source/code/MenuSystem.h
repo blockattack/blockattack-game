@@ -96,8 +96,6 @@ private:
 	std::string title;
 	void drawSelf(SDL_Renderer* target);        //Private function to draw the screen
 	void placeButtons(); //Rearanges the buttons to the correct place.
-	int oldmousex = 0;
-	int oldmousey = 0;
 	bool bMouseUp = false;
 public:
 	//numberOfItems is the expected numberOfItems for vector initialization
@@ -109,9 +107,6 @@ public:
 	
 	//Add a button to the menu
 	void addButton(Button *b);
-
-	//Run the menu
-	void run();
 	
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;

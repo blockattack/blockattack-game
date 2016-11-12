@@ -611,7 +611,6 @@ static string getKeyName(SDL_Keycode key) {
 
 
 void RunGameState(sago::GameStateInterface& state ) {
-	int mousex,mousey;
 	bool done = false;     //We are done!
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		state.Draw(globalData.screen);
@@ -622,7 +621,7 @@ void RunGameState(sago::GameStateInterface& state ) {
 		bool mustWriteScreenshot = false;
 
 		while ( SDL_PollEvent(&event) ) {
-			UpdateMouseCoordinates(event, mousex, mousey);
+			UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
@@ -639,7 +638,7 @@ void RunGameState(sago::GameStateInterface& state ) {
 
 		state.Update();
 
-		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), mousex, mousey);
+		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), globalData.mousex, globalData.mousey);
 		SDL_RenderPresent(globalData.screen);
 		if (mustWriteScreenshot) {
 			writeScreenShot();
@@ -886,7 +885,6 @@ int PuzzleLevelSelect(int Type) {
 	const int xplace = 200;
 	const int yplace = 300;
 	int levelNr = 0;
-	int mousex, mousey;
 	int oldmousex = 0;
 	int oldmousey = 0;
 	bool levelSelected = false;
@@ -934,7 +932,7 @@ int PuzzleLevelSelect(int Type) {
 
 		SDL_Event event;
 		while ( SDL_PollEvent(&event) ) {
-			UpdateMouseCoordinates(event, mousex, mousey);
+			UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 			
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
@@ -977,25 +975,25 @@ int PuzzleLevelSelect(int Type) {
 
 		SDL_GetKeyboardState(nullptr);
 
-		if (mousex != oldmousex || mousey != oldmousey) {
+		if (globalData.mousex != oldmousex || globalData.mousey != oldmousey) {
 			int tmpSelected = -1;
 			int j;
 			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++) {
-				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92)) {
+				if ((60+j*50<globalData.mousey-yplace)&&(globalData.mousey-yplace<j*50+92)) {
 					tmpSelected = j*10;
 				}
 			}
 			if (tmpSelected != -1) {
 				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++) {
-					if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42)) {
+					if ((10+k*50<globalData.mousex-xplace)&&(globalData.mousex-xplace<k*50+42)) {
 						tmpSelected +=k;
 						selected = tmpSelected;
 					}
 				}
 			}
 		}
-		oldmousey = mousey;
-		oldmousex= mousex;
+		oldmousey = globalData.mousey;
+		oldmousex= globalData.mousex;
 
 		// If the mouse button is released, make bMouseUp equal true
 		if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
@@ -1008,13 +1006,13 @@ int PuzzleLevelSelect(int Type) {
 			int levelClicked = -1;
 			int i;
 			for (i = 0; (i<nrOfLevels/10)||((i<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)); i++)
-				if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92)) {
+				if ((60+i*50<globalData.mousey-yplace)&&(globalData.mousey-yplace<i*50+92)) {
 					levelClicked = i*10;
 				}
 			i++;
 			if (levelClicked != -1)
 				for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
-					if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42)) {
+					if ((10+j*50<globalData.mousex-xplace)&&(globalData.mousex-xplace<j*50+42)) {
 						levelClicked +=j;
 						levelSelected = true;
 						levelNr = levelClicked;
@@ -1035,7 +1033,7 @@ int PuzzleLevelSelect(int Type) {
 			NFont_Write(globalData.screen, 200,600,totalString.c_str());
 		}
 
-		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), mousex, mousey);
+		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), globalData.mousex, globalData.mousey);
 		SDL_RenderPresent(globalData.screen); //draws it all to the screen
 
 	}
