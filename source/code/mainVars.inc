@@ -70,10 +70,7 @@ static sago::SagoSprite counter[3];    //Counts down from 3
 static sago::SagoSprite bricks[7];     //The bricks, saved in an array of pointers
 static sago::SagoSprite crossover;     //Cross the bricks that will be cleared soon
 static sago::SagoSprite balls[7];      //The balls (the small ones that jump around)
-static sago::SagoSprite iLevelCheck;		//To the level select screen
-static sago::SagoSprite iLevelCheckBox;
-static sago::SagoSprite iLevelCheckBoxMarked;
-static sago::SagoSprite iCheckBoxArea;
+
 static sago::SagoSprite boardBackBack;
 static sago::SagoSprite garbageTL;			//the Garbage Blocks
 static sago::SagoSprite garbageT;

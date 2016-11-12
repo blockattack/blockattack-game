@@ -45,6 +45,10 @@ struct GlobalData {
 	sago::SagoSprite bHighScore;
 	sago::SagoSprite bBack;
 	sago::SagoSprite bNext;
+	sago::SagoSprite iLevelCheck;		//To the level select screen
+	sago::SagoSprite iLevelCheckBox;
+	sago::SagoSprite iLevelCheckBoxMarked;
+	sago::SagoSprite iCheckBoxArea;
 	NFont nf_scoreboard_font;
 	NFont nf_standard_blue_font;
 	NFont nf_button_font;

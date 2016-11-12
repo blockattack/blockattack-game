@@ -73,6 +73,7 @@ http://www.blockattack.net
 #include "gamecontroller.h"
 #include <boost/program_options.hpp>
 #include <fstream>
+#include "levelselect.hpp"
 
 /*******************************************************************************
 * All variables and constant has been moved to mainVars.inc for the overview.  *
@@ -148,10 +149,10 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	iDraw = holder.GetSprite("i_draw");
 	iLoser = holder.GetSprite("i_loser");
 	iChainFrame = holder.GetSprite("chain_frame");
-	iLevelCheck = holder.GetSprite("i_level_check");
-	iLevelCheckBox = holder.GetSprite("i_level_check_box");
-	iLevelCheckBoxMarked = holder.GetSprite("i_level_check_box_marked");
-	iCheckBoxArea = holder.GetSprite("i_check_box_area");
+	globalData.iLevelCheck = holder.GetSprite("i_level_check");
+	globalData.iLevelCheckBox = holder.GetSprite("i_level_check_box");
+	globalData.iLevelCheckBoxMarked = holder.GetSprite("i_level_check_box_marked");
+	globalData.iCheckBoxArea = holder.GetSprite("i_check_box_area");
 	boardBackBack = holder.GetSprite("board_back_back");
 	garbageTL = holder.GetSprite("garbage_tl");
 	garbageT = holder.GetSprite("garbage_t");
@@ -878,167 +879,6 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 
 	globalData.nf_standard_blue_font.draw(globalData.screen, 800, 4, "%s", FPS);
 #endif
-}
-
-//The function that allows the player to choose PuzzleLevel
-int PuzzleLevelSelect(int Type) {
-	const int xplace = 200;
-	const int yplace = 300;
-	int levelNr = 0;
-	int oldmousex = 0;
-	int oldmousey = 0;
-	bool levelSelected = false;
-	int nrOfLevels = 0;
-	Uint32 totalScore = 0;
-	Uint32 totalTime = 0;
-	int selected = 0;
-
-	//Loads the levels, if they havn't been loaded:
-	if (Type == 0) {
-		LoadPuzzleStages();
-	}
-	if (Type == 0) {
-		nrOfLevels = PuzzleGetNumberOfPuzzles();
-	}
-	if (Type == 1) {
-		LoadStageClearStages();
-		totalScore = GetTotalScore();
-		totalTime = GetTotalTime();
-		nrOfLevels = GetNrOfLevels();
-	}
-
-	while (!levelSelected) {
-		DrawBackground(globalData.screen);
-		DrawIMG(iCheckBoxArea,globalData.screen,xplace,yplace);
-		if (Type == 0) {
-			NFont_Write(globalData.screen, xplace+12,yplace+2,_("Select Puzzle") );
-		}
-		if (Type == 1) {
-			NFont_Write(globalData.screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
-		}
-		//Now drow the fields you click in (and a V if clicked):
-		for (int i = 0; i < nrOfLevels; i++) {
-			DrawIMG(iLevelCheckBox,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-			if (i==selected) {
-				DrawIMG(iLevelCheckBoxMarked,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-			}
-			if (Type == 0 && PuzzleIsCleared(i)) {
-				DrawIMG(iLevelCheck,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-			}
-			if (Type == 1 && IsStageCleared(i)) {
-				DrawIMG(iLevelCheck,globalData.screen,xplace+10+(i%10)*50, yplace+60+(i/10)*50);
-			}
-		}
-
-		SDL_Event event;
-		while ( SDL_PollEvent(&event) ) {
-			UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-			
-			if ( event.type == SDL_QUIT ) {
-				Config::getInstance()->setShuttingDown(5);
-				levelNr = -1;
-				levelSelected = true;
-			}
-			if (isEscapeEvent(event)) {
-				levelNr = -1;
-				levelSelected = true;
-			}
-			if (isConfirmEvent(event)) {
-				levelNr = selected;
-				levelSelected = true;
-			}
-			if (isRightEvent(event)) {
-				++selected;
-				if (selected >= nrOfLevels) {
-					selected = 0;
-				}
-			}
-			if (isLeftEvent(event)) {
-				--selected;
-				if (selected < 0) {
-					selected = nrOfLevels-1;
-				}
-			}
-			if (isDownEvent(event)) {
-				selected+=10;
-				if (selected >= nrOfLevels) {
-					selected-=10;
-				}
-			}
-			if (isUpEvent(event)) {
-				selected-=10;
-				if (selected < 0) {
-					selected+=10;
-				}
-			}
-		}
-
-		SDL_GetKeyboardState(nullptr);
-
-		if (globalData.mousex != oldmousex || globalData.mousey != oldmousey) {
-			int tmpSelected = -1;
-			int j;
-			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++) {
-				if ((60+j*50<globalData.mousey-yplace)&&(globalData.mousey-yplace<j*50+92)) {
-					tmpSelected = j*10;
-				}
-			}
-			if (tmpSelected != -1) {
-				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++) {
-					if ((10+k*50<globalData.mousex-xplace)&&(globalData.mousex-xplace<k*50+42)) {
-						tmpSelected +=k;
-						selected = tmpSelected;
-					}
-				}
-			}
-		}
-		oldmousey = globalData.mousey;
-		oldmousex= globalData.mousex;
-
-		// If the mouse button is released, make bMouseUp equal true
-		if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
-			bMouseUp=true;
-		}
-
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-			bMouseUp = false;
-
-			int levelClicked = -1;
-			int i;
-			for (i = 0; (i<nrOfLevels/10)||((i<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)); i++)
-				if ((60+i*50<globalData.mousey-yplace)&&(globalData.mousey-yplace<i*50+92)) {
-					levelClicked = i*10;
-				}
-			i++;
-			if (levelClicked != -1)
-				for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
-					if ((10+j*50<globalData.mousex-xplace)&&(globalData.mousex-xplace<j*50+42)) {
-						levelClicked +=j;
-						levelSelected = true;
-						levelNr = levelClicked;
-					}
-		}
-
-		if (Type == 1) {
-			string scoreString = SPrintStringF(_("Best score: %i"), GetStageScores(selected)) ;
-			string timeString = SPrintStringF(_("Time used: %s"),"-- : --");
-
-			if (GetStageTime(selected)>0) {
-				timeString = SPrintStringF(_("Time used: %d : %02d"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
-			}
-
-			NFont_Write(globalData.screen, 200,200,scoreString.c_str());
-			NFont_Write(globalData.screen, 200,250,timeString.c_str());
-			string totalString = (boost::format(_("Total score: %1% in %2%:%3%"))%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str();
-			NFont_Write(globalData.screen, 200,600,totalString.c_str());
-		}
-
-		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), globalData.mousex, globalData.mousey);
-		SDL_RenderPresent(globalData.screen); //draws it all to the screen
-
-	}
-	DrawBackground(globalData.screen);
-	return levelNr;
 }
 
 static BlockGameSdl* player1;
