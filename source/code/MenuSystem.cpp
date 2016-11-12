@@ -305,6 +305,7 @@ void Menu::Draw(SDL_Renderer* target) {
 	SDL_RenderPresent(target);
 }
 void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
+	UpdateMouseCoordinates(event, mousex, mousey);
 	if ( event.type == SDL_QUIT ) {
 		Config::getInstance()->setShuttingDown(5);
 		running = false;
@@ -342,96 +343,60 @@ void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
 	}
 }
 
+void Menu::Update() {
+	for (int i=0; i<(int)buttons.size(); i++) {
+		buttons.at(i)->marked = (i == marked);
+	}
+	exit.marked = (marked == (int)buttons.size());
+	Uint8 buttonState = SDL_GetMouseState(nullptr,nullptr);
+	// If the mouse button is released, make bMouseUp equal true
+	if ( (buttonState&SDL_BUTTON(1))==0) {
+		bMouseUp=true;
+	}
+
+	if (abs(mousex-oldmousex)>5 || abs(mousey-oldmousey)>5) {
+		for (int i=0; i< (int)buttons.size(); ++i) {
+			if (isClicked(*buttons.at(i),mousex,mousey)) {
+				marked = i;
+			}
+		}
+		if (isClicked(exit, mousex, mousey)) {
+			marked = buttons.size();
+		}
+		oldmousex = mousex;
+		oldmousey = mousey;
+	}
+
+	//mouse clicked
+	if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
+		bMouseUp = false;
+		for (int i=0; i< (int)buttons.size(); ++i) {
+			if (isClicked(*buttons.at(i),mousex,mousey)) {
+				buttons.at(i)->doAction();
+				if (buttons.at(i)->isPopOnRun()) {
+					running = false;
+				}
+				mousex = 0;
+			}
+		}
+		if (isClicked(exit, mousex, mousey)) {
+			running = false;
+		}
+	}
+}
+
 void Menu::run() {
 	running = true;
-	bool bMouseUp = false;
-	int oldmousex = mousex;
-	int oldmousey = mousey;
 	while (running && !Config::getInstance()->isShuttingDown()) {
 		if (!(globalData.highPriority)) {
 			SDL_Delay(10);
 		}
 		SDL_Event event;
+		bool processed = false;
 		while ( SDL_PollEvent(&event) ) {
-			UpdateMouseCoordinates(event, mousex, mousey);
-			if ( event.type == SDL_QUIT ) {
-				Config::getInstance()->setShuttingDown(5);
-				running = false;
-			}
-
-			if (isUpEvent(event)) {
-				marked--;
-				if (marked<0) {
-					marked = buttons.size();    //not -1, since exit is after the last element in the list
-				}
-			}
-
-			if (isDownEvent(event)) {
-				marked++;
-				if (marked> (int)buttons.size()) {
-					marked = 0;
-				}
-			}
-
-			if (isEscapeEvent(event) && isSubmenu) {
-				running = false;
-			}
-
-			if (isConfirmEvent(event)) {
-				if (marked < (int)buttons.size()) {
-					buttons.at(marked)->doAction();
-					if (buttons.at(marked)->isPopOnRun()) {
-						running = false;
-					}
-				}
-				if (marked == (int)buttons.size()) {
-					running = false;
-				}
-			}
-
+			ProcessInput(event,processed);
 		}
-
-		for (int i=0; i<(int)buttons.size(); i++) {
-			buttons.at(i)->marked = (i == marked);
-		}
-		exit.marked = (marked == (int)buttons.size());
-		Uint8 buttonState = SDL_GetMouseState(nullptr,nullptr);
-		// If the mouse button is released, make bMouseUp equal true
-		if ( (buttonState&SDL_BUTTON(1))==0) {
-			bMouseUp=true;
-		}
-
-		if (abs(mousex-oldmousex)>5 || abs(mousey-oldmousey)>5) {
-			for (int i=0; i< (int)buttons.size(); ++i) {
-				if (isClicked(*buttons.at(i),mousex,mousey)) {
-					marked = i;
-				}
-			}
-			if (isClicked(exit, mousex, mousey)) {
-				marked = buttons.size();
-			}
-			oldmousex = mousex;
-			oldmousey = mousey;
-		}
-
-		//mouse clicked
-		if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
-			bMouseUp = false;
-			for (int i=0; i< (int)buttons.size(); ++i) {
-				if (isClicked(*buttons.at(i),mousex,mousey)) {
-					buttons.at(i)->doAction();
-					if (buttons.at(i)->isPopOnRun()) {
-						running = false;
-					}
-					mousex = 0;
-				}
-			}
-			if (isClicked(exit, mousex, mousey)) {
-				running = false;
-			}
-		}
-		placeButtons();
-		drawSelf();
-		SDL_RenderPresent(screen);
+		Update();
+		Draw(screen);
 	}
 }

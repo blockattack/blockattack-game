@@ -96,6 +96,9 @@ private:
 	std::string title;
 	void drawSelf();        //Private function to draw the screen
 	void placeButtons(); //Rearanges the buttons to the correct place.
+	int oldmousex = 0;
+	int oldmousey = 0;
+	bool bMouseUp = false;
 public:
 	//numberOfItems is the expected numberOfItems for vector initialization
 	//SubMenu is true by default
@@ -113,6 +116,7 @@ public:
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
+	void Update() override;
 };
 
 class FileMenu
