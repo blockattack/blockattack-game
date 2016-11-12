@@ -94,7 +94,7 @@ private:
 	bool running = true; //The menu is running. The menu will terminate then this is false
 	SDL_Renderer *screen = nullptr; //Pointer to the screen to draw to
 	std::string title;
-	void drawSelf();        //Private function to draw the screen
+	void drawSelf(SDL_Renderer* target);        //Private function to draw the screen
 	void placeButtons(); //Rearanges the buttons to the correct place.
 	int oldmousex = 0;
 	int oldmousey = 0;

@@ -295,5 +295,5 @@ void MainMenu() {
 	m.addButton(&bMulti);
 	m.addButton(&bConfigure);
 	m.addButton(&bHighscore);
-	m.run();
+	RunGameState(m);
 }

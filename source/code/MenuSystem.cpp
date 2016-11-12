@@ -109,14 +109,14 @@ static bool isClicked(const Button &b, int x,int y) {
 	return false;
 }
 
-void Menu::drawSelf() {
-	DrawBackground(screen);
+void Menu::drawSelf(SDL_Renderer* target) {
+	DrawBackground(target);
 	for (const Button* b : buttons) {
 		drawToScreen(*b);
 	}
 	drawToScreen(exit);
-	standardButton.thefont->draw(screen, 50, 50, "%s", title.c_str());
-	globalData.mouse.Draw(screen, SDL_GetTicks(), mousex, mousey);
+	standardButton.thefont->draw(target, 50, 50, "%s", title.c_str());
+	globalData.mouse.Draw(target, SDL_GetTicks(), mousex, mousey);
 }
 
 
@@ -301,8 +301,7 @@ bool Menu::IsActive() {
 }
 void Menu::Draw(SDL_Renderer* target) {
 	placeButtons();
-	drawSelf();
-	SDL_RenderPresent(target);
+	drawSelf(target);
 }
 void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
 	UpdateMouseCoordinates(event, mousex, mousey);
@@ -398,5 +397,6 @@ void Menu::run() {
 		}
 		Update();
 		Draw(screen);
+		SDL_RenderPresent(screen);
 	}
 }
