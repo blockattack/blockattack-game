@@ -299,7 +299,7 @@ void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey) {
 			break;
 		default:
 			break;
-  }
+	}
 }
 
 //The small things that are faaling when you clear something

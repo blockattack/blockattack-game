@@ -303,13 +303,6 @@ void Menu::Draw(SDL_Renderer* target) {
 	drawSelf(target);
 }
 void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
-	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-	if ( event.type == SDL_QUIT ) {
-		Config::getInstance()->setShuttingDown(5);
-		running = false;
-		processed = true;
-	}
-
 	if (isUpEvent(event)) {
 		marked--;
 		if (marked<0) {

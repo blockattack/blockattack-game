@@ -40,9 +40,9 @@ public:
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
-    void SetName(const std::string& name);
-    std::string GetName() const;
-    bool IsUpdated() const;
+	void SetName(const std::string& name);
+	std::string GetName() const;
+	bool IsUpdated() const;
 private:
 	bool isActive = true;
 	std::shared_ptr<ReadKeyboard> rk;
