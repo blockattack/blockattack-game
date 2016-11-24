@@ -28,7 +28,7 @@ http://www.blockattack.net
 
 static std::tm GetLocalTime() {
 	std::time_t t = std::time(nullptr);
-    std::tm ret = *std::localtime(&t);
+	std::tm ret = *std::localtime(&t);
 	return ret;
 }
 

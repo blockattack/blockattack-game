@@ -258,8 +258,8 @@ public:
 	int GetCursorY() const;
 	void GetMouseCursor(bool& pressed, int& x, int&y) const;
 	bool GetIsWinner() const;
-    bool isSinglePuzzle() const;
-    int getLevel() const;
+	bool isSinglePuzzle() const;
+	int getLevel() const;
 	bool GetAIenabled() const;
 	bool IsNearDeath() const;
 	const BlockGameInfo& GetBlockGameInfo() {
