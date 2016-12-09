@@ -1379,7 +1379,6 @@ int main(int argc, char* argv[]) {
 
 
 int runGame(Gametype gametype, int level) {
-	int mousex, mousey;   //Mouse coordinates
 	globalData.theTopScoresEndless = Highscore("endless");
 	globalData.theTopScoresTimeTrial = Highscore("timetrial");
 	drawBalls = true;
@@ -1508,7 +1507,7 @@ int runGame(Gametype gametype, int level) {
 			SDL_Event event;
 
 			while ( SDL_PollEvent(&event) ) {
-				UpdateMouseCoordinates(event, mousex, mousey);
+				UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 				if ( event.type == SDL_QUIT ) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
@@ -1779,25 +1778,26 @@ int runGame(Gametype gametype, int level) {
 					bMouseUp = false;
 					DrawBackground(globalData.screen);
 
-					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordNextButton.x)
-					        &&(mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
-					        &&(mousey > theGame.GetTopY()+cordNextButton.y)&&(mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
+					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+cordNextButton.x)
+					        && (globalData.mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
+					        && (globalData.mousey > theGame.GetTopY()+cordNextButton.y)
+							&& (globalData.mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
 						nextLevel(theGame, SDL_GetTicks());
 					}
 					
-					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+cordRetryButton .x)
-					        &&(mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
-					        &&(mousey > theGame.GetTopY()+cordRetryButton.y)&&(mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {
+					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+cordRetryButton .x)
+					        &&(globalData.mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
+					        &&(globalData.mousey > theGame.GetTopY()+cordRetryButton.y)
+							&&(globalData.mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {
 						//Clicked the retry button
 						retryLevel(theGame, SDL_GetTicks());
 					}
 
-					if (mousex > globalData.xsize-bExitOffset && mousex < globalData.xsize-bExitOffset+bExitSize &&
-					        mousey > globalData.ysize-bExitOffset && mousey < globalData.ysize-bExitOffset+bExitSize) {
+					if (globalData.mousex > globalData.xsize-bExitOffset && globalData.mousex < globalData.xsize-bExitOffset+bExitSize &&
+					        globalData.mousey > globalData.ysize-bExitOffset && globalData.mousey < globalData.ysize-bExitOffset+bExitSize) {
 						done = 1;
 					}
-					//cout << "Mouse x: " << mousex << ", mouse y: " << mousey << "\n";
 				}
 
 				//Mouse button 2:
@@ -1920,7 +1920,7 @@ int runGame(Gametype gametype, int level) {
 		MoveBlockGameSdls(theGame, theGame2);
 		DrawEverything(globalData.xsize, globalData.ysize, &theGame, &theGame2);
 		//Draw the mouse:
-		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), mousex, mousey);
+		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), globalData.mousex, globalData.mousey);
 		SDL_RenderPresent(globalData.screen);
 		if (mustWriteScreenshot) {
 			writeScreenShot();
