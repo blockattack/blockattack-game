@@ -1,2 +1,11 @@
-#Because this folder contains external libraries we ignore the global code standard completly.
+#See http://EditorConfig.org
+
+# top-most EditorConfig file
 root = true
+
+# Unix-style newlines
+[*]
+end_of_line = lf
+
+[*.cpp,*.hpp,*.h]
+indent_style = spaces

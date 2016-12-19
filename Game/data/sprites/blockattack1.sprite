@@ -1,6 +1,5 @@
-//This file simply contains all the images for now.
-
 {
+"_comment": "This file simply contains all the images for now.",
 "back_board" : {
 	"texture" : "back_board",
  	"topx" : 0,

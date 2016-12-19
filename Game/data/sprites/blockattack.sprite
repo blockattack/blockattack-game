@@ -1,10 +1,7 @@
-//This file contains the difinition of all sprites
-//The file is in json-format but with support for C++-style comments
-
 {
-
-//This is the fallback sprite that are used if the game request a sprite not in any file
+"_comment" : "This file contains the difinition of all sprites",
 "fallback" : {
+	"_comment" : "This is the fallback sprite that are used if the game request a sprite not in any file",
 	"texture" : "fallback",
 	"topx" : 0,
 	"topy" : 0,
@@ -164,7 +161,8 @@
 	"width" : 108,
 	"number_of_frames" : 2,
 	"frame_time" : 400,
-	"originx" : 4, //This tells the game that the top left corner is placed a little different
+	"originx" : 4,
+	"originx_comment" : "This tells the game that the top left corner is placed a little different",
 	"originy" : 4
 },
 
