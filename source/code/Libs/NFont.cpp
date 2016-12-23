@@ -416,11 +416,6 @@ NFont::NFont()
     init();
 }
 
-NFont::NFont(const NFont& font)
-{
-    init();
-    // FIXME: Duplicate font data
-}
 
 #ifdef NFONT_USE_SDL_GPU
 NFont::NFont(TTF_Font* ttf)
@@ -482,13 +477,6 @@ NFont::NFont(NFont_Target* renderer, SDL_RWops* file_rwops_ttf, Uint8 own_rwops,
 NFont::~NFont()
 {
     FC_FreeFont(font);
-}
-
-
-NFont& NFont::operator=(const NFont& font)
-{
-    // FIXME: Duplicate font data
-    return *this;
 }
 
 void NFont::init()
@@ -1069,11 +1057,6 @@ void NFont::setLineSpacing(int LineSpacing)
 }
 
 void NFont::setBaseline()
-{
-
-}
-
-void NFont::setBaseline(Uint16 Baseline)
 {
 
 }
