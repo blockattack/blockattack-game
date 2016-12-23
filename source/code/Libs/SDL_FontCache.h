@@ -1,5 +1,5 @@
 /*
-SDL_FontCache v0.0.1: A font cache for SDL and SDL_ttf
+SDL_FontCache v0.9.0: A font cache for SDL and SDL_ttf
 by Jonathan Dearborn
 Dedicated to the memory of Florian Hufsky
 
@@ -9,7 +9,7 @@ License:
     whenever these files or parts of them are distributed in uncompiled form.
 
     The long:
-Copyright (c) 2015 Jonathan Dearborn
+Copyright (c) 2016 Jonathan Dearborn
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -232,6 +232,16 @@ FC_Image* FC_GetGlyphCacheLevel(FC_Font* font, int cache_level);
 // TODO: Specify ownership of the texture (should be shareable)
 /*! Sets a cache source texture for rendering.  New cache levels must be sequential. */
 Uint8 FC_SetGlyphCacheLevel(FC_Font* font, int cache_level, FC_Image* cache_texture);
+
+/*! Copies the given surface to the given cache level as a texture.  New cache levels must be sequential. */
+Uint8 FC_UploadGlyphCache(FC_Font* font, int cache_level, SDL_Surface* data_surface);
+
+
+/*! Returns the number of codepoints that are stored in the font's glyph data map. */
+unsigned int FC_GetNumCodepoints(FC_Font* font);
+
+/*! Copies the stored codepoints into the given array. */
+void FC_GetCodepoints(FC_Font* font, Uint32* result);
 
 /*! Stores the glyph data for the given codepoint in 'result'.  Returns 0 if the codepoint was not found in the cache. */
 Uint8 FC_GetGlyphData(FC_Font* font, FC_GlyphData* result, Uint32 codepoint);

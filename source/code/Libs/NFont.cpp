@@ -1,33 +1,8 @@
 /*
-NFont v4.0.0: A font class for SDL
+NFont: A font class for SDL and SDL_Renderer
 by Jonathan Dearborn
-Dedicated to the memory of Florian Hufsky
 
-License:
-    The short:
-    Use it however you'd like, but keep the copyright and license notice
-    whenever these files or parts of them are distributed in uncompiled form.
-
-    The long:
-Copyright (c) 2014 Jonathan Dearborn
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+See NFont.h for license info.
 */
 
 #include "NFont.h"
@@ -441,6 +416,12 @@ NFont::NFont()
     init();
 }
 
+NFont::NFont(const NFont& font)
+{
+    init();
+    // FIXME: Duplicate font data
+}
+
 #ifdef NFONT_USE_SDL_GPU
 NFont::NFont(TTF_Font* ttf)
 {
@@ -503,6 +484,12 @@ NFont::~NFont()
     FC_FreeFont(font);
 }
 
+
+NFont& NFont::operator=(const NFont& font)
+{
+    // FIXME: Duplicate font data
+    return *this;
+}
 
 void NFont::init()
 {
@@ -1046,6 +1033,17 @@ NFont::Color NFont::getDefaultColor() const
     return FC_GetDefaultColor(font);
 }
 
+    
+int NFont::getNumCacheLevels() const
+{
+    return FC_GetNumCacheLevels(font);
+}
+
+NFont_Image* NFont::getCacheLevel(int level) const
+{
+    return FC_GetGlyphCacheLevel(font, level);
+}
+
 
 
 
@@ -1070,11 +1068,25 @@ void NFont::setLineSpacing(int LineSpacing)
     FC_SetLineSpacing(font, LineSpacing);
 }
 
+void NFont::setBaseline()
+{
+
+}
+
+void NFont::setBaseline(Uint16 Baseline)
+{
+
+}
+
 void NFont::setDefaultColor(const Color& color)
 {
     FC_SetDefaultColor(font, color.to_SDL_Color());
 }
 
+void NFont::enableTTFOwnership()
+{
+
+}
 
 
 

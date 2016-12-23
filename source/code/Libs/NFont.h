@@ -1,5 +1,5 @@
 /*
-NFont v4.0.0: A font class for SDL and SDL_Renderer
+NFont v5.0.0: A font class for SDL and SDL_Renderer
 by Jonathan Dearborn
 Dedicated to the memory of Florian Hufsky
 
@@ -9,7 +9,7 @@ License:
     whenever these files or parts of them are distributed in uncompiled form.
     
     The long:
-Copyright (c) 2014 Jonathan Dearborn
+Copyright (c) 2016 Jonathan Dearborn
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -63,6 +63,13 @@ THE SOFTWARE.
 struct FC_Font;
 
 typedef struct _TTF_Font TTF_Font;
+
+// Differences between SDL_Renderer and SDL_gpu
+#ifdef NFONT_USE_SDL_GPU
+#define NFont_Image GPU_Image
+#else
+#define NFont_Image SDL_Texture
+#endif
 
 #if defined(NFONT_DLL) || defined(NFONT_DLL_EXPORT)
 	#ifdef NFONT_DLL_EXPORT
@@ -267,12 +274,6 @@ class NFONT_EXPORT NFont
     #endif
     
     // Getters
-    #ifdef NFONT_USE_SDL_GPU
-    GPU_Image* getImage() const;
-    #else
-    SDL_Texture* getImage() const;
-    #endif
-    SDL_Surface* getSurface() const;
     FilterEnum getFilterMode() const;
     Uint16 getHeight() const;
     Uint16 getHeight(const char* formatted_text, ...) const NFONT_FORMAT(2);
@@ -291,6 +292,9 @@ class NFONT_EXPORT NFont
     int getDescent(const char* formatted_text, ...) NFONT_FORMAT(2);
     Uint16 getMaxWidth() const;
     Color getDefaultColor() const;
+    
+    int getNumCacheLevels() const;
+    NFont_Image* getCacheLevel(int level) const;
     
     // Setters
     void setFilterMode(FilterEnum filter);

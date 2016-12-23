@@ -1,33 +1,8 @@
 /*
-SDL_FontCache v0.0.1: A font cache for SDL and SDL_ttf
+SDL_FontCache: A font cache for SDL and SDL_ttf
 by Jonathan Dearborn
-Dedicated to the memory of Florian Hufsky
 
-License:
-    The short:
-    Use it however you'd like, but keep the copyright and license notice
-    whenever these files or parts of them are distributed in uncompiled form.
-
-    The long:
-Copyright (c) 2015 Jonathan Dearborn
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+See SDL_FontCache.h for license info.
 */
 
 #include "SDL_FontCache.h"
@@ -60,13 +35,14 @@ THE SOFTWARE.
 #define FC_MAX(a,b) ((a) > (b)? (a) : (b))
 
 
-// vsnprintf replacement adapted from Valentin Milea:
+// vsnprintf replacement from Valentin Milea:
 // http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
 #if defined(_MSC_VER) && _MSC_VER < 1900
 
+#define snprintf c99_snprintf
 #define vsnprintf c99_vsnprintf
 
-static int c99_vsnprintf(char *outBuf, size_t size, const char *format, va_list ap)
+__inline int c99_vsnprintf(char *outBuf, size_t size, const char *format, va_list ap)
 {
     int count = -1;
 
@@ -74,6 +50,18 @@ static int c99_vsnprintf(char *outBuf, size_t size, const char *format, va_list 
         count = _vsnprintf_s(outBuf, size, _TRUNCATE, format, ap);
     if (count == -1)
         count = _vscprintf(format, ap);
+
+    return count;
+}
+
+__inline int c99_snprintf(char *outBuf, size_t size, const char *format, ...)
+{
+    int count;
+    va_list ap;
+
+    va_start(ap, format);
+    count = c99_vsnprintf(outBuf, size, format, ap);
+    va_end(ap);
 
     return count;
 }
@@ -565,17 +553,17 @@ int U8_strinsert(char* string, int position, const char* source, int max_bytes)
     int len;
     int add_len;
     int ulen;
-    
+
     if(string == NULL || source == NULL)
         return 0;
-    
+
     len = strlen(string);
     add_len = strlen(source);
     ulen = U8_strlen(string);
-    
+
     if(position == -1)
         position = ulen;
-    
+
     if(position < 0 || position > ulen || len + add_len + 1 > max_bytes)
         return 0;
 
@@ -921,7 +909,7 @@ static Uint8 FC_GrowGlyphCache(FC_Font* font)
     return 1;
 }
 
-static Uint8 FC_UploadGlyphCache(FC_Font* font, int cache_level, SDL_Surface* data_surface)
+Uint8 FC_UploadGlyphCache(FC_Font* font, int cache_level, SDL_Surface* data_surface)
 {
     if(font == NULL || data_surface == NULL)
         return 0;
@@ -941,7 +929,9 @@ static Uint8 FC_UploadGlyphCache(FC_Font* font, int cache_level, SDL_Surface* da
         SDL_Renderer* renderer = font->renderer;
 
         // Set filter mode for new texture
-        const char* old_filter_mode = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
+        char old_filter_mode[16];  // Save it so we can change the hint value in the meantime
+        snprintf(old_filter_mode, 16, "%s", SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY));
+
         if(FC_GetFilterMode(font) == FC_FILTER_LINEAR)
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
         else
@@ -1381,23 +1371,83 @@ Uint8 FC_AddGlyphToCache(FC_Font* font, SDL_Surface* glyph_surface)
     }
     #else
     {
-        SDL_Texture* img = SDL_CreateTextureFromSurface(font->renderer, glyph_surface);
+        SDL_Renderer* renderer = font->renderer;
+        Uint8 use_clip;
+        FC_Rect clip_rect;
+        SDL_Texture* img;
+        SDL_Rect destrect;
 
-        SDL_Rect destrect = font->last_glyph.rect;
-        SDL_SetRenderTarget(font->renderer, dest);
-        SDL_RenderCopy(font->renderer, img, NULL, &destrect);
-        SDL_SetRenderTarget(font->renderer, NULL);
+        use_clip = has_clip(renderer);
+        if(use_clip)
+        {
+            clip_rect = get_clip(renderer);
+            set_clip(renderer, NULL);
+        }
+
+        img = SDL_CreateTextureFromSurface(renderer, glyph_surface);
+
+        destrect = font->last_glyph.rect;
+        SDL_SetRenderTarget(renderer, dest);
+        SDL_RenderCopy(renderer, img, NULL, &destrect);
+        SDL_SetRenderTarget(renderer, NULL);
         SDL_DestroyTexture(img);
+
+        if(use_clip)
+            set_clip(renderer, &clip_rect);
     }
     #endif
 
     return 1;
 }
 
+
+unsigned int FC_GetNumCodepoints(FC_Font* font)
+{
+    FC_Map* glyphs;
+    int i;
+    unsigned int result = 0;
+    if(font == NULL || font->glyphs == NULL)
+        return 0;
+
+    glyphs = font->glyphs;
+
+    for(i = 0; i < glyphs->num_buckets; ++i)
+    {
+        FC_MapNode* node;
+        for(node = glyphs->buckets[i]; node != NULL; node = node->next)
+        {
+            result++;
+        }
+    }
+
+    return result;
+}
+
+void FC_GetCodepoints(FC_Font* font, Uint32* result)
+{
+    FC_Map* glyphs;
+    int i;
+    unsigned int count = 0;
+    if(font == NULL || font->glyphs == NULL)
+        return;
+
+    glyphs = font->glyphs;
+
+    for(i = 0; i < glyphs->num_buckets; ++i)
+    {
+        FC_MapNode* node;
+        for(node = glyphs->buckets[i]; node != NULL; node = node->next)
+        {
+            result[count] = node->key;
+            count++;
+        }
+    }
+}
+
 Uint8 FC_GetGlyphData(FC_Font* font, FC_GlyphData* result, Uint32 codepoint)
 {
     FC_GlyphData* e = FC_MapFind(font->glyphs, codepoint);
-    if(e == NULL || result == NULL)
+    if(e == NULL)
     {
         char buff[5];
         int w, h;
@@ -1416,6 +1466,7 @@ Uint8 FC_GetGlyphData(FC_Font* font, FC_GlyphData* result, Uint32 codepoint)
             FC_Log("SDL_FontCache: Failed to load cache image, so cannot add new glyphs!\n");
             return 0;
         }
+
         #ifdef FC_USE_SDL_GPU
         w = cache_image->w;
         h = cache_image->h;
@@ -1461,6 +1512,7 @@ FC_GlyphData* FC_SetGlyphData(FC_Font* font, Uint32 codepoint, FC_GlyphData glyp
 {
     return FC_MapInsert(font->glyphs, codepoint, glyph_data);
 }
+
 
 
 // Drawing
@@ -1733,7 +1785,7 @@ static FC_StringList* FC_GetBufferFitToColumn(FC_Font* font, int width, FC_Scale
             {
                 char* line_plus_word = new_concat(line, word_iter->value);
                 char* word_plus_space = new_concat(word_iter->value, " ");
-                if(FC_GetWidth(font, line_plus_word) > width)
+                if(FC_GetWidth(font, "%s", line_plus_word) > width)
                 {
                     current = FC_StringListPushBack(current, line, 0);
 
@@ -1794,6 +1846,7 @@ FC_Rect FC_DrawBox(FC_Font* font, FC_Target* dest, FC_Rect box, const char* form
     }
     else
         newclip = box;
+
     set_clip(dest, &newclip);
 
     set_color_for_all_caches(font, font->default_color);
