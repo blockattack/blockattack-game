@@ -308,6 +308,7 @@ void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
 		if (marked<0) {
 			marked = buttons.size();    //not -1, since exit is after the last element in the list
 		}
+		processed = true;
 	}
 
 	if (isDownEvent(event)) {
@@ -315,10 +316,12 @@ void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
 		if (marked> (int)buttons.size()) {
 			marked = 0;
 		}
+		processed = true;
 	}
 
 	if (isEscapeEvent(event) && isSubmenu) {
 		running = false;
+		processed = true;
 	}
 
 	if (isConfirmEvent(event)) {
@@ -331,6 +334,7 @@ void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
 		if (marked == (int)buttons.size()) {
 			running = false;
 		}
+		processed = true;
 	}
 }
 
