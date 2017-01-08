@@ -79,6 +79,13 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 	for (Json::Value::iterator it = root.begin(); it != root.end() ; ++it) {
 		string spriteName = it.key().asString();
 		Json::Value value = (*it);
+		if (!value.isObject()) {
+			if (spriteName.c_str()[0] != '_') {
+				//We ignore errors if the name starts with an underscore like "_comment"
+				std::cerr << "Invalid sprite: " << spriteName << "\n";
+			}
+			continue;
+		}
 		string textureName = value.get("texture","fallback").asString();
 		int topx = value.get("topx",0).asInt();
 		int topy = value.get("topy",0).asInt();
