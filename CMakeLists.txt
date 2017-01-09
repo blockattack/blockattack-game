@@ -14,9 +14,9 @@ INCLUDE(CPack)
 # Define install paths
 set(INSTALL_BIN_DIR "bin" CACHE STRING "Install executable in this directory")
 set(INSTALL_DATA_DIR "share/blockattack" CACHE STRING "Install data to this directory")
-set(INSTALL_MAN_DIR "man/man6" CACHE STRING "Install the man page to this directory")
-set(INSTALL_APPLICATIONS_DIR "applications" CACHE STRING "Install the .desktop file to this directory")
-set(INSTALL_ICONS_DIR "icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
+set(INSTALL_MAN_DIR "share/man/man6" CACHE STRING "Install the man page to this directory")
+set(INSTALL_APPLICATIONS_DIR "share/applications" CACHE STRING "Install the .desktop file to this directory")
+set(INSTALL_ICONS_DIR "share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
 set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install translation to this dir")
 
 # This sets up the exe icon for windows under mingw.
