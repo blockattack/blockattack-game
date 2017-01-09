@@ -26,11 +26,7 @@ SOFTWARE.
 #include "SagoMisc.hpp"
 #include <memory>
 #include <unordered_map>
-#ifndef _WIN32
-#include <jsoncpp/json/json.h>
-#else
 #include <json/json.h>
-#endif
 #include <iostream>
 #include <string.h>
 #include <boost/algorithm/string/predicate.hpp>

@@ -56,6 +56,9 @@ pkg_search_module(SDL2MIXER REQUIRED SDL2_mixer)
 pkg_search_module(SDL2IMAGE REQUIRED SDL2_image)
 pkg_search_module(SDL2TTF REQUIRED SDL2_ttf)
 
+pkg_search_module(JSONCPP REQUIRED jsoncpp)
+include_directories(${JSONCPP_INCLUDE_DIRS})
+
 find_package(Boost COMPONENTS program_options REQUIRED)
 
 #Find all sources but one
@@ -72,8 +75,9 @@ include_directories("source/code/Libs/include")
 #building/compiling/linking
 add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
 target_link_libraries( blockattack ${SDL2_LIBRARY})
-target_link_libraries( blockattack physfs jsoncpp)
+target_link_libraries( blockattack physfs)
 target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
+target_link_libraries( blockattack ${JSONCPP_LIBRARIES} )
 target_link_libraries( blockattack ${Boost_LIBRARIES} )
 set_target_properties( blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
 
