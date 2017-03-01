@@ -21,7 +21,7 @@ Source: https://github.com/blockattack/blockattack-game
   * jsoncpp
 
 # Building
-The only supported build method is using the Makefile<br/>
+The only supported build method is using the CMake<br/>
 To build do:
 ```
 ./packdata.sh
@@ -53,6 +53,20 @@ Compiled with:
 i686-w64-mingw32.static-cmake -DCMAKE_BUILD_TYPE=Release . && make
 ```
 
+# Building using Docker
+
+As getting a C++ project with many dependencies to compile can be a daunting task then I have provided a couple of Docker images that can perform a build. Both for Windows and Linux.
+
+On a fresh checkout you can use:
+```
+docker build -f source/misc/docker/Dockerfile.Ubuntu14.04build . -t blockattack_test
+```
+and
+```
+docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
+```
+
+
 # Source Structure
 This project is a bit unconversionel because I didn't know any better at the time.
 
@@ -77,5 +91,5 @@ Please report bugs on github: https://github.com/blockattack/blockattack-game/is
 If possible: Check if the bug is already fixed in master. But if you don't know how to check it then just report it.
 
 # Contributions
-Contributions are welcome. Both the current graphics and the original sharedir support was provided by kind individuals. 
-Patches can be attached to a github ticket or sent to poul@poulsander.com directly. You can also create pull requests on Github. 
+Contributions are welcome. Both the current graphics and the original sharedir support was provided by kind individuals.
+Patches can be attached to a github ticket or sent to poul@poulsander.com directly. You can also create pull requests on Github.
