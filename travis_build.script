@@ -4,12 +4,5 @@ set -e
 # First check for formatting errors
 bash source/misc/lint/runLint.sh
 
-# Travis runs Ubuntu 12.04 and misses libutfcpp-dev.
-cp source/misc/travis_help/utf8_v2_3_4/source/utf8.h source/code/
-cp -r source/misc/travis_help/utf8_v2_3_4/source/utf8 source/code/
-cmake .
-make
-make clean
-./packdata.sh
-#i686-pc-mingw32-c++ -c -std=c++11 source/code/os.cpp -o windows_os_test.o
-
+docker build -f source/misc/docker/Dockerfile.Ubuntu14.04build . -t blockattack_test
+docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
