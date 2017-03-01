@@ -32,11 +32,11 @@ msgstr "Computer"
 
 #: ../../code/main.cpp:673
 msgid "Playing field"
-msgstr "Spille flade"
+msgstr "Spilleflade"
 
 #: ../../code/main.cpp:745
 msgid "Time Trial"
-msgstr "Time Trial"
+msgstr "På tid"
 
 #: ../../code/main.cpp:746
 msgid "Score as much as possible in 2 minutes"
@@ -56,11 +56,11 @@ msgstr "Gåde"
 
 #: ../../code/main.cpp:755
 msgid "Clear the entire board with a limited number of moves."
-msgstr "Fjern alle blokke med et begrænset antal flyt"
+msgstr "Fjern alle blokke med et begrænset antal flyt."
 
 #: ../../code/main.cpp:758
 msgid "Endless"
-msgstr "Endless"
+msgstr "Evighed"
 
 #: ../../code/main.cpp:759
 msgid "Score as much as possible. No time limit."
@@ -72,19 +72,19 @@ msgstr "Formål:"
 
 #: ../../code/main.cpp:769
 msgid "Movement keys:"
-msgstr "Bevægelses taster:"
+msgstr "Bevægelsestaster:"
 
 #: ../../code/main.cpp:772
 msgid "Switch: "
-msgstr "Skift:"
+msgstr "Skift: "
 
 #: ../../code/main.cpp:774
 msgid "Restart: "
-msgstr "Genstart:"
+msgstr "Genstart: "
 
 #: ../../code/main.cpp:777
 msgid "Push line: "
-msgstr "Skub linje:"
+msgstr "Skub linje: "
 
 #: ../../code/main.cpp:892
 msgid "Select Puzzle"
@@ -92,12 +92,12 @@ msgstr "Vælg gåde"
 
 #: ../../code/main.cpp:895
 msgid "Stage Clear Level Select"
-msgstr "Vælg Stage Clear bane"
+msgstr "Vælg Stage Clear-bane"
 
 #: ../../code/main.cpp:997
 #, c-format
 msgid "Best score: %i"
-msgstr "Bedste score: %i"
+msgstr "Bedste resultat: %i"
 
 #: ../../code/main.cpp:998
 #, c-format
@@ -111,7 +111,7 @@ msgstr "Tid brugt: %d : %02d"
 
 #: ../../code/main.cpp:1006
 msgid "Total score: %1% in %2%:%3%"
-msgstr "Sammenlagt score: %1% på %2%:%3%"
+msgstr "Sammenlagt resultat: %1% på %2%:%3%"
 
 #: ../../code/main.cpp:1302
 msgid "Player 1"
@@ -151,7 +151,7 @@ msgstr "Indtast navnet på spiller 1:"
 
 #: ../../code/menudef.cpp:156
 msgid "Enter player 2 name:"
-msgstr "Indtast navnet på stpiller 2:"
+msgstr "Indtast navnet på spiller 2:"
 
 #: ../../code/menudef.cpp:166
 msgid "Change key bindings"
@@ -239,7 +239,7 @@ msgstr "Flerspiller"
 
 #: ../../code/menudef.cpp:262
 msgid "Two player - time trial"
-msgstr "To spillere - Time Trial"
+msgstr "To spillere - På tid"
 
 #: ../../code/menudef.cpp:264
 msgid "Two player - vs"
@@ -292,11 +292,11 @@ msgstr "Afslut"
 
 #: ../../code/ScoresDisplay.cpp:45
 msgid "Endless:"
-msgstr "Endless:"
+msgstr "Evighed:"
 
 #: ../../code/ScoresDisplay.cpp:48
 msgid "Time Trial:"
-msgstr "Time Trial:"
+msgstr "På tid:"
 
 #: ../../code/ScoresDisplay.cpp:71
 msgid "Stats"
@@ -308,15 +308,15 @@ msgstr "Kæder"
 
 #: ../../code/ScoresDisplay.cpp:81
 msgid "Lines Pushed: "
-msgstr "Linjer skubbet:"
+msgstr "Linjer skubbet: "
 
 #: ../../code/ScoresDisplay.cpp:86
 msgid "Puzzles solved: "
-msgstr "Gåder løst:"
+msgstr "Gåder løst: "
 
 #: ../../code/ScoresDisplay.cpp:91
 msgid "Run time: "
-msgstr "Kørsels tid:"
+msgstr "Kørselstid: "
 
 #: ../../code/ScoresDisplay.cpp:94 ../../code/ScoresDisplay.cpp:107
 #, c-format
@@ -340,7 +340,7 @@ msgstr "Sekunder: %i"
 
 #: ../../code/ScoresDisplay.cpp:104
 msgid "Play time: "
-msgstr "Spille tid:"
+msgstr "Spilletid:"
 
 #: ../../code/ScoresDisplay.cpp:117
 msgid "VS CPU (win/loss)"
@@ -357,7 +357,7 @@ msgstr "Side %1% af %2%"
 
 #: ../../code/BlockGameSdl.inc:279
 msgid "Score:"
-msgstr "Score:"
+msgstr "Resultat:"
 
 #: ../../code/BlockGameSdl.inc:280
 msgid "Time:"
@@ -377,45 +377,8 @@ msgstr "Træk tilbage: "
 
 #: ../../code/BlockGameSdl.inc:297 ../../code/BlockGameSdl.inc:315
 msgid "Retry"
-msgstr "Forsøg igen"
+msgstr "Prøv igen"
 
 #: ../../code/BlockGameSdl.inc:305 ../../code/BlockGameSdl.inc:323
 msgid "Skip"
 msgstr "Spring over"
-
-#~ msgid "Forward"
-#~ msgstr "Fremad"
-
-#~ msgid "Best score: 0"
-#~ msgstr "Bedste resultat: 0"
-
-#~ msgid "Time used: "
-#~ msgstr "Tid brugt:"
-
-#~ msgid "Best score: "
-#~ msgstr "Bedste resultat:"
-
-#~ msgid "Time used: -- : --"
-#~ msgstr "Tid brugt: -- : --"
-
-#~ msgid "Displays this message"
-#~ msgstr "Vis denne besked"
-
-#~ msgid "Disables the sound. Can be used if sound errors prevents you from starting"
-#~ msgstr "Slå lyden fra. Kan bruges hvis lyd fejl forhindre programmet i at starte."
-
-#~ msgid "Causes the game to not sleep between frames."
-#~ msgstr "Programmet vil ikke sove mellem frames"
-
-#~ msgid "Enables basic verbose messages"
-#~ msgstr "Slår basale beskeder til"
-
-#~ msgid "Prints the search path and quits"
-#~ msgstr "Viser alle søge stiger og afslutter derefter"
-
-#~ msgid ""
-#~ "Block Attack - Rise of the blocks %s\n"
-#~ "%s\n"
-#~ msgstr ""
-#~ "Block Attack - Rise of the blocks %s\n"
-#~ "%s\n"
