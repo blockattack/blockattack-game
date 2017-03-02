@@ -1254,6 +1254,12 @@ int main(int argc, char* argv[]) {
 			if (configSettings->exists("player2name")) {
 				globalData.player2name = configSettings->getString("player2name");
 			}
+			if (configSettings->exists("xsize")) {
+				globalData.xsize = configSettings->getInt("xsize");
+			}
+			if (configSettings->exists("ysize")) {
+				globalData.ysize = configSettings->getInt("ysize");
+			}
 			if (globalData.verboseLevel) {
 				cout << "Data loaded from config file" << "\n";
 			}
@@ -1280,7 +1286,7 @@ int main(int argc, char* argv[]) {
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
 		dieOnNullptr(renderer, "Unable to create render");
 		if (config.autoScale) {
-			SDL_RenderSetLogicalSize(renderer, globalData.xsize, globalData.ysize);
+			SDL_RenderSetLogicalSize(renderer, 1024, 768);
 			logicalRenderer = true;
 		}
 		globalData.screen = renderer;
@@ -1350,6 +1356,11 @@ int main(int argc, char* argv[]) {
 
 			configSettings->setString("player1name", globalData.player1name);
 			configSettings->setString("player2name", globalData.player2name);
+			if (!config.autoScale) {
+				//autoScale is always equal the logical size, so it makes no sense to save it
+				configSettings->setInt("xsize", globalData.xsize);
+				configSettings->setInt("ysize", globalData.ysize);
+			}
 			configSettings->save();
 		}
 
