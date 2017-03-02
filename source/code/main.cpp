@@ -1000,8 +1000,8 @@ static void StartTwoPlayerVs() {
 }
 
 static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
-	game1.SetTopXY(50, 100);
-	game2.SetTopXY(globalData.xsize-500, 100);
+	game1.SetTopXY(50, globalData.ysize/2-284);
+	game2.SetTopXY(globalData.xsize-500, globalData.ysize/2-284);
 }
 
 struct globalConfig {
