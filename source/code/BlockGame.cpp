@@ -1820,14 +1820,14 @@ bool BlockGame::IsNearDeath() const {
 }
 
 void BlockGame::UpdateInternal(unsigned int newtick) {
-	while (newtick >= ticks+50) {
-		ticks+=50;
+	while (newtick >= ticks+10) {
+		ticks+=10;
 		Update();
 	}
 }
 
 void BlockGame::DoAction (const BlockGameAction& action) {
-	if (action.action == BlockGameAction::Action::UPDATE && action.tick < ticks+50) {
+	if (action.action == BlockGameAction::Action::UPDATE && action.tick < ticks+10) {
 		return;  //Ignore if this is an update and not high enough
 	}
 	if (action.action == BlockGameAction::Action::UPDATE && replayInfo.actions.size() > 0 && replayInfo.actions.back().action == action.action) {
