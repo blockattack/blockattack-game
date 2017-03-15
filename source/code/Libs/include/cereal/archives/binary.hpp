@@ -29,7 +29,7 @@
 #ifndef CEREAL_ARCHIVES_BINARY_HPP_
 #define CEREAL_ARCHIVES_BINARY_HPP_
 
-#include <cereal/cereal.hpp>
+#include "cereal/cereal.hpp"
 #include <sstream>
 
 namespace cereal
@@ -58,6 +58,8 @@ namespace cereal
         OutputArchive<BinaryOutputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
       { }
+
+      ~BinaryOutputArchive() CEREAL_NOEXCEPT = default;
 
       //! Writes size bytes of data to the output stream
       void saveBinary( const void * data, std::size_t size )
@@ -90,7 +92,9 @@ namespace cereal
       BinaryInputArchive(std::istream & stream) :
         InputArchive<BinaryInputArchive, AllowEmptyClassElision>(this),
         itsStream(stream)
-    { }
+      { }
+
+      ~BinaryInputArchive() CEREAL_NOEXCEPT = default;
 
       //! Reads size bytes of data from the input stream
       void loadBinary( void * const data, std::size_t size )
