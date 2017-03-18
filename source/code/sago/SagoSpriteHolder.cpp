@@ -26,7 +26,7 @@ SOFTWARE.
 #include "SagoMisc.hpp"
 #include <memory>
 #include <unordered_map>
-#include <json/json.h>
+#include "rapidjson/document.h"
 #include <iostream>
 #include <string.h>
 #include <boost/algorithm/string/predicate.hpp>
@@ -61,36 +61,50 @@ SagoSpriteHolder::~SagoSpriteHolder() {
 	delete data;
 }
 
+static int getDefaultValue(const rapidjson::Value& value, const char* name, int defaultValue) {
+	assert(value.IsObject());
+	const auto& t = value.GetObject().FindMember(name);
+	if (t->value.IsInt()) {
+		return t->value.GetInt();
+	}
+	return defaultValue;
+}
+
+static std::string getDefaultValue(const rapidjson::Value& value, const char* name, std::string defaultValue) {
+	assert(value.IsObject());
+	const auto& t = value.GetObject().FindMember(name);
+	if (t->value.IsString()) {
+		defaultValue = t->value.GetString();
+	}
+	return defaultValue;
+}
+
 void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 	string fullfile = "sprites/"+filename;
 	string content = sago::GetFileContent(fullfile.c_str());
-	Json::Value root;   // will contains the root value after parsing
-	Json::Reader reader;
-	bool parsingSuccessful = reader.parse( content, root );
-	if ( !parsingSuccessful ) {
-		cerr << "Failed to parse: " << fullfile << "\n"
-		     << reader.getFormattedErrorMessages() << "\n";
+	rapidjson::Document document;
+	document.Parse(content.c_str());
+	if ( !document.IsObject() ) {
+		cerr << "Failed to parse: " << fullfile << "\n";
 		return;
 	}
-	for (Json::Value::iterator it = root.begin(); it != root.end() ; ++it) {
-		string spriteName = it.key().asString();
-		Json::Value value = (*it);
-		if (!value.isObject()) {
-			if (spriteName.c_str()[0] != '_') {
-				//We ignore errors if the name starts with an underscore like "_comment"
+	for (auto& m : document.GetObject()) {
+		const std::string& spriteName = m.name.GetString();
+		if (!m.value.IsObject()) {
+			if (spriteName[0] == '_') {
 				std::cerr << "Invalid sprite: " << spriteName << "\n";
 			}
 			continue;
 		}
-		string textureName = value.get("texture","fallback").asString();
-		int topx = value.get("topx",0).asInt();
-		int topy = value.get("topy",0).asInt();
-		int height = value.get("height",0).asInt();
-		int width = value.get("width",0).asInt();
-		int number_of_frames = value.get("number_of_frames",1).asInt();
-		int frame_time = value.get("frame_time",1).asInt();
-		int originx = value.get("originx",0).asInt();
-		int originy = value.get("originy",0).asInt();
+		string textureName = getDefaultValue(m.value, "texture", "fallback");
+		int topx = getDefaultValue(m.value, "topx", 0);
+		int topy = getDefaultValue(m.value, "topy",0);
+		int height = getDefaultValue(m.value, "height",0);
+		int width = getDefaultValue(m.value, "width",0);
+		int number_of_frames = getDefaultValue(m.value, "number_of_frames",1);
+		int frame_time = getDefaultValue(m.value, "frame_time",1);
+		int originx = getDefaultValue(m.value, "originx",0);
+		int originy = getDefaultValue(m.value, "originy",0);
 		if (number_of_frames < 1) {
 			number_of_frames = 1;
 		}
