@@ -91,7 +91,7 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 	for (auto& m : document.GetObject()) {
 		const std::string& spriteName = m.name.GetString();
 		if (!m.value.IsObject()) {
-			if (spriteName[0] == '_') {
+			if (spriteName[0] != '_') {
 				std::cerr << "Invalid sprite: " << spriteName << "\n";
 			}
 			continue;

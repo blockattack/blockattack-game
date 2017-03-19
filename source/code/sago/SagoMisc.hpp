@@ -46,6 +46,14 @@ namespace sago {
 	 */
 	std::string GetFileContent(const char* filename);
 	
+	/**
+	 * Reads an entire file into memory.
+	 * PHYSFS must be setup before hand
+	 * @param filename The file to read
+	 * @return The content of the file. If empty either the file was empty, did not exist or could not be opened
+	 */
+	inline std::string GetFileContent(const std::string& filename) { return GetFileContent(filename.c_str()); };
+	
 	bool FileExists(const char* filename);
 	
 	void WriteFileContent(const char* filename, const std::string& content);
