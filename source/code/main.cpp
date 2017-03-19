@@ -287,18 +287,18 @@ void DrawBackground(SDL_Renderer* target) {
  * @param mousey
  */
 void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey) {
-	switch(event.type) {
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
-			mousex = event.button.x;
-			mousey = event.button.y;
-			break;
-		case SDL_MOUSEMOTION: 
-			mousex = event.motion.x;
-			mousey = event.motion.y;
-			break;
-		default:
-			break;
+	switch (event.type) {
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_MOUSEBUTTONUP:
+		mousex = event.button.x;
+		mousey = event.button.y;
+		break;
+	case SDL_MOUSEMOTION:
+		mousex = event.motion.x;
+		mousey = event.motion.y;
+		break;
+	default:
+		break;
 	}
 }
 
@@ -583,6 +583,7 @@ static TextManager theTextManager;
 
 #include "BlockGameSdl.inc"
 #include "sago/SagoMisc.hpp"
+#include "ReplayPlayer.hpp"
 
 
 
@@ -754,7 +755,6 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		DrawIMG(stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
 	}
 	//player1 finnish, player2 start
-	//DrawIMG(boardBackBack,globalData.screen,theGame2->GetTopX()-60,theGame2->GetTopY()-68);
 	if (!editorMode /*&& !singlePuzzle*/ ) {
 		/*
 		 *If single player mode (and not VS)
@@ -1036,10 +1036,11 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("no-auto-scale", "Do not automatically auto scale")
 	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
+	("play-replay", boost::program_options::value<string>(), "Start a replay")
 	("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
-			"Default: \"%s\"", LOCALEDIR).c_str())
+	        "Default: \"%s\"", LOCALEDIR).c_str())
 	("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
-			" Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
+	        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
 
 	;
 	boost::program_options::variables_map vm;
@@ -1071,8 +1072,8 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("help")) {
 		cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
-							  "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
-							  "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
+		                      "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
+		                      "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
 		cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
 		cout << desc << "\n";
 		cout << "Examples:" << "\n";
@@ -1114,13 +1115,16 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 		singlePuzzle = true;
 		singlePuzzleNr = vm["puzzle-single-level"].as<int>();
 	}
-	if(vm.count("no-auto-scale")) {
+	if (vm.count("no-auto-scale")) {
 		conf.autoScale = false;
 	}
 	if (vm.count("puzzle-level-file")) {
 		conf.puzzleName = vm["puzzle-level-file"].as<string>();
 	}
-		
+	if (vm.count("play-replay")) {
+		globalData.replayArgument = vm["play-replay"].as<string>();
+	}
+
 }
 
 //Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it
@@ -1301,7 +1305,7 @@ int main(int argc, char* argv[]) {
 		BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500, 100);
 		player1 = &theGame;
 		player2 = &theGame2;
-		
+
 		BlockGameAction a;
 		a.action = BlockGameAction::Action::SET_GAME_OVER;
 		theGame.DoAction(a);
@@ -1326,6 +1330,10 @@ int main(int argc, char* argv[]) {
 		SDL_RenderPresent(globalData.screen);
 		if (singlePuzzle) {
 			runGame(Gametype::Puzzle, singlePuzzleNr);
+		}
+		else if (globalData.replayArgument.length()) {
+			ReplayPlayer rp;
+			RunGameState(rp);
 		}
 		else {
 			//game loop
@@ -1388,7 +1396,6 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-
 int runGame(Gametype gametype, int level) {
 	globalData.theTopScoresEndless = Highscore("endless");
 	globalData.theTopScoresTimeTrial = Highscore("timetrial");
@@ -1414,7 +1421,7 @@ int runGame(Gametype gametype, int level) {
 	theGame2.name = globalData.player2name;
 
 	bool mustsetupgame = true;
-	
+
 	if (singlePuzzle) {
 		LoadPuzzleStages();
 		BlockGameStartInfo s;
@@ -1437,60 +1444,59 @@ int runGame(Gametype gametype, int level) {
 			registerTTHighscorePlayer1 = false;
 			registerTTHighscorePlayer2 = false;
 			switch (gametype) {
-				case Gametype::SinglePlayerTimeTrial:
-					StartSinglePlayerTimeTrial();
-					break;
-				case Gametype::StageClear: {
-					int myLevel = PuzzleLevelSelect(1);
-					if (myLevel == -1) {
-						return 1;
-					}
-					BlockGameStartInfo s;
-					s.ticks = SDL_GetTicks();
-					s.stageClear = true;
-					s.level = myLevel;
-					theGame.NewGame(s);
-					DrawBackground(globalData.screen);
-					twoPlayers =false;
-					BlockGameAction a;
-					a.action = BlockGameAction::Action::SET_GAME_OVER;
-					theGame2.DoAction(a);
-					theGame.name = globalData.player1name;
-					theGame2.name = globalData.player2name;
+			case Gametype::SinglePlayerTimeTrial:
+				StartSinglePlayerTimeTrial();
+				break;
+			case Gametype::StageClear: {
+				int myLevel = PuzzleLevelSelect(1);
+				if (myLevel == -1) {
+					return 1;
+				}
+				BlockGameStartInfo s;
+				s.ticks = SDL_GetTicks();
+				s.stageClear = true;
+				s.level = myLevel;
+				theGame.NewGame(s);
+				DrawBackground(globalData.screen);
+				twoPlayers =false;
+				BlockGameAction a;
+				a.action = BlockGameAction::Action::SET_GAME_OVER;
+				theGame2.DoAction(a);
+				theGame.name = globalData.player1name;
+				theGame2.name = globalData.player2name;
+			}
+			break;
+			case Gametype::Puzzle:
+				if (StartSinglePlayerPuzzle()) {
+					return 1;
 				}
 				break;
-				case Gametype::Puzzle:
-					if (StartSinglePlayerPuzzle()) {
-						return 1;
-					}
-					break;
-				case Gametype::SinglePlayerVs: 
-					{
-						//1 player - Vs mode
-						int theAIlevel = level; //startSingleVs();
-						BlockGameStartInfo startInfo;
-						startInfo.ticks = SDL_GetTicks();
-						startInfo.vsMode = true;
-						startInfo.vsAI = true;
-						startInfo.level = theAIlevel;
-						theGame.NewGame(startInfo);
-						startInfo.AI = true;
-						theGame2.NewGame(startInfo);
-						DrawBackground(globalData.screen);
-						twoPlayers = true; //Single player, but AI plays
-						theGame.name = globalData.player1name;
-						theGame2.name = globalData.player2name;
-					}
-					break;
-				case Gametype::TwoPlayerTimeTrial:
-					StarTwoPlayerTimeTrial();
-					break;
-				case Gametype::TwoPlayerVs:
-					StartTwoPlayerVs();
-					break;
-				case Gametype::SinglePlayerEndless:
-				default:
-					StartSinglePlayerEndless();
+			case Gametype::SinglePlayerVs: {
+				//1 player - Vs mode
+				int theAIlevel = level; //startSingleVs();
+				BlockGameStartInfo startInfo;
+				startInfo.ticks = SDL_GetTicks();
+				startInfo.vsMode = true;
+				startInfo.vsAI = true;
+				startInfo.level = theAIlevel;
+				theGame.NewGame(startInfo);
+				startInfo.AI = true;
+				theGame2.NewGame(startInfo);
+				DrawBackground(globalData.screen);
+				twoPlayers = true; //Single player, but AI plays
+				theGame.name = globalData.player1name;
+				theGame2.name = globalData.player2name;
+			}
+			break;
+			case Gametype::TwoPlayerTimeTrial:
+				StarTwoPlayerTimeTrial();
+				break;
+			case Gametype::TwoPlayerVs:
+				StartTwoPlayerVs();
+				break;
+			case Gametype::SinglePlayerEndless:
+			default:
+				StartSinglePlayerEndless();
 			};
 			mustsetupgame = false;
 			DrawBackground(globalData.screen);
@@ -1523,7 +1529,7 @@ int runGame(Gametype gametype, int level) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
 				}
-				
+
 				if (theGame.isGameOver() && isEscapeEvent(event)) {
 					done = 1;
 				}
@@ -1703,7 +1709,7 @@ int runGame(Gametype gametype, int level) {
 						}
 						mouseDownX = event.button.x;
 						mouseDownY = event.button.y;
-					} 
+					}
 					if (event.button.button == SDL_BUTTON_RIGHT) {
 						bool pressed = false;
 						int x = 0;
@@ -1768,7 +1774,7 @@ int runGame(Gametype gametype, int level) {
 							}
 						}
 					}
-					
+
 				}
 			} //while event PollEvent - read keys
 
@@ -1792,15 +1798,15 @@ int runGame(Gametype gametype, int level) {
 					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+cordNextButton.x)
 					        && (globalData.mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
 					        && (globalData.mousey > theGame.GetTopY()+cordNextButton.y)
-							&& (globalData.mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
+					        && (globalData.mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
 						nextLevel(theGame, SDL_GetTicks());
 					}
-					
+
 					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+cordRetryButton .x)
 					        &&(globalData.mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
 					        &&(globalData.mousey > theGame.GetTopY()+cordRetryButton.y)
-							&&(globalData.mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {
+					        &&(globalData.mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {
 						//Clicked the retry button
 						retryLevel(theGame, SDL_GetTicks());
 					}

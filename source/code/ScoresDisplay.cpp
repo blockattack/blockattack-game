@@ -171,7 +171,7 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 
 	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-	
+
 	if (isLeftEvent(event)) {
 		page++;
 		if (page>=numberOfPages) {

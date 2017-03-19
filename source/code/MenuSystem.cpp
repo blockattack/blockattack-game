@@ -90,19 +90,19 @@ bool Button::isPopOnRun() const {
 	return popOnRun;
 }
 
-static void drawToScreen(const Button &b) {
+static void drawToScreen(const Button& b) {
 	if (b.marked) {
 		globalData.spriteHolder->GetSprite(menu_marked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 	else {
 		globalData.spriteHolder->GetSprite(menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
-	
+
 	standardButton.thefont->draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2-standardButton.thefont->getHeight("%s",  b.label.c_str())/2, NFont::CENTER, "%s", b.label.c_str());
 }
 
 
-static bool isClicked(const Button &b, int x,int y) {
+static bool isClicked(const Button& b, int x,int y) {
 	if ( x >= b.x && y >= b.y && x<= b.x+standardButton.xsize && y <= b.y + standardButton.ysize) {
 		return true;
 	}
@@ -302,7 +302,7 @@ void Menu::Draw(SDL_Renderer* target) {
 	placeButtons();
 	drawSelf(target);
 }
-void Menu::ProcessInput(const SDL_Event& event, bool &processed) {
+void Menu::ProcessInput(const SDL_Event& event, bool& processed) {
 	if (isUpEvent(event)) {
 		marked--;
 		if (marked<0) {

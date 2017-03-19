@@ -52,7 +52,7 @@ static string itoa2(int num) {
 /**
  * This function tells how long the game may pause the rise of the blocks.
  * This decreases as the game progresses.
- * @param stops In out variable. If larger than the max allowed 
+ * @param stops In out variable. If larger than the max allowed
  * @param ticks Ticks since the game was started
  * @param gameStartedAt Tick the game was started at.
  */
@@ -62,7 +62,7 @@ static void capMaxStops(int& stops, unsigned int ticks, unsigned int gameStarted
 		return;
 	}
 	unsigned int gameTime = gameStartedAt - ticks;
-	
+
 	int maxSeconds = 10-( (gameTime/1000) % 30 );
 	if (maxSeconds < 3) {
 		maxSeconds = 1;
@@ -234,7 +234,6 @@ bool BlockGame::GetIsWinner()  const {
 	return hasWonTheGame;
 }
 
-
 void BlockGame::NewGame(const BlockGameStartInfo& s) {
 	replayInfo.startInfo = s;
 	replayInfo.actions.clear();
@@ -277,7 +276,7 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 				}
 			}
 			for (int j=0; j<6; j++) {
-				board[j][0] = 5; 
+				board[j][0] = 5;
 			}
 		}
 		this->singlePuzzle = s.singlePuzzle;
@@ -1832,7 +1831,7 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	}
 	if (action.action == BlockGameAction::Action::UPDATE && replayInfo.actions.size() > 0 && replayInfo.actions.back().action == action.action) {
 		replayInfo.actions.back() = action;
-	} 
+	}
 	else {
 		replayInfo.actions.push_back(action);
 	}
@@ -1894,7 +1893,7 @@ void BlockGame::PopSendGarbage(std::vector<GarbageStruct>& poppedData) {
 	this->garbageSendQueue.clear();
 }
 
-void BlockGame::GetMouseCursor(bool& pressed, int& x, int&y) const {
+void BlockGame::GetMouseCursor(bool& pressed, int& x, int& y) const {
 	if (mouse_cursorx < 0 || mouse_cursory < 0 || mouse_cursorx >=6 || mouse_cursory > 13) {
 		pressed = false;
 		x = 0;
@@ -1913,7 +1912,7 @@ void BlockGame::MouseDown(int x, int y) {
 	}
 	mouse_cursorx = x;
 	mouse_cursory = y;
-} 
+}
 
 void BlockGame::MouseMove(int x) {
 	if (AI_Enabled) {

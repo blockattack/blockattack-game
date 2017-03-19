@@ -97,7 +97,7 @@ int PuzzleLevelSelect(int Type) {
 		SDL_Event event;
 		while ( SDL_PollEvent(&event) ) {
 			UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-			
+
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				levelNr = -1;

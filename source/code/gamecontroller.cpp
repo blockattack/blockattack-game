@@ -54,14 +54,14 @@ static const char* GameControllerGetName(SDL_GameController* gamecontroller) {
 static std::string GetGuidAsHex(const SDL_JoystickGUID& guid) {
 	std::string ret;
 	char buffer[3];
-	for(size_t j = 0; j < 16; j++) {
+	for (size_t j = 0; j < 16; j++) {
 		snprintf(buffer, sizeof(buffer), "%02X", guid.data[j]);
 		ret += buffer;
 	}
 	return ret;
 }
 
-static std::map<std::string, int> gamecontrollers_assigned; 
+static std::map<std::string, int> gamecontrollers_assigned;
 
 static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
 	Config::getInstance()->setDefault("gc_AllToOnePlayer", "0");
@@ -75,7 +75,7 @@ static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
 	int player = Config::getInstance()->getInt(configName) + gamecontrollers_assigned[guidAsHex];
 	gamecontrollers_assigned[guidAsHex]++; //Next controller with same guid should be assigned to different player.
 	//std::cout << "Guid: " << guidAsHex << "\n";
-	
+
 	if (player%2==0) {
 		return 2;  //Even number means player 2
 	}
@@ -95,7 +95,7 @@ void InitGameControllers() {
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 		if (SDL_IsGameController(i)) {
 			controller = SDL_GameControllerOpen(i);
-			SDL_Joystick *j = SDL_GameControllerGetJoystick(controller);
+			SDL_Joystick* j = SDL_GameControllerGetJoystick(controller);
 			SDL_JoystickID instanceId = SDL_JoystickInstanceID(j);
 			SDL_JoystickGUID guid = SDL_JoystickGetGUID(j);
 			int assingToPlayer = GetNextPlayerByGui(guid);

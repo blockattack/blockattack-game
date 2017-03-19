@@ -49,6 +49,26 @@ static void SaveReplayToFile(const SavedReplayStruct& sr, const std::string& fil
 	sago::WriteFileContent(filename.c_str(), ss.str());
 }
 
+static void LoadReplayFromPhysFile(SavedReplayStruct& sr, const std::string& filename) {
+	std::string filecontent = sago::GetFileContent(filename.c_str());
+	std::stringstream ss(filecontent);
+	{
+		cereal::JSONInputArchive archive(ss);
+		archive(cereal::make_nvp("savedReplay", sr));
+	}
+}
+
+void LoadReplay(const std::string& filename, BlockGameInfo& game1, BlockGameInfo& game2) {
+	SavedReplayStruct sr;
+	LoadReplayFromPhysFile(sr, filename);
+	if (sr.playerInfo.size() > 0) {
+		game1 = sr.playerInfo.at(0);
+	}
+	if (sr.playerInfo.size() > 1) {
+		game2 = sr.playerInfo.at(1);
+	}
+}
+
 void SaveReplay(const BlockGameInfo& game1) {
 	SavedReplayStruct sr;
 	sr.numberOfPlayers = 1;

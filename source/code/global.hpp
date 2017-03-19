@@ -34,7 +34,7 @@ void MainMenu();
 void ResetFullscreen();
 void RunGameState(sago::GameStateInterface& state );
 
-enum class Gametype { SinglePlayerEndless=0, SinglePlayerTimeTrial=1, StageClear=2, Puzzle=3, SinglePlayerVs=4, TwoPlayerTimeTrial=10, TwoPlayerVs=11  };
+enum class Gametype { SinglePlayerEndless=0, SinglePlayerTimeTrial=1, StageClear=2, Puzzle=3, SinglePlayerVs=4, TwoPlayerTimeTrial=10, TwoPlayerVs=11, Replay=100  };
 
 int runGame(Gametype gametype,int level);
 bool OpenDialogbox(int x, int y, std::string& name, const std::string& header);
@@ -55,6 +55,7 @@ struct GlobalData {
 	bool MusicEnabled;			//true if background music is enabled
 	bool SoundEnabled;			//true if sound effects is enabled
 	bool bFullscreen;			//true if game is running fullscreen
+	std::string replayArgument; //Name of the replay to play (if given as a commandline argument)
 	std::string player1name;
 	std::string player2name;
 	SDL_Renderer *screen = nullptr;        //The whole screen;
