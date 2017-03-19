@@ -78,6 +78,7 @@ This project is a bit unconversionel because I didn't know any better at the tim
  * source/misc - Misc stuff. Code related tool that are used for development but not part of the final product.
  * source/misc/astyle - Helper script that enforces code style using the "astyle"-program
  * source/misc/cmake - Files needed by CMake
+ * source/misc/docker - Docker files used by Travis CI  (but can just as well be used for local testing and release builds)
  * source/misc/icons - Icons for the installer
  * source/misc/screenshots - Screen shots like the one in this README file.
  * source/misc/translation - Translations and related tools and scripts
