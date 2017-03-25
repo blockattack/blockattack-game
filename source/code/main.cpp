@@ -493,9 +493,6 @@ public:
 
 static ExplosionManager theExplosionManager;
 
-#include "TextManager.hpp"
-
-static TextManager theTextManager;
 
 //Here comes the Block Game object
 #include "BlockGame.hpp"
@@ -593,14 +590,16 @@ static void DrawBalls() {
 		if (theExplosionManager.explosionUsed[i]) {
 			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],globalData.screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
 		}
-		if (theTextManager.textUsed[i]) {
-			int x = theTextManager.textArray[i].getX()-12;
-			int y = theTextManager.textArray[i].getY()-12;
+	} //for
+	for (int i = 0; i < globalData.theTextManager.maxNumberOfTexts; ++i) {
+		if (globalData.theTextManager.textUsed[i]) {
+			int x = globalData.theTextManager.textArray[i].getX()-12;
+			int y = globalData.theTextManager.textArray[i].getY()-12;
 			DrawIMG(iChainFrame,globalData.screen,x,y);
 
-			nf_standard_small_font.draw(globalData.screen, x+12,y+7, NFont::CENTER, "%s",theTextManager.textArray[i].getText());
+			nf_standard_small_font.draw(globalData.screen, x+12,y+7, NFont::CENTER, "%s", globalData.theTextManager.textArray[i].getText());
 		}
-	} //for
+	}
 }    //DrawBalls
 
 
@@ -1090,7 +1089,7 @@ int main(int argc, char* argv[]) {
 		InitGameControllers();
 		TTF_Init();
 		atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
-		theTextManager = TextManager();
+		globalData.theTextManager = TextManager();
 
 		//Open Audio
 		if (!globalData.NoSound) {
@@ -1435,7 +1434,7 @@ int runGame(Gametype gametype, int level) {
 		//updates the balls and explosions:g
 		theBallManager.update();
 		theExplosionManager.update();
-		theTextManager.update();
+		globalData.theTextManager.update();
 
 		bool mustWriteScreenshot = false;
 

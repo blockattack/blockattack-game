@@ -29,6 +29,7 @@ http://www.blockattack.net
 #include "sago/SagoSpriteHolder.hpp"
 #include "highscore.h"
 #include "sago/GameStateInterface.hpp"
+#include "TextManager.hpp"
 
 void MainMenu();
 void ResetFullscreen();
@@ -69,6 +70,8 @@ struct GlobalData {
 	Highscore theTopScoresEndless;      //Stores highscores for endless
 	Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
+	
+	TextManager theTextManager;
 
 	//The xsize and ysize are updated everytime the background is drawn
 	int xsize = 1024;

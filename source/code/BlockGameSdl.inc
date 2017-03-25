@@ -22,6 +22,7 @@ http://www.blockattack.net
 */
 
 #include "BlockGame.hpp"
+#include "global.hpp"
 
 
 class BlockGameSdl : public BlockGame {
@@ -93,7 +94,7 @@ public:
 	}
 
 	void AddText(int x, int y, const std::string& text, int time) const override {
-		theTextManager.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
+		globalData.theTextManager.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
 	}
 
 	void AddBall(int x, int y, bool right, int color) const  override {

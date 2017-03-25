@@ -24,12 +24,13 @@ http://www.blockattack.net
 #ifndef TEXTMANAGER_HPP
 #define TEXTMANAGER_HPP
 
+#include <string>
 
 class TextMessage {
 private:
 	int x = 0;
 	int y = 0;
-	string textt;
+	std::string textt;
 	unsigned long int time = 0;
 	unsigned long int placeTime = 0; //Then the text was placed
 public:
@@ -39,7 +40,7 @@ public:
 
 	//constructor:
 	TextMessage(int X, int Y,const char* Text,unsigned int Time) {
-		placeTime = currentTime;
+		placeTime = SDL_GetTicks();
 		x = X;
 		y = Y;
 		textt = Text;
@@ -48,7 +49,7 @@ public:
 
 	//true if the text has expired
 	bool removeMe() {
-		return currentTime-placeTime>time;
+		return SDL_GetTicks()-placeTime>time;
 	}
 
 	int getX() {
@@ -65,8 +66,8 @@ public:
 };  //text popup
 
 class TextManager {
-	static const int maxNumberOfTexts = 6*12*2*2;
 public:
+	static const int maxNumberOfTexts = 6*12*2*2;
 	TextMessage textArray[maxNumberOfTexts];
 	bool textUsed[maxNumberOfTexts];
 
@@ -76,7 +77,7 @@ public:
 		}
 	}
 
-	int addText(int x, int y,string Text,unsigned int Time) {
+	int addText(int x, int y, const std::string& Text,unsigned int Time) {
 		int textNumber = 0;
 		while (textNumber<maxNumberOfTexts && textUsed[textNumber]) {
 			textNumber++;
@@ -84,14 +85,12 @@ public:
 		if (textNumber==maxNumberOfTexts) {
 			return -1;
 		}
-		currentTime = SDL_GetTicks();
 		textArray[textNumber] = TextMessage(x,y,Text.c_str(),Time);
 		textUsed[textNumber] = true;
 		return 1;
 	}  //addText
 
 	void update() {
-		currentTime = SDL_GetTicks();
 		for (int i = 0; i<maxNumberOfTexts; i++) {
 
 			if (textUsed[i]) {
