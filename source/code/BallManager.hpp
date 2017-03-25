@@ -24,6 +24,7 @@ http://www.blockattack.net
 #ifndef BALLMANAGER_HPP
 #define BALLMANAGER_HPP
 
+#include <array>
 
 extern GlobalData globalData;
 
@@ -93,24 +94,24 @@ public:
 	}
 };  //aBall
 
-static const int maxNumberOfBalls = 6*12*2*2;
 
 class BallManager {
+	static const int maxNumberOfBalls = 6*12*2*2;
 public:
-	ABall ballArray[maxNumberOfBalls];
+	std::array<ABall, maxNumberOfBalls> ballArray;
 
 	BallManager() {
 	}
 
 	//Adds a ball to the screen at given coordiantes, traveling right or not with color
 	int addBall(int x, int y,bool right,int color) {
-		int ballNumber = 0;
+		size_t ballNumber = 0;
 		//Find a free ball
-		while (ballNumber<maxNumberOfBalls && ballArray[ballNumber].inUse) {
+		while (ballNumber<ballArray.size() && ballArray[ballNumber].inUse) {
 			ballNumber++;
 		}
 		//Could not find a free ball, return -1
-		if (ballNumber==maxNumberOfBalls) {
+		if (ballNumber==ballArray.size()) {
 			return -1;
 		}
 		ballArray[ballNumber] = ABall(x,y,right,color);
@@ -119,7 +120,7 @@ public:
 	}  //addBall
 
 	void update() {
-		for (int i = 0; i<maxNumberOfBalls; i++) {
+		for (size_t i = 0; i<ballArray.size(); i++) {
 
 			if (ballArray[i].inUse) {
 				ballArray[i].update();

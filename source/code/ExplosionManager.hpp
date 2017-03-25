@@ -24,6 +24,8 @@ http://www.blockattack.net
 #ifndef EXPLOSIONMANAGER_HPP
 #define EXPLOSIONMANAGER_HPP
 
+#include <array>
+
 //a explosions, non moving
 class AnExplosion {
 private:
@@ -69,19 +71,19 @@ public:
 };  //nExplosion
 
 class ExplosionManager {
-public:
 	static const int maxNumberOfExplosions = 6*12*2*2;
-	AnExplosion explosionArray[maxNumberOfExplosions];
+public:
+	std::array<AnExplosion, maxNumberOfExplosions> explosionArray;
 
 	ExplosionManager() {
 	}
 
 	int addExplosion(int x, int y) {
-		int explosionNumber = 0;
-		while ( explosionNumber<maxNumberOfExplosions && explosionArray[explosionNumber].inUse) {
+		size_t explosionNumber = 0;
+		while ( explosionNumber<explosionArray.size() && explosionArray[explosionNumber].inUse) {
 			explosionNumber++;
 		}
-		if (explosionNumber==maxNumberOfExplosions) {
+		if (explosionNumber==explosionArray.size()) {
 			return -1;
 		}
 		explosionArray[explosionNumber] = AnExplosion(x,y);
@@ -90,7 +92,7 @@ public:
 	}  //addBall
 
 	void update() {
-		for (int i = 0; i<maxNumberOfExplosions; i++) {
+		for (size_t i = 0; i<explosionArray.size(); i++) {
 
 			if (explosionArray[i].inUse) {
 				if (explosionArray[i].removeMe()) {

@@ -396,10 +396,12 @@ void OpenScoresDisplay() {
 
 //Draws the balls and explosions
 static void DrawBalls() {
-	for (int i = 0; i< maxNumberOfBalls; i++) {
+	for (size_t i = 0; i< theBallManager.ballArray.size(); i++) {
 		if (theBallManager.ballArray[i].inUse) {
 			DrawIMG(balls[theBallManager.ballArray[i].getColor()],globalData.screen,theBallManager.ballArray[i].getX(),theBallManager.ballArray[i].getY());
 		} //if used
+	}
+	for (size_t i = 0; i< theExplosionManager.explosionArray.size(); i++) {
 		if (theExplosionManager.explosionArray[i].inUse) {
 			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],globalData.screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
 		}
