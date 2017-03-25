@@ -25,6 +25,7 @@ http://www.blockattack.net
 #define TEXTMANAGER_HPP
 
 #include <string>
+#include <array>
 
 class TextMessage {
 private:
@@ -67,19 +68,19 @@ public:
 };  //text popup
 
 class TextManager {
-public:
 	static const int maxNumberOfTexts = 6*12*2*2;
-	TextMessage textArray[maxNumberOfTexts];
+public:
+	std::array<TextMessage, maxNumberOfTexts> textArray;
 
 	TextManager() {
 	}
 
 	int addText(int x, int y, const std::string& Text,unsigned int Time) {
-		int textNumber = 0;
-		while (textNumber<maxNumberOfTexts && textArray[textNumber].inUse) {
+		size_t textNumber = 0;
+		while (textNumber<textArray.size() && textArray[textNumber].inUse) {
 			textNumber++;
 		}
-		if (textNumber==maxNumberOfTexts) {
+		if (textNumber==textArray.size()) {
 			return -1;
 		}
 		textArray[textNumber] = TextMessage(x,y,Text.c_str(),Time);
@@ -88,7 +89,7 @@ public:
 	}  //addText
 
 	void update() {
-		for (int i = 0; i<maxNumberOfTexts; i++) {
+		for (size_t i = 0; i<textArray.size(); i++) {
 
 			if (textArray[i].inUse) {
 				if (textArray[i].removeMe()) {

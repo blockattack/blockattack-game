@@ -591,7 +591,7 @@ static void DrawBalls() {
 			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],globalData.screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
 		}
 	} //for
-	for (int i = 0; i < globalData.theTextManager.maxNumberOfTexts; ++i) {
+	for (size_t i = 0; i < globalData.theTextManager.textArray.size(); ++i) {
 		if (globalData.theTextManager.textArray[i].inUse) {
 			int x = globalData.theTextManager.textArray[i].getX()-12;
 			int y = globalData.theTextManager.textArray[i].getY()-12;
