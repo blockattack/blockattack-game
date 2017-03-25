@@ -312,6 +312,7 @@ private:
 	int color = 0;
 	unsigned long int lastTime = 0;
 public:
+	bool inUse = false;
 
 	ABall() {
 	}
@@ -365,19 +366,15 @@ static const int maxNumberOfBalls = 6*12*2*2;
 class BallManager {
 public:
 	ABall ballArray[maxNumberOfBalls];
-	bool ballUsed[maxNumberOfBalls];
 
 	BallManager() {
-		for (int i=0; i<maxNumberOfBalls; i++) {
-			ballUsed[i] = false;
-		}
 	}
 
 	//Adds a ball to the screen at given coordiantes, traveling right or not with color
 	int addBall(int x, int y,bool right,int color) {
 		int ballNumber = 0;
 		//Find a free ball
-		while (ballNumber<maxNumberOfBalls && ballUsed[ballNumber]) {
+		while (ballNumber<maxNumberOfBalls && ballArray[ballNumber].inUse) {
 			ballNumber++;
 		}
 		//Could not find a free ball, return -1
@@ -386,7 +383,7 @@ public:
 		}
 		currentTime = SDL_GetTicks();
 		ballArray[ballNumber] = ABall(x,y,right,color);
-		ballUsed[ballNumber] = true;
+		ballArray[ballNumber].inUse = true;
 		return 1;
 	}  //addBall
 
@@ -394,10 +391,10 @@ public:
 		currentTime = SDL_GetTicks();
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
-			if (ballUsed[i]) {
+			if (ballArray[i].inUse) {
 				ballArray[i].update();
 				if (ballArray[i].getY()>globalData.ysize+100 || ballArray[i].getX()>globalData.xsize || ballArray[i].getX()<-ballSize) {
-					ballUsed[i] = false;
+					ballArray[i].inUse = false;
 				}
 			}
 		}
@@ -420,6 +417,7 @@ private:
 	//How many images there are in the animation
 	unsigned long int placeTime = 0; //Then the explosion occored
 public:
+	bool inUse = false;
 
 	AnExplosion() {
 	}
@@ -454,17 +452,13 @@ public:
 class ExplosionManager {
 public:
 	AnExplosion explosionArray[maxNumberOfBalls];
-	bool explosionUsed[maxNumberOfBalls];
 
 	ExplosionManager() {
-		for (int i=0; i<maxNumberOfBalls; i++) {
-			explosionUsed[i] = false;
-		}
 	}
 
 	int addExplosion(int x, int y) {
 		int explosionNumber = 0;
-		while ( explosionNumber<maxNumberOfBalls && explosionUsed[explosionNumber]) {
+		while ( explosionNumber<maxNumberOfBalls && explosionArray[explosionNumber].inUse) {
 			explosionNumber++;
 		}
 		if (explosionNumber==maxNumberOfBalls) {
@@ -472,7 +466,7 @@ public:
 		}
 		currentTime = SDL_GetTicks();
 		explosionArray[explosionNumber] = AnExplosion(x,y);
-		explosionUsed[explosionNumber] = true;
+		explosionArray[explosionNumber].inUse = true;
 		return 1;
 	}  //addBall
 
@@ -480,9 +474,9 @@ public:
 		currentTime = SDL_GetTicks();
 		for (int i = 0; i<maxNumberOfBalls; i++) {
 
-			if (explosionUsed[i]) {
+			if (explosionArray[i].inUse) {
 				if (explosionArray[i].removeMe()) {
-					explosionUsed[i] = false;
+					explosionArray[i].inUse = false;
 				}
 			}
 		}
@@ -584,10 +578,10 @@ void OpenScoresDisplay() {
 //Draws the balls and explosions
 static void DrawBalls() {
 	for (int i = 0; i< maxNumberOfBalls; i++) {
-		if (theBallManager.ballUsed[i]) {
+		if (theBallManager.ballArray[i].inUse) {
 			DrawIMG(balls[theBallManager.ballArray[i].getColor()],globalData.screen,theBallManager.ballArray[i].getX(),theBallManager.ballArray[i].getY());
 		} //if used
-		if (theExplosionManager.explosionUsed[i]) {
+		if (theExplosionManager.explosionArray[i].inUse) {
 			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],globalData.screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
 		}
 	} //for
