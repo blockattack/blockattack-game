@@ -34,7 +34,8 @@ private:
 	unsigned long int time = 0;
 	unsigned long int placeTime = 0; //Then the text was placed
 public:
-
+	bool inUse = false;
+	
 	TextMessage() {
 	}
 
@@ -69,33 +70,29 @@ class TextManager {
 public:
 	static const int maxNumberOfTexts = 6*12*2*2;
 	TextMessage textArray[maxNumberOfTexts];
-	bool textUsed[maxNumberOfTexts];
 
 	TextManager() {
-		for (int i=0; i<maxNumberOfTexts; i++) {
-			textUsed[i] = false;
-		}
 	}
 
 	int addText(int x, int y, const std::string& Text,unsigned int Time) {
 		int textNumber = 0;
-		while (textNumber<maxNumberOfTexts && textUsed[textNumber]) {
+		while (textNumber<maxNumberOfTexts && textArray[textNumber].inUse) {
 			textNumber++;
 		}
 		if (textNumber==maxNumberOfTexts) {
 			return -1;
 		}
 		textArray[textNumber] = TextMessage(x,y,Text.c_str(),Time);
-		textUsed[textNumber] = true;
+		textArray[textNumber].inUse = true;
 		return 1;
 	}  //addText
 
 	void update() {
 		for (int i = 0; i<maxNumberOfTexts; i++) {
 
-			if (textUsed[i]) {
+			if (textArray[i].inUse) {
 				if (textArray[i].removeMe()) {
-					textUsed[i] = false;
+					textArray[i].inUse = false;
 				}
 			}
 		}

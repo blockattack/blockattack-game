@@ -592,7 +592,7 @@ static void DrawBalls() {
 		}
 	} //for
 	for (int i = 0; i < globalData.theTextManager.maxNumberOfTexts; ++i) {
-		if (globalData.theTextManager.textUsed[i]) {
+		if (globalData.theTextManager.textArray[i].inUse) {
 			int x = globalData.theTextManager.textArray[i].getX()-12;
 			int y = globalData.theTextManager.textArray[i].getY()-12;
 			DrawIMG(iChainFrame,globalData.screen,x,y);
