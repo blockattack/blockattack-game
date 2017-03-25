@@ -117,12 +117,7 @@ static bool drawBalls;             //if true balls are drawed to the screen, thi
 static bool editorMode = false;
 static bool editorModeTest = false;
 
-//other ball constants:
-const double gravity = 200.8; //acceleration
-const double startVelocityY = 50.0;
-const double VelocityX = 50.0;
-const int ballSize = 16;
-const double minVelocity = 200.0;
+
 
 //global settings (reset everytime the game starts)
 static Uint8 player1Speed=0;

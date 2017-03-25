@@ -30,6 +30,7 @@ http://www.blockattack.net
 #include "highscore.h"
 #include "sago/GameStateInterface.hpp"
 #include "TextManager.hpp"
+#include "ExplosionManager.hpp"
 
 void MainMenu();
 void ResetFullscreen();
@@ -79,6 +80,8 @@ struct GlobalData {
 	int mousex = 0;
 	int mousey = 0;
 };
+
+#include "BallManager.hpp"
 
 extern GlobalData globalData;
 
