@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 blockattack - Block Attack - Rise of the Blocks
-Copyright (C) 2005-2012 Poul Sander
+Copyright (C) 2005-2017 Poul Sander
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ int runGame(Gametype gametype,int level);
 bool OpenDialogbox(int x, int y, std::string& name, const std::string& header);
 void DrawBackground(SDL_Renderer* target);
 void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey);
+void DrawIMG(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y);
+void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy);
 
 struct GlobalData {
 	sago::SagoSprite bHighScore;

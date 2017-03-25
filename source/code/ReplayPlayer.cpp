@@ -25,6 +25,15 @@ http://www.blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "MenuSystem.h"
+//#include "BlockGameSdl.inc"
+
+
+
+/*static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
+	game1.SetTopXY(50, globalData.ysize/2-284);
+	game2.SetTopXY(globalData.xsize-500, globalData.ysize/2-284);
+}*/
+
 
 ReplayPlayer::ReplayPlayer() {
 }
@@ -38,6 +47,8 @@ bool ReplayPlayer::IsActive() {
 
 void ReplayPlayer::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
+	//MoveBlockGameSdls(theGame, theGame2);
+	//DrawEverything(globalData.xsize, globalData.ysize, &theGame, &theGame2);
 }
 
 void ReplayPlayer::ProcessInput(const SDL_Event& event, bool& processed) {
