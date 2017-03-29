@@ -35,7 +35,7 @@ http://www.blockattack.net
 #include <map>
 #include <stdlib.h>
 #include <libintl.h>
-#include <boost/format.hpp>
+#include <ctime>
 
 
 #define _(String) gettext (String)

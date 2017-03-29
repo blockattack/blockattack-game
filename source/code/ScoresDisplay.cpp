@@ -164,7 +164,7 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 	globalData.nf_button_font.draw(globalData.screen, nextX+60,nextY+10, NFont::CENTER,_("Next"));
 
 	//Draw page number
-	string pageXofY = (boost::format(_("Page %1% of %2%") )%(page+1)%numberOfPages).str();
+	string pageXofY = SPrintStringF(_("Page %i of %i"), page+1, numberOfPages);
 	NFont_Write(globalData.screen, globalData.xsize/2-globalData.nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2, globalData.ysize-60, pageXofY.c_str());
 }
 

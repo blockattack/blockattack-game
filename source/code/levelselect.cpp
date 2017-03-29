@@ -193,7 +193,7 @@ int PuzzleLevelSelect(int Type) {
 
 			NFont_Write(globalData.screen, 200,200,scoreString.c_str());
 			NFont_Write(globalData.screen, 200,250,timeString.c_str());
-			string totalString = (boost::format(_("Total score: %1% in %2%:%3%"))%totalScore%(totalTime/1000/60)%((totalTime/1000)%60)).str();
+			string totalString = SPrintStringF(_("Total score: %i in %i:%02i"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
 			NFont_Write(globalData.screen, 200,600,totalString.c_str());
 		}
 

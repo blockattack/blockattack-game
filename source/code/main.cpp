@@ -1115,7 +1115,7 @@ int main(int argc, char* argv[]) {
 		commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
 		if (globalData.verboseLevel) {
-			cout << boost::format("Block Attack - Rise of the Blocks ran for: %1% hours %2% mins and %3% secs") % ct.hours % ct.minutes % ct.seconds << "\n";
+			cout << SPrintStringF("Block Attack - Rise of the Blocks ran for: %i hours %i mins and %i secs", ct.hours, ct.minutes, ct.seconds) << "\n";
 		}
 
 		ct = TimeHandler::addTime("totalTime",ct);
