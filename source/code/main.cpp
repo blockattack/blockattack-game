@@ -772,7 +772,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("no-auto-scale", "Do not automatically auto scale")
 	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
+#ifdef REPLAY_IMPLEMENTED
 	("play-replay", boost::program_options::value<string>(), "Start a replay")
+#endif
 	("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
 	        "Default: \"%s\"", LOCALEDIR).c_str())
 	("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
@@ -1658,6 +1660,7 @@ int runGame(Gametype gametype, int level) {
 			globalData.theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
 			theGame.EndlessHighscoreEvent();
 		}
+#ifdef REPLAY_IMPLEMENTED
 		if (theGame.isGameOver() && saveReplay) {
 			if (twoPlayers && theGame2.isGameOver()) {
 				saveReplay = false;
@@ -1668,6 +1671,7 @@ int runGame(Gametype gametype, int level) {
 				SaveReplay(theGame.GetBlockGameInfo());
 			}
 		}
+#endif
 
 		//Once evrything has been checked, update graphics
 		MoveBlockGameSdls(theGame, theGame2);
