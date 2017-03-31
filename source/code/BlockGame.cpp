@@ -628,7 +628,6 @@ bool BlockGame::CreateGarbage(int wide, int height) {
 		if (nextGarbageNumber>999999) {
 			nextGarbageNumber = 10;
 		}
-		//bGarbageFallLeft = !(bGarbageFallLeft);
 		return true;
 	}
 	return false;
@@ -805,7 +804,6 @@ void BlockGame::ClearBlocks() {
 			if (board[i][j]!=-1) {
 				if ((setChain)&&((board[i][j]/GARBAGE)%10!=1)&&((board[i][j]/GARBAGE)%10!=2)) {
 					board[i][j]=((board[i][j]%CHAINPLACE)+CHAINPLACE*chain);
-					//somethingsGottaFall = true;
 				}
 			}
 		}
@@ -893,7 +891,6 @@ void BlockGame::ClearBlocks() {
 	chainSize[chain]++;
 	for (int i=0; i<30; i++) {
 		for (int j=0; j<6; j++) {
-			//if(board[j][i]/10==(BLOCKWAIT+10*FALLTIME)/10)
 			if (toBeCleared[j][i]) {
 				board[j][i]=(board[j][i]%10000000)+chain*10000000;
 			}
