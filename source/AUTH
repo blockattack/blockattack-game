@@ -8,113 +8,90 @@ Data from the Dietrich Radel (originally part of Trackballs) is under GPL v2
 Poul Sander's files are multi licensed under "GPL v2 or later" OR "CC-BY-SA any version"
 
 Misc:
-blockAttack.ico			Poul Sander
+blockAttack.ico         Poul Sander
 
 /fonts/
-freeserif.ttf			Free Software Foundation
-penguinattack.ttf		Dustin Norlander - GPLv2
+freeserif.ttf           Free Software Foundation
+penguinattack.ttf       Dustin Norlander - GPLv2
 
 /textures/
-back_board.png			qubodup
-background.png			qubodup
-ball_blue.png			qubodup
-ball_gray.png			qubodup
-ball_green.png			qubodup
-ball_purple.png			qubodup
-ball_red.png			qubodup
-ball_turkish.png		qubodup
-ball_yellow.png			qubodup
-b_blank.png			Poul Sander
-b_exit.png			qubodup
-b_highscore.png			qubodup
-black_back_ground.png		Poul Sander
-black_line.png			Poul Sander
-blue.png			qubodup
-board_back_back.png		qubodup
-bomb.png			Poul Sander
-chain_frame.png			Poul Sander
-counter_1.png			Poul Sander
-counter_2.png			Poul Sander
-counter_3.png			Poul Sander
-crossover.png			Poul Sander
-cursor.png			Poul Sander
-explosion0.png			openarena-svn887:/textures/sfx/130boom
-explosion1.png			openarena-svn887:/textures/sfx/130boom
-explosion2.png			openarena-svn887:/textures/sfx/130boom
-explosion3.png			openarena-svn887:/textures/sfx/130boom
-fallback.png			Poul Sander
-garbage_bl.png			qubodup
-garbage_b.png			qubodup
-garbage_br.png			qubodup
-garbage_fill.png		qubodup
-garbage_gml.png			qubodup
-garbage_gm.png			qubodup
-garbage_gmr.png			qubodup
-garbage_l.png			qubodup
-garbage_ml.png			qubodup
-garbage_m.png			qubodup
-garbage_mr.png			qubodup
-garbage_r.png			qubodup
-garbage_tl.png			qubodup
-garbage_t.png			qubodup
-garbage_tr.png			qubodup
-green.png			qubodup
-grey.png			qubodup
-i_check_box_area.png		Poul Sander
-icon.png			Poul Sander
-i_draw.png			Poul Sander
-i_game_over.png			Poul Sander
-i_level_check_box_marked.png	Poul Sander
-i_level_check_box.png		Poul Sander
-i_level_check.png		Poul Sander
-i_loser.png			Poul Sander
-i_stage_clear_limit.png		Poul Sander
-i_winner.png			Poul Sander
-menu_marked.png                 Derived from UI pack by Kenney Vleugels (www.kenney.nl) (CC0 license)
-menu_unmarked.png               Derived from UI pack by Kenney Vleugels (www.kenney.nl) (CC0 license)
-mouse.png			Poul Sander
-purple.png			qubodup
-ready.png			Poul Sander
-red.png				qubodup
-smileys0.png			qubodup
-smileys1.png			qubodup
-smileys2.png			qubodup
-smileys3.png			qubodup
-trans_cover.png			Poul Sander
-turkish.png			qubodup
-yellow.png			qubodup
+back_board.png          qubodup
+background.png          qubodup
+ball_blue.png           qubodup
+ball_gray.png           qubodup
+ball_green.png          qubodup
+ball_purple.png         qubodup
+ball_red.png            qubodup
+ball_turkish.png        qubodup
+ball_yellow.png         qubodup
+b_blank.png             Poul Sander
+b_exit.png              qubodup
+b_highscore.png         qubodup
+black_back_ground.png   Poul Sander
+black_line.png          Poul Sander
+blue.png                qubodup
+board_back_back.png     qubodup
+bomb.png                Poul Sander
+chain_frame.png         Poul Sander
+counter_1.png           Poul Sander
+counter_2.png           Poul Sander
+counter_3.png           Poul Sander
+crossover.png           Poul Sander
+cursor.png              Poul Sander
+explosion0.png          openarena-svn887:/textures/sfx/130boom
+explosion1.png          openarena-svn887:/textures/sfx/130boom
+explosion2.png          openarena-svn887:/textures/sfx/130boom
+explosion3.png          openarena-svn887:/textures/sfx/130boom
+fallback.png            Poul Sander
+garbage_bl.png          qubodup
+garbage_b.png           qubodup
+garbage_br.png          qubodup
+garbage_fill.png        qubodup
+garbage_gml.png         qubodup
+garbage_gm.png          qubodup
+garbage_gmr.png         qubodup
+garbage_l.png           qubodup
+garbage_ml.png          qubodup
+garbage_m.png           qubodup
+garbage_mr.png          qubodup
+garbage_r.png           qubodup
+garbage_tl.png          qubodup
+garbage_t.png           qubodup
+garbage_tr.png          qubodup
+green.png               qubodup
+grey.png                qubodup
+i_check_box_area.png    Poul Sander
+icon.png                Poul Sander
+i_draw.png              Poul Sander
+i_game_over.png         Poul Sander
+i_level_check_box_marked.png    Poul Sander
+i_level_check_box.png   Poul Sander
+i_level_check.png       Poul Sander
+i_loser.png             Poul Sander
+i_stage_clear_limit.png Poul Sander
+i_winner.png            Poul Sander
+menu_marked.png         Derived from UI pack by Kenney Vleugels (www.kenney.nl) (CC0 license)
+menu_unmarked.png       Derived from UI pack by Kenney Vleugels (www.kenney.nl) (CC0 license)
+mouse.png               Poul Sander
+purple.png              qubodup
+ready.png               Poul Sander
+red.png                 qubodup
+smileys0.png            qubodup
+smileys1.png            qubodup
+smileys2.png            qubodup
+smileys3.png            qubodup
+trans_cover.png         Poul Sander
+turkish.png             qubodup
+yellow.png              qubodup
 
 /sound/
-pop.ogg				openarena-svn887:/sound/weapons/rocket/rockf1a.wav
-cameraclick.ogg			openarean-svn887:/sound/misc/w_pkup.wav			
-typing.ogg			openarena-svn887:/sound/world/clack.wav
-counter.ogg			openarena-svn900:/sound/feedback/hitlo.wav
-counter_final.ogg		openarena-svn900:/sound/feedback/hit.wav
-applause.ogg			(CC-BY 3.0) Blender Foundation - Cut by LeeZH (http://opengameart.org/content/applause)
+pop.ogg                 openarena-svn887:/sound/weapons/rocket/rockf1a.wav
+cameraclick.ogg         openarean-svn887:/sound/misc/w_pkup.wav
+typing.ogg              openarena-svn887:/sound/world/clack.wav
+counter.ogg             openarena-svn900:/sound/feedback/hitlo.wav
+counter_final.ogg       openarena-svn900:/sound/feedback/hit.wav
+applause.ogg            (CC-BY 3.0) Blender Foundation - Cut by LeeZH (http://opengameart.org/content/applause)
 
 /music/
-bgmusic.ogg			"Life by Design", by Dietrich Radel (GPL)
-highbeat.ogg			derived from "Genesis (In The Beginning)", by Dietrich Radel (GPL)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+bgmusic.ogg             "Life by Design", by Dietrich Radel (GPL)
+highbeat.ogg            derived from "Genesis (In The Beginning)", by Dietrich Radel (GPL)
