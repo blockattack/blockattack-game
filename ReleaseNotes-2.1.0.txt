@@ -1,0 +1,36 @@
+This is Block Attack - Rise of the Blocks - version 2.1.0
+
+This has the first gameplay change in a long time. In the previous version the rise would stop
+while clearing. It could stop for several seconds. This is no longer the case. The time is now
+bound and will lower as the game progresses.
+
+The update of the model has also been changed. This should make it more smooth in some of the
+high speed Stage Clear levels.
+
+Changes since 2.0.1:
+* There is now an upper limit on how long the rise will stop
+* The internal updated of the game has been updated from 20 times a second to 100 times a second
+* Menu fonts have been changed
+* Window is now resizeable by default
+* jsoncpp removed as a dependency
+* Other code cleanup
+* Docker files are now provided to make compiling even easier
+* Translation strings changed and are now more
+* Updated libraries
+
+About the resize of the window:
+
+The normal resize will simply resize the whole screen. This unfortunately makes the fonts hard to read.
+The size of the screen is not saved!
+You can use the command line argument "--no-auto-scale" to not scale the whole image. Screen size will
+also be saved in this mode and remembered for the next startup.
+
+Known issues:
+Windows 10 with HighDPI: Fonts becomes unreadable. https://github.com/blockattack/blockattack-game/issues/5
+
+
+Thank you
+Thanks to the people that have provided patches or feedback for this release: Paul Wise, mstraube and scootergrisen
+
+
+Feedback can be given on http://www.blockattack.net or https://github.com/blockattack/blockattack-game
