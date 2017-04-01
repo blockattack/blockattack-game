@@ -6,7 +6,7 @@ RUN mkdir -p /staging/blockattack-game
 
 COPY . /staging/blockattack-game
 
-ENV BLOCKATTACK_VERSION 2.1.0-SNAPSHOT
+ENV BLOCKATTACK_VERSION 2.1.0
 
 RUN cd /staging/blockattack-game && \
 ./packdata.sh && \
