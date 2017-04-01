@@ -64,6 +64,7 @@ Section "Game Files" SEC01
   File "..\Game\COPYING.TXT"
   SetOutPath "$INSTDIR\locale\da\LC_MESSAGES"
   File "../source/misc/translation/locale/da/LC_MESSAGES/blockattack_roftb.mo"
+  SetOutPath "$INSTDIR"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
