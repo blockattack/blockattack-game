@@ -26,7 +26,9 @@ You can use the command line argument "--no-auto-scale" to not scale the whole i
 also be saved in this mode and remembered for the next startup.
 
 Known issues:
-Windows 10 with HighDPI: Fonts becomes unreadable. https://github.com/blockattack/blockattack-game/issues/5
+* Windows 10 with HighDPI: Fonts becomes unreadable. https://github.com/blockattack/blockattack-game/issues/5
+* The translation does not work with the shortcuts created by the Windows installer due to a wrong startup path.
+  I have not been able to figure out why
 
 
 Thank you
