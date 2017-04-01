@@ -49,7 +49,7 @@ double str2double(const string& str2parse) {
 	try {
 		return std::stod(str2parse);
 	}
-	catch (std::ios_base::failure& f) {
+	catch (...) {
 		return 0.0;
 	}
 }
@@ -78,7 +78,7 @@ int str2int(const string& str2parse) {
 	try {
 		return std::stoi(str2parse);
 	}
-	catch (std::ios_base::failure& f) {
+	catch (...) {
 		return 0;
 	}
 }
