@@ -1,4 +1,4 @@
-This is Block Attack - Rise of the Blocks - version 2.1.0
+This is Block Attack - Rise of the Blocks - version 2.1.1
 
 This has the first gameplay change in a long time. In the previous version the rise would stop
 while clearing. It could stop for several seconds. This is no longer the case. The time is now
@@ -33,6 +33,7 @@ Known issues:
 
 Thank you
 Thanks to the people that have provided patches or feedback for this release: Paul Wise, mstraube and scootergrisen
+Especially mstraube that discovered a fatal problem just hours after the release of 2.1.0.
 
 
 Feedback can be given on http://www.blockattack.net or https://github.com/blockattack/blockattack-game
