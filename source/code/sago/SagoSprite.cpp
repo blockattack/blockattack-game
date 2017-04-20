@@ -28,7 +28,7 @@ SOFTWARE.
 namespace sago {
 
 struct SagoSprite::SagoSpriteData {
-	SDL_Texture* tex = nullptr;
+	TextureHandler tex;
 	SDL_Rect imgCord{};
 	SDL_Rect origin{};
 	int aniFrames = 0;
@@ -41,7 +41,7 @@ SagoSprite::SagoSprite() {
 
 SagoSprite::SagoSprite(const SagoDataHolder& texHolder, const std::string& texture,const SDL_Rect& initImage,const int animationFrames, const int animationFrameLength) {
 	data = new SagoSpriteData();
-	data->tex = texHolder.getTexturePtr(texture);
+	data->tex = texHolder.getTextureHolder(texture);
 	data->imgCord = initImage;
 	data->aniFrames = animationFrames;
 	data->aniFrameTime = animationFrameLength;
@@ -65,7 +65,7 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) cons
 }
 
 void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h) const {
-	if (!data->tex) {
+	if (!data->tex.get()) {
 		std::cerr << "Texture is null!\n";
 	}
 	SDL_Rect rect = data->imgCord;
@@ -79,7 +79,7 @@ void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y
 	if (h > 0) {
 		pos.h = h;
 	}
-	SDL_RenderCopy(target, data->tex, &rect, &pos);
+	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
 }
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part) const {
@@ -92,7 +92,7 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, cons
 	SDL_Rect pos = rect;
 	pos.x = x;
 	pos.y = y;
-	SDL_RenderCopy(target, data->tex, &rect, &pos);
+	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
 }
 
 void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const {
@@ -138,7 +138,7 @@ void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int 
 		rect.h -= absDiff;
 	}
 
-	SDL_RenderCopy(target, data->tex, &rect, &pos);
+	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
 }
 
 void SagoSprite::SetOrigin(const SDL_Rect& newOrigin) {

@@ -42,6 +42,7 @@ struct SagoDataHolder::SagoDataHolderData {
 	std::vector<SDL_RWops*> rwOpsToFree;
 	std::vector<std::unique_ptr<char[]>> dataToFree;
 	bool verbose = false;
+	Uint64 version = 0;
 	SDL_Renderer* renderer = nullptr;
 };
 
@@ -64,6 +65,7 @@ void SagoDataHolder::invalidateAll(SDL_Renderer* renderer) {
 }
 
 void SagoDataHolder::invalidateAll() {
+	data->version++;
 	for (auto& item : data->textures) {
 		SDL_DestroyTexture(item.second);
 	}
@@ -263,6 +265,29 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 
 void SagoDataHolder::setVerbose(bool value) {
 	data->verbose = value;
+}
+
+Uint64 SagoDataHolder::getVersion() const {
+	return data->version;
+}
+
+TextureHandler::TextureHandler(const SagoDataHolder* holder, const std::string &textureName) {
+	this->holder = holder;
+	this->version = this->holder->getVersion();
+	this->textureName = textureName;
+	this->data = this->holder->getTexturePtr(this->textureName);
+}
+
+SDL_Texture* TextureHandler::get() {
+	if (version != holder->getVersion()) {
+		//The holder has been invalidated
+		this->data = this->holder->getTexturePtr(textureName);
+	}
+	return data;
+}
+
+TextureHandler SagoDataHolder::getTextureHolder(const std::string &textureName) const {
+	return TextureHandler(this, textureName);
 }
 
 } //name space sago

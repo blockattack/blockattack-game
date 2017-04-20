@@ -34,6 +34,20 @@ SOFTWARE.
 
 namespace sago {
 
+class SagoDataHolder;
+
+class TextureHandler {
+public:
+	TextureHandler() {};
+	TextureHandler(const SagoDataHolder* holder, const std::string &textureName);
+	SDL_Texture* get();
+private:
+	std::string textureName;
+	const SagoDataHolder* holder = nullptr;
+	SDL_Texture* data = nullptr;
+	Uint64 version = 0;
+};
+
 class SagoDataHolder {
 public:
 	/**
@@ -48,6 +62,7 @@ public:
 	 * @return  Pointer to the loaded texture
 	 */
 	SDL_Texture* getTexturePtr(const std::string &textureName) const;
+	TextureHandler getTextureHolder(const std::string &textureName) const;
 	TTF_Font* getFontPtr(const std::string &fontName, int ptsize) const;
 	Mix_Music* getMusicPtr(const std::string &musicName) const;
 	Mix_Chunk* getSoundPtr(const std::string &soundName) const;
@@ -63,6 +78,7 @@ public:
 	 * Setting a new renderer might cause all old textures to no longer match the renderer format.
 	 */
 	void invalidateAll(SDL_Renderer* renderer);
+	Uint64 getVersion() const;
 	virtual ~SagoDataHolder();
 private:
 	SagoDataHolder(const SagoDataHolder& base) = delete;
