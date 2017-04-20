@@ -49,33 +49,54 @@ static void printFileWeLoad(const std::string& value) {
 	std::cout << "Loading " << value << "\n";
 }
 
+SagoDataHolder::SagoDataHolder() {
+	data = new SagoDataHolderData();
+}
+
 SagoDataHolder::SagoDataHolder(SDL_Renderer* renderer) {
 	data = new SagoDataHolderData();
 	data->renderer = renderer;
 }
 
-SagoDataHolder::~SagoDataHolder() {
+void SagoDataHolder::invalidateAll(SDL_Renderer* renderer) {
+	invalidateAll();
+	data->renderer = renderer;
+}
+
+void SagoDataHolder::invalidateAll() {
 	for (auto& item : data->textures) {
 		SDL_DestroyTexture(item.second);
 	}
+	data->textures.clear();
 	for (auto& item : data->music) {
 		Mix_FreeMusic(item.second);
 	}
+	data->music.clear();
 	for (auto& item : data->sounds) {
 		Mix_FreeChunk(item.second);
 	}
+	data->sounds.clear();
 	for (auto& item : data->fonts) {
 		for (auto& item2 : item.second) {
 			TTF_CloseFont(item2.second);
 		}
 	}
+	data->fonts.clear();
 	for (auto& item : data->rwOpsToFree) {
 		SDL_FreeRW(item);
 	}
+	data->rwOpsToFree.clear();
+}
+
+SagoDataHolder::~SagoDataHolder() {
+	invalidateAll();
 	delete data;
 }
 
 SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const {
+	if (!data->renderer) {
+		throw std::runtime_error("SagoDataHolder used before setting the renderer");
+	}
 	SDL_Texture* ret = data->textures[textureName];
 	if (ret) {
 		return ret;

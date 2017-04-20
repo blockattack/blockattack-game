@@ -249,7 +249,7 @@ static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
 
 SDL_Window* sdlWindow;
 
-std::unique_ptr<sago::SagoDataHolder> dataHolder;
+sago::SagoDataHolder dataHolder;
 
 void ResetFullscreen() {
 	Mix_HaltMusic();  //We need to reload all data in case the screen type changes. Music must be stopped before unload.
@@ -259,8 +259,8 @@ void ResetFullscreen() {
 	else {
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
-	dataHolder.reset(new sago::SagoDataHolder(globalData.screen));
-	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( *(dataHolder.get()) ) );
+	dataHolder.invalidateAll(globalData.screen);
+	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
 	InitImages(*(globalData.spriteHolder.get()) );
 	SDL_ShowCursor(SDL_DISABLE);
 }

@@ -36,9 +36,14 @@ namespace sago {
 
 class SagoDataHolder {
 public:
+	/**
+	 * The renderer must be set before requesting a texture.
+	 * If the constructor without elements is used then invalidateAll(SDL_Renderer*) must be called before getTexturePtr
+	 */
+	SagoDataHolder();
 	SagoDataHolder(SDL_Renderer* renderer);
 	/**
-	 * Return a pointer to the given texture. The pointer is valid for the lifetime of SagoDataHolder object it was taken from.
+	 * Return a pointer to the given texture. The pointer is valid for the lifetime of SagoDataHolder object it was taken from or invalidateAll is called.
 	 * @param textureName Name of the texture
 	 * @return  Pointer to the loaded texture
 	 */
@@ -47,6 +52,17 @@ public:
 	Mix_Music* getMusicPtr(const std::string &musicName) const;
 	Mix_Chunk* getSoundPtr(const std::string &soundName) const;
 	void setVerbose(bool value);
+	/**
+	 * Invalidates all pointers returned by any of the get variables
+	 */
+	void invalidateAll();
+	/**
+	 * Invalidates all pointers returned by any of the get variables.
+	 * Also sets a new renderer.
+	 *
+	 * Setting a new renderer might cause all old textures to no longer match the renderer format.
+	 */
+	void invalidateAll(SDL_Renderer* renderer);
 	virtual ~SagoDataHolder();
 private:
 	SagoDataHolder(const SagoDataHolder& base) = delete;
