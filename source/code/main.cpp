@@ -746,6 +746,7 @@ struct globalConfig {
 	string puzzleName;
 	bool allowResize = true;
 	bool autoScale = true;
+	bool softwareRenderer = false;
 };
 
 static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
@@ -766,6 +767,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("config,c", boost::program_options::value<vector<string> >(), "Read a config file with the values. Can be given multiple times")
 	("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
 	("priority", "Causes the game to not sleep between frames.")
+	("software-renderer", "Asks SDL2 to use software renderer")
 	("verbose-basic", "Enables basic verbose messages")
 	("verbose-game-controller", "Enables verbose messages regarding controllers")
 	("print-search-path", "Prints the search path and quits")
@@ -835,6 +837,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("priority")) {
 		globalData.highPriority = true;
+	}
+	if (vm.count("software-renderer")) {
+		conf.softwareRenderer = true;
 	}
 	if (vm.count("verbose-basic")) {
 		globalData.verboseLevel++;
@@ -1025,7 +1030,11 @@ int main(int argc, char* argv[]) {
 		                             globalData.xsize, globalData.ysize,
 		                             createWindowParams );
 		dieOnNullptr(sdlWindow, "Unable to create window");
-		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+		int rendererFlags = 0;
+		if (config.softwareRenderer) {
+			rendererFlags |= SDL_RENDERER_SOFTWARE;
+		}
+		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, rendererFlags);
 		dieOnNullptr(renderer, "Unable to create render");
 		if (config.autoScale) {
 			SDL_RenderSetLogicalSize(renderer, 1024, 768);
