@@ -48,6 +48,32 @@ private:
 	Uint64 version = 0;
 };
 
+
+class MusicHandler {
+public:
+	MusicHandler() {};
+	MusicHandler(const SagoDataHolder* holder, const std::string &musicName);
+	Mix_Music* get();
+private:
+	std::string musicName;
+	const SagoDataHolder* holder = nullptr;
+	Mix_Music* data = nullptr;
+	Uint64 version = 0;
+};
+
+
+class SoundHandler {
+public:
+	SoundHandler() {};
+	SoundHandler(const SagoDataHolder* holder, const std::string &soundName);
+	Mix_Chunk* get();
+private:
+	std::string soundName;
+	const SagoDataHolder* holder = nullptr;
+	Mix_Chunk* data = nullptr;
+	Uint64 version = 0;
+};
+
 class SagoDataHolder {
 public:
 	/**
@@ -65,7 +91,9 @@ public:
 	TextureHandler getTextureHandler(const std::string &textureName) const;
 	TTF_Font* getFontPtr(const std::string &fontName, int ptsize) const;
 	Mix_Music* getMusicPtr(const std::string &musicName) const;
+	MusicHandler getMusicHandler(const std::string &musicName) const;
 	Mix_Chunk* getSoundPtr(const std::string &soundName) const;
+	SoundHandler getSoundHandler(const std::string &soundName) const;
 	void setVerbose(bool value);
 	/**
 	 * Invalidates all pointers returned by any of the get variables

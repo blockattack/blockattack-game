@@ -63,7 +63,7 @@ struct GlobalData {
 	std::string player1name;
 	std::string player2name;
 	SDL_Renderer *screen = nullptr;        //The whole screen;
-	Mix_Chunk *typingChunk;
+	sago::SoundHandler typingChunk;
 	sago::SagoSprite mouse;
 	bool highPriority = false;
 	bool NoSound = false;	

@@ -115,7 +115,7 @@ void DialogBox::Draw(SDL_Renderer* target) {
 void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 	if (event.type == SDL_TEXTINPUT) {
 		if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
-			Mix_PlayChannel(1, globalData.typingChunk, 0);
+			Mix_PlayChannel(1, globalData.typingChunk.get(), 0);
 		}
 	}
 
@@ -130,7 +130,7 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 		}
 		else {
 			if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
-				Mix_PlayChannel(1, globalData.typingChunk, 0);
+				Mix_PlayChannel(1, globalData.typingChunk.get(), 0);
 			}
 		}
 	}

@@ -203,23 +203,23 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 //Loads the sound if sound present
 	if (!globalData.NoSound) {
 		//And here the music:
-		bgMusic = holder.GetDataHolder().getMusicPtr("bgmusic");
-		highbeatMusic = holder.GetDataHolder().getMusicPtr("highbeat");
+		bgMusic = holder.GetDataHolder().getMusicHandler("bgmusic");
+		highbeatMusic = holder.GetDataHolder().getMusicHandler("highbeat");
 		//the music... we just hope it exists, else the user won't hear anything
 		//Same goes for the sounds
-		boing = holder.GetDataHolder().getSoundPtr("pop");
-		applause = holder.GetDataHolder().getSoundPtr("applause");
-		photoClick = holder.GetDataHolder().getSoundPtr("cameraclick");
-		globalData.typingChunk = holder.GetDataHolder().getSoundPtr("typing");
-		counterChunk = holder.GetDataHolder().getSoundPtr("counter");
-		counterFinalChunk = holder.GetDataHolder().getSoundPtr("counter_final");
+		boing = holder.GetDataHolder().getSoundHandler("pop");
+		applause = holder.GetDataHolder().getSoundHandler("applause");
+		photoClick = holder.GetDataHolder().getSoundHandler("cameraclick");
+		globalData.typingChunk = holder.GetDataHolder().getSoundHandler("typing");
+		counterChunk = holder.GetDataHolder().getSoundHandler("counter");
+		counterFinalChunk = holder.GetDataHolder().getSoundHandler("counter_final");
 		const int soundVolume = 84;  //0-128
-		Mix_VolumeChunk(boing, soundVolume);
-		Mix_VolumeChunk(applause, soundVolume);
-		Mix_VolumeChunk(photoClick, soundVolume);
-		Mix_VolumeChunk(globalData.typingChunk, soundVolume);
-		Mix_VolumeChunk(counterChunk, soundVolume);
-		Mix_VolumeChunk(counterFinalChunk, soundVolume);
+		Mix_VolumeChunk(boing.get(), soundVolume);
+		Mix_VolumeChunk(applause.get(), soundVolume);
+		Mix_VolumeChunk(photoClick.get(), soundVolume);
+		Mix_VolumeChunk(globalData.typingChunk.get(), soundVolume);
+		Mix_VolumeChunk(counterChunk.get(), soundVolume);
+		Mix_VolumeChunk(counterFinalChunk.get(), soundVolume);
 	} //All sound has been loaded or not
 	return 0;
 } //InitImages()
@@ -332,7 +332,7 @@ void writeScreenShot() {
 	SDL_FreeSurface(sreenshotSurface);
 	if (!globalData.NoSound) {
 		if (globalData.SoundEnabled) {
-			Mix_PlayChannel(1, photoClick, 0);
+			Mix_PlayChannel(1, photoClick.get(), 0);
 		}
 	}
 }
@@ -1566,20 +1566,20 @@ int runGame(Gametype gametype, int level) {
 		//Sees if music is stopped and if music is enabled
 		if ((!globalData.NoSound)&&(!Mix_PlayingMusic())&&(globalData.MusicEnabled)&&(!bNearDeath)) {
 			// then starts playing it.
-			Mix_PlayMusic(bgMusic, -1); //music loop
+			Mix_PlayMusic(bgMusic.get(), -1); //music loop
 			Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
 		}
 
 		if (bNearDeath!=bNearDeathPrev) {
 			if (bNearDeath) {
 				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
-					Mix_PlayMusic(highbeatMusic, 1);
+					Mix_PlayMusic(highbeatMusic.get(), 1);
 					Mix_VolumeMusic((MIX_MAX_VOLUME*5)/10);
 				}
 			}
 			else {
 				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
-					Mix_PlayMusic(bgMusic, -1);
+					Mix_PlayMusic(bgMusic.get(), -1);
 					Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
 				}
 			}

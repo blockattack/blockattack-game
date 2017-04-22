@@ -286,8 +286,48 @@ SDL_Texture* TextureHandler::get() {
 	return data;
 }
 
+
+MusicHandler::MusicHandler(const SagoDataHolder* holder, const std::string& musicName) {
+	this->holder = holder;
+	this->version = this->holder->getVersion();
+	this->musicName = musicName;
+	this->data = this->holder->getMusicPtr(this->musicName);
+}
+
+Mix_Music* MusicHandler::get() {
+	if (version != holder->getVersion()) {
+		//The holder has been invalidated
+		this->data = this->holder->getMusicPtr(musicName);
+	}
+	return data;
+}
+
+SoundHandler::SoundHandler(const SagoDataHolder* holder, const std::string& soundName) {
+	this->holder = holder;
+	this->version = this->holder->getVersion();
+	this->soundName = soundName;
+	this->data = this->holder->getSoundPtr(this->soundName);
+}
+
+Mix_Chunk* SoundHandler::get() {
+	if (version != holder->getVersion()) {
+		//The holder has been invalidated
+		this->data = this->holder->getSoundPtr(soundName);
+	}
+	return data;
+}
+
+
 TextureHandler SagoDataHolder::getTextureHandler(const std::string &textureName) const {
 	return TextureHandler(this, textureName);
+}
+
+MusicHandler SagoDataHolder::getMusicHandler(const std::string &musicName) const {
+	return MusicHandler(this, musicName);
+}
+
+SoundHandler SagoDataHolder::getSoundHandler(const std::string &soundName) const {
+	return SoundHandler(this, soundName);
 }
 
 } //name space sago

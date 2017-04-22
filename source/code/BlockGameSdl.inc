@@ -109,7 +109,7 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, applause, 0);
+		Mix_PlayChannel(1, applause.get(), 0);
 	}
 
 	void DrawEvent() const override {
@@ -120,19 +120,19 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(0, boing, 0);
+		Mix_PlayChannel(0, boing.get(), 0);
 	}
 
 	void LongChainDoneEvent() const  override {
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, applause, 0);
+		Mix_PlayChannel(1, applause.get(), 0);
 	}
 
 	void TimeTrialEndEvent() const  override {
 		if (!globalData.NoSound && globalData.SoundEnabled) {
-			Mix_PlayChannel(1,counterFinalChunk,0);
+			Mix_PlayChannel(1,counterFinalChunk.get(),0);
 		}
 	}
 
@@ -140,7 +140,7 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, applause, 0);
+		Mix_PlayChannel(1, applause.get(), 0);
 	}
 private:
 	//Draws all the bricks to the board (including garbage)
@@ -368,7 +368,7 @@ public:
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
 			if ( (currentCounter!=lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
-				Mix_PlayChannel(1,counterChunk,0);
+				Mix_PlayChannel(1, counterChunk.get(), 0);
 			}
 			lastCounter = currentCounter;
 			switch (currentCounter) {
@@ -390,14 +390,14 @@ public:
 				int currentCounter = (ticks-(int)gameStartedAt)/1000;
 				if (currentCounter!=lastCounter) {
 					if (currentCounter>115 && currentCounter<120) {
-						Mix_PlayChannel(1,counterChunk,0);
+						Mix_PlayChannel(1, counterChunk.get(), 0);
 					}
 				}
 				lastCounter = currentCounter;
 			}
 			else {
 				if ( (0==lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
-					Mix_PlayChannel(1, counterFinalChunk, 0);
+					Mix_PlayChannel(1, counterFinalChunk.get(), 0);
 				}
 				lastCounter = -1;
 			}

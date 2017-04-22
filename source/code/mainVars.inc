@@ -97,13 +97,13 @@ const int bExitOffset = 140; //pixels from the buttom right corner to the top le
 
 static NFont nf_standard_small_font;
 
-static Mix_Music *bgMusic;         //backgroundMusic
-static Mix_Music *highbeatMusic;   //Background music with higher beat
-static Mix_Chunk *boing;           //boing sound when clearing
-static Mix_Chunk *applause;        //Applause, then the player is good
-static Mix_Chunk *photoClick;      //clickSound
-static Mix_Chunk *counterChunk;         //When counting down
-static Mix_Chunk *counterFinalChunk;
+static sago::MusicHandler bgMusic;         //backgroundMusic
+static sago::MusicHandler highbeatMusic;   //Background music with higher beat
+static sago::SoundHandler boing;           //boing sound when clearing
+static sago::SoundHandler applause;        //Applause, then the player is good
+static sago::SoundHandler photoClick;      //clickSound
+static sago::SoundHandler counterChunk;         //When counting down
+static sago::SoundHandler counterFinalChunk;
 
 static bool bMouseUp;              //true if the mouse(1) is unpressed
 static bool bMouseUp2;             //true if the mouse(2) is unpressed
