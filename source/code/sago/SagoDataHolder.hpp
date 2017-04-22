@@ -62,7 +62,7 @@ public:
 	 * @return  Pointer to the loaded texture
 	 */
 	SDL_Texture* getTexturePtr(const std::string &textureName) const;
-	TextureHandler getTextureHolder(const std::string &textureName) const;
+	TextureHandler getTextureHandler(const std::string &textureName) const;
 	TTF_Font* getFontPtr(const std::string &fontName, int ptsize) const;
 	Mix_Music* getMusicPtr(const std::string &musicName) const;
 	Mix_Chunk* getSoundPtr(const std::string &soundName) const;

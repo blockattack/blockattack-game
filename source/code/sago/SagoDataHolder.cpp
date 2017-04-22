@@ -286,7 +286,7 @@ SDL_Texture* TextureHandler::get() {
 	return data;
 }
 
-TextureHandler SagoDataHolder::getTextureHolder(const std::string &textureName) const {
+TextureHandler SagoDataHolder::getTextureHandler(const std::string &textureName) const {
 	return TextureHandler(this, textureName);
 }
 

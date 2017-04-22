@@ -41,7 +41,7 @@ SagoSprite::SagoSprite() {
 
 SagoSprite::SagoSprite(const SagoDataHolder& texHolder, const std::string& texture,const SDL_Rect& initImage,const int animationFrames, const int animationFrameLength) {
 	data = new SagoSpriteData();
-	data->tex = texHolder.getTextureHolder(texture);
+	data->tex = texHolder.getTextureHandler(texture);
 	data->imgCord = initImage;
 	data->aniFrames = animationFrames;
 	data->aniFrameTime = animationFrameLength;
