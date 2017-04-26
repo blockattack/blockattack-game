@@ -46,6 +46,8 @@ public:
 	virtual void ProcessInput(const SDL_Event& event, bool &processed) = 0;
 	
 	virtual void Update() {}
+	
+	virtual ~GameStateInterface() {}
 };
 
 }  //sago
