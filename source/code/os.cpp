@@ -64,6 +64,7 @@ void OsCreateSaveFolder() {
 	}
 #elif defined(_WIN32)
 	//Now for Windows NT/2k/xp/2k3 etc.
+	CreateDirectory(pf.getSaveGamesFolder1().c_str(), nullptr);
 	std::string tempA = getPathToSaveFiles();
 	CreateDirectory(tempA.c_str(),nullptr);
 #endif
