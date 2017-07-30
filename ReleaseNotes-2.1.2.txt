@@ -1,0 +1,4 @@
+This is Block Attack - Rise of the Blocks - version 2.1.2
+
+This version only fixes one single bug. The Windows version would not save correctly if "My Games" did not already exist in the Documents folder.
+No changes to anything else
