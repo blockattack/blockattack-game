@@ -31,6 +31,34 @@ http://blockattack.net
 #define GARBAGE 1000000
 #define CHAINPLACE 10000000
 
+// The game uses a very special  base-10 pack system
+// int  999999999999
+//      YYYYYGWBHTTC
+// YYYY = Chain
+// G = Garbage, 1= NORMAL, 2=GRAY
+// W = Waiting (A bomb is on it)
+// B = 1 if the block is falling
+// H = Block is hanging after garbage (Get Ready text on it)
+// TT = Time (in steps) until something happens
+// C = color
+
+static bool block_isFalling(int block) {
+	return (block/BLOCKFALL)%10;
+}
+
+static void block_setFalling(int& block, bool value) {
+	if (value) {
+		if (!block_isFalling(block)) {
+			block += BLOCKFALL;
+		}
+	}
+	else {
+		if (block_isFalling(block)) {
+			block -= BLOCKFALL;
+		}
+	}
+}
+
 #include "BlockGame.hpp"
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
@@ -724,10 +752,10 @@ void BlockGame::ClearBlocks() {
 		bool faaling = false;
 		for (int j=0; j<30; j++) {
 			if ((faaling)&&(board[i][j]>-1)&&(board[i][j]%10000000<7)) {
-				board[i][j]+=BLOCKFALL;
+				block_setFalling(board[i][j], true);
 			}
 			if ((!faaling)&&((board[i][j]/BLOCKFALL)%10==1)) {
-				board[i][j]-=BLOCKFALL;
+				block_setFalling(board[i][j], false);
 			}
 			if (!((board[i][j]>-1)&&(board[i][j]%10000000<7))) {
 				faaling=true;
@@ -985,10 +1013,10 @@ void BlockGame::ClearBlocks() {
 		bool faaling = false;  //In the beginning we are NOT falling
 		for (int j=0; j<30; j++) {
 			if ((faaling)&&(board[i][j]>-1)&&(board[i][j]<7)) {
-				board[i][j]+=BLOCKFALL;
+				block_setFalling(board[i][j], true);
 			}
-			if ((!faaling)&&((board[i][j]/BLOCKFALL)%10==1)) {
-				board[i][j]-=BLOCKFALL;
+			if (!faaling) {
+				block_setFalling(board[i][j], false);
 			}
 			if ((!faaling)&&(board[i][j]>0)&&(board[i][j]/10000000!=0)&&((board[i][j]/BLOCKWAIT)%10!=1)&&((board[i][j]/BLOCKHANG)%10!=1)) {
 				if (chainSize[board[i][j]/10000000]>chainSize[chain]) {

@@ -226,7 +226,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 void DrawIMG(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
-	sprite.Draw(target, SDL_GetTicks() ,x,y);
+	sprite.Draw(target, SDL_GetTicks(),x,y);
 }
 
 void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
