@@ -267,10 +267,9 @@ static void MultiplayerMenu() {
 	RunGameState(mm);
 }
 
-void MainMenu() {
-	InitMenues();
-	Menu m(globalData.screen,_("Block Attack - Rise of the blocks"),false);
-	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bMulti, bConfigure,bHighscore;
+static void SinglePlayerMenu() {
+	Menu m(globalData.screen, _("Single player"), true);
+	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1;
 	bHi.setLabel(_("Single player - endless") );
 	bHi.setAction(runSinglePlayerEndless);
 	bTimetrial1.setLabel(_("Single player - time trial") );
@@ -281,6 +280,20 @@ void MainMenu() {
 	bPuzzle.setAction(runSinglePlayerPuzzle);
 	bVs1.setLabel(_("Single player - vs") );
 	bVs1.setAction(SinglePlayerVsMenu);
+	m.addButton(&bHi);
+	m.addButton(&bTimetrial1);
+	m.addButton(&bStageClear);
+	m.addButton(&bPuzzle);
+	m.addButton(&bVs1);
+	RunGameState(m);
+}
+
+void MainMenu() {
+	InitMenues();
+	Menu m(globalData.screen,_("Block Attack - Rise of the blocks"),false);
+	Button bHi, bMulti, bConfigure,bHighscore;
+	bHi.setLabel(_("Single player") );
+	bHi.setAction(SinglePlayerMenu);
 	bMulti.setLabel(_("Multi player") );
 	bMulti.setAction(MultiplayerMenu);
 	bConfigure.setLabel(_("Configure") );
@@ -288,10 +301,6 @@ void MainMenu() {
 	bHighscore.setLabel(_("Highscores") );
 	bHighscore.setAction(buttonActionHighscores);
 	m.addButton(&bHi);
-	m.addButton(&bTimetrial1);
-	m.addButton(&bStageClear);
-	m.addButton(&bPuzzle);
-	m.addButton(&bVs1);
 	m.addButton(&bMulti);
 	m.addButton(&bConfigure);
 	m.addButton(&bHighscore);
