@@ -30,8 +30,8 @@ http://www.blockattack.net
 
 
 /*static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
-    game1.SetTopXY(50, globalData.ysize/2-284);
-    game2.SetTopXY(globalData.xsize-500, globalData.ysize/2-284);
+game1.SetTopXY(50, globalData.ysize/2-284);
+game2.SetTopXY(globalData.xsize-500, globalData.ysize/2-284);
 }*/
 
 
