@@ -7,8 +7,8 @@
 winicon.res
 nbproject
 .*
--.travis.yml
--.gitignore
+!.travis.yml
+!.gitignore
 !.editorconfig
 !.dockerignore
 *.patch
