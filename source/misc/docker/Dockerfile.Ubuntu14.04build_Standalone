@@ -1,7 +1,21 @@
 FROM ubuntu:14.04
 
-RUN apt-get update && apt-get install -y build-essential libphysfs-dev libboost-dev cmake libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libboost-program-options-dev libutfcpp-dev zip gettext
+RUN apt-get update && apt-get install -y build-essential libphysfs-dev libboost-dev cmake pkg-config libboost-program-options-dev libfreetype6-dev libvorbis-dev libgl1-mesa-dev libutfcpp-dev zip gettext
 
+RUN mkdir -p /staging/deps && cd /staging/deps && curl https://libsdl.org/release/SDL2-2.0.5.tar.gz | tar -zx && cd SDL2-2.0.5 && ls -lrt
+RUN cd /staging/deps/SDL2-2.0.5 && ./configure --enable-shared --enable-static && make && make install
+
+#https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.1.tar.gz
+RUN mkdir -p /staging/deps && cd /staging/deps && curl https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.1.tar.gz | tar -zx && cd SDL2_image-2.0.1 && ls -lrt
+RUN cd /staging/deps/SDL2_image-2.0.1 && ./configure --enable-shared --enable-static && make && make install
+
+#https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.tar.gz
+RUN mkdir -p /staging/deps && cd /staging/deps && curl https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.tar.gz | tar -zx && cd SDL2_mixer-2.0.1 && ls -lrt
+RUN cd /staging/deps/SDL2_mixer-2.0.1 && ./configure --enable-shared --enable-static && make && make install
+
+#https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.14.tar.gz
+RUN mkdir -p /staging/deps && cd /staging/deps && curl https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.14.tar.gz | tar -zx && cd SDL2_ttf-2.0.14 && ls -lrt
+RUN cd /staging/deps/SDL2_ttf-2.0.14 && ./configure --enable-shared --enable-static && make && make install
 RUN mkdir -p /staging/blockattack-game
 
 COPY . /staging/blockattack-game
