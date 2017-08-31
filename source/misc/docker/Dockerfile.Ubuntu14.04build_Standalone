@@ -10,4 +10,4 @@ ENV BLOCKATTACK_VERSION 2.1.0-SNAPSHOT
 
 RUN cd /staging/blockattack-game && \
 ./packdata.sh && \
-cmake -D Boost_USE_STATIC_LIBS=ON -D INSTALL_DATA_DIR=. -D CMAKE_INSTALL_PREFIX=.  . && make
+cmake -D Boost_USE_STATIC_LIBS=ON -D INSTALL_DATA_DIR=. -D CMAKE_INSTALL_PREFIX=. -D STANDALONE=1 . && make
