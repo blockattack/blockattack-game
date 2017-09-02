@@ -46,6 +46,8 @@ cp /usr/local/lib/libSDL2-2.0.so.0 /output/x86/ && \
 cp /usr/local/lib/libphysfs.so.1  /output/x86/ && \
 cp /usr/local/lib/libSDL2_mixer-2.0.so.0  /output/x86/ && \
 cp /usr/local/lib/libSDL2_ttf-2.0.so.0  /output/x86/ && \
+cp /usr/lib/i386-linux-gnu/libfreetype.so.6 /output/x86/ && \
+cp /lib/i386-linux-gnu/libpng12.so.0 /output/x86/ && \
 cp /usr/local/lib/libSDL2_image-2.0.so.0  /output/x86/"
 
 cd source/misc/standalone/staging/
