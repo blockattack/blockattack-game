@@ -4,5 +4,6 @@ set -e
 # First check for formatting errors
 bash source/misc/lint/runLint.sh
 
-docker build -f source/misc/docker/Dockerfile.Ubuntu14.04build . -t blockattack_test
+docker build -f source/misc/docker/Dockerfile.Fedora25build . -t blockattack_test
+#docker build -f source/misc/docker/Dockerfile.Ubuntu14.04build . -t blockattack_test
 docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
