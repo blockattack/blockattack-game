@@ -35,7 +35,7 @@ SET(GUI_TYPE WIN32)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i686")
 endif()
 
-if (NOT WIN32)
+if (NOT WIN32 AND NOT STANDALONE)
 #The path to the data dir must be compiled into the binary
 add_definitions(-DSHAREDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_DATA_DIR}\")
 add_definitions(-DLOCALEDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_LOCALE_DIR}\")
