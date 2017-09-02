@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This file is based on the guide from https://itch.io/docs/itch/integrating/platforms/linux.html
+
 # Move to script's directory
 cd "`dirname "$0"`"
 
