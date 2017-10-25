@@ -1040,6 +1040,11 @@ int main(int argc, char* argv[]) {
 			SDL_RenderSetLogicalSize(renderer, 1024, 768);
 			logicalRenderer = true;
 		}
+		if (globalData.verboseLevel) {
+			SDL_RendererInfo info;
+			SDL_GetRendererInfo(renderer, &info);
+			cout << "Renderer: " << info.name << "\n";
+		}
 		globalData.screen = renderer;
 		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
