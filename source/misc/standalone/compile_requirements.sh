@@ -20,3 +20,14 @@ mkdir -p /staging/blockattack-game
 
 mkdir -p /staging/deps && cd /staging/deps && curl http://icculus.org/physfs/downloads/physfs-2.0.3.tar.bz2 | tar -jx && cd physfs-2.0.3 && ls -lrt
 cd /staging/deps/physfs-2.0.3 && cmake . && make && make install
+
+# boost
+cd ~
+mkdir -p Downloads
+cd Downloads
+curl https://files.poulsander.com/~poul19/public_files/boost_1_65_1.tar.bz2 -O
+tar xvfj boost_1_65_1.tar.bz2
+pushd boost_1_65_1
+./bootstrap.sh --with-libraries=program_options
+./b2 install -j 2 --prefix=/usr link=static
+popd
