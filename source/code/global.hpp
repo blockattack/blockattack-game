@@ -54,7 +54,7 @@ struct GlobalData {
 	sago::SagoSprite iLevelCheckBox;
 	sago::SagoSprite iLevelCheckBoxMarked;
 	sago::SagoSprite iCheckBoxArea;
-	NFont nf_scoreboard_font;
+	FontWrapper scoreboard_font;
 	NFont nf_standard_blue_font;
 	FontWrapper button_font;
 	bool MusicEnabled;			//true if background music is enabled

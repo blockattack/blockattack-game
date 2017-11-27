@@ -290,10 +290,10 @@ public:
 	void DoPaintJob() {
 		DrawIMG(boardBackBack,globalData.screen,this->GetTopX()-60,this->GetTopY()-68);
 
-		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
-		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
-		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
-		globalData.nf_scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
+		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
+		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
+		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
+		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
 		DrawImgBoard(backBoard,  0, 0);
 
 		PaintBricks();
