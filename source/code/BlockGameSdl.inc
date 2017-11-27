@@ -42,7 +42,7 @@ public:
 	}
 
 	void PrintTextCenteredBoard(int x, int y, const char* text) {
-		globalData.button_font.drawCenter2(globalData.screen, x+topx+60, y+topy+10, text);
+		globalData.button_font.drawCenter(globalData.screen, x+topx+60, y+topy+10, text);
 	}
 	
 	void PrintIntRightAlignedBoard(int x, int y, int number) {

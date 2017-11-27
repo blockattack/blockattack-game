@@ -36,7 +36,7 @@ public:
 		theFont.draw(target, x, y, "%s", text.c_str());
 	}
 	
-	void drawCenter2(SDL_Renderer* target, int x, int y, const std::string& text) {
+	void drawCenter(SDL_Renderer* target, int x, int y, const std::string& text) {
 		theFont.draw(target, x, y, NFont::CENTER, "%s", text.c_str());
 	}
 	

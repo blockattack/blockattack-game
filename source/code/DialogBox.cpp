@@ -99,9 +99,9 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	this->x = globalData.xsize/2-300;
 	this->y = globalData.ysize/2-100;
 	DrawRectYellow(target, x, y, 200, 600);
-	globalData.button_font.drawCenter2(target, x+300, y+20, header);
-	globalData.button_font.drawCenter2(target, x+150, y+140, _("Enter to accept"));
-	globalData.button_font.drawCenter2(target, x+450, y+140, _("Esc to cancel"));
+	globalData.button_font.drawCenter(target, x+300, y+20, header);
+	globalData.button_font.drawCenter(target, x+150, y+140, _("Enter to accept"));
+	globalData.button_font.drawCenter(target, x+450, y+140, _("Esc to cancel"));
 	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
 	NFont_Write(target, x+40, y+76,rk->GetString());
 	std::string strHolder = rk->GetString();

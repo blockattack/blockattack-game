@@ -159,11 +159,9 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 	//Draw buttons:
 	globalData.bHighScore.Draw(globalData.screen, 0, scoreX,scoreY);
 	globalData.bBack.Draw(globalData.screen, 0, backX, backY);
-	//globalData.nf_button_font.draw(globalData.screen, backX+60,backY+10, NFont::CENTER,_("Back"));
-	globalData.button_font.drawCenter2(globalData.screen, backX+60,backY+10,_("Back"));
+	globalData.button_font.drawCenter(globalData.screen, backX+60,backY+10,_("Back"));
 	globalData.bNext.Draw(globalData.screen, 0, nextX, nextY);
-	//globalData.nf_button_font.draw(globalData.screen, nextX+60,nextY+10, NFont::CENTER,_("Next"));
-	globalData.button_font.drawCenter2(globalData.screen, nextX+60,nextY+10,_("Next"));
+	globalData.button_font.drawCenter(globalData.screen, nextX+60,nextY+10,_("Next"));
 
 	//Draw page number
 	string pageXofY = SPrintStringF(_("Page %i of %i"), page+1, numberOfPages);
