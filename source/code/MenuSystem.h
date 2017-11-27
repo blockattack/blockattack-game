@@ -32,6 +32,7 @@ http://blockattack.net
 #include "sago/SagoSprite.hpp"
 #include "sago/GameStateInterface.hpp"
 #include <memory>
+#include "FontWrapper.hpp"
 
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
 struct ButtonGfx
@@ -40,7 +41,7 @@ struct ButtonGfx
 	int xsize = 0;
 	int ysize = 0;
 	//A TTFont used for writing the label on the buttons
-	NFont* thefont = nullptr;
+	FontWrapper* thefont;
 	void setSurfaces();
 };
 

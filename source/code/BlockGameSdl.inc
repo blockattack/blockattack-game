@@ -42,11 +42,11 @@ public:
 	}
 
 	void PrintTextCenteredBoard(int x, int y, const char* text) {
-		globalData.nf_button_font.draw(globalData.screen, x+topx+60, y+topy+10, NFont::CENTER, "%s", text);
+		globalData.button_font.drawCenter2(globalData.screen, x+topx+60, y+topy+10, text);
 	}
 	
 	void PrintIntRightAlignedBoard(int x, int y, int number) {
-		globalData.nf_button_font.draw(globalData.screen, x+topx+60, y+topy+10, NFont::RIGHT, "%d", number);
+		globalData.button_font.drawRight(globalData.screen, x+topx+60, y+topy+10, std::to_string(number));
 	}
 	
 	void SetTopXY(int tx, int ty) {

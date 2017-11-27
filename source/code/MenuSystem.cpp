@@ -98,7 +98,7 @@ static void drawToScreen(const Button& b) {
 		globalData.spriteHolder->GetSprite(menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 
-	standardButton.thefont->draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2-standardButton.thefont->getHeight("%s",  b.label.c_str())/2, NFont::CENTER, "%s", b.label.c_str());
+	standardButton.thefont->drawCenterAlsoHeight(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2, b.label);
 }
 
 
@@ -115,7 +115,7 @@ void Menu::drawSelf(SDL_Renderer* target) {
 		drawToScreen(*b);
 	}
 	drawToScreen(exit);
-	standardButton.thefont->draw(target, 50, 50, "%s", title.c_str());
+	standardButton.thefont->draw(target, 50, 50, title.c_str());
 }
 
 

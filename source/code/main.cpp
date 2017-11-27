@@ -195,7 +195,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	nf_standard_small_color.g = 0;
 	nf_standard_small_color.r = 200;
 	nf_standard_small_color.a = 255;
-	globalData.nf_button_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
+	globalData.button_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
 	globalData.nf_standard_blue_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
 	nf_standard_small_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
 	globalData.nf_scoreboard_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("penguinattack", 20), nf_button_color);

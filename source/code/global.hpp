@@ -29,6 +29,7 @@ http://www.blockattack.net
 #include "sago/SagoSpriteHolder.hpp"
 #include "highscore.h"
 #include "sago/GameStateInterface.hpp"
+#include "FontWrapper.hpp"
 #include "TextManager.hpp"
 #include "ExplosionManager.hpp"
 
@@ -55,7 +56,7 @@ struct GlobalData {
 	sago::SagoSprite iCheckBoxArea;
 	NFont nf_scoreboard_font;
 	NFont nf_standard_blue_font;
-	NFont nf_button_font;
+	FontWrapper button_font;
 	bool MusicEnabled;			//true if background music is enabled
 	bool SoundEnabled;			//true if sound effects is enabled
 	bool bFullscreen;			//true if game is running fullscreen

@@ -96,7 +96,7 @@ void Button_changekey::doAction() {
 
 void InitMenues() {
 	standardButton.setSurfaces();
-	standardButton.thefont = &globalData.nf_button_font;
+	standardButton.thefont = &globalData.button_font;
 }
 
 static void runSinglePlayerEndless() {
