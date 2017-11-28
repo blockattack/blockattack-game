@@ -48,6 +48,14 @@ public:
 		theFont.draw(target, x, y, NFont::RIGHT, "%s", text.c_str());
 	}
 	
+	NFont::Rectf drawBox(SDL_Renderer* dest, const NFont::Rectf& box, const std::string& formatted_text) {
+		return theFont.drawBox(dest, box, "%s", formatted_text.c_str());
+	}
+	
+	size_t getWidth(const std::string& text) {
+		return theFont.getWidth("%s", text.c_str());
+	}
+	
 	bool load(SDL_Renderer* target, TTF_Font* font, const NFont::Color& color) {
 		return theFont.load(target, font, color);
 	}

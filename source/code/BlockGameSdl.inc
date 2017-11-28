@@ -303,7 +303,7 @@ public:
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = _("Moves left: ") + std::to_string(MovesLeft);
-			globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s", strHolder.c_str());
+			globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder);
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
@@ -321,7 +321,7 @@ public:
 			}
 			else {
 				strHolder = "Last puzzle";
-				globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s",strHolder.c_str());
+				globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder);
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
@@ -339,7 +339,7 @@ public:
 			}
 			else {
 				strHolder = "Last stage";
-				globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s",strHolder.c_str());
+				globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder);
 			}
 		}
 		if (!bGameOver && stop > 20) {

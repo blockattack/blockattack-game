@@ -39,7 +39,7 @@ using std::vector;
 static bool bMouseUp;              //true if the mouse(1) is unpressed
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& text) {
-	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
+	globalData.standard_blue_font.draw(target, x, y, text);
 }
 
 //The function that allows the player to choose PuzzleLevel

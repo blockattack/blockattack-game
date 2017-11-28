@@ -27,7 +27,7 @@ http://www.blockattack.net
 #include "ReadKeyboard.h"
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& text) {
-	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
+	globalData.standard_blue_font.draw(target, x, y, text);
 }
 
 static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
@@ -108,7 +108,7 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	strHolder.erase((int)rk->CharsBeforeCursor());
 
 	if (((SDL_GetTicks()/600)%2)==1) {
-		NFont_Write(target, x+40+globalData.nf_standard_blue_font.getWidth( "%s", strHolder.c_str()),y+76,"|");
+		NFont_Write(target, x+40+globalData.standard_blue_font.getWidth( strHolder),y+76,"|");
 	}
 }
 

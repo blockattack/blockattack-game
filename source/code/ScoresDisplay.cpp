@@ -31,8 +31,9 @@ using std::string;
 using std::cerr;
 using std::vector;
 
+
 static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
-	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text);
+	globalData.standard_blue_font.draw(target, x, y, text);
 }
 
 const int numberOfPages = 3;
@@ -48,10 +49,10 @@ void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
 void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 	DrawBackgroundAndCalcPlacements();
 	if (endless) {
-		globalData.nf_standard_blue_font.draw(globalData.screen, x+100,y+100, "%s",_("Endless:") );
+		globalData.standard_blue_font.draw(globalData.screen, x+100,y+100, _("Endless:") );
 	}
 	else {
-		globalData.nf_standard_blue_font.draw(globalData.screen, x+100,y+100, "%s",_("Time Trial:") );
+		globalData.standard_blue_font.draw(globalData.screen, x+100,y+100, _("Time Trial:") );
 	}
 	for (int i =0; i<10; i++) {
 		record r;
@@ -65,8 +66,8 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 		char playerName[32];
 		snprintf(playerScore, sizeof(playerScore), "%i", r.score);
 		snprintf(playerName, sizeof(playerName), "%s", r.name.c_str());
-		globalData.nf_standard_blue_font.draw(globalData.screen, x+420,y+150+i*35, "%s",playerScore);
-		globalData.nf_standard_blue_font.draw(globalData.screen, x+60,y+150+i*35, "%s",playerName);
+		globalData.standard_blue_font.draw(globalData.screen, x+420,y+150+i*35, playerScore);
+		globalData.standard_blue_font.draw(globalData.screen, x+60,y+150+i*35, playerName);
 	}
 }
 
@@ -165,7 +166,8 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 
 	//Draw page number
 	string pageXofY = SPrintStringF(_("Page %i of %i"), page+1, numberOfPages);
-	NFont_Write(globalData.screen, globalData.xsize/2-globalData.nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2, globalData.ysize-60, pageXofY.c_str());
+	//NFont_Write(globalData.screen, globalData.xsize/2-globalData.nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2, globalData.ysize-60, pageXofY.c_str());
+	globalData.standard_blue_font.drawCenter(globalData.screen,  globalData.xsize/2, globalData.ysize-60, pageXofY );
 }
 
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {

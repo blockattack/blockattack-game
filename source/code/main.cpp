@@ -196,7 +196,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	nf_standard_small_color.r = 200;
 	nf_standard_small_color.a = 255;
 	globalData.button_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
-	globalData.nf_standard_blue_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
+	globalData.standard_blue_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
 	nf_standard_small_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
 	globalData.scoreboard_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("penguinattack", 20), nf_button_color);
 
@@ -240,11 +240,11 @@ void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x
 
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
-	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text.c_str());
+	globalData.standard_blue_font.draw(target, x, y, text);
 }
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
-	globalData.nf_standard_blue_font.draw(target, x, y, "%s", text);
+	globalData.standard_blue_font.draw(target, x, y, text);
 }
 
 SDL_Window* sdlWindow;
@@ -521,7 +521,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			if (infostring.length() > 0) {
 				NFont_Write(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10, gametypeName);
 				NFont_Write(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160, _("Objective:"));
-				globalData.nf_standard_blue_font.drawBox(globalData.screen, { static_cast<float>(theGame2->GetTopX()+7),static_cast<float>(theGame2->GetTopY()+160+32), 280, 200}, "%s", infostring.c_str());
+				globalData.standard_blue_font.drawBox(globalData.screen, { static_cast<float>(theGame2->GetTopX()+7),static_cast<float>(theGame2->GetTopY()+160+32), 280, 200}, infostring);
 			}
 
 			//Write the keys that are in use
