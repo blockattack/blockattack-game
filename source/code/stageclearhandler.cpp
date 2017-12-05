@@ -30,7 +30,6 @@ http://www.blockattack.net
 #include "cereal/types/vector.hpp"
 #include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
-#include "Libs/include/cereal/details/helpers.hpp"
 
 //paths
 const char* const stageClearSaveName = "stageClear.json.SCsave";
