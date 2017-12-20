@@ -158,6 +158,8 @@ private:
 	unsigned int nextRandomNumber = 0;
 	int Level = 0; //Only used in stageClear and puzzle (not implemented)
 
+	bool replaying = false;
+	unsigned int replayedTicks = 0;
 	BlockGameInfo replayInfo;
 	
 	int rand2();
@@ -231,6 +233,7 @@ public:
 	
 	void NewGame(const BlockGameStartInfo &s);
 	void DoAction (const BlockGameAction& action);
+	void ReplayUpdate();
 	/**
 	 * This function returns all the garbage.
 	 * This is actual const in the way that it does not change the games state
@@ -264,6 +267,11 @@ public:
 	bool IsNearDeath() const;
 	const BlockGameInfo& GetBlockGameInfo() {
 		return replayInfo;
+	}
+	void StartReplay(const BlockGameInfo& bgi) {
+		replaying = true;
+		replayedTicks = ticks;
+		replayInfo = bgi;
 	}
 private:
 	void NewGame(unsigned int ticks);

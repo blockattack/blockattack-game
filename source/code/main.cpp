@@ -73,6 +73,7 @@ http://www.blockattack.net
 #include "gamecontroller.h"
 #include <boost/program_options.hpp>
 #include <fstream>
+#include <SDL/SDL_timer.h>
 #include "levelselect.hpp"
 
 /*******************************************************************************
@@ -679,6 +680,11 @@ static int StartSinglePlayerPuzzle() {
 	return 0;
 }
 
+static void StartReplay() {
+	BlockGameInfo p1;
+	BlockGameInfo p2;
+	LoadReplay(globalData.replayArgument, p1, p2);
+}
 
 static void StarTwoPlayerTimeTrial() {
 	BlockGameStartInfo startInfo;
@@ -1084,8 +1090,7 @@ int main(int argc, char* argv[]) {
 			runGame(Gametype::Puzzle, singlePuzzleNr);
 		}
 		else if (globalData.replayArgument.length()) {
-			ReplayPlayer rp;
-			RunGameState(rp);
+			runGame(Gametype::Replay, 0);
 		}
 		else {
 			//game loop
@@ -1245,6 +1250,9 @@ int runGame(Gametype gametype, int level) {
 				break;
 			case Gametype::TwoPlayerVs:
 				StartTwoPlayerVs();
+				break;
+			case Gametype::Replay:
+				StartReplay();
 				break;
 			case Gametype::SinglePlayerEndless:
 			default:

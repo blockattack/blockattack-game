@@ -33,6 +33,8 @@ http://www.blockattack.net
 #include "TextManager.hpp"
 #include "ExplosionManager.hpp"
 
+#define REPLAY_IMPLEMENTED 1
+
 void MainMenu();
 void ResetFullscreen();
 void RunGameState(sago::GameStateInterface& state );
@@ -67,7 +69,7 @@ struct GlobalData {
 	sago::SoundHandler typingChunk;
 	sago::SagoSprite mouse;
 	bool highPriority = false;
-	bool NoSound = false;	
+	bool NoSound = false;
 	int verboseLevel = 0;
 	Highscore theTopScoresEndless;      //Stores highscores for endless
 	Highscore theTopScoresTimeTrial;    //Stores highscores for timetrial

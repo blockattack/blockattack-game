@@ -37,3 +37,5 @@ struct SavedReplayStruct {
 void SaveReplay(const BlockGameInfo& game1);
 
 void SaveReplay(const BlockGameInfo& game1, const BlockGameInfo& game2);
+
+void LoadReplay(const std::string& filename, BlockGameInfo& game1, BlockGameInfo& game2);

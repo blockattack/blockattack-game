@@ -1854,11 +1854,13 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	if (action.action == BlockGameAction::Action::UPDATE && action.tick < ticks+10) {
 		return;  //Ignore if this is an update and not high enough
 	}
-	if (action.action == BlockGameAction::Action::UPDATE && replayInfo.actions.size() > 0 && replayInfo.actions.back().action == action.action) {
-		replayInfo.actions.back() = action;
-	}
-	else {
-		replayInfo.actions.push_back(action);
+	if (!replaying) {
+		if (action.action == BlockGameAction::Action::UPDATE && replayInfo.actions.size() > 0 && replayInfo.actions.back().action == action.action) {
+			replayInfo.actions.back() = action;
+		}
+		else {
+			replayInfo.actions.push_back(action);
+		}
 	}
 	if (action.action == BlockGameAction::Action::UPDATE) {
 		UpdateInternal(action.tick);
@@ -1900,6 +1902,15 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	}
 	if (action.action == BlockGameAction::Action::MOUSE_MOVE) {
 		MouseMove(action.x);
+	}
+}
+
+void BlockGame::ReplayUpdate() {
+	if (!replaying) {
+		return;
+	}
+	if (replayedTicks < ticks - gameStartedAt) {
+		//Do the action
 	}
 }
 
