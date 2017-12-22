@@ -73,7 +73,6 @@ http://www.blockattack.net
 #include "gamecontroller.h"
 #include <boost/program_options.hpp>
 #include <fstream>
-#include <SDL/SDL_timer.h>
 #include "levelselect.hpp"
 
 /*******************************************************************************
