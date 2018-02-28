@@ -1905,12 +1905,14 @@ void BlockGame::DoAction (const BlockGameAction& action) {
 	}
 }
 
-void BlockGame::ReplayUpdate() {
+void BlockGame::ReplayUpdate(unsigned int newReplayTick) {
 	if (!replaying) {
 		return;
 	}
-	if (replayedTicks < ticks - gameStartedAt) {
-		//Do the action
+	while (replayInfo.actions.front().tick > newReplayTick-gameStartedAt && replayInfo.actions.size()>0) {
+		DoAction(replayInfo.actions.front());
+		std::cerr << "Replay tick: " << replayInfo.actions.front().tick << "\n";
+		replayInfo.actions.pop_front();
 	}
 }
 

@@ -683,6 +683,8 @@ static void StartReplay() {
 	BlockGameInfo p1;
 	BlockGameInfo p2;
 	LoadReplay(globalData.replayArgument, p1, p2);
+	player1->StartReplay(p1);
+	player2->StartReplay(p2);
 }
 
 static void StarTwoPlayerTimeTrial() {
@@ -1545,6 +1547,12 @@ int runGame(Gametype gametype, int level) {
 			// If the mouse button 2 is released, make bMouseUp2 equal true
 			if ((SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(3))!=SDL_BUTTON(3)) {
 				bMouseUp2=true;
+			}
+			
+			if (gametype == Gametype::Replay) {
+				unsigned int ticks = SDL_GetTicks();
+				theGame.ReplayUpdate(ticks);
+				theGame2.ReplayUpdate(ticks);
 			}
 
 			if (!editorMode ) {

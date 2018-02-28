@@ -233,7 +233,7 @@ public:
 	
 	void NewGame(const BlockGameStartInfo &s);
 	void DoAction (const BlockGameAction& action);
-	void ReplayUpdate();
+	void ReplayUpdate(unsigned int moveToTick);
 	/**
 	 * This function returns all the garbage.
 	 * This is actual const in the way that it does not change the games state
