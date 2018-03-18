@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
-zip -9rj Game/blockattack.data source/AUTH
+zip -9rjX  Game/blockattack.data source/AUTH
 cd Game/data
-zip -9r ../blockattack.data * -x \*svn*
+zip -9rX ../blockattack.data * -x \*svn*
 cd ../../man
 gzip -9 -c blockattack.man > blockattack.6.gz
 cd ../source/misc/translation/
