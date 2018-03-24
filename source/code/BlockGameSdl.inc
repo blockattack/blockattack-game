@@ -350,7 +350,7 @@ public:
 		if (AI_Enabled&&(!bGameOver)) {
 			strHolder = "AI_status: " + std::to_string(AIstatus)+ ", "+ std::to_string(AIlineToClear);
 			//NFont_Write(   5, 5, strHolder.c_str());
-			globalData.nf_standard_blue_font.draw(globalData.screen, topx+5, topy+5, "%s",strHolder.c_str());
+			globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder.c_str());
 		}
 #endif
 		if (!bGameOver) {

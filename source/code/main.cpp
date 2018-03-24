@@ -613,7 +613,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		Ticks = SDL_GetTicks();
 	}
 
-	globalData.nf_standard_blue_font.draw(globalData.screen, 800, 4, "%s", FPS);
+	globalData.standard_blue_font.draw(globalData.screen, 800, 4, FPS);
 #endif
 }
 

@@ -157,7 +157,6 @@ void Config::load() {
 	stringstream inFile(filecontent);
 	string key;
 	string previuskey;
-	char value[MAX_VAR_LENGTH];
 	if (inFile) {
 		while (!inFile.eof()) {
 			inFile >> key;
@@ -166,11 +165,12 @@ void Config::load() {
 			}
 			previuskey = key;
 			inFile.get(); //Read the space between the key and the content
-			inFile.getline(value,MAX_VAR_LENGTH);
+			std::string value;
+			std::getline(inFile, value);
 #if DEBUG
 			cerr << "Config read: " << key << " with:\"" << value << "\"" << "\n";
 #endif
-			configMap[key] = (string)value;
+			configMap[key] = value;
 		}
 	}
 }
@@ -186,7 +186,7 @@ Config* Config::getInstance() {
 void Config::save() {
 	std::stringstream outFile;
 	map<string,string>::iterator iter;
-	for (iter = configMap.begin(); iter != configMap.end(); iter++) {
+	for (iter = configMap.begin(); iter != configMap.end(); ++iter) {
 		outFile << iter->first << " " << iter->second << "\n";
 	}
 	outFile << "\n"; //The last entry in the file will be read double if a linebreak is missing

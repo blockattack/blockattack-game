@@ -30,7 +30,7 @@ http://www.blockattack.net
 class SDL_RendererHolder {
 	SDL_Renderer* ptr;
 public:
-	SDL_RendererHolder(SDL_Renderer* input) {
+	explicit SDL_RendererHolder(SDL_Renderer* input) {
 		dieOnNullptr(input, "Failed to get render");
 		ptr = input;
 	}
