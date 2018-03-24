@@ -58,7 +58,14 @@ public:
 	 * @param y Place to draw the sprite
 	 * @param bounds A recagular area that we must not draw outside.
 	 */
-	void DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const;
+	void DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const;/**
+	 * Draws the sprite to a given render window
+	 * @param target The render window to draw on
+	 * @param progress A float with value from 0.0f to 1.0f. Tells how far in the animation that we got
+	 * @param x Place to draw the sprite
+	 * @param y Place to draw the sprite
+	 */
+	void DrawProgressive(SDL_Renderer* target, float progress, int x, int y) const;
 	void DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h) const;
 	/**
 	 * Set a different origin. Normally it is the top left cornor. But in some cases you might want to center the origin or tranform it for other reasons

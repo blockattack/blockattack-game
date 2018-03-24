@@ -32,7 +32,7 @@ namespace sago {
 
 class SagoSpriteHolder {
 public:
-	SagoSpriteHolder(const SagoDataHolder &texHolder);
+	explicit SagoSpriteHolder(const SagoDataHolder &texHolder);
 	virtual ~SagoSpriteHolder();
 	void ReadSprites();
 	const sago::SagoSprite& GetSprite(const std::string &spritename) const;

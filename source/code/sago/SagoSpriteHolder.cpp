@@ -64,7 +64,7 @@ SagoSpriteHolder::~SagoSpriteHolder() {
 static int getDefaultValue(const rapidjson::Value& value, const char* name, int defaultValue) {
 	assert(value.IsObject());
 	const auto& t = value.GetObject().FindMember(name);
-	if (t->value.IsInt()) {
+	if (t != value.MemberEnd() && t->value.IsInt()) {
 		return t->value.GetInt();
 	}
 	return defaultValue;
@@ -103,8 +103,12 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 		int width = getDefaultValue(m.value, "width",0);
 		int number_of_frames = getDefaultValue(m.value, "number_of_frames",1);
 		int frame_time = getDefaultValue(m.value, "frame_time",1);
-		int originx = getDefaultValue(m.value, "originx",0);
-		int originy = getDefaultValue(m.value, "originy",0);
+		SDL_Rect origin = {};
+		origin.x = getDefaultValue(m.value, "originx",0);
+		origin.y = getDefaultValue(m.value, "originy",0);
+		if (origin.x != 0) {
+			cerr << "Origin: " << origin.x << ", " << origin.y << "\n";
+		}
 		if (number_of_frames < 1) {
 			number_of_frames = 1;
 		}
@@ -112,7 +116,7 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 			frame_time = 1;
 		}
 		std::shared_ptr<sago::SagoSprite> ptr(new SagoSprite(*(data->tex),textureName, {topx,topy,width,height},number_of_frames,frame_time));
-		ptr->SetOrigin({originx,originy, 0, 0});
+		ptr->SetOrigin(origin);
 		this->data->sprites[std::string(spriteName)] = ptr;
 	}
 }

@@ -71,7 +71,18 @@ std::string GetFileContent(const char* filename) {
 	return ret;
 }
 
+static void CreatePathToFile(const std::string& path) {
+	size_t end_of_path = path.find_last_of("/");
+	if (end_of_path == std::string::npos) {
+		//No path
+		return;
+	}
+	std::string path2dir = path.substr(0, end_of_path);
+	PHYSFS_mkdir(path2dir.c_str());
+}
+
 void WriteFileContent(const char* filename, const std::string& content) {
+	CreatePathToFile(filename);
 	PHYSFS_file* myfile = PHYSFS_openWrite(filename);
 	if (!myfile) {
 		cerr << "Failed to open file for writing, " << PHYSFS_getLastError() << "\n";

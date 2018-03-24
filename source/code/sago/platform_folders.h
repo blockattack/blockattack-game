@@ -27,7 +27,7 @@ SOFTWARE.
 */
 
 #ifndef SAGO_PLATFORM_FOLDERS_H
-#define	SAGO_PLATFORM_FOLDERS_H
+#define SAGO_PLATFORM_FOLDERS_H
 
 #include <vector>
 #include <string>
@@ -162,11 +162,14 @@ public:
 private:
 	PlatformFolders(const PlatformFolders&);
 	PlatformFolders& operator=(const PlatformFolders&);
+#if defined(_WIN32)
+#elif defined(__APPLE__)
+#else
 	struct PlatformFoldersData;
 	PlatformFoldersData *data;
+#endif
 };
 
 }  //namespace sago
 
-#endif	/* PLATFORM_FOLDERS_H */
-
+#endif  /* PLATFORM_FOLDERS_H */

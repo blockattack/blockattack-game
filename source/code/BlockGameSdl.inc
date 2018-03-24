@@ -362,7 +362,7 @@ public:
 				DrawImgBoard(globalData.spriteHolder->GetSprite("touchcursor"),mx*bsize, 11*bsize-my*bsize-pixels);
 			}
 			else {
-				DrawImgBoard(cursor,cursorx*bsize-4,11*bsize-cursory*bsize-pixels-4);
+				DrawImgBoard(cursor,cursorx*bsize,11*bsize-cursory*bsize-pixels);
 			}
 		}
 		if (ticks<gameStartedAt) {

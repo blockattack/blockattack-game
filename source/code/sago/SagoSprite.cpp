@@ -29,8 +29,8 @@ namespace sago {
 
 struct SagoSprite::SagoSpriteData {
 	TextureHandler tex;
-	SDL_Rect imgCord{};
-	SDL_Rect origin{};
+	SDL_Rect imgCord = {};
+	SDL_Rect origin = {};
 	int aniFrames = 0;
 	int aniFrameTime = 0;
 };
@@ -71,8 +71,8 @@ void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y
 	SDL_Rect rect = data->imgCord;
 	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
 	SDL_Rect pos = rect;
-	pos.x = x;
-	pos.y = y;
+	pos.x = x - this->data->origin.x;
+	pos.y = y - this->data->origin.y;
 	if (w > 0) {
 		pos.w = w;
 	}
@@ -90,9 +90,15 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, cons
 	rect.w = part.w;
 	rect.h = part.h;
 	SDL_Rect pos = rect;
-	pos.x = x;
-	pos.y = y;
+	pos.x = x - this->data->origin.x;
+	pos.y = y - this->data->origin.y;
 	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
+}
+
+void SagoSprite::DrawProgressive(SDL_Renderer* target, float progress, int x, int y) const {
+	Sint32 frameNumber = progress*data->aniFrames;
+	Sint32 frameTime = frameNumber*data->aniFrameTime;
+	Draw(target, frameTime, x, y);
 }
 
 void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const {
