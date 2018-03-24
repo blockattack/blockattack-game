@@ -1639,15 +1639,15 @@ void FC_StringListFree(FC_StringList* node)
 
 FC_StringList** FC_StringListPushBack(FC_StringList** node, char* value, Uint8 copy)
 {
-    // Get to the last node
-    while(node != NULL && *node != NULL)
-    {
-        node = &(*node)->next;
-    }
-
     if(node == NULL)
     {
         return node;
+    }
+    
+    // Get to the last node
+    while(*node != NULL)
+    {
+        node = &(*node)->next;
     }
 
     *node = (FC_StringList*)malloc(sizeof(FC_StringList));
