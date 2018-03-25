@@ -32,7 +32,7 @@ SOFTWARE.
 namespace sago {
 
 struct SagoTextBox::SagoTextBoxData {
-	sago::SagoDataHolder* tex = nullptr;
+	const sago::SagoDataHolder* tex = nullptr;
 	std::string fontName = "freeserif";
 	SDL_Color color = { 255, 255, 255, 0 };
 	SDL_Color outlineColor = { 255, 255, 0, 0 };
@@ -52,7 +52,7 @@ SagoTextBox::~SagoTextBox() {
 	delete data;
 }
 
-void SagoTextBox::SetHolder(SagoDataHolder* holder) {
+void SagoTextBox::SetHolder(const SagoDataHolder* holder) {
 	data->tex = holder;
 }
 
@@ -144,6 +144,10 @@ void SagoTextBox::SplitAndAppendLineToCache(TTF_Font* font, const std::string& t
 	}
 	std::string firstPart(text.begin(), splitLocation);
 	AppendLineToCache(firstPart);
+	while (splitLocation != text.end() && *splitLocation == ' ') {
+		//Trim spaces after an automatic line break.
+		++splitLocation;
+	}
 	if (splitLocation == text.end()) {
 		return;
 	}
@@ -157,6 +161,7 @@ void SagoTextBox::UpdateCache() {
 	const std::string& s = data->text;
 	auto start = 0U;
 	auto end = s.find(delim);
+	data->lines.clear();
 	while (end != std::string::npos)
 	{
 		const std::string& theSubString = s.substr(start, end - start);

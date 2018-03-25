@@ -34,6 +34,7 @@ http://www.blockattack.net
 #define WITH_SDL 1
 
 #include "sago/SagoSpriteHolder.hpp"
+#include "sago/SagoTextBox.hpp"
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>           //Used for srand()
@@ -519,24 +520,49 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				infostring = _("Score as much as possible. No time limit.");
 			}
 			if (infostring.length() > 0) {
-				NFont_Write(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10, gametypeName);
-				NFont_Write(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+160, _("Objective:"));
-				globalData.standard_blue_font.drawBox(globalData.screen, { static_cast<float>(theGame2->GetTopX()+7),static_cast<float>(theGame2->GetTopY()+160+32), 280, 200}, infostring);
+				static sago::SagoTextBox infoBox;
+				static sago::SagoTextField objectiveField;
+				static sago::SagoTextField gametypeNameField;
+				infoBox.SetHolder(&globalData.spriteHolder->GetDataHolder());
+				infoBox.SetFont("freeserif");
+				infoBox.SetFontSize(30);
+				infoBox.SetMaxWidth(290);
+				infoBox.SetOutline(1, {0,0,0,255});
+				infoBox.SetText(infostring.c_str());
+				objectiveField.SetHolder(&globalData.spriteHolder->GetDataHolder());
+				objectiveField.SetFont("freeserif");
+				objectiveField.SetFontSize(30);
+				objectiveField.SetOutline(1, {0,0,0,255});
+				objectiveField.SetText(_("Objective:"));
+				gametypeNameField.SetHolder(&globalData.spriteHolder->GetDataHolder());
+				gametypeNameField.SetFont("freeserif");
+				gametypeNameField.SetFontSize(30);
+				gametypeNameField.SetOutline(1, {0,0,0,255});
+				gametypeNameField.SetText(gametypeName.c_str());
+				gametypeNameField.Draw(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10);
+				objectiveField.Draw(globalData.screen, theGame2->GetTopX()+7, theGame2->GetTopY()+160);
+				infoBox.Draw(globalData.screen, theGame2->GetTopX()+7, theGame2->GetTopY()+160+32);
 			}
 
 			//Write the keys that are in use
 			int y = theGame2->GetTopY()+400;
-			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y,_("Movement keys:") );
-			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+40,(getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+"," ).c_str() );
-			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+76,(getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)).c_str() );
-			NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+120,( _("Switch: ")+getKeyName(keySettings[0].change) ).c_str() );
+			std::string controldBoxText = std::string(_("Movement keys:"))+"\n"+getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+",\n"
+					+ getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)+"\n"
+					+ _("Switch: ") + getKeyName(keySettings[0].change);
 			if (theGame->isPuzzleMode()) {
-				NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+160,( _("Restart: ")+getKeyName(keySettings[0].push) ).c_str() );
+				controldBoxText += std::string("\n") + _("Restart: ")+getKeyName(keySettings[0].push);
 			}
 			else {
-				NFont_Write(globalData.screen, theGame2->GetTopX()+7,y+160,( _("Push line: ")+getKeyName(keySettings[0].push) ).c_str() );
+				controldBoxText += std::string("\n") + _("Push line: ")+getKeyName(keySettings[0].push);
 			}
-
+			static sago::SagoTextBox controldBox;
+			controldBox.SetHolder(&globalData.spriteHolder->GetDataHolder());
+			controldBox.SetFont("freeserif");
+			controldBox.SetFontSize(30);
+			controldBox.SetMaxWidth(290);
+			controldBox.SetOutline(1, {0,0,0,255});
+			controldBox.SetText(controldBoxText.c_str());
+			controldBox.Draw(globalData.screen, theGame2->GetTopX()+7,y);
 		}
 		strHolder = std::to_string(theGame2->GetScore()+theGame2->GetHandicap());
 		NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());

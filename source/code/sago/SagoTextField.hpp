@@ -48,7 +48,7 @@ public:
 	 * Sets the data holder. This is MANDATORY
 	 * @param holder The data holder to fetch the fonts from
 	 */
-	void SetHolder(SagoDataHolder* holder);
+	void SetHolder(const SagoDataHolder* holder);
 	/**
 	 * Set the text to display.
 	 * @param text The actual UTF-8 encoded text

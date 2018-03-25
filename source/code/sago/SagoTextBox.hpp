@@ -34,7 +34,7 @@ class SagoTextBox {
 public:
 	SagoTextBox();
 	virtual ~SagoTextBox();
-	void SetHolder(SagoDataHolder* holder);
+	void SetHolder(const SagoDataHolder* holder);
 	void SetText(const char* text);
 	void SetColor(const SDL_Color& color);
 	void SetFont(const char* fontName);

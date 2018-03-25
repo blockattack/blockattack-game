@@ -59,7 +59,7 @@ namespace sago {
 	};
 	
 struct SagoTextField::SagoTextFieldData {
-	sago::SagoDataHolder* tex = nullptr;
+	const sago::SagoDataHolder* tex = nullptr;
 	SDL_Surface* textSurface = nullptr;
 	SDL_Texture* texture = nullptr;
 	SDL_Surface* outlineTextSurface = nullptr;
@@ -91,7 +91,7 @@ SagoTextField::~SagoTextField() {
 	delete data;
 }
 
-void SagoTextField::SetHolder(SagoDataHolder* holder) {
+void SagoTextField::SetHolder(const SagoDataHolder* holder) {
 	data->tex = holder;
 }
 
