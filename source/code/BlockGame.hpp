@@ -146,7 +146,7 @@ private:
 	int nrPushedPixel = 0;
 	int nrFellDown = 0;
 	unsigned int nrStops = 0;
-	bool garbageToBeCleared[7][30];
+	bool garbageToBeCleared[7][30] = {};
 	unsigned int lastAImove = 0;
 
 	int AI_LineOffset = 0; //how many lines have changed since command

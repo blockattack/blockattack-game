@@ -1308,10 +1308,9 @@ int BlockGame::nrOfType(int line, int type) {
 int BlockGame::horiInLine(int line) {
 	//cout << "Start_ hori in line" << "\n";
 	int nrOfType[7] = {0, 0, 0, 0, 0, 0, 0};
-	int iTemp;
 	int max = 0;
 	for (int i=0; i<6; i++) {
-		iTemp = board[i][line];
+		int iTemp = board[i][line];
 		if ((iTemp>-1)&&(iTemp<7)) {
 			nrOfType[iTemp]++;
 		}
