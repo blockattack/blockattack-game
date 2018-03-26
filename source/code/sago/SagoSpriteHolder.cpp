@@ -73,7 +73,7 @@ static int getDefaultValue(const rapidjson::Value& value, const char* name, int 
 static std::string getDefaultValue(const rapidjson::Value& value, const char* name, std::string defaultValue) {
 	assert(value.IsObject());
 	const auto& t = value.GetObject().FindMember(name);
-	if (t->value.IsString()) {
+	if (t != value.MemberEnd() && t->value.IsString()) {
 		defaultValue = t->value.GetString();
 	}
 	return defaultValue;
@@ -106,9 +106,6 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 		SDL_Rect origin = {};
 		origin.x = getDefaultValue(m.value, "originx",0);
 		origin.y = getDefaultValue(m.value, "originy",0);
-		if (origin.x != 0) {
-			cerr << "Origin: " << origin.x << ", " << origin.y << "\n";
-		}
 		if (number_of_frames < 1) {
 			number_of_frames = 1;
 		}
