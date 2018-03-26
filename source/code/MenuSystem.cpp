@@ -132,7 +132,7 @@ void Menu::drawSelf(SDL_Renderer* target) {
 		drawToScreen(*b);
 	}
 	drawToScreen(exit);
-	standardButton.thefont->draw(target, 50, 50, title.c_str());
+	standardButton.getLabel(title)->Draw(target, 50, 50);
 }
 
 

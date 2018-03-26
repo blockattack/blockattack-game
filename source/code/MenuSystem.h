@@ -42,10 +42,14 @@ struct ButtonGfx
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize = 0;
 	int ysize = 0;
-	//A TTFont used for writing the label on the buttons
-	FontWrapper* thefont;
 	sago::SagoTextField* getLabel(const std::string& text);
 	void setSurfaces();
+	~ButtonGfx() {
+		for (auto& label : labels) {
+			delete label.second;
+		}
+		labels.clear();
+	}
 private:
 	std::map<std::string, sago::SagoTextField*> labels;
 };
