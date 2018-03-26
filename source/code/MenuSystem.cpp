@@ -301,6 +301,22 @@ bool Menu::IsActive() {
 void Menu::Draw(SDL_Renderer* target) {
 	placeButtons();
 	drawSelf(target);
+#if DEBUG
+	static unsigned long int Frames;
+	static unsigned long int Ticks;
+	static char FPS[10];
+	Frames++;
+	if (SDL_GetTicks() >= Ticks + 1000) {
+		if (Frames > 999) {
+			Frames=999;
+		}
+		snprintf(FPS, sizeof(FPS), "%lu fps", Frames);
+		Frames = 0;
+		Ticks = SDL_GetTicks();
+	}
+
+	globalData.standard_blue_font.draw(globalData.screen, 800, 4, FPS);
+#endif
 }
 void Menu::ProcessInput(const SDL_Event& event, bool& processed) {
 	if (isUpEvent(event)) {
