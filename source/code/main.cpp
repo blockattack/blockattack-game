@@ -418,6 +418,16 @@ static void DrawBalls() {
 	}
 }    //DrawBalls
 
+template <class T> void sagoTextSetHelpFont(T& field){
+	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
+	field.SetFont("freeserif");
+	field.SetFontSize(30);
+	field.SetOutline(1, {0,0,0,255});
+}
+
+static void sagoTextSetHelpFont(sago::SagoTextField& gametypeNameField){
+	sagoTextSetHelpFont<sago::SagoTextField>(gametypeNameField);
+}
 
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
@@ -523,21 +533,12 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				static sago::SagoTextBox infoBox;
 				static sago::SagoTextField objectiveField;
 				static sago::SagoTextField gametypeNameField;
-				infoBox.SetHolder(&globalData.spriteHolder->GetDataHolder());
-				infoBox.SetFont("freeserif");
-				infoBox.SetFontSize(30);
+				sagoTextSetHelpFont(infoBox);
 				infoBox.SetMaxWidth(290);
-				infoBox.SetOutline(1, {0,0,0,255});
 				infoBox.SetText(infostring.c_str());
-				objectiveField.SetHolder(&globalData.spriteHolder->GetDataHolder());
-				objectiveField.SetFont("freeserif");
-				objectiveField.SetFontSize(30);
-				objectiveField.SetOutline(1, {0,0,0,255});
+				sagoTextSetHelpFont(objectiveField);
 				objectiveField.SetText(_("Objective:"));
-				gametypeNameField.SetHolder(&globalData.spriteHolder->GetDataHolder());
-				gametypeNameField.SetFont("freeserif");
-				gametypeNameField.SetFontSize(30);
-				gametypeNameField.SetOutline(1, {0,0,0,255});
+				sagoTextSetHelpFont(gametypeNameField);
 				gametypeNameField.SetText(gametypeName.c_str());
 				gametypeNameField.Draw(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10);
 				objectiveField.Draw(globalData.screen, theGame2->GetTopX()+7, theGame2->GetTopY()+160);
