@@ -84,7 +84,7 @@ SagoTextField::SagoTextField(SagoTextField&& o) noexcept {
 }
 
 SagoTextField& SagoTextField::operator=(const SagoTextField& base) {
-	data = new SagoTextFieldData();
+	ClearCache();
 	try {
 		*data = *(base.data);
 		//Copy all data but do not reuse the cache as it would result in a double free
