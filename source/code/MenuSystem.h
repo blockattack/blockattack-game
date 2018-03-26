@@ -27,12 +27,14 @@ http://blockattack.net
 
 #include <string>
 #include "SDL.h"
+#include <map>
 #include <vector>
 #include "Libs/NFont.h"
 #include "sago/SagoSprite.hpp"
 #include "sago/GameStateInterface.hpp"
 #include <memory>
 #include "FontWrapper.hpp"
+#include "sago/SagoTextField.hpp"
 
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
 struct ButtonGfx
@@ -42,7 +44,10 @@ struct ButtonGfx
 	int ysize = 0;
 	//A TTFont used for writing the label on the buttons
 	FontWrapper* thefont;
+	sago::SagoTextField* getLabel(const std::string& text);
 	void setSurfaces();
+private:
+	std::map<std::string, sago::SagoTextField*> labels;
 };
 
 extern ButtonGfx standardButton;

@@ -43,6 +43,7 @@ public:
 	SagoTextField();
 	SagoTextField(SagoTextField&& o) noexcept;
 	SagoTextField& operator=(const SagoTextField&& base) = delete;
+	SagoTextField& operator=(const SagoTextField& base);
 	virtual ~SagoTextField();
 	/**
 	 * Sets the data holder. This is MANDATORY
@@ -72,7 +73,9 @@ public:
 	 * @return The text
 	 */
 	const std::string& GetText() const;
-	void Draw(SDL_Renderer* target, int x, int y);
+	enum class Alignment { left = 0, center = 2 };
+	enum class VerticalAlignment { top = 0, center = 1};
+	void Draw(SDL_Renderer* target, int x, int y, Alignment alignment = Alignment::left, VerticalAlignment verticalAlignment = VerticalAlignment::top);
 	/**
 	 * Updates the cache.
 	 * You normally do not want to call this from the outside as it is done just in time.
@@ -88,7 +91,6 @@ public:
 	void ClearCache();
 private:
 	SagoTextField(const SagoTextField& orig) = delete;
-	SagoTextField& operator=(const SagoTextField& base) = delete;
 	struct SagoTextFieldData;
 	SagoTextFieldData *data;
 };

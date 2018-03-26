@@ -49,6 +49,21 @@ void ButtonGfx::setSurfaces() {
 	}
 }
 
+sago::SagoTextField* ButtonGfx::getLabel(const std::string& text) {
+	const auto& theLabel = labels.find(text);
+	if (theLabel != labels.end()) {
+		return labels[text];
+	}
+	sago::SagoTextField* newField = new sago::SagoTextField();
+	newField->SetHolder(&globalData.spriteHolder->GetDataHolder());
+	newField->SetFont("freeserif");
+	newField->SetFontSize(24);
+	newField->SetOutline(2, {0,0,0,255});
+	newField->SetText(text.c_str());
+	labels[text] = newField;
+	return labels[text];
+}
+
 Button::Button() {
 	label = "";
 	marked = false;
@@ -98,7 +113,9 @@ static void drawToScreen(const Button& b) {
 		globalData.spriteHolder->GetSprite(menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 
-	standardButton.thefont->drawCenterAlsoHeight(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2, b.label);
+	standardButton.getLabel(b.label)->Draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2, 
+		sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
+	//standardButton.thefont->drawCenterAlsoHeight(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2, b.label);
 }
 
 

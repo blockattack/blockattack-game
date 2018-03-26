@@ -83,6 +83,16 @@ SagoTextField::SagoTextField(SagoTextField&& o) noexcept {
 	o.data = nullptr;
 }
 
+SagoTextField& SagoTextField::operator=(const SagoTextField& base) {
+	data = base.data;
+	//Copy all data but do not reuse the cache as it would result in a double free
+	data->outlineTextSurface = nullptr;
+	data->outlineTexture = nullptr;
+	data->textSurface = nullptr;
+	data->texture = nullptr;
+	return *this;
+}
+
 SagoTextField::~SagoTextField() {
 	if(!data) {
 		return;
@@ -160,7 +170,7 @@ void SagoTextField::UpdateCache(SDL_Renderer* target) {
 	data->renderedVersion = data->tex->getVersion();
 }
 
-void SagoTextField::Draw(SDL_Renderer* target, int x, int y) {
+void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment, VerticalAlignment verticalAlignment) {
 	if (data->text.empty()) {
 		return;
 	}
@@ -173,6 +183,12 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y) {
 	int texW = 0;
 	int texH = 0;
 	SDL_QueryTexture(data->texture, NULL, NULL, &texW, &texH);
+	if (alignment == Alignment::center) {
+		x -= texW/2;
+	}
+	if (verticalAlignment == VerticalAlignment::center) {
+		y -= texH/2;
+	}
 	SDL_Rect dstrect = { x, y, texW, texH };
 	if (data->outlineTexture) {
 		int outlineTexW = 0;
