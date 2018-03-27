@@ -23,13 +23,25 @@ http://www.blockattack.net
 
 #include "BlockGame.hpp"
 #include "global.hpp"
+#include "sago/SagoTextField.hpp"
 
+static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("penguinattack");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(20);
+	field.SetText(text);
+}
 
 class BlockGameSdl : public BlockGame {
 public:
-	BlockGameSdl(int tx, int ty) {
+	BlockGameSdl(int tx, int ty, const sago::SagoDataHolder* holder) {
 		topx = tx;
 		topy = ty;
+		setScoreboardFont(holder, scoreLabel, _("Score:"));
+		setScoreboardFont(holder, timeLabel, _("Time:"));
+		setScoreboardFont(holder, chainLabel, _("Chain:"));
+		setScoreboardFont(holder, speedLabel, _("Speed:"));
 	}
 	
 
@@ -290,10 +302,10 @@ public:
 	void DoPaintJob() {
 		DrawIMG(boardBackBack,globalData.screen,this->GetTopX()-60,this->GetTopY()-68);
 
-		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+148,_("Score:") );
-		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197,_("Time:") );
-		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+246,_("Chain:") );
-		globalData.scoreboard_font.draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+295,_("Speed:") );
+		this->scoreLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+148);
+		this->timeLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197);
+		this->chainLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+246);
+		this->speedLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+295);
 		DrawImgBoard(backBoard,  0, 0);
 
 		PaintBricks();
@@ -420,6 +432,10 @@ public:
 
 private:
 	int topx, topy;
+	sago::SagoTextField scoreLabel;
+	sago::SagoTextField timeLabel;
+	sago::SagoTextField chainLabel;
+	sago::SagoTextField speedLabel;
 };
 
 

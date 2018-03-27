@@ -1080,8 +1080,8 @@ int main(int argc, char* argv[]) {
 			cout << "Images loaded" << "\n";
 		}
 
-		BlockGameSdl theGame = BlockGameSdl(50, 100);            //creates game objects
-		BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500, 100);
+		BlockGameSdl theGame = BlockGameSdl(50, 100, &globalData.spriteHolder->GetDataHolder());            //creates game objects
+		BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500, 100, &globalData.spriteHolder->GetDataHolder());
 		player1 = &theGame;
 		player2 = &theGame2;
 
@@ -1180,15 +1180,15 @@ int runGame(Gametype gametype, int level) {
 	globalData.theTopScoresTimeTrial = Highscore("timetrial");
 	drawBalls = true;
 	puzzleLoaded = false;
-	bool bNearDeath = false;                        //Play music faster or louder while tru
+	bool bNearDeath = false;  //Play music faster or louder while tru
 
 	theBallManager = BallManager();
 	theExplosionManager = ExplosionManager();
-	BlockGameSdl theGame = BlockGameSdl(50,100);            //creates game objects
-	BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500,100);
+	BlockGameSdl theGame = BlockGameSdl(50, 100, &globalData.spriteHolder->GetDataHolder());  //creates game objects
+	BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500, 100, &globalData.spriteHolder->GetDataHolder());
 	player1 = &theGame;
 	player2 = &theGame2;
-	theGame.DoPaintJob();           //Makes sure what there is something to paint
+	theGame.DoPaintJob();  //Makes sure what there is something to paint
 	theGame2.DoPaintJob();
 	BlockGameAction a;
 	a.action = BlockGameAction::Action::SET_GAME_OVER;

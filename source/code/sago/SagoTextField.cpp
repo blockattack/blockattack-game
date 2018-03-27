@@ -137,10 +137,6 @@ const std::string& SagoTextField::GetText() const {
 }
 
 void SagoTextField::ClearCache() {
-	if (!data->tex) {
-		std::cerr << "FATAL: DataHolder not set!\n";
-		abort();
-	}
 	if (data->texture) {
 		SDL_DestroyTexture(data->texture);
 		data->texture = nullptr;
@@ -160,6 +156,10 @@ void SagoTextField::ClearCache() {
 }
 
 void SagoTextField::UpdateCache(SDL_Renderer* target) {
+	if (!data->tex) {
+		std::cerr << "FATAL: DataHolder not set!\n";
+		abort();
+	}
 	ClearCache();
 	TTF_Font *font = data->tex->getFontPtr(data->fontName, data->fontSize);
 	data->textSurface = TTF_RenderUTF8_Blended (font, data->text.c_str(), data->color);
