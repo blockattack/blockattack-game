@@ -32,6 +32,7 @@ http://www.blockattack.net
 #include "FontWrapper.hpp"
 #include "TextManager.hpp"
 #include "ExplosionManager.hpp"
+#include "sago/SagoTextField.hpp"
 
 void MainMenu();
 void ResetFullscreen();
@@ -46,6 +47,8 @@ void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey);
 void DrawIMG(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y);
 void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy);
 
+void sagoTextSetHelpFont(sago::SagoTextField& field);
+
 struct GlobalData {
 	sago::SagoSprite bHighScore;
 	sago::SagoSprite bBack;
@@ -54,7 +57,6 @@ struct GlobalData {
 	sago::SagoSprite iLevelCheckBox;
 	sago::SagoSprite iLevelCheckBoxMarked;
 	sago::SagoSprite iCheckBoxArea;
-	FontWrapper scoreboard_font;
 	FontWrapper standard_blue_font;
 	FontWrapper button_font;
 	bool MusicEnabled;			//true if background music is enabled

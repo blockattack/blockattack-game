@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -315,7 +315,10 @@ public:
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
 			strHolder = _("Moves left: ") + std::to_string(MovesLeft);
-			globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder);
+			static sago::SagoTextField movesPuzzleLabel;
+			sagoTextSetHelpFont(movesPuzzleLabel);
+			movesPuzzleLabel.SetText(strHolder.c_str());
+			movesPuzzleLabel.Draw(globalData.screen, topx+5, topy+5);
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
@@ -332,8 +335,10 @@ public:
 				}
 			}
 			else {
-				strHolder = "Last puzzle";
-				globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder);
+				static sago::SagoTextField lastPuzzleLabel;
+				sagoTextSetHelpFont(lastPuzzleLabel);
+				lastPuzzleLabel.SetText(_("Last puzzle"));
+				lastPuzzleLabel.Draw(globalData.screen, topx+5, topy+5);
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
@@ -350,8 +355,10 @@ public:
 				}
 			}
 			else {
-				strHolder = "Last stage";
-				globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder);
+				static sago::SagoTextField lastStageLabel;
+				sagoTextSetHelpFont(lastStageLabel);
+				lastStageLabel.SetText(_("Last stage"));
+				lastStageLabel.Draw(globalData.screen, topx+5, topy+5);
 			}
 		}
 		if (!bGameOver && stop > 20) {
