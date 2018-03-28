@@ -31,6 +31,14 @@ using std::string;
 using std::cerr;
 using std::vector;
 
+static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(24);
+	field.SetOutline(1, {0,0,0,255});
+	field.SetText(text);
+}
 
 static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
 	globalData.standard_blue_font.draw(target, x, y, text);
@@ -157,12 +165,17 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 		DrawStats();
 	};
 
+	const sago::SagoDataHolder* holder = &globalData.spriteHolder->GetDataHolder();
 	//Draw buttons:
 	globalData.bHighScore.Draw(globalData.screen, 0, scoreX,scoreY);
 	globalData.bBack.Draw(globalData.screen, 0, backX, backY);
-	globalData.button_font.drawCenter(globalData.screen, backX+60,backY+10,_("Back"));
+	static sago::SagoTextField backLabel;
+	setButtonFont(holder, backLabel, _("Back"));
+	backLabel.Draw(globalData.screen, backX+60,backY+10, sago::SagoTextField::Alignment::center);
 	globalData.bNext.Draw(globalData.screen, 0, nextX, nextY);
-	globalData.button_font.drawCenter(globalData.screen, nextX+60,nextY+10,_("Next"));
+	static sago::SagoTextField nextLabel;
+	setButtonFont(holder, nextLabel, _("Next"));
+	nextLabel.Draw(globalData.screen, nextX+60, nextY+10, sago::SagoTextField::Alignment::center);
 
 	//Draw page number
 	string pageXofY = SPrintStringF(_("Page %i of %i"), page+1, numberOfPages);
