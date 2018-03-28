@@ -54,6 +54,7 @@ public:
 		setButtonFont(holder, buttonNext, _("Next"));
 		setButtonFont(holder, buttonRetry, _("Retry"));
 		setButtonFont(holder, buttonSkip, _("Skip"));
+		setButtonFont(holder, stopIntField, "");
 	}
 	
 
@@ -375,7 +376,8 @@ public:
 			}
 		}
 		if (!bGameOver && stop > 20) {
-			PrintIntRightAlignedBoard(240, -40, stop/10);
+			stopIntField.SetText(std::to_string(stop/10).c_str());
+			stopIntField.Draw(globalData.screen, 240+topx, -40+topy);
 		}
 
 #if DEBUG
@@ -459,6 +461,7 @@ private:
 	sago::SagoTextField buttonSkip;
 	sago::SagoTextField buttonRetry;
 	sago::SagoTextField buttonNext;
+	sago::SagoTextField stopIntField;
 };
 
 

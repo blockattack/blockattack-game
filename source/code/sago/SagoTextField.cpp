@@ -192,6 +192,9 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment
 	if (alignment == Alignment::center) {
 		x -= texW/2;
 	}
+	if (alignment == Alignment::right) {
+		y -= texW;
+	}
 	if (verticalAlignment == VerticalAlignment::center) {
 		y -= texH/2;
 	}
