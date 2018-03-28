@@ -33,6 +33,15 @@ static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoText
 	field.SetText(text);
 }
 
+static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(24);
+	field.SetOutline(1, {0,0,0,255});
+	field.SetText(text);
+}
+
 class BlockGameSdl : public BlockGame {
 public:
 	BlockGameSdl(int tx, int ty, const sago::SagoDataHolder* holder) {
@@ -42,6 +51,9 @@ public:
 		setScoreboardFont(holder, timeLabel, _("Time:"));
 		setScoreboardFont(holder, chainLabel, _("Chain:"));
 		setScoreboardFont(holder, speedLabel, _("Speed:"));
+		setButtonFont(holder, buttonNext, _("Next"));
+		setButtonFont(holder, buttonRetry, _("Retry"));
+		setButtonFont(holder, buttonSkip, _("Skip"));
 	}
 	
 
@@ -53,8 +65,9 @@ public:
 		DrawIMG_Bounded(img, globalData.screen, x+topx, y+topy, topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight());
 	}
 
-	void PrintTextCenteredBoard(int x, int y, const char* text) {
-		globalData.button_font.drawCenter(globalData.screen, x+topx+60, y+topy+10, text);
+	void PrintTextCenteredBoard(int x, int y, sago::SagoTextField& field) {
+		field.Draw(globalData.screen, x+topx+60, y+topy+20, 
+				sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
 	}
 	
 	void PrintIntRightAlignedBoard(int x, int y, int number) {
@@ -323,15 +336,15 @@ public:
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
 			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
-			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
+			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, buttonRetry);
 			if (getLevel()<PuzzleGetNumberOfPuzzles()-1) {
 				if (hasWonTheGame) {
 					DrawImgBoard(globalData.bNext, cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonNext);
 				}
 				else {
 					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Skip"));
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonSkip);
 				}
 			}
 			else {
@@ -343,15 +356,15 @@ public:
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
 			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
-			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, _("Retry"));
+			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, buttonRetry);
 			if (getLevel()<50-1) {
 				if (hasWonTheGame) {
 					DrawImgBoard(globalData.bNext, cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Next"));
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonNext);
 				}
 				else {
 					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, _("Skip"));
+					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonSkip);
 				}
 			}
 			else {
@@ -443,6 +456,9 @@ private:
 	sago::SagoTextField timeLabel;
 	sago::SagoTextField chainLabel;
 	sago::SagoTextField speedLabel;
+	sago::SagoTextField buttonSkip;
+	sago::SagoTextField buttonRetry;
+	sago::SagoTextField buttonNext;
 };
 
 
