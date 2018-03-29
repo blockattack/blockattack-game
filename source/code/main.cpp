@@ -182,12 +182,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.mouse = holder.GetSprite("mouse");
 	backBoard = holder.GetSprite("back_board");
 
-	SDL_Color nf_button_color, nf_standard_blue_color, nf_standard_small_color;
-	memset(&nf_button_color,0,sizeof(SDL_Color));
-	nf_button_color.b = 255;
-	nf_button_color.g = 255;
-	nf_button_color.r = 255;
-	nf_button_color.a = 255;
+	SDL_Color nf_standard_blue_color, nf_standard_small_color;
 	nf_standard_blue_color.b = 255;
 	nf_standard_blue_color.g = 0;
 	nf_standard_blue_color.r = 0;
@@ -196,7 +191,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	nf_standard_small_color.g = 0;
 	nf_standard_small_color.r = 200;
 	nf_standard_small_color.a = 255;
-	globalData.button_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 24), nf_button_color);
 	globalData.standard_blue_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
 	nf_standard_small_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
 

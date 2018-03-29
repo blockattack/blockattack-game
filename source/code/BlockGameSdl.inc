@@ -71,10 +71,6 @@ public:
 				sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
 	}
 	
-	void PrintIntRightAlignedBoard(int x, int y, int number) {
-		globalData.button_font.drawRight(globalData.screen, x+topx+60, y+topy+10, std::to_string(number));
-	}
-	
 	void SetTopXY(int tx, int ty) {
 		topx = tx;
 		topy = ty;

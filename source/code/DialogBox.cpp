@@ -26,6 +26,15 @@ http://www.blockattack.net
 #include "common.h"
 #include "ReadKeyboard.h"
 
+static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(24);
+	field.SetOutline(1, {0,0,0,255});
+	field.SetText(text);
+}
+
 static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& text) {
 	globalData.standard_blue_font.draw(target, x, y, text);
 }
@@ -83,6 +92,9 @@ DialogBox::DialogBox(int x, int y, const std::string& name, const std::string& h
 	this->x = x;
 	this->y = y;
 	SetName(name);
+	setButtonFont(&globalData.spriteHolder->GetDataHolder(), headerLabel, header.c_str());
+	setButtonFont(&globalData.spriteHolder->GetDataHolder(), enterLabel, _("Enter to accept"));
+	setButtonFont(&globalData.spriteHolder->GetDataHolder(), cancelLabel, _("Esc to cancel"));
 }
 
 
@@ -99,9 +111,9 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	this->x = globalData.xsize/2-300;
 	this->y = globalData.ysize/2-100;
 	DrawRectYellow(target, x, y, 200, 600);
-	globalData.button_font.drawCenter(target, x+300, y+20, header);
-	globalData.button_font.drawCenter(target, x+150, y+140, _("Enter to accept"));
-	globalData.button_font.drawCenter(target, x+450, y+140, _("Esc to cancel"));
+	headerLabel.Draw(target, x+300, y+20, sago::SagoTextField::Alignment::center);
+	enterLabel.Draw(target, x+150, y+140, sago::SagoTextField::Alignment::center);
+	cancelLabel.Draw(target, x+450, y+140, sago::SagoTextField::Alignment::center);
 	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
 	NFont_Write(target, x+40, y+76,rk->GetString());
 	std::string strHolder = rk->GetString();

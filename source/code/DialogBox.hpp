@@ -52,6 +52,9 @@ private:
 	std::string header;
 	bool updated = false;
 	SDL_TextInput textInputScope;
+	sago::SagoTextField headerLabel;
+	sago::SagoTextField enterLabel;
+	sago::SagoTextField cancelLabel;
 };
 
 #endif /* DIALOGBOX_HPP */
