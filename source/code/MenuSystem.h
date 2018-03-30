@@ -44,14 +44,8 @@ struct ButtonGfx
 	int ysize = 0;
 	sago::SagoTextField* getLabel(const std::string& text);
 	void setSurfaces();
-	~ButtonGfx() {
-		for (auto& label : labels) {
-			delete label.second;
-		}
-		labels.clear();
-	}
 private:
-	std::map<std::string, sago::SagoTextField*> labels;
+	std::map<std::string, std::shared_ptr<sago::SagoTextField> > labels;
 };
 
 extern ButtonGfx standardButton;

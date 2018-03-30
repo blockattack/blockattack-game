@@ -52,16 +52,16 @@ void ButtonGfx::setSurfaces() {
 sago::SagoTextField* ButtonGfx::getLabel(const std::string& text) {
 	const auto& theLabel = labels.find(text);
 	if (theLabel != labels.end()) {
-		return labels[text];
+		return labels[text].get();
 	}
-	sago::SagoTextField* newField = new sago::SagoTextField();
+	std::shared_ptr<sago::SagoTextField> newField = std::make_shared<sago::SagoTextField>();
 	newField->SetHolder(&globalData.spriteHolder->GetDataHolder());
 	newField->SetFont("freeserif");
 	newField->SetFontSize(30);
 	newField->SetOutline(1, {0,0,0,255});
 	newField->SetText(text.c_str());
 	labels[text] = newField;
-	return labels[text];
+	return labels[text].get();
 }
 
 Button::Button() {

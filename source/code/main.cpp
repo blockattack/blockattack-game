@@ -387,7 +387,6 @@ void OpenScoresDisplay() {
 	RunGameState(d);
 }
 
-
 //Draws the balls and explosions
 static void DrawBalls() {
 	for (size_t i = 0; i< theBallManager.ballArray.size(); i++) {
