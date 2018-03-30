@@ -182,17 +182,12 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.mouse = holder.GetSprite("mouse");
 	backBoard = holder.GetSprite("back_board");
 
-	SDL_Color nf_standard_blue_color, nf_standard_small_color;
+	SDL_Color nf_standard_blue_color;
 	nf_standard_blue_color.b = 255;
 	nf_standard_blue_color.g = 0;
 	nf_standard_blue_color.r = 0;
 	nf_standard_blue_color.a = 255;
-	nf_standard_small_color.b = 0;
-	nf_standard_small_color.g = 0;
-	nf_standard_small_color.r = 200;
-	nf_standard_small_color.a = 255;
 	globalData.standard_blue_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
-	nf_standard_small_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 16), nf_standard_small_color);
 
 //Loads the sound if sound present
 	if (!globalData.NoSound) {
@@ -387,6 +382,24 @@ void OpenScoresDisplay() {
 	RunGameState(d);
 }
 
+
+static sago::SagoTextField* getSmallInt(size_t number) {
+	static std::vector<std::shared_ptr<sago::SagoTextField> > smallFontCache;
+	if (smallFontCache.size() < number+1) {
+		smallFontCache.resize(number+1);
+	}
+	if (!smallFontCache[number]) {
+		std::shared_ptr<sago::SagoTextField> newNumber = std::make_shared<sago::SagoTextField>();
+		newNumber->SetHolder(&globalData.spriteHolder->GetDataHolder());
+		newNumber->SetFont("freeserif");
+		newNumber->SetFontSize(16);
+		newNumber->SetColor({255,0,0,255});
+		newNumber->SetText(std::to_string(number).c_str());
+		smallFontCache[number] = newNumber;
+	}
+	return smallFontCache[number].get();
+}
+
 //Draws the balls and explosions
 static void DrawBalls() {
 	for (size_t i = 0; i< theBallManager.ballArray.size(); i++) {
@@ -405,7 +418,8 @@ static void DrawBalls() {
 			int y = globalData.theTextManager.textArray[i].getY()-12;
 			DrawIMG(iChainFrame,globalData.screen,x,y);
 
-			nf_standard_small_font.draw(globalData.screen, x+12,y+7, NFont::CENTER, "%s", globalData.theTextManager.textArray[i].getText());
+			getSmallInt(std::stoi(globalData.theTextManager.textArray[i].getText()))->Draw(globalData.screen, x+12, y+7,
+				sago::SagoTextField::Alignment::center);
 		}
 	}
 }    //DrawBalls

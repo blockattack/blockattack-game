@@ -95,8 +95,6 @@ static sago::SagoSprite bExit;
 const int bExitSize = 100;  //height and width of the exit button
 const int bExitOffset = 140; //pixels from the buttom right corner to the top left of the exit button
 
-static NFont nf_standard_small_font;
-
 static sago::MusicHandler bgMusic;         //backgroundMusic
 static sago::MusicHandler highbeatMusic;   //Background music with higher beat
 static sago::SoundHandler boing;           //boing sound when clearing
