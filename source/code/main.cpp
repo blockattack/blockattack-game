@@ -418,7 +418,7 @@ static void DrawBalls() {
 			int y = globalData.theTextManager.textArray[i].getY()-12;
 			DrawIMG(iChainFrame,globalData.screen,x,y);
 
-			getSmallInt(std::stoi(globalData.theTextManager.textArray[i].getText()))->Draw(globalData.screen, x+12, y+7,
+			getSmallInt(globalData.theTextManager.textArray[i].getText())->Draw(globalData.screen, x+12, y+7,
 				sago::SagoTextField::Alignment::center);
 		}
 	}

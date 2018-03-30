@@ -115,7 +115,7 @@ public:
 		return true;
 	}
 
-	void AddText(int x, int y, const std::string& text, int time) const override {
+	void AddText(int x, int y, unsigned int text, int time) const override {
 		globalData.theTextManager.addText(topx-10+x*bsize, topy+12*bsize-y*bsize, text, time);
 	}
 

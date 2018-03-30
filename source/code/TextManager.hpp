@@ -31,7 +31,7 @@ class TextMessage {
 private:
 	int x = 0;
 	int y = 0;
-	std::string textt;
+	unsigned int textt;
 	unsigned long int time = 0;
 	unsigned long int placeTime = 0; //Then the text was placed
 public:
@@ -41,7 +41,7 @@ public:
 	}
 
 	//constructor:
-	TextMessage(int X, int Y,const char* Text,unsigned int Time) {
+	TextMessage(int X, int Y,unsigned int Text,unsigned int Time) {
 		placeTime = SDL_GetTicks();
 		x = X;
 		y = Y;
@@ -62,8 +62,8 @@ public:
 		return y;
 	}
 
-	const char* getText() {
-		return textt.c_str();
+	unsigned int getText() {
+		return textt;
 	}
 };  //text popup
 
@@ -75,7 +75,7 @@ public:
 	TextManager() {
 	}
 
-	int addText(int x, int y, const std::string& Text,unsigned int Time) {
+	int addText(int x, int y, unsigned int Text, unsigned int Time) {
 		size_t textNumber = 0;
 		while (textNumber<textArray.size() && textArray[textNumber].inUse) {
 			textNumber++;
@@ -83,7 +83,7 @@ public:
 		if (textNumber==textArray.size()) {
 			return -1;
 		}
-		textArray[textNumber] = TextMessage(x,y,Text.c_str(),Time);
+		textArray[textNumber] = TextMessage(x,y,Text,Time);
 		textArray[textNumber].inUse = true;
 		return 1;
 	}  //addText

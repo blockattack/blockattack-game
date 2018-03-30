@@ -933,9 +933,8 @@ void BlockGame::ClearBlocks() {
 				if (toBeCleared[j][i]) {
 					if (!dead) {
 						dead=true;
-						string tempS = std::to_string(chainSize[chain]);
 						if (chainSize[chain]>1) {
-							AddText(j, i, tempS, 1000);
+							AddText(j, i, chainSize[chain], 1000);
 						}
 					}
 				}
