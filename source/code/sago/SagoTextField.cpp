@@ -179,10 +179,10 @@ void SagoTextField::GetRenderedSize(const char* text, int* w, int* h) {
 	int ret = TTF_SizeUTF8(font, text, w, h);
 	if (ret) {
 		if (w) {
-			w = 0;
+			*w = 0;
 		}
 		if (h) {
-			h = 0;
+			*h = 0;
 		}
 		std::cerr << "GetRenderedSize failed to find size of " << text << ". Error code: " << ret << "\n";
 	}
