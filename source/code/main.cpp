@@ -181,13 +181,18 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	bRetry = holder.GetSprite("b_blank");
 	globalData.mouse = holder.GetSprite("mouse");
 	backBoard = holder.GetSprite("back_board");
-
-	SDL_Color nf_standard_blue_color;
-	nf_standard_blue_color.b = 255;
-	nf_standard_blue_color.g = 0;
-	nf_standard_blue_color.r = 0;
-	nf_standard_blue_color.a = 255;
-	globalData.standard_blue_font.load(globalData.screen, holder.GetDataHolder().getFontPtr("freeserif", 30), nf_standard_blue_color);
+	
+	sagoTextSetBlueFont(player1name);
+	sagoTextSetBlueFont(player2name);
+	sagoTextSetBlueFont(player1time);
+	sagoTextSetBlueFont(player2time);
+	sagoTextSetBlueFont(player1score);
+	sagoTextSetBlueFont(player2score);
+	sagoTextSetBlueFont(player1chain);
+	sagoTextSetBlueFont(player2chain);
+	sagoTextSetBlueFont(player1speed);
+	sagoTextSetBlueFont(player2speed);
+	
 
 //Loads the sound if sound present
 	if (!globalData.NoSound) {
@@ -225,15 +230,6 @@ void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x
 	bounds.w = maxx-minx;
 	bounds.h = maxy-miny;
 	sprite.DrawBounded(target, SDL_GetTicks(),x,y,bounds);
-}
-
-
-static void NFont_Write(SDL_Renderer* target, int x, int y, const string& text) {
-	globalData.standard_blue_font.draw(target, x, y, text);
-}
-
-static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
-	globalData.standard_blue_font.draw(target, x, y, text);
 }
 
 SDL_Window* sdlWindow;
@@ -451,16 +447,18 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	theGame2->DoPaintJob();
 	string strHolder;
 	strHolder = std::to_string(theGame->GetScore()+theGame->GetHandicap());
-	NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+100,strHolder.c_str());
+	player1score.SetText(strHolder.c_str());
+	player1score.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+100);
 	if (theGame->GetAIenabled()) {
-		NFont_Write(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("AI") );
+		player1name.SetText(_("AI"));
 	}
 	else if (editorMode || singlePuzzle) {
-		NFont_Write(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34,_("Playing field") );
+		player1name.SetText(_("Playing field"));
 	}
 	else {
-		NFont_Write(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34, globalData.player1name);
+		player1name.SetText(globalData.player1name.c_str());
 	}
+	player1name.Draw(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34);
 	if (theGame->isTimeTrial()) {
 		int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
 		int minutes;
@@ -485,8 +483,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		else {
 			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
-		//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-		NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
+		player1time.SetText(strHolder.c_str());
 	}
 	else {
 		int minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
@@ -503,13 +500,16 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		else {
 			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
-		NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+150,strHolder.c_str());
+		player1time.SetText(strHolder.c_str());
 	}
+	player1time.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+150);
 	strHolder = std::to_string(theGame->GetChains());
-	NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+200,strHolder.c_str());
+	player1chain.SetText(strHolder.c_str());
+	player1chain.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+200);
 	//drawspeedLevel:
 	strHolder = std::to_string(theGame->GetSpeedLevel());
-	NFont_Write(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+250,strHolder.c_str());
+	player1speed.SetText(strHolder.c_str());
+	player1speed.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+250);
 	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY())) {
 		oldBubleX = theGame->GetTopX()+280;
 		oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
@@ -580,13 +580,15 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			controldBox.Draw(globalData.screen, theGame2->GetTopX()+7,y);
 		}
 		strHolder = std::to_string(theGame2->GetScore()+theGame2->GetHandicap());
-		NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+100,strHolder.c_str());
+		player2score.SetText(strHolder.c_str());
+		player2score.Draw(globalData.screen, theGame2->GetTopX()+310, theGame2->GetTopY()+100);
 		if (theGame2->GetAIenabled()) {
-			NFont_Write(globalData.screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,_("AI") );
+			player2name.SetText(_("AI"));
 		}
 		else {
-			NFont_Write(globalData.screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34,theGame2->name);
+			player2name.SetText(theGame2->name.c_str());
 		}
+		player2name.Draw(globalData.screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34);
 		if (theGame2->isTimeTrial()) {
 			int tid = (int)SDL_GetTicks()-theGame2->GetGameStartedAt();
 			int minutes;
@@ -611,8 +613,6 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			else {
 				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 			}
-			//if ((SoundEnabled)&&(!NoSound)&&(tid>0)&&(seconds<5)&&(minutes == 0)&&(seconds>1)&&(!(Mix_Playing(6)))) Mix_PlayChannel(6,heartBeat,0);
-			NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
 		}
 		else {
 			int minutes = (abs((int)SDL_GetTicks()-(int)theGame2->GetGameStartedAt()))/60/1000;
@@ -629,12 +629,15 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			else {
 				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 			}
-			NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150,strHolder.c_str());
 		}
+		player2time.SetText(strHolder.c_str());
+		player2time.Draw(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150);
 		strHolder = std::to_string(theGame2->GetChains());
-		NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200,strHolder.c_str());
+		player2chain.SetText(strHolder.c_str());
+		player2chain.Draw(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200);
 		strHolder = std::to_string(theGame2->GetSpeedLevel());
-		NFont_Write(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250,strHolder.c_str());
+		player2speed.SetText(strHolder.c_str());
+		player2speed.Draw(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250);
 	}
 	//player2 finnish
 

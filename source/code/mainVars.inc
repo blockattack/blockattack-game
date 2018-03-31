@@ -27,6 +27,7 @@ http://blockattack.net
 
 #include "sago/SagoSprite.hpp"
 #include "BlockGame.hpp"
+#include "sago/SagoTextField.hpp"
 
 
 //main variables and constants
@@ -194,5 +195,17 @@ ButtonCords cordRetryButton =
 	cordRetryButton.xsize = buttonXsize,
 	cordRetryButton.ysize = buttonYsize
 };
+
+static sago::SagoTextField player1name;
+static sago::SagoTextField player2name;
+static sago::SagoTextField player1time;
+static sago::SagoTextField player2time;
+static sago::SagoTextField player1score;
+static sago::SagoTextField player2score;
+static sago::SagoTextField player1chain;
+static sago::SagoTextField player2chain;
+static sago::SagoTextField player1speed;
+static sago::SagoTextField player2speed;
+
 
 #endif

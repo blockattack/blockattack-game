@@ -58,7 +58,6 @@ struct GlobalData {
 	sago::SagoSprite iLevelCheckBox;
 	sago::SagoSprite iLevelCheckBoxMarked;
 	sago::SagoSprite iCheckBoxArea;
-	FontWrapper standard_blue_font;
 	bool MusicEnabled;			//true if background music is enabled
 	bool SoundEnabled;			//true if sound effects is enabled
 	bool bFullscreen;			//true if game is running fullscreen
