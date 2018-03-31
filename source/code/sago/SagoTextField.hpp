@@ -73,6 +73,7 @@ public:
 	 * @return The text
 	 */
 	const std::string& GetText() const;
+	void GetRenderedSize(const char* text, int* w = nullptr, int* h = nullptr);
 	enum class Alignment { left = 0, right=1, center = 2 };
 	enum class VerticalAlignment { top = 0, center = 1};
 	void Draw(SDL_Renderer* target, int x, int y, Alignment alignment = Alignment::left, VerticalAlignment verticalAlignment = VerticalAlignment::top);

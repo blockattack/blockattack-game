@@ -35,10 +35,6 @@ static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextFiel
 	field.SetText(text);
 }
 
-static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& text) {
-	globalData.standard_blue_font.draw(target, x, y, text);
-}
-
 static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
 	const int size = 32;
 	SDL_Rect bounds_ns = {topx, topy+size, width, height-2*size};  //bounds for south
@@ -95,6 +91,9 @@ DialogBox::DialogBox(int x, int y, const std::string& name, const std::string& h
 	setButtonFont(&globalData.spriteHolder->GetDataHolder(), headerLabel, header.c_str());
 	setButtonFont(&globalData.spriteHolder->GetDataHolder(), enterLabel, _("Enter to accept"));
 	setButtonFont(&globalData.spriteHolder->GetDataHolder(), cancelLabel, _("Esc to cancel"));
+	sagoTextSetBlueFont(textField);
+	sagoTextSetBlueFont(cursorLabel);
+	cursorLabel.SetText("|");
 }
 
 
@@ -115,12 +114,16 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	enterLabel.Draw(target, x+150, y+140, sago::SagoTextField::Alignment::center);
 	cancelLabel.Draw(target, x+450, y+140, sago::SagoTextField::Alignment::center);
 	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
-	NFont_Write(target, x+40, y+76,rk->GetString());
+	textField.SetText(rk->GetString().c_str());
+	textField.Draw(target, x+40, y+76);
 	std::string strHolder = rk->GetString();
 	strHolder.erase((int)rk->CharsBeforeCursor());
 
 	if (((SDL_GetTicks()/600)%2)==1) {
-		NFont_Write(target, x+40+globalData.standard_blue_font.getWidth( strHolder),y+76,"|");
+		int width = 0;
+		textField.GetRenderedSize( strHolder.c_str(), &width);
+		width -= 2;
+		cursorLabel.Draw(target, x+40+width,y+76);
 	}
 }
 

@@ -55,6 +55,8 @@ private:
 	sago::SagoTextField headerLabel;
 	sago::SagoTextField enterLabel;
 	sago::SagoTextField cancelLabel;
+	sago::SagoTextField textField;
+	sago::SagoTextField cursorLabel;
 };
 
 #endif /* DIALOGBOX_HPP */
