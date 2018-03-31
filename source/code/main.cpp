@@ -44,7 +44,6 @@ http://www.blockattack.net
 #include <SDL_mixer.h>      //Used for sound & music
 #include <SDL_image.h>      //To load PNG images!
 #include <physfs.h>         //Abstract file system. To use containers
-#include "Libs/NFont.h"
 #include <vector>
 #include "MenuSystem.h"
 #include "puzzlehandler.hpp"

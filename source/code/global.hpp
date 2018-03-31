@@ -24,7 +24,6 @@ http://www.blockattack.net
 #ifndef _GLOBAL_HPP
 #define	_GLOBAL_HPP
 
-#include "Libs/NFont.h"
 #include <memory>
 #include "sago/SagoSpriteHolder.hpp"
 #include "highscore.h"

@@ -29,7 +29,6 @@ http://blockattack.net
 #include "SDL.h"
 #include <map>
 #include <vector>
-#include "Libs/NFont.h"
 #include "sago/SagoSprite.hpp"
 #include "sago/GameStateInterface.hpp"
 #include <memory>
