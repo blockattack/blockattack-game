@@ -114,7 +114,7 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	enterLabel.Draw(target, x+150, y+140, sago::SagoTextField::Alignment::center);
 	cancelLabel.Draw(target, x+450, y+140, sago::SagoTextField::Alignment::center);
 	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
-	textField.SetText(rk->GetString().c_str());
+	textField.SetText(rk->GetString());
 	textField.Draw(target, x+40, y+76);
 	std::string strHolder = rk->GetString();
 	strHolder.erase((int)rk->CharsBeforeCursor());

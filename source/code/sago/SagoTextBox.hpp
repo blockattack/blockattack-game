@@ -36,6 +36,7 @@ public:
 	virtual ~SagoTextBox();
 	void SetHolder(const SagoDataHolder* holder);
 	void SetText(const char* text);
+	void SetText(const std::string& text);
 	void SetColor(const SDL_Color& color);
 	void SetFont(const char* fontName);
 	void SetFontSize(int fontSize);

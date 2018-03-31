@@ -389,7 +389,7 @@ static sago::SagoTextField* getSmallInt(size_t number) {
 		newNumber->SetFont("freeserif");
 		newNumber->SetFontSize(16);
 		newNumber->SetColor({255,0,0,255});
-		newNumber->SetText(std::to_string(number).c_str());
+		newNumber->SetText(std::to_string(number));
 		smallFontCache[number] = newNumber;
 	}
 	return smallFontCache[number].get();
@@ -446,7 +446,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	theGame2->DoPaintJob();
 	string strHolder;
 	strHolder = std::to_string(theGame->GetScore()+theGame->GetHandicap());
-	player1score.SetText(strHolder.c_str());
+	player1score.SetText(strHolder);
 	player1score.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+100);
 	if (theGame->GetAIenabled()) {
 		player1name.SetText(_("AI"));
@@ -455,7 +455,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		player1name.SetText(_("Playing field"));
 	}
 	else {
-		player1name.SetText(globalData.player1name.c_str());
+		player1name.SetText(globalData.player1name);
 	}
 	player1name.Draw(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34);
 	if (theGame->isTimeTrial()) {
@@ -482,7 +482,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		else {
 			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
-		player1time.SetText(strHolder.c_str());
+		player1time.SetText(strHolder);
 	}
 	else {
 		int minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
@@ -499,15 +499,15 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		else {
 			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 		}
-		player1time.SetText(strHolder.c_str());
+		player1time.SetText(strHolder);
 	}
 	player1time.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+150);
 	strHolder = std::to_string(theGame->GetChains());
-	player1chain.SetText(strHolder.c_str());
+	player1chain.SetText(strHolder);
 	player1chain.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+200);
 	//drawspeedLevel:
 	strHolder = std::to_string(theGame->GetSpeedLevel());
-	player1speed.SetText(strHolder.c_str());
+	player1speed.SetText(strHolder);
 	player1speed.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+250);
 	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY())) {
 		oldBubleX = theGame->GetTopX()+280;
@@ -548,11 +548,11 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				static sago::SagoTextField gametypeNameField;
 				sagoTextSetHelpFont(infoBox);
 				infoBox.SetMaxWidth(290);
-				infoBox.SetText(infostring.c_str());
+				infoBox.SetText(infostring);
 				sagoTextSetHelpFont(objectiveField);
 				objectiveField.SetText(_("Objective:"));
 				sagoTextSetHelpFont(gametypeNameField);
-				gametypeNameField.SetText(gametypeName.c_str());
+				gametypeNameField.SetText(gametypeName);
 				gametypeNameField.Draw(globalData.screen, theGame2->GetTopX()+7,theGame2->GetTopY()+10);
 				objectiveField.Draw(globalData.screen, theGame2->GetTopX()+7, theGame2->GetTopY()+160);
 				infoBox.Draw(globalData.screen, theGame2->GetTopX()+7, theGame2->GetTopY()+160+32);
@@ -575,17 +575,17 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			controldBox.SetFontSize(30);
 			controldBox.SetMaxWidth(290);
 			controldBox.SetOutline(1, {0,0,0,255});
-			controldBox.SetText(controldBoxText.c_str());
+			controldBox.SetText(controldBoxText);
 			controldBox.Draw(globalData.screen, theGame2->GetTopX()+7,y);
 		}
 		strHolder = std::to_string(theGame2->GetScore()+theGame2->GetHandicap());
-		player2score.SetText(strHolder.c_str());
+		player2score.SetText(strHolder);
 		player2score.Draw(globalData.screen, theGame2->GetTopX()+310, theGame2->GetTopY()+100);
 		if (theGame2->GetAIenabled()) {
 			player2name.SetText(_("AI"));
 		}
 		else {
-			player2name.SetText(theGame2->name.c_str());
+			player2name.SetText(theGame2->name);
 		}
 		player2name.Draw(globalData.screen, theGame2->GetTopX()+10,theGame2->GetTopY()-34);
 		if (theGame2->isTimeTrial()) {
@@ -629,13 +629,13 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
 			}
 		}
-		player2time.SetText(strHolder.c_str());
+		player2time.SetText(strHolder);
 		player2time.Draw(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+150);
 		strHolder = std::to_string(theGame2->GetChains());
-		player2chain.SetText(strHolder.c_str());
+		player2chain.SetText(strHolder);
 		player2chain.Draw(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+200);
 		strHolder = std::to_string(theGame2->GetSpeedLevel());
-		player2speed.SetText(strHolder.c_str());
+		player2speed.SetText(strHolder);
 		player2speed.Draw(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250);
 	}
 	//player2 finnish

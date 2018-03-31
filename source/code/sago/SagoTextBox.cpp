@@ -60,6 +60,10 @@ void SagoTextBox::SetText(const char* text) {
 	data->text = text;
 }
 
+void SagoTextBox::SetText(const std::string& text) {
+	data->text = text;
+}
+
 void SagoTextBox::SetColor(const SDL_Color& color) {
 	data->color = color;
 }
@@ -93,7 +97,7 @@ void SagoTextBox::AppendLineToCache(const std::string& text) {
 	tf.SetFontSize(data->fontSize);
 	tf.SetColor(data->color);
 	tf.SetOutline(data->outline, data->outlineColor);
-	tf.SetText(text.c_str());
+	tf.SetText(text);
 }
 
 

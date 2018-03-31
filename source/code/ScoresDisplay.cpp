@@ -45,7 +45,7 @@ sago::SagoTextField* ScoresDisplay::getCachedText(const std::string& text) {
 	if (!ptr) {
 		std::shared_ptr<sago::SagoTextField> newText = std::make_shared<sago::SagoTextField>();
 		sagoTextSetBlueFont(*newText.get());
-		newText->SetText(text.c_str());
+		newText->SetText(text);
 		fieldCache[text] = newText;
 	}
 	return fieldCache[text].get();

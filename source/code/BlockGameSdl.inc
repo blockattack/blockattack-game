@@ -327,7 +327,7 @@ public:
 			strHolder = _("Moves left: ") + std::to_string(MovesLeft);
 			static sago::SagoTextField movesPuzzleLabel;
 			sagoTextSetHelpFont(movesPuzzleLabel);
-			movesPuzzleLabel.SetText(strHolder.c_str());
+			movesPuzzleLabel.SetText(strHolder);
 			movesPuzzleLabel.Draw(globalData.screen, topx+5, topy+5);
 
 		}
@@ -372,7 +372,7 @@ public:
 			}
 		}
 		if (!bGameOver && stop > 20) {
-			stopIntField.SetText(std::to_string(stop/10).c_str());
+			stopIntField.SetText(std::to_string(stop/10));
 			stopIntField.Draw(globalData.screen, 240+topx, -40+topy);
 		}
 
@@ -380,7 +380,7 @@ public:
 		if (AI_Enabled&&(!bGameOver)) {
 			sagoTextSetBlueFont(aiStatusField);
 			strHolder = "AI_status: " + std::to_string(AIstatus)+ ", "+ std::to_string(AIlineToClear);
-			aiStatusField.SetText(strHolder.c_str());
+			aiStatusField.SetText(strHolder);
 			aiStatusField.Draw(globalData.screen, topx+5, topy+5);
 		}
 #endif

@@ -115,6 +115,10 @@ void SagoTextField::SetText(const char* text) {
 	data->text = text;
 }
 
+void SagoTextField::SetText(const std::string& text) {
+	data->text = text;
+}
+
 void SagoTextField::SetColor(const SDL_Color& color) {
 	data->color = color;
 }

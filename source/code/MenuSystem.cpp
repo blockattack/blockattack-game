@@ -59,7 +59,7 @@ sago::SagoTextField* ButtonGfx::getLabel(const std::string& text) {
 	newField->SetFont("freeserif");
 	newField->SetFontSize(30);
 	newField->SetOutline(1, {0,0,0,255});
-	newField->SetText(text.c_str());
+	newField->SetText(text);
 	labels[text] = newField;
 	return labels[text].get();
 }
