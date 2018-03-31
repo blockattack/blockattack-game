@@ -40,8 +40,19 @@ static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextFiel
 	field.SetText(text);
 }
 
-static void NFont_Write(SDL_Renderer* target, int x, int y, const char* text) {
-	globalData.standard_blue_font.draw(target, x, y, text);
+sago::SagoTextField* ScoresDisplay::getCachedText(const std::string& text) {
+	std::shared_ptr<sago::SagoTextField> ptr = fieldCache[text];
+	if (!ptr) {
+		std::shared_ptr<sago::SagoTextField> newText = std::make_shared<sago::SagoTextField>();
+		sagoTextSetBlueFont(*newText.get());
+		newText->SetText(text.c_str());
+		fieldCache[text] = newText;
+	}
+	return fieldCache[text].get();
+}
+
+void ScoresDisplay::Write(SDL_Renderer* target, int x, int y, const char* text) {
+	getCachedText(text)->Draw(target, x, y);
 }
 
 const int numberOfPages = 3;
@@ -57,10 +68,10 @@ void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
 void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 	DrawBackgroundAndCalcPlacements();
 	if (endless) {
-		globalData.standard_blue_font.draw(globalData.screen, x+100,y+100, _("Endless:") );
+		Write(globalData.screen, x+100,y+100, _("Endless:") );
 	}
 	else {
-		globalData.standard_blue_font.draw(globalData.screen, x+100,y+100, _("Time Trial:") );
+		Write(globalData.screen, x+100,y+100, _("Time Trial:") );
 	}
 	for (int i =0; i<10; i++) {
 		record r;
@@ -74,8 +85,8 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 		char playerName[32];
 		snprintf(playerScore, sizeof(playerScore), "%i", r.score);
 		snprintf(playerName, sizeof(playerName), "%s", r.name.c_str());
-		globalData.standard_blue_font.draw(globalData.screen, x+420,y+150+i*35, playerScore);
-		globalData.standard_blue_font.draw(globalData.screen, x+60,y+150+i*35, playerName);
+		Write(globalData.screen, x+420,y+150+i*35, playerScore);
+		Write(globalData.screen, x+60,y+150+i*35, playerName);
 	}
 }
 
@@ -83,60 +94,60 @@ void ScoresDisplay::DrawStats() {
 	DrawBackgroundAndCalcPlacements();
 	int y = 5;
 	const int y_spacing = 30;
-	NFont_Write(globalData.screen, 10,y,_("Stats") );
+	Write(globalData.screen, 10,y,_("Stats") );
 	y+=y_spacing*2;
-	NFont_Write(globalData.screen, 10,y,_("Chains") );
+	Write(globalData.screen, 10,y,_("Chains") );
 	for (int i=2; i<13; i++) {
 		y+=y_spacing;
-		NFont_Write(globalData.screen, 10,y,(std::to_string(i)+"X").c_str());
+		Write(globalData.screen, 10,y,(std::to_string(i)+"X").c_str());
 		string numberAsString = std::to_string(Stats::getInstance()->getNumberOf("chainX"+std::to_string(i)));
-		NFont_Write(globalData.screen, 300,y,numberAsString.c_str());
+		Write(globalData.screen, 300,y,numberAsString.c_str());
 	}
 	y+=y_spacing*2;
-	NFont_Write(globalData.screen, 10,y,_("Lines Pushed: ") );
+	Write(globalData.screen, 10,y,_("Lines Pushed: ") );
 	string numberAsString = std::to_string(Stats::getInstance()->getNumberOf("linesPushed"));
-	NFont_Write(globalData.screen, 300,y,numberAsString.c_str());
+	Write(globalData.screen, 300,y,numberAsString.c_str());
 
 	y+=y_spacing;
-	NFont_Write(globalData.screen, 10,y, _("Puzzles solved: ") );
+	Write(globalData.screen, 10,y, _("Puzzles solved: ") );
 	numberAsString = std::to_string(Stats::getInstance()->getNumberOf("puzzlesSolved"));
-	NFont_Write(globalData.screen, 300,y,numberAsString.c_str());
+	Write(globalData.screen, 300,y,numberAsString.c_str());
 
 	y+=y_spacing*2;
-	NFont_Write(globalData.screen, 10,y, _("Run time: ") );
+	Write(globalData.screen, 10,y, _("Run time: ") );
 	commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
 	y+=y_spacing;
-	NFont_Write(globalData.screen, 10, y, SPrintCF( _("Days: %i"), ct.days) );
+	Write(globalData.screen, 10, y, SPrintCF( _("Days: %i"), ct.days) );
 	y+=y_spacing;
-	NFont_Write(globalData.screen, 10, y, SPrintCF( _("Hours: %i"), ct.hours) );
+	Write(globalData.screen, 10, y, SPrintCF( _("Hours: %i"), ct.hours) );
 	y+=y_spacing;
-	NFont_Write(globalData.screen, 10, y, SPrintCF( _("Minutes: %i"), ct.minutes) );
+	Write(globalData.screen, 10, y, SPrintCF( _("Minutes: %i"), ct.minutes) );
 	y+=y_spacing;
-	NFont_Write(globalData.screen, 10, y, SPrintCF( _("Seconds: %i"), ct.seconds) );
+	Write(globalData.screen, 10, y, SPrintCF( _("Seconds: %i"), ct.seconds) );
 
 	y-=y_spacing*4; //Four rows back
 	const int x_offset3 = globalData.xsize/3+10; //Ofset for three rows
-	NFont_Write(globalData.screen, x_offset3,y, _("Play time: ") );
+	Write(globalData.screen, x_offset3,y, _("Play time: ") );
 	ct = TimeHandler::getTime("playTime");
 	y+=y_spacing;
-	NFont_Write(globalData.screen, x_offset3, y, SPrintCF( _("Days: %i"), ct.days) );
+	Write(globalData.screen, x_offset3, y, SPrintCF( _("Days: %i"), ct.days) );
 	y+=y_spacing;
-	NFont_Write(globalData.screen, x_offset3, y, SPrintCF( _("Hours: %i"), ct.hours) );
+	Write(globalData.screen, x_offset3, y, SPrintCF( _("Hours: %i"), ct.hours) );
 	y+=y_spacing;
-	NFont_Write(globalData.screen, x_offset3, y, SPrintCF( _("Minutes: %i"), ct.minutes) );
+	Write(globalData.screen, x_offset3, y, SPrintCF( _("Minutes: %i"), ct.minutes) );
 	y+=y_spacing;
-	NFont_Write(globalData.screen, x_offset3, y, SPrintCF( _("Seconds: %i"), ct.seconds) );
+	Write(globalData.screen, x_offset3, y, SPrintCF( _("Seconds: %i"), ct.seconds) );
 
 	const int x_offset = globalData.xsize/2+10;
 	y = 5+y_spacing*2;
-	NFont_Write(globalData.screen, x_offset,y, _("VS CPU (win/loss)") );
+	Write(globalData.screen, x_offset,y, _("VS CPU (win/loss)") );
 	for (int i=0; i<7; i++) {
 		y += y_spacing;
-		NFont_Write(globalData.screen, x_offset,y,string("AI "+std::to_string(i+1)).c_str());
+		Write(globalData.screen, x_offset,y,string("AI "+std::to_string(i+1)).c_str());
 		numberAsString = std::to_string(Stats::getInstance()->getNumberOf("defeatedAI"+std::to_string(i)));
 		string numberAsString2 = std::to_string(Stats::getInstance()->getNumberOf("defeatedByAI"+std::to_string(i)));
 		string toPrint = numberAsString + "/" + numberAsString2;
-		NFont_Write(globalData.screen, x_offset+230,y,toPrint.c_str());
+		Write(globalData.screen, x_offset+230,y,toPrint.c_str());
 	}
 }
 

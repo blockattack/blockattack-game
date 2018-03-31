@@ -25,6 +25,9 @@ http://www.blockattack.net
 #define SCORESDISPLAY_HPP
 
 #include "sago/GameStateInterface.hpp"
+#include "sago/SagoTextField.hpp"
+#include <map>
+#include <memory>
 
 class ScoresDisplay : public sago::GameStateInterface {
 public:
@@ -47,12 +50,15 @@ private:
 	void DrawHighscores(int x, int y, bool endless);
 	void DrawStats();
 	void DrawBackgroundAndCalcPlacements();
+	void Write(SDL_Renderer* target, int x, int y, const char* text);
+	sago::SagoTextField* getCachedText(const std::string& text);
 	bool isActive = true;
 	bool bMouseUp = false;
 	int backX = 20;
 	int backY = 0;
 	int nextX = 0;
 	int nextY = 0;
+	std::map<std::string, std::shared_ptr<sago::SagoTextField> > fieldCache;
 };
 
 #endif /* SCORESDISPLAY_HPP */

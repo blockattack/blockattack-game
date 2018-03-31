@@ -440,6 +440,7 @@ void sagoTextSetBlueFont(sago::SagoTextField& field) {
 	field.SetFont("freeserif");
 	field.SetFontSize(30);
 	field.SetColor({0,0,255,255});
+	field.SetOutline(1, {255,255,255,255});
 }
 
 //draws everything
