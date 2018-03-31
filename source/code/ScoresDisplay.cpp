@@ -190,8 +190,7 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 
 	//Draw page number
 	string pageXofY = SPrintStringF(_("Page %i of %i"), page+1, numberOfPages);
-	//NFont_Write(globalData.screen, globalData.xsize/2-globalData.nf_standard_blue_font.getWidth( "%s", pageXofY.c_str())/2, globalData.ysize-60, pageXofY.c_str());
-	globalData.standard_blue_font.drawCenter(globalData.screen,  globalData.xsize/2, globalData.ysize-60, pageXofY );
+	getCachedText(pageXofY)->Draw(globalData.screen,  globalData.xsize/2, globalData.ysize-60, sago::SagoTextField::Alignment::center);
 }
 
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
