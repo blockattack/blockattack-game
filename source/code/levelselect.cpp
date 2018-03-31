@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -38,8 +38,21 @@ using std::vector;
 
 static bool bMouseUp;              //true if the mouse(1) is unpressed
 
-static void NFont_Write(SDL_Renderer* target, int x, int y, const std::string& text) {
-	globalData.standard_blue_font.draw(target, x, y, text);
+static std::map<std::string, std::shared_ptr<sago::SagoTextField> > fieldCache;
+
+static sago::SagoTextField* getCachedText(const std::string& text) {
+	std::shared_ptr<sago::SagoTextField> ptr = fieldCache[text];
+	if (!ptr) {
+		std::shared_ptr<sago::SagoTextField> newText = std::make_shared<sago::SagoTextField>();
+		sagoTextSetBlueFont(*newText.get());
+		newText->SetText(text.c_str());
+		fieldCache[text] = newText;
+	}
+	return fieldCache[text].get();
+}
+
+static void Write(SDL_Renderer* target, int x, int y, const char* text) {
+	getCachedText(text)->Draw(target, x, y);
 }
 
 //The function that allows the player to choose PuzzleLevel
@@ -54,6 +67,7 @@ int PuzzleLevelSelect(int Type) {
 	Uint32 totalScore = 0;
 	Uint32 totalTime = 0;
 	int selected = 0;
+	fieldCache.clear();
 
 	//Loads the levels, if they havn't been loaded:
 	if (Type == 0) {
@@ -75,10 +89,10 @@ int PuzzleLevelSelect(int Type) {
 		DrawBackground(globalData.screen);
 		globalData.iCheckBoxArea.Draw(globalData.screen,ticks,xplace,yplace);
 		if (Type == 0) {
-			NFont_Write(globalData.screen, xplace+12,yplace+2,_("Select Puzzle") );
+			Write(globalData.screen, xplace+12,yplace+2,_("Select Puzzle") );
 		}
 		if (Type == 1) {
-			NFont_Write(globalData.screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
+			Write(globalData.screen, xplace+12,yplace+2, _("Stage Clear Level Select") );
 		}
 		//Now drow the fields you click in (and a V if clicked):
 		for (int i = 0; i < nrOfLevels; i++) {
@@ -191,10 +205,10 @@ int PuzzleLevelSelect(int Type) {
 				timeString = SPrintStringF(_("Time used: %d : %02d"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
 			}
 
-			NFont_Write(globalData.screen, 200,200,scoreString.c_str());
-			NFont_Write(globalData.screen, 200,250,timeString.c_str());
+			Write(globalData.screen, 200,200,scoreString.c_str());
+			Write(globalData.screen, 200,250,timeString.c_str());
 			string totalString = SPrintStringF(_("Total score: %i in %i:%02i"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
-			NFont_Write(globalData.screen, 200,600,totalString.c_str());
+			Write(globalData.screen, 200,600,totalString.c_str());
 		}
 
 		globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), globalData.mousex, globalData.mousey);

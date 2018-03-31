@@ -52,13 +52,13 @@ private:
 	void DrawBackgroundAndCalcPlacements();
 	void Write(SDL_Renderer* target, int x, int y, const char* text);
 	sago::SagoTextField* getCachedText(const std::string& text);
+	std::map<std::string, std::shared_ptr<sago::SagoTextField> > fieldCache;
 	bool isActive = true;
 	bool bMouseUp = false;
 	int backX = 20;
 	int backY = 0;
 	int nextX = 0;
 	int nextY = 0;
-	std::map<std::string, std::shared_ptr<sago::SagoTextField> > fieldCache;
 };
 
 #endif /* SCORESDISPLAY_HPP */
