@@ -72,7 +72,7 @@ This project is a bit unconversionel because I didn't know any better at the tim
  * Game - The output is placed here
  * man - The manual file and the script to generate it. May be moved to source/misc at some point
  * source/code/ - The source code
- * source/code/Libs - External libs that are compiled into the project because they are either header only (Cereal) or not designed for use as a shared library (NFont).
+ * source/code/Libs - External libs that are compiled into the project because they are either header only (Cereal) or not designed for use as a shared library.
  * source/code/sago - Source code. Not designed to be specific to Block Attack - Rise of the Blocks
  * source/assets - Source for the assets if relevant. For instance svg source for the graphics.
  * source/misc - Misc stuff. Code related tool that are used for development but not part of the final product.
