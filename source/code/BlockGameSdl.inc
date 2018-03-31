@@ -378,9 +378,10 @@ public:
 
 #if DEBUG
 		if (AI_Enabled&&(!bGameOver)) {
+			sagoTextSetBlueFont(aiStatusField);
 			strHolder = "AI_status: " + std::to_string(AIstatus)+ ", "+ std::to_string(AIlineToClear);
-			//NFont_Write(   5, 5, strHolder.c_str());
-			globalData.standard_blue_font.draw(globalData.screen, topx+5, topy+5, strHolder.c_str());
+			aiStatusField.SetText(strHolder.c_str());
+			aiStatusField.Draw(globalData.screen, topx+5, topy+5);
 		}
 #endif
 		if (!bGameOver) {
@@ -458,6 +459,9 @@ private:
 	sago::SagoTextField buttonRetry;
 	sago::SagoTextField buttonNext;
 	sago::SagoTextField stopIntField;
+#if DEBUG
+	sago::SagoTextField aiStatusField;
+#endif
 };
 
 

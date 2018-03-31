@@ -435,6 +435,13 @@ void sagoTextSetHelpFont(sago::SagoTextField& gametypeNameField){
 	sagoTextSetHelpFont<sago::SagoTextField>(gametypeNameField);
 }
 
+void sagoTextSetBlueFont(sago::SagoTextField& field) {
+	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
+	field.SetFont("freeserif");
+	field.SetFontSize(30);
+	field.SetColor({0,0,255,255});
+}
+
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
 	SDL_ShowCursor(SDL_DISABLE);

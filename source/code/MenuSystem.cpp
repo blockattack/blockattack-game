@@ -322,6 +322,8 @@ void Menu::Draw(SDL_Renderer* target) {
 	static unsigned long int Frames;
 	static unsigned long int Ticks;
 	static char FPS[10];
+	static sago::SagoTextField fpsField;
+	sagoTextSetBlueFont(fpsField);
 	Frames++;
 	if (SDL_GetTicks() >= Ticks + 1000) {
 		if (Frames > 999) {
@@ -331,8 +333,8 @@ void Menu::Draw(SDL_Renderer* target) {
 		Frames = 0;
 		Ticks = SDL_GetTicks();
 	}
-
-	globalData.standard_blue_font.draw(globalData.screen, 800, 4, FPS);
+	fpsField.SetText(FPS);
+	fpsField.Draw(globalData.screen, 800, 4);
 #endif
 }
 void Menu::ProcessInput(const SDL_Event& event, bool& processed) {
