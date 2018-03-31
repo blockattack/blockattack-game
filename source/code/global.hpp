@@ -29,7 +29,6 @@ http://www.blockattack.net
 #include "sago/SagoSpriteHolder.hpp"
 #include "highscore.h"
 #include "sago/GameStateInterface.hpp"
-#include "FontWrapper.hpp"
 #include "TextManager.hpp"
 #include "ExplosionManager.hpp"
 #include "sago/SagoTextField.hpp"

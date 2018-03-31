@@ -33,7 +33,6 @@ http://blockattack.net
 #include "sago/SagoSprite.hpp"
 #include "sago/GameStateInterface.hpp"
 #include <memory>
-#include "FontWrapper.hpp"
 #include "sago/SagoTextField.hpp"
 
 //The ButtonGfx object hold common media for all buttons, so we can reskin them by only changeing one pointer
