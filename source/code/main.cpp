@@ -644,6 +644,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	DrawBalls();
 
 #if DEBUG
+	static sago::SagoTextField fpsField;
+	sagoTextSetBlueFont(fpsField);
 	Frames++;
 	if (SDL_GetTicks() >= Ticks + 1000) {
 		if (Frames > 999) {
@@ -653,8 +655,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		Frames = 0;
 		Ticks = SDL_GetTicks();
 	}
-
-	globalData.standard_blue_font.draw(globalData.screen, 800, 4, FPS);
+	fpsField.SetText(FPS);
+	fpsField.Draw(globalData.screen, 800, 4);
 #endif
 }
 

@@ -33,10 +33,9 @@ static std::tm GetLocalTime() {
 }
 
 static std::string CreateFileName(const std::tm& t ) {
-	std::string ret = "replays/blockattack_game_";
 	char buffer[200];
 	snprintf(buffer, sizeof(buffer), "replays/blockattack_game_%i-%02i-%02iT%02i_%02i_%02i_AUTO.replay", t.tm_year+1900, t.tm_mon+1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
-	ret = buffer;
+	std::string ret = buffer;
 	return ret;
 }
 
