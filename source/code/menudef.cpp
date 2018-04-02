@@ -25,6 +25,7 @@ http://blockattack.net
 #include <stdlib.h>
 #include "MenuSystem.h"
 #include "common.h"
+#include "HelpHowtoState.hpp"
 
 using std::string;
 using std::cerr;
@@ -266,6 +267,20 @@ static void MultiplayerMenu() {
 	RunGameState(mm);
 }
 
+static void runHowto() {
+	HelpHowtoState howto;
+	RunGameState(howto);
+}
+
+static void HelpMenu() {
+	Menu m(globalData.screen, _("Help"), true);
+	Button bHowto;
+	bHowto.setLabel(_("How to"));
+	bHowto.setAction(runHowto);
+	m.addButton(&bHowto);
+	RunGameState(m);
+}
+
 static void SinglePlayerMenu() {
 	Menu m(globalData.screen, _("Single player"), true);
 	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1;
@@ -290,7 +305,7 @@ static void SinglePlayerMenu() {
 void MainMenu() {
 	InitMenues();
 	Menu m(globalData.screen,_("Block Attack - Rise of the blocks"),false);
-	Button bHi, bMulti, bConfigure,bHighscore;
+	Button bHi, bMulti, bConfigure, bHighscore, bHelp;
 	bHi.setLabel(_("Single player") );
 	bHi.setAction(SinglePlayerMenu);
 	bMulti.setLabel(_("Multi player") );
@@ -299,9 +314,12 @@ void MainMenu() {
 	bConfigure.setAction(ConfigureMenu);
 	bHighscore.setLabel(_("Highscores") );
 	bHighscore.setAction(buttonActionHighscores);
+	bHelp.setLabel(_("Help"));
+	bHelp.setAction(HelpMenu);
 	m.addButton(&bHi);
 	m.addButton(&bMulti);
 	m.addButton(&bConfigure);
 	m.addButton(&bHighscore);
+	m.addButton(&bHelp);
 	RunGameState(m);
 }

@@ -160,6 +160,10 @@ void SagoTextBox::SplitAndAppendLineToCache(TTF_Font* font, const std::string& t
 }
 
 void SagoTextBox::UpdateCache() {
+	if (!data->tex) {
+		std::cerr << "FATAL: SagoTextBox::UpdateCache - DataHolder not set!\n";
+		abort();
+	}
 	TTF_Font *font = data->tex->getFontPtr(data->fontName, data->fontSize);
 	const char delim = '\n';
 	const std::string& s = data->text;

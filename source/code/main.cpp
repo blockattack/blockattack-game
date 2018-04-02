@@ -423,7 +423,7 @@ template <class T> void sagoTextSetHelpFont(T& field){
 	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
 	field.SetFont("freeserif");
 	field.SetFontSize(30);
-	field.SetOutline(1, {0,0,0,255});
+	field.SetOutline(1, {128,128,128,255});
 }
 
 void sagoTextSetHelpFont(sago::SagoTextField& gametypeNameField){

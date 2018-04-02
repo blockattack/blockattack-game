@@ -36,7 +36,7 @@ static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextFiel
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
 	field.SetFontSize(24);
-	field.SetOutline(1, {0,0,0,255});
+	field.SetOutline(1, {128,128,128,255});
 	field.SetText(text);
 }
 

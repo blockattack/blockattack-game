@@ -58,7 +58,7 @@ sago::SagoTextField* ButtonGfx::getLabel(const std::string& text) {
 	newField->SetHolder(&globalData.spriteHolder->GetDataHolder());
 	newField->SetFont("freeserif");
 	newField->SetFontSize(30);
-	newField->SetOutline(1, {0,0,0,255});
+	newField->SetOutline(1, {64,64,64,255});
 	newField->SetText(text);
 	labels[text] = newField;
 	return labels[text].get();
