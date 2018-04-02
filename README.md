@@ -1,4 +1,4 @@
-# blockattack-game [![Build Status](https://travis-ci.org/blockattack/blockattack-game.svg?branch=master)](https://travis-ci.org/blockattack/blockattack-game) [![Coverity Status](https://scan.coverity.com/projects/8278/badge.svg)](https://scan.coverity.com/projects/8278) [![license](https://img.shields.io/github/license/blockattack/blockattack-game.svg)]()
+# blockattack-game [![Build Status](https://travis-ci.org/blockattack/blockattack-game.svg?branch=master)](https://travis-ci.org/blockattack/blockattack-game) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0dfba60f2ce9484a828bd7c112f50089)](https://www.codacy.com/app/github_43/blockattack-game?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=blockattack/blockattack-game&amp;utm_campaign=Badge_Grade) [![Coverity Status](https://scan.coverity.com/projects/8278/badge.svg)](https://scan.coverity.com/projects/8278) [![license](https://img.shields.io/github/license/blockattack/blockattack-game.svg)]()
 Block Attack - Rise of the Blocks - the game<br/>
 A Tetris Attack Clone under the GPL.
 
