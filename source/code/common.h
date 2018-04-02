@@ -48,8 +48,6 @@ struct commonTime
 	unsigned int seconds = 0;
 };
 
-//std::string itoa(int num) __attribute__((const));
-
 bool strequals(const char* a, const char* b);
 
 /**
