@@ -29,7 +29,7 @@ SOFTWARE.
 
 namespace sago {
 
-class SagoSprite {
+class SagoSprite final {
 public:
 	SagoSprite();
 	SagoSprite(const SagoDataHolder &texHolder, const std::string &texture,const SDL_Rect& initImage,const int animationFrames, const int animationFrameLength);
@@ -76,7 +76,7 @@ public:
 	SagoSprite& operator=(const SagoSprite& base);
 	int GetWidth() const;
 	int GetHeight() const;
-	virtual ~SagoSprite();
+	~SagoSprite();
 private:
 	struct SagoSpriteData;
 	SagoSpriteData *data;

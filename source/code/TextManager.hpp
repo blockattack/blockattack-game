@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -31,7 +31,7 @@ class TextMessage {
 private:
 	int x = 0;
 	int y = 0;
-	unsigned int textt;
+	unsigned int textt = 0;
 	unsigned long int time = 0;
 	unsigned long int placeTime = 0; //Then the text was placed
 public:

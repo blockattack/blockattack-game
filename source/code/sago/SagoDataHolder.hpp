@@ -49,7 +49,7 @@ private:
 };
 
 
-class MusicHandler {
+class MusicHandler final {
 public:
 	MusicHandler() {};
 	MusicHandler(const SagoDataHolder* holder, const std::string &musicName);
@@ -62,7 +62,7 @@ private:
 };
 
 
-class SoundHandler {
+class SoundHandler final {
 public:
 	SoundHandler() {};
 	SoundHandler(const SagoDataHolder* holder, const std::string &soundName);
@@ -74,7 +74,7 @@ private:
 	Uint64 version = 0;
 };
 
-class SagoDataHolder {
+class SagoDataHolder final {
 public:
 	/**
 	 * The renderer must be set before requesting a texture.
@@ -112,7 +112,7 @@ public:
 	 * @return A globally unique number.
 	 */
 	Uint64 getVersion() const;
-	virtual ~SagoDataHolder();
+	~SagoDataHolder();
 private:
 	SagoDataHolder(const SagoDataHolder& base) = delete;
 	SagoDataHolder& operator=(const SagoDataHolder& base) = delete;

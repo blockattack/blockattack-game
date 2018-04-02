@@ -38,13 +38,13 @@ namespace sago {
  * Normally all values will be set at the beginning before text is drawn.
  * SetHolder MUST be called before the field is drawn!
  */
-class SagoTextField {
+class SagoTextField final {
 public:
 	SagoTextField();
 	SagoTextField(SagoTextField&& o) noexcept;
 	SagoTextField& operator=(const SagoTextField&& base) = delete;
 	SagoTextField& operator=(const SagoTextField& base) = delete;
-	virtual ~SagoTextField();
+	~SagoTextField();
 	/**
 	 * This method creates a copy of a given font.
 	 * The cache will not be copied.

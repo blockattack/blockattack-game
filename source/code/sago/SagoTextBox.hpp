@@ -30,10 +30,10 @@ SOFTWARE.
 
 namespace sago {
 
-class SagoTextBox {
+class SagoTextBox final {
 public:
 	SagoTextBox();
-	virtual ~SagoTextBox();
+	~SagoTextBox();
 	void SetHolder(const SagoDataHolder* holder);
 	void SetText(const char* text);
 	void SetText(const std::string& text);

@@ -30,10 +30,10 @@ SOFTWARE.
 
 namespace sago {
 
-class SagoSpriteHolder {
+class SagoSpriteHolder final {
 public:
 	explicit SagoSpriteHolder(const SagoDataHolder &texHolder);
-	virtual ~SagoSpriteHolder();
+	~SagoSpriteHolder();
 	void ReadSprites();
 	const sago::SagoSprite& GetSprite(const std::string &spritename) const;
 	const SagoDataHolder& GetDataHolder() const;
