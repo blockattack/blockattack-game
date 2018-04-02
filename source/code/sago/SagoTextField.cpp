@@ -83,7 +83,7 @@ SagoTextField::SagoTextField(SagoTextField&& o) noexcept {
 	o.data = nullptr;
 }
 
-SagoTextField& SagoTextField::operator=(const SagoTextField& base) {
+SagoTextField& SagoTextField::CopyFrom(const SagoTextField& base) {
 	ClearCache();
 	try {
 		*data = *(base.data);
