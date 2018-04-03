@@ -571,10 +571,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			}
 			static sago::SagoTextBox controldBox;
 			controldBox.SetHolder(&globalData.spriteHolder->GetDataHolder());
-			controldBox.SetFont("freeserif");
-			controldBox.SetFontSize(30);
+			sagoTextSetHelpFont(controldBox);
 			controldBox.SetMaxWidth(290);
-			controldBox.SetOutline(1, {0,0,0,255});
 			controldBox.SetText(controldBoxText);
 			controldBox.Draw(globalData.screen, theGame2->GetTopX()+7,y);
 		}
