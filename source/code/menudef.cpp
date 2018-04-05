@@ -26,6 +26,7 @@ http://blockattack.net
 #include "MenuSystem.h"
 #include "common.h"
 #include "HelpHowtoState.hpp"
+#include "HelpGamepadState.hpp"
 
 using std::string;
 using std::cerr;
@@ -272,12 +273,21 @@ static void runHowto() {
 	RunGameState(howto);
 }
 
+static void runHelpGamepad() {
+	HelpGamepadState helpGamepad;
+	RunGameState(helpGamepad);
+}
+
 static void HelpMenu() {
 	Menu m(globalData.screen, _("Help"), true);
 	Button bHowto;
 	bHowto.setLabel(_("How to"));
 	bHowto.setAction(runHowto);
 	m.addButton(&bHowto);
+	Button bGamepad;
+	bGamepad.setLabel(_("Gamepad"));
+	bGamepad.setAction(runHelpGamepad);
+	m.addButton(&bGamepad);
 	RunGameState(m);
 }
 
