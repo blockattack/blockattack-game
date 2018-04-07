@@ -26,29 +26,22 @@ https://blockattack.net
 #include "common.h"
 #include "MenuSystem.h"
 
-HelpGamepadState::HelpGamepadState() {
-	moveLabel.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	moveLabel.SetFontSize(30);
-	moveLabel.SetOutline(1, {128,128,128,255});
-	moveLabel.SetText(_("Move cursor"));
-	pushLabel.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	pushLabel.SetFontSize(30);
-	pushLabel.SetOutline(1, {128,128,128,255});
-	pushLabel.SetText(_("Push line"));
-	backLabel.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	backLabel.SetFontSize(30);
-	backLabel.SetOutline(1, {128,128,128,255});
-	backLabel.SetText(_("Back (Menu)"));
-	switchLabel.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	switchLabel.SetFontSize(30);
-	switchLabel.SetOutline(1, {128,128,128,255});
-	switchLabel.SetText(_("Switch"));
-	confirmLabel.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	confirmLabel.SetFontSize(30);
-	confirmLabel.SetOutline(1, {128,128,128,255});
-	confirmLabel.SetText(_("Confirm"));
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(30);
+	field.SetOutline(1, {128,128,128,255});
+	field.SetText(text);
 }
 
+HelpGamepadState::HelpGamepadState() {
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), moveLabel, _("Move cursor"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), pushLabel, _("Push line"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), backLabel, _("Back (Menu)"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), switchLabel, _("Switch"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), confirmLabel, _("Confirm"));
+}
 
 HelpGamepadState::~HelpGamepadState() {
 }
@@ -87,7 +80,7 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	SDL_RenderDrawLine(target, 900, 207, 900, 400);
 	switchLabel.Draw(target, 900, 404, sago::SagoTextField::Alignment::center);
 	confirmLabel.Draw(target, 900, 404+30, sago::SagoTextField::Alignment::center);
-#if 1
+#if DEBUG
 	static sago::SagoTextField mousePos;
 	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
 	mousePos.SetFontSize(16);
