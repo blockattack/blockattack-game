@@ -48,6 +48,8 @@ void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 
 void HelpGamepadState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
+	const sago::SagoSprite& gamepad = globalData.spriteHolder->GetSprite("help_controller");
+	gamepad.Draw(target, SDL_GetTicks(), globalData.xsize/2-480/2, 100);
 }
 
 void HelpGamepadState::Update() {

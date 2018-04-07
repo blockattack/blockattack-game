@@ -530,6 +530,13 @@
 	"width" : 50,
 	"number_of_frames" : 1,
 	"frame_time" : 1
+},
+"help_controller" : {
+	"texture" : "help_controller",
+	"topx" : 0,
+	"topy" : 0,
+	"height" : 310,
+	"width" : 479
 }
 
 }
