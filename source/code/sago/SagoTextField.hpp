@@ -97,7 +97,7 @@ public:
 	 */
 	void GetRenderedSize(const char* text, int* w = nullptr, int* h = nullptr);
 	enum class Alignment { left = 0, right=1, center = 2 };
-	enum class VerticalAlignment { top = 0, center = 1};
+	enum class VerticalAlignment { top = 0, center = 1, bottom = 2};
 	void Draw(SDL_Renderer* target, int x, int y, Alignment alignment = Alignment::left, VerticalAlignment verticalAlignment = VerticalAlignment::top);
 	/**
 	 * Updates the cache.

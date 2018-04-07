@@ -41,6 +41,8 @@ public:
 
 private:
 	bool isActive = true;
+	sago::SagoTextField moveLabel;
+	sago::SagoTextField pushLabel;
 private:
 
 };

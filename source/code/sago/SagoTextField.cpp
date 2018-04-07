@@ -214,6 +214,9 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment
 	if (verticalAlignment == VerticalAlignment::center) {
 		y -= texH/2;
 	}
+	if (verticalAlignment == VerticalAlignment::bottom) {
+		y -= texH;
+	}
 	SDL_Rect dstrect = { x, y, texW, texH };
 	if (data->outlineTexture) {
 		int outlineTexW = 0;
