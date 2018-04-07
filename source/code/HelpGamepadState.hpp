@@ -43,6 +43,9 @@ private:
 	bool isActive = true;
 	sago::SagoTextField moveLabel;
 	sago::SagoTextField pushLabel;
+	sago::SagoTextField backLabel;
+	sago::SagoTextField switchLabel;
+	sago::SagoTextField confirmLabel;
 private:
 
 };
