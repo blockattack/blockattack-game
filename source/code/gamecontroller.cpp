@@ -37,6 +37,8 @@ struct ControllerStatus {
 };
 
 static std::map<SDL_JoystickID, ControllerStatus> controllerStatusMap;
+static std::map<std::string, int> gamecontrollers_assigned;
+static std::vector<std::string> supportedControllers;
 
 
 void GameControllerSetVerbose(bool value) {
@@ -61,7 +63,6 @@ static std::string GetGuidAsHex(const SDL_JoystickGUID& guid) {
 	return ret;
 }
 
-static std::map<std::string, int> gamecontrollers_assigned;
 
 static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
 	Config::getInstance()->setDefault("gc_AllToOnePlayer", "0");
@@ -100,12 +101,17 @@ void InitGameControllers() {
 			SDL_JoystickGUID guid = SDL_JoystickGetGUID(j);
 			int assingToPlayer = GetNextPlayerByGui(guid);
 			controllerStatusMap[instanceId].player = assingToPlayer;
+			supportedControllers.push_back(GameControllerGetName(controller));
 			if (verbose) {
 				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  "\n";
 				std::cout << "Assigned to player: " << controllerStatusMap[instanceId].player << "\n";
 			}
 		}
 	}
+}
+
+const std::vector<std::string>& GetSupportedControllerNames() {
+	return supportedControllers;
 }
 
 void checkDeadZone(const SDL_Event& event) {

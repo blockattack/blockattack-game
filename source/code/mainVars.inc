@@ -44,8 +44,9 @@ http://blockattack.net
 
 const char sharedir[] = SHAREDIR;
 
-//All graphic in the game (as pointers):
+//All graphic in the game:
 sago::SagoSprite backgroundImage; //Stores the background image
+sago::SagoSprite bExit;
 static sago::SagoSprite backBoard;     //Stores the background to the board
 static sago::SagoSprite bForward;      //The "forward" button
 #if NETWORK
@@ -92,7 +93,6 @@ static sago::SagoSprite garbageGMR;
 static sago::SagoSprite transCover;        //The transperant block, covers the upcomming
 static sago::SagoSprite bSkip;
 static sago::SagoSprite bRetry;
-static sago::SagoSprite bExit;
 const int bExitSize = 100;  //height and width of the exit button
 const int bExitOffset = 140; //pixels from the buttom right corner to the top left of the exit button
 

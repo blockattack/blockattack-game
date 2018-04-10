@@ -25,6 +25,11 @@ https://blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "MenuSystem.h"
+#include "gamecontroller.h"
+
+const int xsize = 1024;
+const int ysize = 768;
+const int buttonOffset = 160;
 
 static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
 	field.SetHolder(holder);
@@ -35,12 +40,30 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetText(text);
 }
 
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(30);
+	field.SetOutline(1, {128,128,128,255});
+	field.SetText(text);
+}
+
+
 HelpGamepadState::HelpGamepadState() {
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), moveLabel, _("Move cursor"));
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), pushLabel, _("Push line"));
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), backLabel, _("Back (Menu)"));
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), switchLabel, _("Switch"));
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), confirmLabel, _("Confirm"));
+	std::string s = _("Only SDL2 compatible controllers are supported!\nSupported controllers: ");
+	for (size_t i = 0 ; i<GetSupportedControllerNames().size(); ++i ) {
+		if (i != 0) {
+			s+= ", ";
+		}
+		s+= GetSupportedControllerNames().at(i);
+	}
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
 }
 
 HelpGamepadState::~HelpGamepadState() {
@@ -58,6 +81,8 @@ void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 		processed = true;
 	}
 }
+
+extern sago::SagoSprite bExit;
 
 void HelpGamepadState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
@@ -80,6 +105,9 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	SDL_RenderDrawLine(target, 900, 207, 900, 400);
 	switchLabel.Draw(target, 900, 404, sago::SagoTextField::Alignment::center);
 	confirmLabel.Draw(target, 900, 404+30, sago::SagoTextField::Alignment::center);
+	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
+	supportedControllers.Draw(target, 10, 600);
+	
 #if DEBUG
 	static sago::SagoTextField mousePos;
 	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
@@ -91,5 +119,19 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 }
 
 void HelpGamepadState::Update() {
-	
+		// If the mouse button is released, make bMouseUp equal true
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+		bMouseUp=true;
+	}
+
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+		bMouseUp = false;
+
+		//The Score button:
+		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth()) 
+				&& (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
+			isActive = false;
+		}
+
+	}
 }

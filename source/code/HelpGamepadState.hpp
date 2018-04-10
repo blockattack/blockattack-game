@@ -41,13 +41,13 @@ public:
 
 private:
 	bool isActive = true;
+	bool bMouseUp = true;
 	sago::SagoTextField moveLabel;
 	sago::SagoTextField pushLabel;
 	sago::SagoTextField backLabel;
 	sago::SagoTextField switchLabel;
 	sago::SagoTextField confirmLabel;
-private:
-
+	sago::SagoTextBox supportedControllers;
 };
 
 #endif /* HELPGAMEPADSTATE_HPP */

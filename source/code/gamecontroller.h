@@ -22,7 +22,8 @@ http://www.blockattack.net
 */
 
 #include "SDL.h"
-
+#include <vector>
+#include <string>
 
 const int deadZoneLimit = 20000;
 
@@ -35,6 +36,7 @@ bool isPlayerRightEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerPushEvent(int playerNumber, const SDL_Event& event);
 void GameControllerSetVerbose(bool value);
+const std::vector<std::string>& GetSupportedControllerNames();
 
 /**
  * Checks that the given event is in the dead zone.
