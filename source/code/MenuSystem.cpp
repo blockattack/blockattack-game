@@ -406,7 +406,8 @@ void Menu::Update() {
 				if (buttons.at(i)->isPopOnRun()) {
 					running = false;
 				}
-				globalData.mousex = 0;
+				//Quit here to ensure that we do not continue checking buttons after we have done the action.
+				return;
 			}
 		}
 		if (isClicked(exit,  globalData.mousex, globalData.mousey)) {
