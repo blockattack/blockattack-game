@@ -64,6 +64,7 @@ HelpGamepadState::HelpGamepadState() {
 		s+= GetSupportedControllerNames().at(i);
 	}
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
+	supportedControllers.SetMaxWidth(740);
 }
 
 HelpGamepadState::~HelpGamepadState() {
