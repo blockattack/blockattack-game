@@ -26,6 +26,11 @@ https://blockattack.net
 #include "common.h"
 #include "MenuSystem.h"
 
+const int xsize = 1024;
+const int ysize = 768;
+const int buttonOffset = 160;
+extern sago::SagoSprite bExit;
+
 HelpHowtoState::HelpHowtoState() {
 	box.SetHolder(&globalData.spriteHolder->GetDataHolder());
 	box.SetFontSize(30);
@@ -57,8 +62,23 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	box.SetMaxWidth(1000);
 	box.Draw(target, 10,10);
+	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 }
 
 void HelpHowtoState::Update() {
-	
+	// If the mouse button is released, make bMouseUp equal true
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+		bMouseUp=true;
+	}
+
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+		bMouseUp = false;
+
+		//The Score button:
+		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth()) 
+				&& (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
+			isActive = false;
+		}
+
+	}
 }
