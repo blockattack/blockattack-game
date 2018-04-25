@@ -31,6 +31,34 @@ const int ysize = 768;
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
 
+/**
+ * Draws bricks with a string like:
+ * "aab" for two identical one and another
+ * "aaB" the third one will have a bomb
+ * The any char not in 'a' to 'g' or 'A' to 'G' the behavior is undefined. 
+ * @param target Target to draw to
+ * @param bricks description on what to draw as a string
+ * @param x
+ * @param y
+ */
+static void RenderRowOfBricks(SDL_Renderer* target, const std::string& brickStr, int x, int y) {
+	int tick = SDL_GetTicks();
+	for (size_t i = 0; i < brickStr.size(); ++i) {
+		bool bomb = false;
+		char brickChar = brickStr[i];
+		if (brickChar >= 'A' && brickChar <= 'G') {
+			bomb = true;
+			brickChar = brickChar + 'a' - 'A';
+		}
+		if (brickChar >= 'a' &&  brickChar <= 'g') {
+			bricks[brickChar - 'a'].Draw(target, tick, x+i*50, y);
+			if (bomb) {
+				globalData.spriteHolder->GetSprite("block_bomb").Draw(target, tick, x+i*50, y);
+			}
+		}
+	}
+}
+
 HelpHowtoState::HelpHowtoState() {
 	box.SetHolder(&globalData.spriteHolder->GetDataHolder());
 	box.SetFontSize(30);
@@ -62,6 +90,7 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	box.SetMaxWidth(1000);
 	box.Draw(target, 10,10);
+	RenderRowOfBricks(target, "aa gB", 50, 50);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 }
 

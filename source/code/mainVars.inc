@@ -69,7 +69,7 @@ static sago::SagoSprite ready;      //Before the blocks fall
 static sago::SagoSprite explosion[4];   //Then a block explodes
 //Animations end
 static sago::SagoSprite counter[3];    //Counts down from 3
-static sago::SagoSprite bricks[7];     //The bricks, saved in an array of pointers
+sago::SagoSprite bricks[7];     //The bricks, saved in an array of pointers
 static sago::SagoSprite crossover;     //Cross the bricks that will be cleared soon
 static sago::SagoSprite balls[7];      //The balls (the small ones that jump around)
 
