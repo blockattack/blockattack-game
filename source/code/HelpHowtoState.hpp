@@ -42,7 +42,6 @@ public:
 private:
 	bool isActive = true;
 	bool bMouseUp = true;
-	sago::SagoTextBox box;
 };
 
 #endif /* HELPHOWTOSTATE_HPP */

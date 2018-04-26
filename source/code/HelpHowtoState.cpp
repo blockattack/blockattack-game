@@ -30,6 +30,7 @@ const int xsize = 1024;
 const int ysize = 768;
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
+extern sago::SagoSprite bricks[7];
 
 /**
  * Draws bricks with a string like:
@@ -42,7 +43,7 @@ extern sago::SagoSprite bExit;
  * @param y
  */
 static void RenderRowOfBricks(SDL_Renderer* target, const std::string& brickStr, int x, int y) {
-	int tick = SDL_GetTicks();
+	Uint32 tick = SDL_GetTicks();
 	for (size_t i = 0; i < brickStr.size(); ++i) {
 		bool bomb = false;
 		char brickChar = brickStr[i];
@@ -59,14 +60,46 @@ static void RenderRowOfBricks(SDL_Renderer* target, const std::string& brickStr,
 	}
 }
 
+class HorizontalSwitchAnimation {
+public:
+	std::string brickStr = "abc";
+	int cursorPos = 0;
+	int state = 0; //0=move left, 1 = switch, 2 = move right, 3 = switch
+	Uint32 lastTick = 0;
+	Uint32 animationSpeed = 2000;
+	
+	void Update (Uint32 tick) {
+		if (tick > lastTick + animationSpeed) {
+			lastTick = tick;
+			switch (state) {
+				case 0:
+					cursorPos = 1;
+					break;
+				case 1:  //fallthough
+				case 3:
+					std::swap(brickStr[cursorPos], brickStr[cursorPos + 1]);
+					break;
+				case 2:
+					cursorPos = 0;
+					break;
+			}
+			++state;
+			if (state > 3) {
+				state = 0;
+			}
+		}
+	}
+};
+
+HorizontalSwitchAnimation switchAnimation;
+sago::SagoTextField switchAnimationField;
+
 HelpHowtoState::HelpHowtoState() {
-	box.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	box.SetFontSize(30);
-	box.SetOutline(1, {128,128,128,255});
-	box.SetText(_("The basic purpose of the game is to match 3 or more blocks of identical color to make them explode.\n"
-	"You can only move blocks vertically."
-	"The blocks are constantly raising from the bottom of the screen. Once they reach the top the game will start counting down to your"
-	" imminent defeat."));
+	switchAnimationField.SetHolder(&globalData.spriteHolder->GetDataHolder());
+	switchAnimationField.SetFontSize(30);
+	switchAnimationField.SetOutline(1, {0,0,0,255});
+
+	switchAnimationField.SetText(_("Switch block horizontally"));
 }
 
 HelpHowtoState::~HelpHowtoState() {
@@ -88,9 +121,11 @@ void HelpHowtoState::ProcessInput(const SDL_Event& event, bool& processed) {
 
 void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
-	box.SetMaxWidth(1000);
-	box.Draw(target, 10,10);
-	RenderRowOfBricks(target, "aa gB", 50, 50);
+	RenderRowOfBricks(target, switchAnimation.brickStr, 50, 50);
+	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+switchAnimation.cursorPos*50, 50);
+	switchAnimationField.Draw(target, 50 +150+30, 50);
+	RenderRowOfBricks(target, "a aa", 50, 150);
+	RenderRowOfBricks(target, " AAA", 50+300, 150);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 }
 
@@ -110,4 +145,5 @@ void HelpHowtoState::Update() {
 		}
 
 	}
+	switchAnimation.Update(SDL_GetTicks());
 }
