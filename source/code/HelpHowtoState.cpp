@@ -25,6 +25,7 @@ https://blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "MenuSystem.h"
+#include <cmath>
 
 const int xsize = 1024;
 const int ysize = 768;
@@ -147,6 +148,24 @@ void HelpHowtoState::ProcessInput(const SDL_Event& event, bool& processed) {
 	}
 }
 
+const double PI  =3.141592653589793238463;
+
+static void DrawArrow(SDL_Renderer* target, int x1, int y1, int x2, int y2) {
+	double dx = x1-x2;
+	double dy = y1-y2;
+	double distance = std::sqrt((dx*dx)+(dy*dy));
+	dx = dx * 10.0 / distance;
+	dy = dy * 10.0 / distance;
+	double angle= PI/4.0;
+	double nx1 = dx * cos(angle) - dy * sin(angle) + x2;
+	double ny1 = dx * sin(angle) + dy * cos(angle) + y2;
+	SDL_RenderDrawLine(target, x1, y1, x2, y2);
+	SDL_RenderDrawLine(target, nx1, ny1, x2, y2);
+	nx1 = dx * cos(-angle) - dy * sin(-angle) + x2;
+	ny1 = dx * sin(-angle) + dy * cos(-angle) + y2;
+	SDL_RenderDrawLine(target, nx1, ny1, x2, y2);
+}
+
 void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	RenderRowOfBricks(target, switchAnimation.brickStr, 50, 50);
@@ -155,6 +174,7 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	RenderRowOfBricks(target, "adaa", 50, 150);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 150);
 	RenderRowOfBricks(target, "dAAA", 50+300, 150);
+	DrawArrow(target, 50+200+25, 150+25, 50+300-25, 150+25);
 	clearRowfield.Draw(target, 600, 150+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center);
 	comboField.Draw(target, 50+175, 410, sago::SagoTextField::Alignment::center);
 	MultiLineBlocks().addLine("ab").addLine("ba").addLine("ab").Render(target, 50, 250);
