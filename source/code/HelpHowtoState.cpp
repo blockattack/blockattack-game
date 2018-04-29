@@ -110,13 +110,24 @@ public:
 
 HorizontalSwitchAnimation switchAnimation;
 sago::SagoTextField switchAnimationField;
+sago::SagoTextField clearRowfield;
+sago::SagoTextField comboField;
+sago::SagoTextField dropField;
+sago::SagoTextField chainField;
+
+static void InitTextField(sago::SagoTextField& field, const char* text) {
+	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
+	field.SetFontSize(30);
+	field.SetOutline(2, {0,0,0,255});
+	field.SetText(text);
+}
 
 HelpHowtoState::HelpHowtoState() {
-	switchAnimationField.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	switchAnimationField.SetFontSize(30);
-	switchAnimationField.SetOutline(1, {0,0,0,255});
-
-	switchAnimationField.SetText(_("Switch block horizontally"));
+	InitTextField(switchAnimationField, _("Switch block horizontally"));
+	InitTextField(clearRowfield, _("Match 3 to clear"));
+	InitTextField(comboField, _("Create combos!"));
+	InitTextField(dropField, _("Drop blocks!"));
+	InitTextField(chainField, _("Create a chain effect"));
 }
 
 HelpHowtoState::~HelpHowtoState() {
@@ -140,20 +151,24 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	RenderRowOfBricks(target, switchAnimation.brickStr, 50, 50);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+switchAnimation.cursorPos*50, 50);
-	switchAnimationField.Draw(target, 50 +150+30, 50);
+	switchAnimationField.Draw(target, 50 +150+30, 50+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center);
 	RenderRowOfBricks(target, "adaa", 50, 150);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 150);
 	RenderRowOfBricks(target, "dAAA", 50+300, 150);
+	clearRowfield.Draw(target, 600, 150+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center);
+	comboField.Draw(target, 50+175, 410, sago::SagoTextField::Alignment::center);
 	MultiLineBlocks().addLine("ab").addLine("ba").addLine("ab").Render(target, 50, 250);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 250+50);
 	MultiLineBlocks().addLine("AB").addLine("AB").addLine("AB").Render(target, 50+200, 250);
 	MultiLineBlocks().addLine("a").addLine("b").addLine("e").Render(target, 50+400, 250);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+400, 250);
 	MultiLineBlocks().addLine(" ").addLine("b").addLine("ea").Render(target, 50+400+200, 250);
+	dropField.Draw(target, 50+400+150, 410, sago::SagoTextField::Alignment::center);
 	MultiLineBlocks().addLine(" d").addLine(" f").addLine(" f").addLine("fdd").Render(target, 50, 500);
 	MultiLineBlocks().addLine(" d").addLine(" F").addLine(" F").addLine("dFd").Render(target, 50+200, 500);
 	MultiLineBlocks().addLine(" d").addLine("  ").addLine("  ").addLine("d d").Render(target, 50+200*2, 500);
 	MultiLineBlocks().addLine("  ").addLine("  ").addLine("  ").addLine("DDD").Render(target, 50+200*3, 500);
+	chainField.Draw(target, 400, 710, sago::SagoTextField::Alignment::center);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 }
 
