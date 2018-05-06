@@ -862,6 +862,8 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 		cout << "Examples:" << "\n";
 		cout << "\tblockattack          \tStart the game normally" << "\n";
 		cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << "\n";
+		cout << "\tblockattack --puzzle-level-file puzzle.levels --puzzle-single-level 3\tStart the game with the default puzzles in level 3" << "\n";
+		cout << "\tblockattack --bind-text-domain /dev/null\t Disables translations" << "\n";
 		cout << "\n";
 		cout << "Report bugs to the issue tracker here: <https://github.com/blockattack/blockattack-game/issues>" << "\n";
 		exit(0);
