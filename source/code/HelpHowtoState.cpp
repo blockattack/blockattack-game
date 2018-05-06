@@ -157,12 +157,12 @@ static void DrawArrow(SDL_Renderer* target, int x1, int y1, int x2, int y2) {
 	dx = dx * 10.0 / distance;
 	dy = dy * 10.0 / distance;
 	double angle= PI/4.0;
-	double nx1 = dx * cos(angle) - dy * sin(angle) + x2;
-	double ny1 = dx * sin(angle) + dy * cos(angle) + y2;
+	double nx1 = dx * std::cos(angle) - dy * std::sin(angle) + x2;
+	double ny1 = dx * std::sin(angle) + dy * std::cos(angle) + y2;
 	SDL_RenderDrawLine(target, x1, y1, x2, y2);
 	SDL_RenderDrawLine(target, nx1, ny1, x2, y2);
-	nx1 = dx * cos(-angle) - dy * sin(-angle) + x2;
-	ny1 = dx * sin(-angle) + dy * cos(-angle) + y2;
+	nx1 = dx * std::cos(-angle) - dy * std::sin(-angle) + x2;
+	ny1 = dx * std::sin(-angle) + dy * std::cos(-angle) + y2;
 	SDL_RenderDrawLine(target, nx1, ny1, x2, y2);
 }
 
