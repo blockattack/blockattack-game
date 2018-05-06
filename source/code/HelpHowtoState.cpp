@@ -180,16 +180,35 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	MultiLineBlocks().addLine("ab").addLine("ba").addLine("ab").Render(target, 50, 250);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 250+50);
 	MultiLineBlocks().addLine("AB").addLine("AB").addLine("AB").Render(target, 50+200, 250);
+	DrawArrow(target, 175, 325, 225, 325);
 	MultiLineBlocks().addLine("a").addLine("b").addLine("e").Render(target, 50+400, 250);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+400, 250);
 	MultiLineBlocks().addLine(" ").addLine("b").addLine("ea").Render(target, 50+400+200, 250);
 	dropField.Draw(target, 50+400+150, 410, sago::SagoTextField::Alignment::center);
+	DrawArrow(target, 575, 325, 625, 325);
+	DrawArrow(target, 475, 275, 525, 275);
+	DrawArrow(target, 525, 275, 525, 375);
+	DrawArrow(target, 675, 275, 725, 275);
+	DrawArrow(target, 725, 275, 725, 375);
 	MultiLineBlocks().addLine(" d").addLine(" f").addLine(" f").addLine("fdd").Render(target, 50, 500);
 	MultiLineBlocks().addLine(" d").addLine(" F").addLine(" F").addLine("dFd").Render(target, 50+200, 500);
 	MultiLineBlocks().addLine(" d").addLine("  ").addLine("  ").addLine("d d").Render(target, 50+200*2, 500);
 	MultiLineBlocks().addLine("  ").addLine("  ").addLine("  ").addLine("DDD").Render(target, 50+200*3, 500);
+	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 650);
+	DrawArrow(target, 200, 600, 250, 600);
+	DrawArrow(target, 400, 600, 450, 600);
+	DrawArrow(target, 600, 600, 650, 600);
+	DrawArrow(target, 525, 525, 525, 675);
 	chainField.Draw(target, 400, 710, sago::SagoTextField::Alignment::center);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
+#if DEBUG
+	static sago::SagoTextField mousePos;
+	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
+	mousePos.SetFontSize(16);
+	mousePos.SetOutline(1, {128,128,128,255});
+	mousePos.SetText(std::string("Mouse position: ")+std::to_string(globalData.mousex)+std::string(", ")+std::to_string(globalData.mousey));
+	mousePos.Draw(target, 0,0);
+#endif
 }
 
 void HelpHowtoState::Update() {
