@@ -25,6 +25,8 @@ https://blockattack.net
 #define HELPABOUT_HPP
 
 #include "sago/GameStateInterface.hpp"
+#include "sago/SagoTextBox.hpp"
+#include "sago/SagoTextField.hpp"
 
 class HelpAboutState : public sago::GameStateInterface {
 public:
@@ -40,6 +42,8 @@ public:
 private:
 	bool isActive = true;
 	bool bMouseUp = true;
+	sago::SagoTextField titleField;
+	sago::SagoTextBox infoBox;
 };
 
 #endif /* HELPABOUT_HPP */

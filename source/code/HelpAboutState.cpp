@@ -25,13 +25,48 @@ https://blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "MenuSystem.h"
+#include "sstream"
+#include "version.h"
 
 const int xsize = 1024;
 const int ysize = 768;
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
 
+
+
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(30);
+	field.SetOutline(1, {128,128,128,255});
+	field.SetText(text);
+}
+
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text){
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(30);
+	field.SetOutline(1, {32,32,32,255});
+	field.SetText(text);
+}
+
+static SDL_RendererInfo renderInfo;
+
 HelpAboutState::HelpAboutState() {
+	SDL_GetRendererInfo(globalData.screen, &renderInfo);
+	std::stringstream infoStream;
+	infoStream << _("Name: ") << _("Block Attack - Rise of the Blocks") << "\n";
+	infoStream << _("Original name: ") << "Block Attack - Rise of the Blocks" << "\n";
+	infoStream << _("Version: ") << VERSION_NUMBER << "\n";
+	infoStream << _("Homepage: ") << "https://blockattack.net\n";
+	infoStream << _("SDL render: ") << renderInfo.name << "\n";
+	infoStream << _("Save folder: ") << PHYSFS_getWriteDir() << "\n";
+	infoStream << _("Locale: ") << setlocale( LC_CTYPE, nullptr ) << "\n";
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
 }
 
 HelpAboutState::~HelpAboutState() {
@@ -53,6 +88,8 @@ void HelpAboutState::ProcessInput(const SDL_Event& event, bool& processed) {
 
 void HelpAboutState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
+	titleField.Draw(target, 50, 50);
+	infoBox.Draw(target, 50, 100);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 #if DEBUG
 	static sago::SagoTextField mousePos;
