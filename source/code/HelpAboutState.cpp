@@ -48,8 +48,8 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
-	field.SetFontSize(30);
-	field.SetOutline(1, {32,32,32,255});
+	field.SetFontSize(20);
+	field.SetOutline(1, {128,128,128,255});
 	field.SetText(text);
 }
 
@@ -86,9 +86,12 @@ void HelpAboutState::ProcessInput(const SDL_Event& event, bool& processed) {
 	}
 }
 
+extern void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width);
+
 void HelpAboutState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	titleField.Draw(target, 50, 50);
+	DrawRectYellow(target, 40, 90, 600, 900);
 	infoBox.Draw(target, 50, 100);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 #if DEBUG

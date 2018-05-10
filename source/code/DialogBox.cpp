@@ -69,7 +69,7 @@ static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, 
 	DrawRect(target, topx, topy, height, width, name);
 }
 
-static void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width) {
+void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width) {
 	std::string name = "ui_rect_yellow_";
 	DrawRect(target, topx, topy, height, width, name);
 }
