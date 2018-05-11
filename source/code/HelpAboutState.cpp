@@ -48,8 +48,9 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
+	field.SetColor({0,0,0,255});
 	field.SetFontSize(20);
-	field.SetOutline(1, {128,128,128,255});
+	field.SetOutline(0, {0,0,0,255});
 	field.SetText(text);
 }
 
@@ -62,6 +63,9 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Original name: ") << "Block Attack - Rise of the Blocks" << "\n";
 	infoStream << _("Version: ") << VERSION_NUMBER << "\n";
 	infoStream << _("Homepage: ") << "https://blockattack.net\n";
+	infoStream << _("Author: ") << "Poul Sander (sago007)\n";
+	infoStream << _("Contributers: ") << "Gonéri Le Bouder, Jordà Polo, Iwan Gabovitch (qubodup)\n";
+	infoStream << _("Other credits: ") << "Kenney Vleugels, OpenArena, nicefrog, Blender Foundation, Dietrich Radel, Dustin Norlander, Free Software Foundation\n";
 	infoStream << _("SDL render: ") << renderInfo.name << "\n";
 	infoStream << _("Save folder: ") << PHYSFS_getWriteDir() << "\n";
 	infoStream << _("Locale: ") << setlocale( LC_CTYPE, nullptr ) << "\n";
@@ -92,6 +96,7 @@ void HelpAboutState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	titleField.Draw(target, 50, 50);
 	DrawRectYellow(target, 40, 90, 600, 900);
+	infoBox.SetMaxWidth(850);
 	infoBox.Draw(target, 50, 100);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 #if DEBUG

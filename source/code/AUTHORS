@@ -1,15 +1,15 @@
 Block Attack - Rise of the Blocks by
 Poul Sander <blockattack@poulsander.com>
-http://blockattack.net
+https://blockattack.net
 
 Gonéri Le Bouder
 Done some work for making it work with SHAREDIR and all Scons scripts 
 
-Jordà Polo
-Two patches
-
 A lot of the 1.4.0 graphics is by
 Iwan Gabovitch aka qubodup
+
+Also:
+Paul Wise, Jordà Polo, mstraube and scootergrisen for patches and bug reports
 
 This does not cover non-embedded libraries. 
 
