@@ -63,6 +63,7 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Original name: ") << "Block Attack - Rise of the Blocks" << "\n";
 	infoStream << _("Version: ") << VERSION_NUMBER << "\n";
 	infoStream << _("Homepage: ") << "https://blockattack.net\n";
+	infoStream << _("Github page: ") << "https://github.com/blockattack/blockattack-game\n";
 	infoStream << _("Author: ") << "Poul Sander (sago007)\n";
 	infoStream << _("Contributers: ") << "Gonéri Le Bouder, Jordà Polo, Iwan Gabovitch (qubodup)\n";
 	infoStream << _("Other credits: ") << "Kenney Vleugels, OpenArena, nicefrog, Blender Foundation, Dietrich Radel, Dustin Norlander, Free Software Foundation\n";

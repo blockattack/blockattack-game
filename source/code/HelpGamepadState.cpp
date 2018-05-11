@@ -36,7 +36,7 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
 	field.SetFontSize(30);
-	field.SetOutline(1, {128,128,128,255});
+	field.SetOutline(2, {0,0,0,255});
 	field.SetText(text);
 }
 
@@ -45,7 +45,7 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
 	field.SetFontSize(30);
-	field.SetOutline(1, {128,128,128,255});
+	field.SetOutline(2, {0,0,0,255});
 	field.SetText(text);
 }
 
