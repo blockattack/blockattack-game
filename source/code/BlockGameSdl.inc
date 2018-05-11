@@ -434,7 +434,7 @@ public:
 			}
 		}
 
-		if ((bGameOver)&&(!editorMode)) {
+		if (bGameOver) {
 			if (hasWonTheGame) {
 				DrawImgBoard(iWinner,  0, 5*bsize);
 			}

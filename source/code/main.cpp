@@ -451,7 +451,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	if (theGame->GetAIenabled()) {
 		player1name.SetText(_("AI"));
 	}
-	else if (editorMode || singlePuzzle) {
+	else if (singlePuzzle) {
 		player1name.SetText(_("Playing field"));
 	}
 	else {
@@ -515,7 +515,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		DrawIMG(stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
 	}
 	//player1 finnish, player2 start
-	if (!editorMode /*&& !singlePuzzle*/ ) {
+	if (true ) {
 		/*
 		 *If single player mode (and not VS)
 		 */
@@ -1140,7 +1140,7 @@ int main(int argc, char* argv[]) {
 
 
 		//Saves options
-		if (!editorMode) {
+		if (true) {
 			configSettings->setInt("fullscreen",(int)globalData.bFullscreen);
 			configSettings->setInt("musicenabled",(int)globalData.MusicEnabled);
 			configSettings->setInt("soundenabled",(int)globalData.SoundEnabled);
@@ -1336,7 +1336,7 @@ int runGame(Gametype gametype, int level) {
 						done=1;
 						DrawBackground(globalData.screen);
 					}
-					if ((!editorMode)&&(!editorModeTest)&&(!theGame.GetAIenabled())) {
+					if (!theGame.GetAIenabled()) {
 						//player1:
 						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
 							a.action = BlockGameAction::Action::MOVE;
@@ -1367,7 +1367,7 @@ int runGame(Gametype gametype, int level) {
 							theGame.DoAction(a);
 						}
 					}
-					if (!editorMode && !theGame2.GetAIenabled()) {
+					if (!theGame2.GetAIenabled()) {
 						//player2:
 						if ( event.key.keysym.sym == keySettings[player2keys].up ) {
 							a.action = BlockGameAction::Action::MOVE;
@@ -1399,7 +1399,7 @@ int runGame(Gametype gametype, int level) {
 						}
 					}
 					//common:
-					if ((!singlePuzzle)&&(!editorMode)) {
+					if (!singlePuzzle) {
 						if ( event.key.keysym.sym == SDLK_F2 ) {
 							/*#if NETWORK
 							if ((!showOptions)&&(!networkActive)){
@@ -1585,7 +1585,7 @@ int runGame(Gametype gametype, int level) {
 				bMouseUp2=true;
 			}
 
-			if (!editorMode ) {
+			if (true ) {
 				//read mouse events
 				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 					//This is the mouse events

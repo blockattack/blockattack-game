@@ -113,9 +113,6 @@ static bool bNearDeathPrev;                    //Near death status last time che
 static bool puzzleLoaded;          //true if the puzzle levels have been loaded
 static bool drawBalls;             //if true balls are drawed to the screen, this might lower framerate too much
 
-static bool editorMode = false;
-static bool editorModeTest = false;
-
 
 
 //global settings (reset everytime the game starts)
