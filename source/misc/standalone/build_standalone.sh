@@ -50,7 +50,9 @@ ssh blockattack_build rm -f /staging/blockattack-game/CMakeCache.txt
 ssh blockattack_build "BLOCKATTACK_VERSION=2.2.0-SNAPSHOT && cd /staging/blockattack-game && \
 ./packdata.sh && \
 cp source/misc/travis_help/utf8_v2_3_4/source/utf8.h source/code/ && \
+cp source/misc/travis_help/utf8_v2_3_4/source/utf8.h source/code/sago/ && \
 cp -r source/misc/travis_help/utf8_v2_3_4/source/utf8 source/code/ && \
+cp -r source/misc/travis_help/utf8_v2_3_4/source/utf8 source/code/sago/ && \
 cmake -D Boost_USE_STATIC_LIBS=ON -D INSTALL_DATA_DIR=. -D CMAKE_INSTALL_PREFIX=. -D STANDALONE=1 . && make clean && make"
 
 OUTPUT=$(pwd)/source/misc/standalone/staging/$ARCHIVENAME/
