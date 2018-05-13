@@ -59,17 +59,17 @@ static SDL_RendererInfo renderInfo;
 HelpAboutState::HelpAboutState() {
 	SDL_GetRendererInfo(globalData.screen, &renderInfo);
 	std::stringstream infoStream;
-	infoStream << _("Name: ") << _("Block Attack - Rise of the Blocks") << "\n";
-	infoStream << _("Original name: ") << "Block Attack - Rise of the Blocks" << "\n";
-	infoStream << _("Version: ") << VERSION_NUMBER << "\n";
-	infoStream << _("Homepage: ") << "https://blockattack.net\n";
-	infoStream << _("Github page: ") << "https://github.com/blockattack/blockattack-game\n";
-	infoStream << _("Author: ") << "Poul Sander (sago007)\n";
-	infoStream << _("Contributers: ") << "Gonéri Le Bouder, Jordà Polo, Iwan Gabovitch (qubodup)\n";
-	infoStream << _("Other credits: ") << "Kenney Vleugels, OpenArena, nicefrog, Blender Foundation, Dietrich Radel, Dustin Norlander, Free Software Foundation\n";
-	infoStream << _("SDL render: ") << renderInfo.name << "\n";
-	infoStream << _("Save folder: ") << PHYSFS_getWriteDir() << "\n";
-	infoStream << _("Locale: ") << setlocale( LC_CTYPE, nullptr ) << "\n";
+	infoStream << _("Name:") << " " << _("Block Attack - Rise of the Blocks") << "\n";
+	infoStream << _("Original name:") << " Block Attack - Rise of the Blocks" << "\n";
+	infoStream << _("Version:") << " " << VERSION_NUMBER << "\n";
+	infoStream << _("Homepage:") << " " << "https://blockattack.net\n";
+	infoStream << _("Github page:") << " " << "https://github.com/blockattack/blockattack-game\n";
+	infoStream << _("Author:") << " " << "Poul Sander (sago007)\n";
+	infoStream << _("Contributers:") << " " << "Gonéri Le Bouder, Jordà Polo, Iwan Gabovitch (qubodup)\n";
+	infoStream << _("Other credits:") << " " << "Kenney Vleugels, OpenArena, nicefrog, Blender Foundation, Dietrich Radel, Dustin Norlander, Free Software Foundation\n";
+	infoStream << _("SDL render:") << " " << renderInfo.name << "\n";
+	infoStream << _("Save folder:") << " " << PHYSFS_getWriteDir() << "\n";
+	infoStream << _("Locale:") << " " << setlocale( LC_CTYPE, nullptr ) << "\n";
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
 }
