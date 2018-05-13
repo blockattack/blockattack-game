@@ -65,8 +65,8 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Homepage:") << " " << "https://blockattack.net\n";
 	infoStream << _("Github page:") << " " << "https://github.com/blockattack/blockattack-game\n";
 	infoStream << _("Author:") << " " << "Poul Sander (sago007)\n";
-	infoStream << _("Contributers:") << " " << "Gonéri Le Bouder, Jordà Polo, Iwan Gabovitch (qubodup)\n";
-	infoStream << _("Other credits:") << " " << "Kenney Vleugels, OpenArena, nicefrog, Blender Foundation, Dietrich Radel, Dustin Norlander, Free Software Foundation\n";
+	infoStream << _("Contributers:") << " " << "Gonéri Le Bouder, Jordà Polo, mstraube, Paul Wise, Iwan Gabovitch (qubodup), scootergrisen\n";
+	infoStream << _("Other credits:") << " " << "Blender Foundation, Dietrich Radel, Dustin Norlander, Free Software Foundation, Kenney Vleugels, nicefrog, OpenArena\n";
 	infoStream << _("SDL render:") << " " << renderInfo.name << "\n";
 	infoStream << _("Save folder:") << " " << PHYSFS_getWriteDir() << "\n";
 	infoStream << _("Locale:") << " " << setlocale( LC_CTYPE, nullptr ) << "\n";
