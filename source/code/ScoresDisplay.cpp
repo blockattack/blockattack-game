@@ -31,7 +31,7 @@ using std::string;
 using std::cerr;
 using std::vector;
 
-static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});

@@ -35,7 +35,7 @@ extern sago::SagoSprite bExit;
 
 
 
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
@@ -44,7 +44,7 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetText(text);
 }
 
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text){
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
@@ -120,8 +120,8 @@ void HelpAboutState::Update() {
 		bMouseUp = false;
 
 		//The Score button:
-		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth()) 
-				&& (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
+		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth())
+		        && (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
 			isActive = false;
 		}
 

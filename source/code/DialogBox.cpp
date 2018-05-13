@@ -26,7 +26,7 @@ http://www.blockattack.net
 #include "common.h"
 #include "ReadKeyboard.h"
 
-static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});

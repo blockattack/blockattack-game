@@ -180,7 +180,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	bRetry = holder.GetSprite("b_blank");
 	globalData.mouse = holder.GetSprite("mouse");
 	backBoard = holder.GetSprite("back_board");
-	
+
 	sagoTextSetBlueFont(player1name);
 	sagoTextSetBlueFont(player2name);
 	sagoTextSetBlueFont(player1time);
@@ -191,7 +191,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	sagoTextSetBlueFont(player2chain);
 	sagoTextSetBlueFont(player1speed);
 	sagoTextSetBlueFont(player2speed);
-	
+
 
 //Loads the sound if sound present
 	if (!globalData.NoSound) {
@@ -414,19 +414,19 @@ static void DrawBalls() {
 			DrawIMG(iChainFrame,globalData.screen,x,y);
 
 			getSmallInt(globalData.theTextManager.textArray[i].getText())->Draw(globalData.screen, x+12, y+7,
-				sago::SagoTextField::Alignment::center);
+			        sago::SagoTextField::Alignment::center);
 		}
 	}
 }    //DrawBalls
 
-template <class T> void sagoTextSetHelpFont(T& field){
+template <class T> void sagoTextSetHelpFont(T& field) {
 	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
 	field.SetFont("freeserif");
 	field.SetFontSize(30);
 	field.SetOutline(1, {128,128,128,255});
 }
 
-void sagoTextSetHelpFont(sago::SagoTextField& gametypeNameField){
+void sagoTextSetHelpFont(sago::SagoTextField& gametypeNameField) {
 	sagoTextSetHelpFont<sago::SagoTextField>(gametypeNameField);
 }
 
@@ -561,8 +561,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			//Write the keys that are in use
 			int y = theGame2->GetTopY()+400;
 			std::string controldBoxText = std::string(_("Movement keys:"))+"\n"+getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+",\n"
-					+ getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)+"\n"
-					+ _("Switch: ") + getKeyName(keySettings[0].change);
+			                              + getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)+"\n"
+			                              + _("Switch: ") + getKeyName(keySettings[0].change);
 			if (theGame->isPuzzleMode()) {
 				controldBoxText += std::string("\n") + _("Restart: ")+getKeyName(keySettings[0].push);
 			}

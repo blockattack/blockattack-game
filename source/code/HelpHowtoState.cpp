@@ -37,7 +37,7 @@ extern sago::SagoSprite bricks[7];
  * Draws bricks with a string like:
  * "aab" for two identical one and another
  * "aaB" the third one will have a bomb
- * The any char not in 'a' to 'g' or 'A' to 'G' the behavior is undefined. 
+ * The any char not in 'a' to 'g' or 'A' to 'G' the behavior is undefined.
  * @param target Target to draw to
  * @param bricks description on what to draw as a string
  * @param x
@@ -68,21 +68,21 @@ public:
 	int state = 0; //0=move left, 1 = switch, 2 = move right, 3 = switch
 	Uint32 lastTick = 0;
 	Uint32 animationSpeed = 2000;
-	
+
 	void Update (Uint32 tick) {
 		if (tick > lastTick + animationSpeed) {
 			lastTick = tick;
 			switch (state) {
-				case 0:
-					cursorPos = 1;
-					break;
-				case 1:  //fallthough
-				case 3:
-					std::swap(brickStr[cursorPos], brickStr[cursorPos + 1]);
-					break;
-				case 2:
-					cursorPos = 0;
-					break;
+			case 0:
+				cursorPos = 1;
+				break;
+			case 1:  //fallthough
+			case 3:
+				std::swap(brickStr[cursorPos], brickStr[cursorPos + 1]);
+				break;
+			case 2:
+				cursorPos = 0;
+				break;
 			}
 			++state;
 			if (state > 3) {
@@ -100,13 +100,13 @@ public:
 		lines.push_back(line);
 		return *this;
 	}
-	
+
 	void Render(SDL_Renderer* target, int x, int y) {
 		for (size_t i = 0; i < lines.size(); ++i) {
 			RenderRowOfBricks(target, lines[i], x, y+i*50);
 		}
 	}
-	
+
 };
 
 HorizontalSwitchAnimation switchAnimation;
@@ -221,8 +221,8 @@ void HelpHowtoState::Update() {
 		bMouseUp = false;
 
 		//The Score button:
-		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth()) 
-				&& (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
+		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth())
+		        && (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
 			isActive = false;
 		}
 
