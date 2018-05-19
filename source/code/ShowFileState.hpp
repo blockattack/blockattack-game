@@ -42,7 +42,7 @@ public:
 	void SetData(const std::string& filename, const std::string& header) {
 		titleField.SetText(header);
 		infoBox.SetText(sago::GetFileContent(filename));
-		filenameField.SetText(SPrintStringF(_("Show content of: %s"), filename.c_str()));
+		filenameField.SetText(SPrintStringF(_("Showing content of: %s"), filename.c_str()));
 	}
 	
 private:
