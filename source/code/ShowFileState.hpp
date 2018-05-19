@@ -22,6 +22,7 @@ https://blockattack.net
 
 
 #include "sago/GameStateInterface.hpp"
+#include <string>
 
 class ShowFileState : public sago::GameStateInterface {
 public:
@@ -34,9 +35,16 @@ public:
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
 	void Update() override;
 
+	void SetData(const std::string& filename, const std::string& header) {
+		this->filename = filename;
+		this->header = header;
+	}
+	
 private:
 	bool isActive = true;
 	bool bMouseUp = true;
+	std::string filename;
+	std::string header;
 };
 
 #endif /* SHOWFILESTATE_HPP */

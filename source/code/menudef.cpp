@@ -28,6 +28,7 @@ http://blockattack.net
 #include "HelpHowtoState.hpp"
 #include "HelpGamepadState.hpp"
 #include "HelpAboutState.hpp"
+#include "ShowFileState.hpp"
 
 using std::string;
 using std::cerr;
@@ -284,6 +285,12 @@ static void runHelpAbout() {
 	RunGameState(helpAbout);
 }
 
+static void runCredits() {
+	ShowFileState creditsFile;
+	creditsFile.SetData("misc/AUTHORS", _("Credits"));
+	RunGameState(creditsFile);
+}
+
 static void HelpMenu() {
 	Menu m(globalData.screen, _("Help"), true);
 	Button bHowto;
@@ -294,6 +301,10 @@ static void HelpMenu() {
 	bGamepad.setLabel(_("Gamepad"));
 	bGamepad.setAction(runHelpGamepad);
 	m.addButton(&bGamepad);
+	Button bCredits;
+	bCredits.setLabel(_("Credits"));
+	bCredits.setAction(runCredits);
+	m.addButton(&bCredits);
 	Button bAbout;
 	bAbout.setLabel(_("About"));
 	bAbout.setAction(runHelpAbout);
