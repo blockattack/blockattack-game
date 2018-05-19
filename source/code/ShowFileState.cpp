@@ -27,7 +27,29 @@ const int ysize = 768;
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
 
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetFontSize(30);
+	field.SetOutline(1, {128,128,128,255});
+	field.SetText(text);
+}
+
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetColor({0,0,0,255});
+	field.SetFontSize(20);
+	field.SetOutline(0, {0,0,0,255});
+	field.SetText(text);
+}
+
 ShowFileState::ShowFileState() {
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, "");
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), infoBox, "");
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), filenameField, "");
 }
 
 ShowFileState::~ShowFileState() {
@@ -47,8 +69,16 @@ void ShowFileState::ProcessInput(const SDL_Event& event, bool& processed) {
 	}
 }
 
+extern void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width);
+
 void ShowFileState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
+	titleField.Draw(target, 50, 50);
+	DrawRectYellow(target, 40, 90, 600, 900);
+	infoBox.SetMaxWidth(850);
+	infoBox.Draw(target, 50, 100);
+	DrawRectYellow(target, 40, 700, 50, 900);
+	filenameField.Draw(target, 50, 715);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
 #if DEBUG
 	static sago::SagoTextField mousePos;

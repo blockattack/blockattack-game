@@ -22,7 +22,11 @@ https://blockattack.net
 
 
 #include "sago/GameStateInterface.hpp"
+#include "sago/SagoTextField.hpp"
+#include "sago/SagoTextBox.hpp"
+#include "sago/SagoMisc.hpp"
 #include <string>
+#include "common.h"
 
 class ShowFileState : public sago::GameStateInterface {
 public:
@@ -36,15 +40,17 @@ public:
 	void Update() override;
 
 	void SetData(const std::string& filename, const std::string& header) {
-		this->filename = filename;
-		this->header = header;
+		titleField.SetText(header);
+		infoBox.SetText(sago::GetFileContent(filename));
+		filenameField.SetText(SPrintStringF(_("Show content of: %s"), filename.c_str()));
 	}
 	
 private:
 	bool isActive = true;
 	bool bMouseUp = true;
-	std::string filename;
-	std::string header;
+	sago::SagoTextField titleField;
+	sago::SagoTextBox filenameField;
+	sago::SagoTextBox infoBox;
 };
 
 #endif /* SHOWFILESTATE_HPP */
