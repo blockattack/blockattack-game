@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-15 22:48+0200\n"
+"POT-Creation-Date: 2018-05-19 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,30 +50,18 @@ msgid "Github page:"
 msgstr ""
 
 #: ../../code/HelpAboutState.cpp:67
-msgid "Author:"
-msgstr ""
-
-#: ../../code/HelpAboutState.cpp:68
-msgid "Contributers:"
-msgstr ""
-
-#: ../../code/HelpAboutState.cpp:69
-msgid "Other credits:"
-msgstr ""
-
-#: ../../code/HelpAboutState.cpp:70
 msgid "SDL render:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:71
+#: ../../code/HelpAboutState.cpp:68
 msgid "Save folder:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:72
+#: ../../code/HelpAboutState.cpp:69
 msgid "Locale:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:73 ../../code/menudef.cpp:298
+#: ../../code/HelpAboutState.cpp:70 ../../code/menudef.cpp:309
 msgid "About"
 msgstr ""
 
@@ -219,179 +207,183 @@ msgstr ""
 msgid "Player 2"
 msgstr ""
 
-#: ../../code/menudef.cpp:137 ../../code/menudef.cpp:205
+#: ../../code/menudef.cpp:138 ../../code/menudef.cpp:206
 msgid "Music: On"
 msgstr ""
 
-#: ../../code/menudef.cpp:137 ../../code/menudef.cpp:205
+#: ../../code/menudef.cpp:138 ../../code/menudef.cpp:206
 msgid "Music: Off"
 msgstr ""
 
-#: ../../code/menudef.cpp:145 ../../code/menudef.cpp:206
+#: ../../code/menudef.cpp:146 ../../code/menudef.cpp:207
 msgid "Sound: On"
 msgstr ""
 
-#: ../../code/menudef.cpp:145 ../../code/menudef.cpp:206
+#: ../../code/menudef.cpp:146 ../../code/menudef.cpp:207
 msgid "Sound: Off"
 msgstr ""
 
-#: ../../code/menudef.cpp:152 ../../code/menudef.cpp:207
+#: ../../code/menudef.cpp:153 ../../code/menudef.cpp:208
 msgid "Fullscreen: On"
 msgstr ""
 
-#: ../../code/menudef.cpp:152 ../../code/menudef.cpp:207
+#: ../../code/menudef.cpp:153 ../../code/menudef.cpp:208
 msgid "Fullscreen: Off"
 msgstr ""
 
-#: ../../code/menudef.cpp:158
+#: ../../code/menudef.cpp:159
 msgid "Enter player 1 name:"
 msgstr ""
 
-#: ../../code/menudef.cpp:164
+#: ../../code/menudef.cpp:165
 msgid "Enter player 2 name:"
 msgstr ""
 
-#: ../../code/menudef.cpp:174
+#: ../../code/menudef.cpp:175
 msgid "Change key bindings"
 msgstr ""
 
-#: ../../code/menudef.cpp:175
+#: ../../code/menudef.cpp:176
 msgid "Left"
 msgstr ""
 
-#: ../../code/menudef.cpp:176
+#: ../../code/menudef.cpp:177
 msgid "Right"
 msgstr ""
 
-#: ../../code/menudef.cpp:177
+#: ../../code/menudef.cpp:178
 msgid "Up"
 msgstr ""
 
-#: ../../code/menudef.cpp:178
+#: ../../code/menudef.cpp:179
 msgid "Down"
 msgstr ""
 
-#: ../../code/menudef.cpp:179
+#: ../../code/menudef.cpp:180
 msgid "Push"
 msgstr ""
 
-#: ../../code/menudef.cpp:180
+#: ../../code/menudef.cpp:181
 msgid "Change"
 msgstr ""
 
-#: ../../code/menudef.cpp:199
+#: ../../code/menudef.cpp:200
 msgid "Configuration"
 msgstr ""
 
-#: ../../code/menudef.cpp:209
+#: ../../code/menudef.cpp:210
 msgid "Change player 1's name"
 msgstr ""
 
-#: ../../code/menudef.cpp:211
+#: ../../code/menudef.cpp:212
 msgid "Change player 2's name"
 msgstr ""
 
-#: ../../code/menudef.cpp:213
+#: ../../code/menudef.cpp:214
 msgid "Change player 1's keys"
 msgstr ""
 
-#: ../../code/menudef.cpp:215
+#: ../../code/menudef.cpp:216
 msgid "Change player 2's keys"
 msgstr ""
 
-#: ../../code/menudef.cpp:227
+#: ../../code/menudef.cpp:228
 msgid "Single player VS"
 msgstr ""
 
-#: ../../code/menudef.cpp:243
+#: ../../code/menudef.cpp:244
 msgid "Very easy"
 msgstr ""
 
-#: ../../code/menudef.cpp:244
+#: ../../code/menudef.cpp:245
 msgid "Easy"
 msgstr ""
 
-#: ../../code/menudef.cpp:245
+#: ../../code/menudef.cpp:246
 msgid "Below normal"
 msgstr ""
 
-#: ../../code/menudef.cpp:246
+#: ../../code/menudef.cpp:247
 msgid "Normal"
 msgstr ""
 
-#: ../../code/menudef.cpp:247
+#: ../../code/menudef.cpp:248
 msgid "Above normal"
 msgstr ""
 
-#: ../../code/menudef.cpp:248
+#: ../../code/menudef.cpp:249
 msgid "Hard"
 msgstr ""
 
-#: ../../code/menudef.cpp:249
+#: ../../code/menudef.cpp:250
 msgid "Hardest"
 msgstr ""
 
-#: ../../code/menudef.cpp:261
+#: ../../code/menudef.cpp:262
 msgid "Multiplayer"
 msgstr ""
 
-#: ../../code/menudef.cpp:263
+#: ../../code/menudef.cpp:264
 msgid "Two player - time trial"
 msgstr ""
 
-#: ../../code/menudef.cpp:265
+#: ../../code/menudef.cpp:266
 msgid "Two player - vs"
 msgstr ""
 
-#: ../../code/menudef.cpp:288 ../../code/menudef.cpp:337
+#: ../../code/menudef.cpp:290 ../../code/menudef.cpp:305
+msgid "Credits"
+msgstr ""
+
+#: ../../code/menudef.cpp:295 ../../code/menudef.cpp:348
 msgid "Help"
 msgstr ""
 
-#: ../../code/menudef.cpp:290
+#: ../../code/menudef.cpp:297
 msgid "How to"
 msgstr ""
 
-#: ../../code/menudef.cpp:294
+#: ../../code/menudef.cpp:301
 msgid "Gamepad"
 msgstr ""
 
-#: ../../code/menudef.cpp:305 ../../code/menudef.cpp:329
+#: ../../code/menudef.cpp:316 ../../code/menudef.cpp:340
 msgid "Single player"
 msgstr ""
 
-#: ../../code/menudef.cpp:307
+#: ../../code/menudef.cpp:318
 msgid "Single player - endless"
 msgstr ""
 
-#: ../../code/menudef.cpp:309
+#: ../../code/menudef.cpp:320
 msgid "Single player - time trial"
 msgstr ""
 
-#: ../../code/menudef.cpp:311
+#: ../../code/menudef.cpp:322
 msgid "Single player - stage clear"
 msgstr ""
 
-#: ../../code/menudef.cpp:313
+#: ../../code/menudef.cpp:324
 msgid "Single player - puzzle mode"
 msgstr ""
 
-#: ../../code/menudef.cpp:315
+#: ../../code/menudef.cpp:326
 msgid "Single player - vs"
 msgstr ""
 
-#: ../../code/menudef.cpp:327
+#: ../../code/menudef.cpp:338
 msgid "Block Attack - Rise of the blocks"
 msgstr ""
 
-#: ../../code/menudef.cpp:331
+#: ../../code/menudef.cpp:342
 msgid "Multi player"
 msgstr ""
 
-#: ../../code/menudef.cpp:333
+#: ../../code/menudef.cpp:344
 msgid "Configure"
 msgstr ""
 
-#: ../../code/menudef.cpp:335
+#: ../../code/menudef.cpp:346
 msgid "Highscores"
 msgstr ""
 
