@@ -1,0 +1,19 @@
+This is Block Attack - Rise of the Blocks - version 2.2.0
+
+The primary change in this version is the font handling but I have also added a few help pages.
+
+While an updated font handling may at first glance not seem so interesting the effect is actually quite bug. Most importantly the scaling is now a lot better. This is important as computer screens has gotten smaller and smaller in the past years. Another change is that the game now runs out of the box on Windows machines with high resolution displays.
+
+Changes since 2.1.2:
+* New font system
+* Better scaling
+* Works out of the box on Windows with high resolution displays
+* New help menu with rule explanations
+
+Known issues:
+* Some string like "winner", "loser" and "draw" are not translatable.
+* Keyboard key names are not translatable either
+* A few screens like the "name" screen does not have gamepad support
+* Only gamepads connected on startup can be used
+
+Feedback can be given on https://blockattack.net or https://github.com/blockattack/blockattack-game

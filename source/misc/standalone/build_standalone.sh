@@ -47,7 +47,7 @@ ssh blockattack_build rm -rf /staging/blockattack-game
 scp -r . blockattack_build:/staging/blockattack-game
 ssh blockattack_build rm -f /staging/blockattack-game/CMakeCache.txt
 
-ssh blockattack_build "BLOCKATTACK_VERSION=2.2.0-SNAPSHOT && cd /staging/blockattack-game && \
+ssh blockattack_build "BLOCKATTACK_VERSION=2.2.0 && cd /staging/blockattack-game && \
 ./packdata.sh && \
 cp source/misc/travis_help/utf8_v2_3_4/source/utf8.h source/code/ && \
 cp source/misc/travis_help/utf8_v2_3_4/source/utf8.h source/code/sago/ && \
