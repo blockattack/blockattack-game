@@ -28,6 +28,7 @@ cp /usr/local/lib/libphysfs.so.1  /output/x86_64/ && \
 cp /usr/local/lib/libSDL2_mixer-2.0.so.0  /output/x86_64/ && \
 cp /usr/local/lib/libSDL2_ttf-2.0.so.0  /output/x86_64/ && \
 cp /usr/lib/x86_64-linux-gnu/libfreetype.so.6  /output/x86_64/ && \
+cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6  /output/x86_64/ && \
 cp /lib/x86_64-linux-gnu/libpng12.so.0  /output/x86_64/ && \
 cp /usr/local/lib/libSDL2_image-2.0.so.0  /output/x86_64/"
 
@@ -63,6 +64,7 @@ scp blockattack_build:/usr/local/lib/libphysfs.so.1  $OUTPUT/x86/ && \
 scp blockattack_build:/usr/local/lib/libSDL2_mixer-2.0.so.0  $OUTPUT/x86/ && \
 scp blockattack_build:/usr/local/lib/libSDL2_ttf-2.0.so.0  $OUTPUT/x86/ && \
 scp blockattack_build:/usr/lib/i386-linux-gnu/libfreetype.so.6 $OUTPUT/x86/ && \
+scp blockattack_build:/usr/lib/i386-linux-gnu/libstdc++.so.6 $OUTPUT/x86/ && \
 scp blockattack_build:/lib/i386-linux-gnu/libpng12.so.0 $OUTPUT/x86/ && \
 scp blockattack_build:/usr/local/lib/libSDL2_image-2.0.so.0  $OUTPUT/x86/
 
@@ -76,6 +78,7 @@ cp /usr/local/lib/libphysfs.so.1  /output/x86/ && \
 cp /usr/local/lib/libSDL2_mixer-2.0.so.0  /output/x86/ && \
 cp /usr/local/lib/libSDL2_ttf-2.0.so.0  /output/x86/ && \
 cp /usr/lib/i386-linux-gnu/libfreetype.so.6 /output/x86/ && \
+cp /usr/lib/i386-linux-gnu/libstdc++.so.6  /output/x86_64/ && \
 cp /lib/i386-linux-gnu/libpng12.so.0 /output/x86/ && \
 cp /usr/local/lib/libSDL2_image-2.0.so.0  /output/x86/"
 
