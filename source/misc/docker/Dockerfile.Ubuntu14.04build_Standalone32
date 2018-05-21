@@ -7,7 +7,7 @@ RUN /compile_requirements.sh
 
 COPY . /staging/blockattack-game
 
-ENV BLOCKATTACK_VERSION 2.2.0-SNAPSHOT
+ENV BLOCKATTACK_VERSION 2.3.0-SNAPSHOT
 
 RUN cd /staging/blockattack-game && \
 ./packdata.sh && \
