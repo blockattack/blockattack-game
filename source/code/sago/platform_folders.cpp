@@ -30,17 +30,14 @@ SOFTWARE.
 #include <iostream>
 #include <stdexcept>
 #include <string.h>
-#include <stdio.h>
+#include <cstdio>
 #include <cstdlib>
 
 #if defined(_WIN32)
 #include <windows.h>
 #include <shlobj.h>
 
-#define strtok_r strtok_s
-
-static std::string win32_utf16_to_utf8(const wchar_t* wstr)
-{
+static std::string win32_utf16_to_utf8(const wchar_t* wstr) {
 	std::string res;
 	// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
 	int actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
@@ -52,7 +49,7 @@ static std::string win32_utf16_to_utf8(const wchar_t* wstr)
 	}
 	if (actualSize == 0) {
 		// WideCharToMultiByte return 0 for errors.
-		std::string errorMsg = "UTF16 to UTF8 failed with error code: " + GetLastError();
+		const std::string errorMsg = "UTF16 to UTF8 failed with error code: " + GetLastError();
 		throw std::runtime_error(errorMsg.c_str());
 	}
 	return res;
@@ -61,8 +58,7 @@ static std::string win32_utf16_to_utf8(const wchar_t* wstr)
 static std::string GetWindowsFolder(int folderId, const char* errorMsg) {
 	wchar_t szPath[MAX_PATH];
 	szPath[0] = 0;
-	if ( !SUCCEEDED( SHGetFolderPathW( NULL, folderId, NULL, 0, szPath ) ) )
-	{
+	if ( !SUCCEEDED( SHGetFolderPathW( NULL, folderId, NULL, 0, szPath ) ) ) {
 		throw std::runtime_error(errorMsg);
 	}
 	return win32_utf16_to_utf8(szPath);
@@ -101,12 +97,14 @@ static std::string GetMacFolder(OSType folderType, const char* errorMsg) {
 #include <pwd.h>
 #include <unistd.h>
 #include <sys/types.h>
+// For strlen and strtok
+#include <cstring>
 //Typically Linux. For easy reading the comments will just say Linux but should work with most *nixes
 
 static void throwOnRelative(const char* envName, const char* envValue) {
 	if (envValue[0] != '/') {
 		char buffer[200];
-		snprintf(buffer, sizeof(buffer), "Environment \"%s\" does not start with an '/'. XDG specifies that the value must be absolute. The current value is: \"%s\"", envName, envValue);
+		std::snprintf(buffer, sizeof(buffer), "Environment \"%s\" does not start with an '/'. XDG specifies that the value must be absolute. The current value is: \"%s\"", envName, envValue);
 		throw std::runtime_error(buffer);
 	}
 }
@@ -120,13 +118,13 @@ static void throwOnRelative(const char* envName, const char* envValue) {
 static std::string getHome() {
 	std::string res;
 	int uid = getuid();
-	const char* homeEnv = getenv("HOME");
+	const char* homeEnv = std::getenv("HOME");
 	if ( uid != 0 && homeEnv) {
 		//We only acknowlegde HOME if not root.
 		res = homeEnv;
 		return res;
 	}
-	struct passwd *pw = getpwuid(uid);
+	struct passwd* pw = getpwuid(uid);
 	if (!pw) {
 		throw std::runtime_error("Unable to get passwd struct.");
 	}
@@ -140,7 +138,7 @@ static std::string getHome() {
 
 static std::string getLinuxFolderDefault(const char* envName, const char* defaultRelativePath) {
 	std::string res;
-	const char* tempRes = getenv(envName);
+	const char* tempRes = std::getenv(envName);
 	if (tempRes) {
 		throwOnRelative(envName, tempRes);
 		res = tempRes;
@@ -151,9 +149,8 @@ static std::string getLinuxFolderDefault(const char* envName, const char* defaul
 }
 
 static void appendExtraFoldersTokenizer(const char* envName, const char* envValue, std::vector<std::string>& folders) {
-	std::vector<char> buffer(envValue, envValue + strlen(envValue) + 1);
-	char *saveptr;
-	const char* p = strtok_r ( &buffer[0], ":", &saveptr);
+	std::vector<char> buffer(envValue, envValue + std::strlen(envValue) + 1);
+	char* p = std::strtok ( &buffer[0], ":");
 	while (p != NULL) {
 		if (p[0] == '/') {
 			folders.push_back(p);
@@ -163,12 +160,12 @@ static void appendExtraFoldersTokenizer(const char* envName, const char* envValu
 			//The XDG documentation indicates that the folder should be ignored but that the program should continue.
 			std::cerr << "Skipping path \"" << p << "\" in \"" << envName << "\" because it does not start with a \"/\"\n";
 		}
-		p = strtok_r (NULL, ":", &saveptr);
+		p = std::strtok (NULL, ":");
 	}
 }
 
 static void appendExtraFolders(const char* envName, const char* defaultValue, std::vector<std::string>& folders) {
-	const char* envValue = getenv(envName);
+	const char* envValue = std::getenv(envName);
 	if (!envValue) {
 		envValue = defaultValue;
 	}
@@ -206,7 +203,7 @@ std::string getCacheDir() {
 #elif defined(__APPLE__)
 	return GetMacFolder(kCachedDataFolderType, "Failed to find the Application Support Folder");
 #else
-	return getLinuxFolderDefault("XDG_CONFIG_HOME", ".cache");
+	return getLinuxFolderDefault("XDG_CACHE_HOME", ".cache");
 #endif
 }
 
@@ -276,7 +273,8 @@ PlatformFolders::PlatformFolders() {
 	this->data = new PlatformFolders::PlatformFoldersData();
 	try {
 		PlatformFoldersFillData(data->folders);
-	} catch (...) {
+	}
+	catch (...) {
 		delete this->data;
 		throw;
 	}
@@ -364,6 +362,33 @@ std::string PlatformFolders::getSaveGamesFolder1() const {
 #endif
 }
 
+std::string getDesktopFolder() {
+	return PlatformFolders().getDesktopFolder();
+}
+
+std::string getDocumentsFolder() {
+	return PlatformFolders().getDocumentsFolder();
+}
+
+std::string getDownloadFolder1() {
+	return PlatformFolders().getDownloadFolder1();
+}
+
+std::string getPicturesFolder() {
+	return PlatformFolders().getPicturesFolder();
+}
+
+std::string getMusicFolder() {
+	return PlatformFolders().getMusicFolder();
+}
+
+std::string getVideoFolder() {
+	return PlatformFolders().getVideoFolder();
+}
+
+std::string getSaveGamesFolder1() {
+	return PlatformFolders().getSaveGamesFolder1();
+}
 
 
 }  //namespace sago
