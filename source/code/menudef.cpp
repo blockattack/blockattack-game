@@ -56,8 +56,44 @@ void OpenScoresDisplay();
 extern control keySettings[3];
 
 //Function to return the name of a key, to be displayed...
-static string getKeyName(SDL_Keycode key) {
+string getKeyName(SDL_Keycode key) {
 	string keyname(SDL_GetKeyName(key));
+	if (key == SDLK_UP) {
+		keyname = _("Up arrow");
+	}
+	if (key == SDLK_DOWN) {
+		keyname = _("Down arrow");
+	}
+	if (key == SDLK_LEFT) {
+		keyname = _("Left arrow");
+	}
+	if (key == SDLK_RIGHT) {
+		keyname = _("Right arrow");
+	}
+	if (key == SDLK_RCTRL) {
+		keyname = _("Right Ctrl");
+	}
+	if (key == SDLK_LCTRL) {
+		keyname = _("Left Ctrl");
+	}
+	if (key == SDLK_RSHIFT) {
+		keyname = _("Right shift");
+	}
+	if (key == SDLK_LSHIFT) {
+		keyname = _("Left shift");
+	}
+	if (key == SDLK_RALT) {
+		keyname = _("Right alt");
+	}
+	if (key == SDLK_LALT) {
+		keyname = _("Left alt");
+	}
+	if (key == SDLK_RETURN) {
+		keyname = _("Return");
+	}
+	if (key == SDLK_SPACE) {
+		keyname = _("Space");
+	}
 	if (globalData.verboseLevel) {
 		cout << key << " translated to " << keyname << "\n";
 	}

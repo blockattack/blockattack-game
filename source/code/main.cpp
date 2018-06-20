@@ -322,10 +322,7 @@ void writeScreenShot() {
 }
 
 //Function to return the name of a key, to be displayed...
-static string getKeyName(SDL_Keycode key) {
-	string keyname(SDL_GetKeyName(key));
-	return keyname;
-}
+string getKeyName(SDL_Keycode key);
 
 
 void RunGameState(sago::GameStateInterface& state ) {
