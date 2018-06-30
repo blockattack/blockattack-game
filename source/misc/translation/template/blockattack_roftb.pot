@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 18:46+0200\n"
+"POT-Creation-Date: 2018-06-30 14:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -139,71 +139,83 @@ msgstr ""
 msgid "Total score: %i in %i:%02i"
 msgstr ""
 
-#: ../../code/main.cpp:449 ../../code/main.cpp:580
+#: ../../code/main.cpp:157
+msgid "GAME OVER"
+msgstr ""
+
+#: ../../code/main.cpp:158
+msgid "WINNER"
+msgstr ""
+
+#: ../../code/main.cpp:159
+msgid "DRAW"
+msgstr ""
+
+#: ../../code/main.cpp:458 ../../code/main.cpp:589
 msgid "AI"
 msgstr ""
 
-#: ../../code/main.cpp:452
+#: ../../code/main.cpp:461
 msgid "Playing field"
 msgstr ""
 
-#: ../../code/main.cpp:526
+#: ../../code/main.cpp:535
 msgid "Time Trial"
 msgstr ""
 
-#: ../../code/main.cpp:527
+#: ../../code/main.cpp:536
 msgid "Score as much as possible in 2 minutes"
 msgstr ""
 
-#: ../../code/main.cpp:531
+#: ../../code/main.cpp:540
 msgid "Stage Clear"
 msgstr ""
 
-#: ../../code/main.cpp:532
+#: ../../code/main.cpp:541
 msgid "You must clear a number of lines. Speed is rapidly increased."
 msgstr ""
 
-#: ../../code/main.cpp:535
+#: ../../code/main.cpp:544
 msgid "Puzzle"
 msgstr ""
 
-#: ../../code/main.cpp:536
+#: ../../code/main.cpp:545
 msgid "Clear the entire board with a limited number of moves."
 msgstr ""
 
-#: ../../code/main.cpp:539
+#: ../../code/main.cpp:548
 msgid "Endless"
 msgstr ""
 
-#: ../../code/main.cpp:540
+#: ../../code/main.cpp:549
 msgid "Score as much as possible. No time limit."
 msgstr ""
 
-#: ../../code/main.cpp:550
+#: ../../code/main.cpp:559
 msgid "Objective:"
 msgstr ""
 
-#: ../../code/main.cpp:560
+#: ../../code/main.cpp:569
 msgid "Movement keys:"
 msgstr ""
 
-#: ../../code/main.cpp:562
+#: ../../code/main.cpp:571
 msgid "Switch: "
 msgstr ""
 
-#: ../../code/main.cpp:564
+#: ../../code/main.cpp:573
 msgid "Restart: "
 msgstr ""
 
-#: ../../code/main.cpp:567
+#: ../../code/main.cpp:576
 msgid "Push line: "
 msgstr ""
 
-#: ../../code/main.cpp:992
+#: ../../code/main.cpp:1001
 msgid "Player 1"
 msgstr ""
 
-#: ../../code/main.cpp:993
+#: ../../code/main.cpp:1002
 msgid "Player 2"
 msgstr ""
 
@@ -500,7 +512,7 @@ msgstr ""
 msgid "VS CPU (win/loss)"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:188 ../../code/BlockGameSdl.inc:54
+#: ../../code/ScoresDisplay.cpp:188 ../../code/BlockGameSdl.inc:55
 msgid "Next"
 msgstr ""
 
@@ -509,39 +521,39 @@ msgstr ""
 msgid "Page %i of %i"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:50
+#: ../../code/BlockGameSdl.inc:51
 msgid "Score:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:51
+#: ../../code/BlockGameSdl.inc:52
 msgid "Time:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:52
+#: ../../code/BlockGameSdl.inc:53
 msgid "Chain:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:53
+#: ../../code/BlockGameSdl.inc:54
 msgid "Speed:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:55
+#: ../../code/BlockGameSdl.inc:56
 msgid "Retry"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:56
+#: ../../code/BlockGameSdl.inc:57
 msgid "Skip"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:327
+#: ../../code/BlockGameSdl.inc:328
 msgid "Moves left: "
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:350
+#: ../../code/BlockGameSdl.inc:351
 msgid "Last puzzle"
 msgstr ""
 
-#: ../../code/BlockGameSdl.inc:370
+#: ../../code/BlockGameSdl.inc:371
 msgid "Last stage"
 msgstr ""
 

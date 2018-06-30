@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 18:46+0200\n"
-"PO-Revision-Date: 2018-06-20 18:47+0200\n"
+"POT-Creation-Date: 2018-06-30 14:36+0200\n"
+"PO-Revision-Date: 2018-06-30 14:37+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../../code/DialogBox.cpp:92
@@ -142,71 +142,83 @@ msgstr "Tid brugt: %d : %02d"
 msgid "Total score: %i in %i:%02i"
 msgstr "Sammenlagt: %i på %i:%02i"
 
-#: ../../code/main.cpp:449 ../../code/main.cpp:580
+#: ../../code/main.cpp:157
+msgid "GAME OVER"
+msgstr "SPILLET ER SLUT"
+
+#: ../../code/main.cpp:158
+msgid "WINNER"
+msgstr "VINDER"
+
+#: ../../code/main.cpp:159
+msgid "DRAW"
+msgstr "UAFGJORT"
+
+#: ../../code/main.cpp:458 ../../code/main.cpp:589
 msgid "AI"
 msgstr "Computer"
 
-#: ../../code/main.cpp:452
+#: ../../code/main.cpp:461
 msgid "Playing field"
 msgstr "Spilleflade"
 
-#: ../../code/main.cpp:526
+#: ../../code/main.cpp:535
 msgid "Time Trial"
 msgstr "På tid"
 
-#: ../../code/main.cpp:527
+#: ../../code/main.cpp:536
 msgid "Score as much as possible in 2 minutes"
 msgstr "Se hvor mange point du kan opnå på 2 minutter"
 
-#: ../../code/main.cpp:531
+#: ../../code/main.cpp:540
 msgid "Stage Clear"
 msgstr "Stage Clear"
 
-#: ../../code/main.cpp:532
+#: ../../code/main.cpp:541
 msgid "You must clear a number of lines. Speed is rapidly increased."
 msgstr "Fjern et specifik antal linjer. Hastigheden stiger hurtigt."
 
-#: ../../code/main.cpp:535
+#: ../../code/main.cpp:544
 msgid "Puzzle"
 msgstr "Gåde"
 
-#: ../../code/main.cpp:536
+#: ../../code/main.cpp:545
 msgid "Clear the entire board with a limited number of moves."
 msgstr "Fjern alle blokke med et begrænset antal flyt."
 
-#: ../../code/main.cpp:539
+#: ../../code/main.cpp:548
 msgid "Endless"
 msgstr "Evighed"
 
-#: ../../code/main.cpp:540
+#: ../../code/main.cpp:549
 msgid "Score as much as possible. No time limit."
 msgstr "Opnå så mange point som muligt. Ingen tidsbegrænsning."
 
-#: ../../code/main.cpp:550
+#: ../../code/main.cpp:559
 msgid "Objective:"
 msgstr "Formål:"
 
-#: ../../code/main.cpp:560
+#: ../../code/main.cpp:569
 msgid "Movement keys:"
 msgstr "Bevægelsestaster:"
 
-#: ../../code/main.cpp:562
+#: ../../code/main.cpp:571
 msgid "Switch: "
 msgstr "Skift: "
 
-#: ../../code/main.cpp:564
+#: ../../code/main.cpp:573
 msgid "Restart: "
 msgstr "Genstart: "
 
-#: ../../code/main.cpp:567
+#: ../../code/main.cpp:576
 msgid "Push line: "
 msgstr "Skub linje: "
 
-#: ../../code/main.cpp:992
+#: ../../code/main.cpp:1001
 msgid "Player 1"
 msgstr "Spiller 1"
 
-#: ../../code/main.cpp:993
+#: ../../code/main.cpp:1002
 msgid "Player 2"
 msgstr "Spiller 2"
 
@@ -503,7 +515,7 @@ msgstr "Spilletid: "
 msgid "VS CPU (win/loss)"
 msgstr "Mod computeren (vundet/tabt)"
 
-#: ../../code/ScoresDisplay.cpp:188 ../../code/BlockGameSdl.inc:54
+#: ../../code/ScoresDisplay.cpp:188 ../../code/BlockGameSdl.inc:55
 msgid "Next"
 msgstr "Næste"
 
@@ -512,39 +524,39 @@ msgstr "Næste"
 msgid "Page %i of %i"
 msgstr "Side %i af %i"
 
-#: ../../code/BlockGameSdl.inc:50
+#: ../../code/BlockGameSdl.inc:51
 msgid "Score:"
 msgstr "Resultat:"
 
-#: ../../code/BlockGameSdl.inc:51
+#: ../../code/BlockGameSdl.inc:52
 msgid "Time:"
 msgstr "Tid:"
 
-#: ../../code/BlockGameSdl.inc:52
+#: ../../code/BlockGameSdl.inc:53
 msgid "Chain:"
 msgstr "Kæde:"
 
-#: ../../code/BlockGameSdl.inc:53
+#: ../../code/BlockGameSdl.inc:54
 msgid "Speed:"
 msgstr "Hastighed:"
 
-#: ../../code/BlockGameSdl.inc:55
+#: ../../code/BlockGameSdl.inc:56
 msgid "Retry"
 msgstr "Prøv igen"
 
-#: ../../code/BlockGameSdl.inc:56
+#: ../../code/BlockGameSdl.inc:57
 msgid "Skip"
 msgstr "Spring over"
 
-#: ../../code/BlockGameSdl.inc:327
+#: ../../code/BlockGameSdl.inc:328
 msgid "Moves left: "
 msgstr "Træk tilbage: "
 
-#: ../../code/BlockGameSdl.inc:350
+#: ../../code/BlockGameSdl.inc:351
 msgid "Last puzzle"
 msgstr "Sidste gåde"
 
-#: ../../code/BlockGameSdl.inc:370
+#: ../../code/BlockGameSdl.inc:371
 msgid "Last stage"
 msgstr "Sidste bane"
 
