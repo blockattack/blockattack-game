@@ -1333,6 +1333,13 @@ int runGame(Gametype gametype, int level) {
 					done = 1;
 				}
 
+				if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+					if ( event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
+						done=1;
+						DrawBackground(globalData.screen);
+					}
+				}
+
 				if ( event.type == SDL_KEYDOWN ) {
 					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
 						done=1;

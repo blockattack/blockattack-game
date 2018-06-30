@@ -290,7 +290,7 @@ bool isEscapeEvent(const SDL_Event& event) {
 		}
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y ) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y || event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
 			return true;
 		}
 	}
