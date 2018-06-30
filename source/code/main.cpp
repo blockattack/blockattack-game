@@ -111,6 +111,16 @@ static void PhysFsCreateFolders() {
 	PHYSFS_mkdir("puzzles");
 }
 
+static void setGameOverFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({0,0,255,255});
+	field.SetFontSize(60);
+	field.SetOutline(3, {192,192,255,255});
+	field.SetMaxWidth(280);
+	field.SetText(text);
+}
+
 //Load all image files to memory
 static int InitImages(sago::SagoSpriteHolder& holder) {
 	bricks[0] = holder.GetSprite("block_blue");
@@ -144,10 +154,9 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	counter[0] = holder.GetSprite("counter_1");
 	counter[1] = holder.GetSprite("counter_2");
 	counter[2] = holder.GetSprite("counter_3");
-	iGameOver = holder.GetSprite("i_game_over");
-	iWinner = holder.GetSprite("i_winner");
-	iDraw = holder.GetSprite("i_draw");
-	iLoser = holder.GetSprite("i_loser");
+	setGameOverFont(&holder.GetDataHolder(),tbGameOver, _("GAME OVER"));
+	setGameOverFont(&holder.GetDataHolder(),tbWinner, _("WINNER"));
+	setGameOverFont(&holder.GetDataHolder(),tbDraw, _("DRAW"));
 	iChainFrame = holder.GetSprite("chain_frame");
 	globalData.iLevelCheck = holder.GetSprite("i_level_check");
 	globalData.iLevelCheckBox = holder.GetSprite("i_level_check_box");

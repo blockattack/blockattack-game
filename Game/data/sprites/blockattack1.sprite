@@ -387,24 +387,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"i_draw" : {
-	"texture" : "i_draw",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 100,
-	"width" : 300,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"i_game_over" : {
-	"texture" : "i_game_over",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 100,
-	"width" : 300,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "i_level_check_box_marked" : {
 	"texture" : "i_level_check_box_marked",
  	"topx" : 0,
@@ -432,30 +414,12 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"i_loser" : {
-	"texture" : "i_loser",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 100,
-	"width" : 300,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "i_stage_clear_limit" : {
 	"texture" : "i_stage_clear_limit",
  	"topx" : 0,
 	"topy" : 0,
 	"height" : 50,
 	"width" : 140,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
-"i_winner" : {
-	"texture" : "i_winner",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 100,
-	"width" : 300,
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },

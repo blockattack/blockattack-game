@@ -56,7 +56,7 @@ public:
 	 */
 	void SetMaxWidth(int width);
 	const std::string& GetText() const;
-	void Draw(SDL_Renderer* target, int x, int y);
+	void Draw(SDL_Renderer* target, int x, int y, SagoTextField::Alignment alignment = SagoTextField::Alignment::left);
 	void UpdateCache();
 private:
 	void AppendLineToCache(const std::string& text);

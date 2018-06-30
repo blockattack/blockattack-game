@@ -28,6 +28,7 @@ http://blockattack.net
 #include "sago/SagoSprite.hpp"
 #include "BlockGame.hpp"
 #include "sago/SagoTextField.hpp"
+#include "sago/SagoTextBox.hpp"
 
 
 //main variables and constants
@@ -57,10 +58,9 @@ static sago::SagoSprite bForward;      //The "forward" button
 static sago::SagoSprite blackLine;		//The seperator in stage clear
 static sago::SagoSprite stageBobble;	//The bobble instage clear
 SDL_Renderer *screen;        //The whole screen;
-static sago::SagoSprite iGameOver;     //The gameOver image
-static sago::SagoSprite iWinner;		//the "winner" image
-static sago::SagoSprite iDraw;			//the "draw" image
-static sago::SagoSprite iLoser;		//the "loser" image
+static sago::SagoTextBox tbGameOver;
+static sago::SagoTextBox tbWinner;
+static sago::SagoTextBox tbDraw;
 static sago::SagoSprite iChainFrame;
 //Animations:
 static sago::SagoSprite cursor;    //The animated cursor

@@ -24,6 +24,7 @@ https://blockattack.net
 #include "BlockGame.hpp"
 #include "global.hpp"
 #include "sago/SagoTextField.hpp"
+#include "mainVars.inc"
 
 static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
 	field.SetHolder(holder);
@@ -436,14 +437,14 @@ public:
 
 		if (bGameOver) {
 			if (hasWonTheGame) {
-				DrawImgBoard(iWinner,  0, 5*bsize);
+				tbWinner.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 			}
 			else {
 				if (bDraw) {
-					DrawImgBoard(iDraw,  0, 5*bsize);
+					tbDraw.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 				}
 				else {
-					DrawImgBoard(iGameOver,  0, 5*bsize);
+					tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 				}
 			}
 		}
