@@ -258,5 +258,15 @@ bool isPlayerPushEvent(int playerNumber, const SDL_Event& event) {
 			return true;
 		}
 	}
+	if (event.type == SDL_CONTROLLERAXISMOTION  && (event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT || event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT ) ) {
+		checkDeadZone(event);
+		const SDL_ControllerAxisEvent& a = event.caxis;
+		if (getDeadZone(a.which, a.axis)) {
+			if (event.caxis.value > deadZoneLimit) {
+				setDeadZone(a.which,a.axis,false);
+				return true;
+			}
+		}
+	}
 	return false;
 }
