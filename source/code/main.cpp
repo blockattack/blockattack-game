@@ -995,6 +995,7 @@ int main(int argc, char* argv[]) {
 		Config* configSettings = Config::getInstance();
 		//configSettings->setString("aNumber"," A string");
 		//configSettings->save();
+		int screenHeight = 768;
 		if (configSettings->exists("fullscreen")) { //Test if an configFile exists
 			globalData.bFullscreen = (bool)configSettings->getInt("fullscreen");
 			globalData.MusicEnabled = (bool)configSettings->getInt("musicenabled");
@@ -1049,6 +1050,9 @@ int main(int argc, char* argv[]) {
 			if (configSettings->exists("ysize")) {
 				globalData.ysize = configSettings->getInt("ysize");
 			}
+			if (configSettings->exists("screenHeight")) {
+				screenHeight = configSettings->getInt("screenHeight");
+			}
 			if (globalData.verboseLevel) {
 				cout << "Data loaded from config file" << "\n";
 			}
@@ -1069,7 +1073,7 @@ int main(int argc, char* argv[]) {
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
-		                             globalData.xsize, globalData.ysize,
+		                             (screenHeight)*4/3, screenHeight,
 		                             createWindowParams );
 		dieOnNullptr(sdlWindow, "Unable to create window");
 		int rendererFlags = 0;
@@ -1158,10 +1162,11 @@ int main(int argc, char* argv[]) {
 
 			configSettings->setString("player1name", globalData.player1name);
 			configSettings->setString("player2name", globalData.player2name);
-			if (!config.autoScale) {
-				//autoScale is always equal the logical size, so it makes no sense to save it
-				configSettings->setInt("xsize", globalData.xsize);
-				configSettings->setInt("ysize", globalData.ysize);
+			{
+				//Store physical height of window
+				int height = 0;
+				SDL_GetWindowSize(sdlWindow, nullptr, &height);
+				configSettings->setInt("screenHeight", height);
 			}
 			configSettings->save();
 		}
