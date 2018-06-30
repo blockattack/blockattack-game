@@ -95,7 +95,9 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	moveLabel.Draw(target, 100, 404, sago::SagoTextField::Alignment::center);
 	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140, 90, globalData.xsize/2-480/2+140, 105);
 	SDL_RenderDrawLine(target, globalData.xsize/2+480/2-140, 90, globalData.xsize/2+480/2-140, 105);
-	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140, 90, globalData.xsize/2+480/2-140, 90);
+	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140-38, 90, globalData.xsize/2+480/2-140+38, 90);
+	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140-38, 90, globalData.xsize/2-480/2+140-38, 110);
+	SDL_RenderDrawLine(target, globalData.xsize/2+480/2-140+38, 90, globalData.xsize/2+480/2-140+38, 110);
 	SDL_RenderDrawLine(target, globalData.xsize/2, 80, globalData.xsize/2, 90);
 	pushLabel.Draw(target, globalData.xsize/2, 80, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom);
 	SDL_RenderDrawLine(target, 625, 168, 800, 168);
