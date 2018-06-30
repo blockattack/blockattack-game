@@ -93,6 +93,7 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	SDL_RenderDrawLine(target, 100, 298, globalData.xsize/2-480/2+158, 298);
 	SDL_RenderDrawLine(target, 100, 210, 100, 400);
 	moveLabel.Draw(target, 100, 404, sago::SagoTextField::Alignment::center);
+	//Push lines
 	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140, 90, globalData.xsize/2-480/2+140, 105);
 	SDL_RenderDrawLine(target, globalData.xsize/2+480/2-140, 90, globalData.xsize/2+480/2-140, 105);
 	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140-38, 90, globalData.xsize/2+480/2-140+38, 90);
@@ -100,8 +101,10 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	SDL_RenderDrawLine(target, globalData.xsize/2+480/2-140+38, 90, globalData.xsize/2+480/2-140+38, 110);
 	SDL_RenderDrawLine(target, globalData.xsize/2, 80, globalData.xsize/2, 90);
 	pushLabel.Draw(target, globalData.xsize/2, 80, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom);
+	//Back lines
 	SDL_RenderDrawLine(target, 625, 168, 800, 168);
-	SDL_RenderDrawLine(target, 800, 158, 800, 168);
+	SDL_RenderDrawLine(target, 800, 158, 800, 195);
+	SDL_RenderDrawLine(target, 490, 195, 800, 195);
 	backLabel.Draw(target, 800, 156, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom);
 	SDL_RenderDrawLine(target, 625, 241, 900, 241);
 	SDL_RenderDrawLine(target, 663, 207, 900, 207);
