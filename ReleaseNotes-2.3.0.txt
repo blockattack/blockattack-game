@@ -1,0 +1,10 @@
+This is Block Attack - Rise of the Blocks - version 2.3.0
+
+Changes since 2.2.0:
+Several keyboard keys are now translatable
+Window size is now restored on next startup
+The back-button on the gamepad now goes back in menus
+Gamepad L2 and R2 can now be used to push lines
+Game Over, Winner and Draw are now translatable
+
+Feedback can be given on https://blockattack.net or https://github.com/blockattack/blockattack-game

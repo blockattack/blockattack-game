@@ -22,5 +22,5 @@ http://www.blockattack.net
 */
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "2.3.0-SNAPSHOT"
+#define VERSION_NUMBER "2.3.0"
 #endif
