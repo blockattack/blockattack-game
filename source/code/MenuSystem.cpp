@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -31,11 +31,6 @@ http://www.blockattack.net
 static int oldmousex = 0;
 static int oldmousey = 0;
 
-using std::string;
-using std::cerr;
-using std::cout;
-using std::vector;
-
 const char* const menu_marked = "menu_marked";
 const char* const menu_unmarked = "menu_unmarked";
 
@@ -45,7 +40,7 @@ void ButtonGfx::setSurfaces() {
 	this->xsize = globalData.spriteHolder->GetSprite(menu_marked).GetWidth();
 	this->ysize = globalData.spriteHolder->GetSprite(menu_marked).GetHeight();
 	if (globalData.verboseLevel) {
-		cout << "Surfaces set, size: " << this->xsize << " , " << this->ysize << "\n";
+		std::cout << "Surfaces set, size: " << this->xsize << " , " << this->ysize << "\n";
 	}
 }
 
@@ -81,7 +76,7 @@ Button::Button(const Button& b) {
 	popOnRun = false;
 }
 
-void Button::setLabel(const string& text) {
+void Button::setLabel(const std::string& text) {
 	label = text;
 }
 
@@ -94,7 +89,7 @@ void Button::doAction() {
 		action();
 		return;
 	}
-	cerr << "Warning: button \"" << label << "\" has no action assigned!";
+	std::cerr << "Warning: button \"" << label << "\" has no action assigned!";
 }
 
 void Button::setPopOnRun(bool popOnRun) {
@@ -157,14 +152,14 @@ void Menu::addButton(Button* b) {
 
 Menu::Menu(SDL_Renderer* screen) {
 	this->screen = screen;
-	buttons = vector<Button*>(10);
+	buttons = std::vector<Button*>(10);
 	isSubmenu = true;
 	exit.setLabel( _("Back") );
 }
 
 Menu::Menu(SDL_Renderer* screen,bool submenu) {
 	this->screen = screen;
-	buttons = vector<Button*>(0);
+	buttons = std::vector<Button*>(0);
 	isSubmenu = submenu;
 	if (isSubmenu) {
 		exit.setLabel( _("Back") );
@@ -174,9 +169,9 @@ Menu::Menu(SDL_Renderer* screen,bool submenu) {
 	}
 }
 
-Menu::Menu(SDL_Renderer* screen, const string& title, bool submenu) {
+Menu::Menu(SDL_Renderer* screen, const std::string& title, bool submenu) {
 	this->screen = screen;
-	buttons = vector<Button*>(0);
+	buttons = std::vector<Button*>(0);
 	isSubmenu = submenu;
 	this->title = title;
 	if (isSubmenu) {

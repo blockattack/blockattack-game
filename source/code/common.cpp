@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -29,11 +29,6 @@ http://www.blockattack.net
 #include "sago/SagoMisc.hpp"
 #include <stdarg.h>
 
-using std::string;
-using std::stringstream;
-using std::cerr;
-using std::map;
-using std::vector;
 
 bool strequals(const char* a, const char* b) {
 	return strcmp(a,b) == 0;
@@ -45,7 +40,7 @@ void dieOnNullptr(bool ptr, const char* msg) {
 	}
 }
 
-double str2double(const string& str2parse) {
+double str2double(const std::string& str2parse) {
 	try {
 		return std::stod(str2parse);
 	}
@@ -74,7 +69,7 @@ const char* SPrintCF(const char* fmt, ...) {
 	return buffer;
 }
 
-int str2int(const string& str2parse) {
+int str2int(const std::string& str2parse) {
 	try {
 		return std::stoi(str2parse);
 	}
@@ -98,7 +93,7 @@ commonTime TimeHandler::ms2ct(unsigned int milliseconds) {
 	return ct;
 }
 
-commonTime TimeHandler::getTime(const string& name) {
+commonTime TimeHandler::getTime(const std::string& name) {
 	commonTime ct;
 	ct.days = Config::getInstance()->getInt(name+"Days");
 	ct.hours = Config::getInstance()->getInt(name+"Hours");
@@ -111,7 +106,7 @@ commonTime TimeHandler::getTime(const string& name) {
  * Returns the total runtime with toAdd added but without writing it to config file.
  * Used for stats
  */
-commonTime TimeHandler::peekTime(const string& name, const commonTime& toAdd) {
+commonTime TimeHandler::peekTime(const std::string& name, const commonTime& toAdd) {
 	commonTime ct = getTime(name);
 
 	ct.seconds +=toAdd.seconds;
@@ -134,7 +129,7 @@ commonTime TimeHandler::peekTime(const string& name, const commonTime& toAdd) {
  * Same as peekTotalTime but writes the time to the config file.
  * Should only be called only once! when the program shuts down
  */
-commonTime TimeHandler::addTime(const string& name, const commonTime& toAdd) {
+commonTime TimeHandler::addTime(const std::string& name, const commonTime& toAdd) {
 	commonTime ct = peekTime(name,toAdd);
 
 	Config::getInstance()->setInt(name+"Days",ct.days);
@@ -153,10 +148,10 @@ Config::Config() {
 }
 
 void Config::load() {
-	string filecontent = sago::GetFileContent("configFile");
-	stringstream inFile(filecontent);
-	string key;
-	string previuskey;
+	std::string filecontent = sago::GetFileContent("configFile");
+	std::stringstream inFile(filecontent);
+	std::string key;
+	std::string previuskey;
 	if (inFile) {
 		while (!inFile.eof()) {
 			inFile >> key;
@@ -168,7 +163,7 @@ void Config::load() {
 			std::string value;
 			std::getline(inFile, value);
 #if DEBUG
-			cerr << "Config read: " << key << " with:\"" << value << "\"" << "\n";
+			std::cerr << "Config read: " << key << " with:\"" << value << "\"" << "\n";
 #endif
 			configMap[key] = value;
 		}
@@ -185,7 +180,7 @@ Config* Config::getInstance() {
 
 void Config::save() {
 	std::stringstream outFile;
-	map<string,string>::iterator iter;
+	std::map<std::string,std::string>::iterator iter;
 	for (iter = configMap.begin(); iter != configMap.end(); ++iter) {
 		outFile << iter->first << " " << iter->second << "\n";
 	}
@@ -194,12 +189,12 @@ void Config::save() {
 	sago::WriteFileContent("configFile", outFile.str());
 }
 
-bool Config::exists(const string& varName) const {
+bool Config::exists(const std::string& varName) const {
 	//Using that find returns an iterator to the end of the map if not found
 	return configMap.find(varName) != configMap.end();
 }
 
-void Config::setDefault(const string& varName,const string& content) {
+void Config::setDefault(const std::string& varName,const std::string& content) {
 	if (exists(varName)) {
 		return;    //Already exists do not change
 	}
@@ -214,19 +209,19 @@ long Config::isShuttingDown() const {
 	return shuttingDown;
 }
 
-void Config::setString(const string& varName, const string& content) {
+void Config::setString(const std::string& varName, const std::string& content) {
 	configMap[varName] = content;
 }
 
-void Config::setInt(const string& varName, int content) {
+void Config::setInt(const std::string& varName, int content) {
 	configMap[varName] = std::to_string(content);
 }
 
-void Config::setValue(const string& varName,double content) {
+void Config::setValue(const std::string& varName,double content) {
 	configMap[varName] = std::to_string(content);
 }
 
-string Config::getString(const string& varName) {
+std::string Config::getString(const std::string& varName) {
 	if (exists(varName)) {
 		return configMap[varName];
 	}
@@ -235,7 +230,7 @@ string Config::getString(const string& varName) {
 	}
 }
 
-int Config::getInt(const string& varName) {
+int Config::getInt(const std::string& varName) {
 	if (exists(varName)) {
 		return str2int(configMap[varName]);
 	}
@@ -244,7 +239,7 @@ int Config::getInt(const string& varName) {
 	}
 }
 
-double Config::getValue(const string& varName) {
+double Config::getValue(const std::string& varName) {
 	if (exists(varName)) {
 		return str2double(configMap[varName]);
 	}

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -116,7 +116,6 @@ private:
 
 	/* tells if the user has requested a shutdown */
 	long shuttingDown = 0;
-protected:
 
 	Config();
 
