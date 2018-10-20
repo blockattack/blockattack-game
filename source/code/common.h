@@ -23,7 +23,7 @@ https://blockattack.net
 
 /*
  *This is the common.h
- *It contains some basic functions that nearly all multiplatform games are going
+ *It contains some basic functions that nearly all multi platform games are going
  *to need.
  */
 
@@ -52,8 +52,8 @@ bool strequals(const char* a, const char* b);
 
 /**
  * str2int parses a string and returns an int with the value of the string.
- * if the string is not an int then 0 is returned instead of throing an error
- * in that way this function will always return a useable value.
+ * if the string is not an int then 0 is returned instead of throwing an error
+ * in that way this function will always return a usable value.
  */
 int str2int(const std::string &str2parse) __attribute__((const));
 
@@ -61,15 +61,15 @@ void dieOnNullptr(bool, const char* msg);
 
 /**
  * str2double parses a string and returns a double with the value of the string.
- * if the string is not a double then 0.0 is returned instead of throing an error
- * in that way this function will always return a useable value.
+ * if the string is not a double then 0.0 is returned instead of throwing an error
+ * in that way this function will always return a usable value.
  */
 double str2double(const std::string &str2parse) __attribute__((const));
 
 /**
- * Does the eqivilent to snprintf but returns a C++ string
+ * Does the equivalent to snprintf but returns a C++ string
  * @param fmt The format string
- * @param ... Additional paremeters for the place holders
+ * @param ... Additional parameters for the place holders
  * @return A string with the result
  */
 std::string SPrintStringF(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
@@ -78,9 +78,8 @@ std::string SPrintStringF(const char* fmt, ...) __attribute__ ((format (printf, 
  * Prints to an internal C-buffer
  * Because it uses an internal buffer the returned buffer is only valid until the next call
  * The String is cut at 1024 chars (including the 0 terminator)
- * This is the larges string that can safely be parsed to NFont
  * @param fmt The format string
- * @param ... Additional paremeters for the place holders
+ * @param ... Additional parameters for the place holders
  * @return Pointer to an internal buffer
  */
 const char* SPrintCF(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
@@ -123,7 +122,7 @@ private:
 public:
 	/*Config is a singleton.
 	 *It is accessed like this:
-	 *Config::getInstance()->method2call(paramters);
+	 *Config::getInstance()->method2call(parameters);
 	 */
 	static Config* getInstance();
 
@@ -173,7 +172,7 @@ public:
 	 * starts so that it can see that it has to import configs from an earlier
 	 * version.
 	 * @param varName Name of the variable
-	 * @return true if the varaible exists
+	 * @return true if the variable exists
 	 */
 	bool exists(const std::string &varName) const;
 
@@ -196,7 +195,7 @@ public:
 	void setShuttingDown(long shuttingDown = 5);
 
 	/**
-	 * tells if the user wants to shutdown. This can be used if the exit button is pressed deaply in the program.
+	 * tells if the user wants to shutdown. This can be used if the exit button is pressed deeply in the program.
 	 * @return
 	 */
 	long isShuttingDown() const;
