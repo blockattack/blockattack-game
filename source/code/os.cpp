@@ -31,7 +31,7 @@ static sago::PlatformFolders pf;
 
 /*
  *Files will be saved in:
- * HOME/.gamesaves/"+GAMENAME (unix)
+ * HOME/.local/share/"+GAMENAME (unix)
  *or DOCUMENTS/My Games/GAMENAME (Windows)
  */
 #define GAMENAME "blockattack"
@@ -40,7 +40,7 @@ static std::string overrideSavePath = "";
 
 /**
  * Returns the path to where all settings must be saved.
- * On unix-like systems this is the home-folder under: ~/.gamesaves/GAMENAME
+ * On unix-like systems this is the home-folder under: ~/.local/share/GAMENAME
  * In Windows it is My Documents/My Games
  * Consider changing this for Vista that has a special save games folder
  */
