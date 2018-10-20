@@ -25,16 +25,9 @@ http://blockattack.net
 #include <iostream>
 #include <physfs.h>
 #include "sago/platform_folders.h"
+#include "version.h"
 
 static sago::PlatformFolders pf;
-
-
-/*
- *Files will be saved in:
- * HOME/.local/share/"+GAMENAME (unix)
- *or DOCUMENTS/My Games/GAMENAME (Windows)
- */
-#define GAMENAME "blockattack"
 
 static std::string overrideSavePath = "";
 
