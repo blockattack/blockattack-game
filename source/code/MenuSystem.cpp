@@ -69,11 +69,14 @@ Button::Button() {
 Button::~Button() {
 }
 
-Button::Button(const Button& b) {
-	label = b.label;
-	marked = b.marked;
-	action = b.action;
-	popOnRun = false;
+Button::Button(const Button& b) : action{b.action}, label{b.label}, marked{b.marked} {
+}
+
+Button& Button::operator=(const Button& other) {
+	action = other.action;
+	label = other.label;
+	marked = other.marked;
+	return *this;
 }
 
 void Button::setLabel(const std::string& text) {
@@ -169,11 +172,10 @@ Menu::Menu(SDL_Renderer* screen,bool submenu) {
 	}
 }
 
-Menu::Menu(SDL_Renderer* screen, const std::string& title, bool submenu) {
+Menu::Menu(SDL_Renderer* screen, const std::string& title, bool submenu) : title{title} {
 	this->screen = screen;
 	buttons = std::vector<Button*>(0);
 	isSubmenu = submenu;
-	this->title = title;
 	if (isSubmenu) {
 		exit.setLabel(_("Back") );
 	}

@@ -69,6 +69,7 @@ public:
 
 	Button();
 	Button(const Button& b);
+	Button& operator=(const Button& other);
 	virtual ~Button();
 
 
