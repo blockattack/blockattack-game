@@ -29,7 +29,7 @@ SOFTWARE.
 #include <string>
 
 namespace sago {
-	
+
 	/**
 	 * Returns a vector with all filenames in a given directory.
 	 * PHYSFS must be setup before hand. The directory is relative to the PHYSFS base
@@ -37,7 +37,7 @@ namespace sago {
 	 * @return A vector with the filenames in the given directory. If empty the directory was empty or did not exist
 	 */
 	std::vector<std::string> GetFileList(const char* dir);
-	
+
 	/**
 	 * Reads an entire file into memory.
 	 * PHYSFS must be setup before hand
@@ -45,7 +45,7 @@ namespace sago {
 	 * @return The content of the file. If empty either the file was empty, did not exist or could not be opened
 	 */
 	std::string GetFileContent(const char* filename);
-	
+
 	/**
 	 * Reads an entire file into memory.
 	 * PHYSFS must be setup before hand
@@ -53,19 +53,19 @@ namespace sago {
 	 * @return The content of the file. If empty either the file was empty, did not exist or could not be opened
 	 */
 	inline std::string GetFileContent(const std::string& filename) { return GetFileContent(filename.c_str()); };
-	
+
 	bool FileExists(const char* filename);
-	
+
 	void WriteFileContent(const char* filename, const std::string& content);
-		
+
 	/**
-	 * This functions convers a string on a best effort basis
+	 * This functions converts a string on a best effort basis
 	 * Unlike atol this does NOT cause undefined behavior if out of range
 	 * @param c_string A string that may contain a number
 	 * @return A number between LONG_MIN and LONG_MAX (both inclusive)
 	 */
 	long int StrToLong(const char* c_string);
-	
+
 }  //namespace sago
 
 #endif	/* SAGOMISC_HPP */

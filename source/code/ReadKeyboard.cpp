@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 blockattack - Block Attack - Rise of the Blocks
-Copyright (C) 2005-2012 Poul Sander
+Copyright (C) 2005-2018 Poul Sander
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,16 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
 #include "ReadKeyboard.h"
 #include "utf8.h"
 #include <iostream>
-
-using std::string;
-using std::cerr;
 
 ReadKeyboard::ReadKeyboard(void) {
 	maxLength = 16;
@@ -60,7 +57,7 @@ void ReadKeyboard::putchar(const std::string& thing) {
 
 void ReadKeyboard::removeChar() {
 	if (position < text_string.end()) {
-		string::iterator endChar= position;
+		std::string::iterator endChar= position;
 		utf8::advance(endChar, 1, text_string.end());
 		text_string.erase(position, endChar);
 	}

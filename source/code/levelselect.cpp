@@ -30,12 +30,6 @@ https://blockattack.net
 #include "MenuSystem.h"
 
 
-using std::string;
-using std::cerr;
-using std::cout;
-using std::exception;
-using std::vector;
-
 static bool bMouseUp;              //true if the mouse(1) is unpressed
 
 static std::map<std::string, std::shared_ptr<sago::SagoTextField> > fieldCache;
@@ -198,8 +192,8 @@ int PuzzleLevelSelect(int Type) {
 		}
 
 		if (Type == 1) {
-			string scoreString = SPrintStringF(_("Best score: %i"), GetStageScores(selected)) ;
-			string timeString = SPrintStringF(_("Time used: %s"),"-- : --");
+			std::string scoreString = SPrintStringF(_("Best score: %i"), GetStageScores(selected)) ;
+			std::string timeString = SPrintStringF(_("Time used: %s"),"-- : --");
 
 			if (GetStageTime(selected)>0) {
 				timeString = SPrintStringF(_("Time used: %d : %02d"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
@@ -207,7 +201,7 @@ int PuzzleLevelSelect(int Type) {
 
 			Write(globalData.screen, 200,200,scoreString.c_str());
 			Write(globalData.screen, 200,250,timeString.c_str());
-			string totalString = SPrintStringF(_("Total score: %i in %i:%02i"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
+			std::string totalString = SPrintStringF(_("Total score: %i in %i:%02i"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
 			Write(globalData.screen, 200,600,totalString.c_str());
 		}
 

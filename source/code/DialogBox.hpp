@@ -35,8 +35,9 @@ class DialogBox : public sago::GameStateInterface {
 public:
 	DialogBox(int x, int y, const std::string& name, const std::string& header);
 	DialogBox(const DialogBox& orig) = delete;
+	DialogBox& operator=(const DialogBox& orig) = delete;
 	virtual ~DialogBox();
-	
+
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
@@ -46,7 +47,7 @@ public:
 private:
 	bool isActive = true;
 	std::shared_ptr<ReadKeyboard> rk;
-	int x; 
+	int x;
 	int y;
 	std::string name;
 	std::string header;
