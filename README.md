@@ -2,13 +2,13 @@
 Block Attack - Rise of the Blocks - the game<br/>
 A Tetris Attack Clone under the GPL.
 
-Homepage: [https://blockattack.net]<br/>
-Source: [https://github.com/blockattack/blockattack-game]
+Homepage: <https://blockattack.net><br/>
+Source: <https://github.com/blockattack/blockattack-game>
 
 ##Screen shot
 ![Block Attack - Rise of the Blocks 2.0.0 snapshot](/source/misc/screenshots/screen_shot_2016_01_19.png?raw=true "Screen shot from 2016-01-19")
 
-# Dependencies
+## Dependencies
 * A version of g++ with C++11 support. Tested on g++-4.9
 * libSDL2
 * libSDL2_image
@@ -19,7 +19,7 @@ Source: [https://github.com/blockattack/blockattack-game]
 * libboost-program-options
 * libutfcpp (only needed for compiling)
 
-# Building
+## Building
 The only supported build method is using the CMake<br/>
 To build do:
 ```
@@ -52,7 +52,7 @@ Compiled with:
 i686-w64-mingw32.static-cmake -DCMAKE_BUILD_TYPE=Release . && make
 ```
 
-# Building using Docker
+## Building using Docker
 
 As getting a C++ project with many dependencies to compile can be a daunting task then I have provided a couple of Docker images that can perform a build. Both for Windows and Linux.
 
@@ -66,7 +66,7 @@ docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
 ```
 
 
-# Source Structure
+## Source Structure
 This project is a bit unconversionel because I didn't know any better at the time.
 
 * Game - The output is placed here
@@ -85,11 +85,11 @@ This project is a bit unconversionel because I didn't know any better at the tim
 * source/misc/travis_help - Helper files for Travis CI
 * windows installer - Information needed to Windows installer. May be moved to source/misc at some point
 
-# Reporting bugs
+## Reporting bugs
 
-Please report bugs on github: [https://github.com/blockattack/blockattack-game/issues]
+Please report bugs on github: <https://github.com/blockattack/blockattack-game/issues>
 If possible: Check if the bug is already fixed in master. But if you don't know how to check it then just report it.
 
-# Contributions
+## Contributions
 Contributions are welcome. Both the current graphics and the original sharedir support was provided by kind individuals.
 Patches can be attached to a github ticket or sent to poul@poulsander.com directly. You can also create pull requests on Github.
