@@ -2,22 +2,22 @@
 Block Attack - Rise of the Blocks - the game<br/>
 A Tetris Attack Clone under the GPL.
 
-Homepage: http://www.blockattack.net<br/>
-Source: https://github.com/blockattack/blockattack-game
+Homepage: [https://blockattack.net]<br/>
+Source: [https://github.com/blockattack/blockattack-game]
 
 ##Screen shot
 ![Block Attack - Rise of the Blocks 2.0.0 snapshot](/source/misc/screenshots/screen_shot_2016_01_19.png?raw=true "Screen shot from 2016-01-19")
 
 # Dependencies
-  * A version of g++ with C++11 support. Tested on g++-4.9
-  * libSDL2
-  * libSDL2_image
-  * libSDL2_mixer
-  * libSDL2_ttf
-  * libphysfs
-  * libboost (only needed for compiling)
-  * libboost-program-options
-  * libutfcpp (only needed for compiling)
+* A version of g++ with C++11 support. Tested on g++-4.9
+* libSDL2
+* libSDL2_image
+* libSDL2_mixer
+* libSDL2_ttf
+* libphysfs
+* libboost (only needed for compiling)
+* libboost-program-options
+* libutfcpp (only needed for compiling)
 
 # Building
 The only supported build method is using the CMake<br/>
@@ -69,25 +69,25 @@ docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
 # Source Structure
 This project is a bit unconversionel because I didn't know any better at the time.
 
- * Game - The output is placed here
- * man - The manual file and the script to generate it. May be moved to source/misc at some point
- * source/code/ - The source code
- * source/code/Libs - External libs that are compiled into the project because they are either header only (Cereal) or not designed for use as a shared library.
- * source/code/sago - Source code. Not designed to be specific to Block Attack - Rise of the Blocks
- * source/assets - Source for the assets if relevant. For instance svg source for the graphics.
- * source/misc - Misc stuff. Code related tool that are used for development but not part of the final product.
- * source/misc/astyle - Helper script that enforces code style using the "astyle"-program
- * source/misc/cmake - Files needed by CMake
- * source/misc/docker - Docker files used by Travis CI  (but can just as well be used for local testing and release builds)
- * source/misc/icons - Icons for the installer
- * source/misc/screenshots - Screen shots like the one in this README file.
- * source/misc/translation - Translations and related tools and scripts
- * source/misc/travis_help - Helper files for Travis CI
- * windows installer - Information needed to Windows installer. May be moved to source/misc at some point
+* Game - The output is placed here
+* man - The manual file and the script to generate it. May be moved to source/misc at some point
+* source/code/ - The source code
+* source/code/Libs - External libs that are compiled into the project because they are either header only (Cereal) or not designed for use as a shared library.
+* source/code/sago - Source code. Not designed to be specific to Block Attack - Rise of the Blocks
+* source/assets - Source for the assets if relevant. For instance svg source for the graphics.
+* source/misc - Misc stuff. Code related tool that are used for development but not part of the final product.
+* source/misc/astyle - Helper script that enforces code style using the "astyle"-program
+* source/misc/cmake - Files needed by CMake
+* source/misc/docker - Docker files used by Travis CI  (but can just as well be used for local testing and release builds)
+* source/misc/icons - Icons for the installer
+* source/misc/screenshots - Screen shots like the one in this README file.
+* source/misc/translation - Translations and related tools and scripts
+* source/misc/travis_help - Helper files for Travis CI
+* windows installer - Information needed to Windows installer. May be moved to source/misc at some point
 
 # Reporting bugs
 
-Please report bugs on github: https://github.com/blockattack/blockattack-game/issues
+Please report bugs on github: [https://github.com/blockattack/blockattack-game/issues]
 If possible: Check if the bug is already fixed in master. But if you don't know how to check it then just report it.
 
 # Contributions
