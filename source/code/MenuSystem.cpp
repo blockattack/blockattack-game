@@ -113,7 +113,6 @@ static void drawToScreen(const Button& b) {
 
 	standardButton.getLabel(b.label)->Draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2,
 	                                       sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
-	//standardButton.thefont->drawCenterAlsoHeight(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2, b.label);
 }
 
 

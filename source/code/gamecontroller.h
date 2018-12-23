@@ -21,6 +21,9 @@ http://www.blockattack.net
 ===========================================================================
 */
 
+#ifndef GAMECONTROLLER_H
+#define GAMECONTROLLER_HPP
+
 #include "SDL.h"
 #include <vector>
 #include <string>
@@ -42,7 +45,7 @@ const std::vector<std::string>& GetSupportedControllerNames();
  * Checks that the given event is in the dead zone.
  * If it is in the dead zone. Then the dead zone variable for that axis will be set to true;
  * Otherwise nothing is done
- * @param event An SDL 
+ * @param event An SDL
  */
 void checkDeadZone(const SDL_Event& event);
 
@@ -55,9 +58,11 @@ void checkDeadZone(const SDL_Event& event);
 bool getDeadZone(SDL_JoystickID id, int axis);
 
 /**
- * Sets dead zone status on a given axis on a given gamepad 
+ * Sets dead zone status on a given axis on a given gamepad
  * @param id The gamepad
  * @param axis The axis on the gamepad
  * @param value Value to set. Should normally be false as true will be set by checkDeadZone
  */
 void setDeadZone(SDL_JoystickID id, int axis, bool value);
+
+#endif  //GAMECONTROLLER

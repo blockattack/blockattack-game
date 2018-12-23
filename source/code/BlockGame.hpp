@@ -58,7 +58,7 @@ struct BlockGameStartInfo {
 	bool AI = false;
 	/**
 	 * True means that stats will be recorded.
-	 * If AI is true then this will be overruled to false 
+	 * If AI is true then this will be overruled to false
 	 */
 	bool recordStats = true;
 	bool vsMode = false;
@@ -72,8 +72,8 @@ struct BlockGameStartInfo {
 	template <class Archive>
 	void serialize( Archive & ar )
 	{
-		ar( CEREAL_NVP(ticks), CEREAL_NVP(timeTrial), CEREAL_NVP(stageClear), CEREAL_NVP(puzzleMode), CEREAL_NVP(singlePuzzle), 
-			CEREAL_NVP(level), CEREAL_NVP(AI), CEREAL_NVP(recordStats), CEREAL_NVP(vsMode), CEREAL_NVP(vsAI), 
+		ar( CEREAL_NVP(ticks), CEREAL_NVP(timeTrial), CEREAL_NVP(stageClear), CEREAL_NVP(puzzleMode), CEREAL_NVP(singlePuzzle),
+			CEREAL_NVP(level), CEREAL_NVP(AI), CEREAL_NVP(recordStats), CEREAL_NVP(vsMode), CEREAL_NVP(vsAI),
 			CEREAL_NVP(startBlocks), CEREAL_NVP(handicap), CEREAL_NVP(gameSpeed) );
 	}
 };
@@ -159,11 +159,10 @@ private:
 	int Level = 0; //Only used in stageClear and puzzle (not implemented)
 
 	BlockGameInfo replayInfo;
-	
+
 	int rand2();
 	int firstUnusedChain();
 
-//public:
 protected:
 	int lastCounter = 0;
 	std::string strHolder;
@@ -200,7 +199,7 @@ protected:
 	bool vsAI = false;  //Set to true for single player vs
 
 	int handicap = 0;
-	
+
 	std::vector<GarbageStruct> garbageSendQueue;
 
 	int AIlineToClear = 0;
@@ -218,7 +217,7 @@ public:
 	virtual ~BlockGame() = default;
 
 	int getAIlevel()  const;
-	
+
 	virtual void AddText(int, int, unsigned int, int) const  {}
 	virtual void AddBall(int, int, bool, int) const  {}
 	virtual void AddExplosion(int, int) const  {}
@@ -228,7 +227,7 @@ public:
 	virtual void LongChainDoneEvent() const  {}
 	virtual void TimeTrialEndEvent() const  {}
 	virtual void EndlessHighscoreEvent() const  {}
-	
+
 	void NewGame(const BlockGameStartInfo &s);
 	void DoAction (const BlockGameAction& action);
 	/**
@@ -238,7 +237,7 @@ public:
 	 * @param poppedData
 	 */
 	void PopSendGarbage(std::vector<GarbageStruct>& poppedData);
-	
+
 	int GetScore() const;
 	int GetHandicap() const;
 	bool isGameOver() const;
@@ -308,7 +307,7 @@ private:
 	bool CreateGarbage(int wide, int height);
 	//Creates garbage using a given wide and height
 	bool CreateGreyGarbage();
-	void MouseDown(int x, int y);  //Send then the mouse is pressed 
+	void MouseDown(int x, int y);  //Send then the mouse is pressed
 	void MouseMove(int x);  //Send then the mouse moves
 	void MouseUp();  //Send then the mouse goes up
 	void MoveCursorTo(int x, int y);

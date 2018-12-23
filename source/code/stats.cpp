@@ -58,7 +58,7 @@ void Stats::load() {
 }
 
 Stats* Stats::getInstance() {
-	if (Stats::instance==nullptr) {
+	if (!Stats::instance) {
 		Stats::instance = new Stats();
 
 	}

@@ -75,7 +75,6 @@ static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
 	Config::getInstance()->setDefault(configName, "1");
 	int player = Config::getInstance()->getInt(configName) + gamecontrollers_assigned[guidAsHex];
 	gamecontrollers_assigned[guidAsHex]++; //Next controller with same guid should be assigned to different player.
-	//std::cout << "Guid: " << guidAsHex << "\n";
 
 	if (player%2==0) {
 		return 2;  //Even number means player 2

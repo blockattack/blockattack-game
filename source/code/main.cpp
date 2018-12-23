@@ -66,7 +66,7 @@ http://www.blockattack.net
 
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
-#include "stats.h"          //Saves general stats 
+#include "stats.h"          //Saves general stats
 #include "replayhandler.hpp"
 
 #include "common.h"
@@ -722,7 +722,6 @@ static int StartSinglePlayerPuzzle() {
 	a.action = BlockGameAction::Action::SET_GAME_OVER;
 	a.tick = startInfo.ticks;
 	player2->DoAction(a);
-	//vsMode = true;
 	player1->name = globalData.player1name;
 	player2->name = globalData.player2name;
 	return 0;
@@ -778,7 +777,6 @@ static void StartTwoPlayerVs() {
 	startInfo2.handicap = player2handicap;
 	player1->NewGame(startInfo);
 	player2->NewGame(startInfo2);
-	//vsMode = true;
 	twoPlayers = true;
 	player1->name = globalData.player1name;
 	player2->name = globalData.player2name;

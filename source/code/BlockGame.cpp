@@ -1293,7 +1293,6 @@ void BlockGame::FindTowerHeight() {
 ///////////////////////////////////////////////////////////////////////////
 //First the helpet functions:
 int BlockGame::nrOfType(int line, int type) {
-	// cout << "Start_ nrOfType" << "\n";
 	int counter = 0;
 	for (int i=0; i<6; i++)
 		if (board[i][line]==type) {
@@ -1305,7 +1304,6 @@ int BlockGame::nrOfType(int line, int type) {
 
 //See if a combo can be made in this line
 int BlockGame::horiInLine(int line) {
-	//cout << "Start_ hori in line" << "\n";
 	int nrOfType[7] = {0, 0, 0, 0, 0, 0, 0};
 	int max = 0;
 	for (int i=0; i<6; i++) {
@@ -1324,7 +1322,6 @@ int BlockGame::horiInLine(int line) {
 }
 
 bool BlockGame::horiClearPossible() {
-	//cout << "Start_ horiclear possible" << "\n";
 	int i=13;
 	bool solutionFound = false;
 	do {
@@ -1351,7 +1348,6 @@ bool BlockGame::lineHasGarbage(int line) {
 
 //Types 0..6 in line
 int BlockGame::nrOfRealTypes(int line) {
-	//cout << "Start_ nrOfReal" << "\n";
 	int counter = 0;
 	for (int i=0; i<6; i++) {
 		if ((board[i][line]>-1)&&(board[i][line]<7)) {
@@ -1363,7 +1359,6 @@ int BlockGame::nrOfRealTypes(int line) {
 
 //See if there is a tower
 bool BlockGame::ThereIsATower() {
-	//cout << "Start_ there is a tower" << "\n";
 	bool bThereIsATower = false; //Unless proven otherwise!
 	bool topReached = false; //If we have reached the top
 	int lineNumber = 0;
@@ -1392,8 +1387,6 @@ bool BlockGame::ThereIsATower() {
 		}
 	}
 	while ((!bThereIsATower)&&(!topReached));
-	//if(bThereIsATower)
-	//cout << "There is actually a tower" << "\n";
 	return bThereIsATower;
 }
 
@@ -1440,7 +1433,6 @@ int BlockGame::closestTo(int line, int place) {
 
 //The AI will remove a tower
 void BlockGame::AI_ClearTower() {
-	//   cout << "AI: ClearTower, line: " << AIlineToClear << "\n";
 	int place = (int)firstInLine(AIlineToClear-1, -1); //Find an empty field to frop a brick into
 	int xplace = closestTo(AIlineToClear, place); //Find the brick to drop in it
 	if (cursory+1<AIlineToClear) {
@@ -1465,7 +1457,6 @@ void BlockGame::AI_ClearTower() {
 
 //The AI will try to clear block horisontally
 void BlockGame::AI_ClearHori() {
-	//   cout << "AI: ClearHori";
 	int lowestLine = AIlineToClear;
 	for (int i=0; i<7; i++) {
 		if (nrOfType(lowestLine, i)>2) {
@@ -1500,7 +1491,6 @@ void BlockGame::AI_ClearHori() {
 		}
 		int xplace = 0;
 		if (left<right) {
-			//   cout << ", right>left";
 			int count=0;
 			for (int i=0; (i<4)&&(count<1); i++) {
 				if ((board[i][lowestLine]==AIcolorToClear)&&((i==0)||(board[i+1][lowestLine]!=AIcolorToClear))) {
@@ -1510,7 +1500,6 @@ void BlockGame::AI_ClearHori() {
 			}
 		}
 		else {
-			//   cout << ", left>=right";
 			int count=0;
 			for (int i=3; (i<=5)&&(count<1); i++) {
 				if ((board[i][lowestLine]==AIcolorToClear)&&(board[i-1][lowestLine]!=AIcolorToClear)) {
@@ -1519,7 +1508,6 @@ void BlockGame::AI_ClearHori() {
 				}
 			}
 		}
-		//cout << ", xplace: " << xplace;
 		if (cursorx<xplace) {
 			MoveCursor('E');
 		}
@@ -1536,7 +1524,6 @@ void BlockGame::AI_ClearHori() {
 	else {
 		AIstatus = 0;
 	}
-	//cout << "\n"; //for debugging
 }
 
 //Test if vertical clear is possible
@@ -1576,7 +1563,6 @@ int BlockGame::closestTo(int line, int type, int place) {
 
 //The AI will try to clear blocks vertically
 void BlockGame::AI_ClearVertical() {
-	// cout << "AI: ClearVeri";
 	//First we find the place there we will align the bricks
 	int placeToCenter = (int)(firstInLine(AIlineToClear, AIcolorToClear)/3.0+firstInLine(AIlineToClear+1, AIcolorToClear)/3.0+firstInLine(AIlineToClear+2, AIcolorToClear)/3.0);
 	int unlimitedLoop=0;
@@ -1588,7 +1574,6 @@ void BlockGame::AI_ClearVertical() {
 		cerr << "placeToCenter out of range: " << placeToCenter << "\n";
 		return;
 	}
-	//cout << "AI_ClearVertical: " << placeToCenter << ", " << AIlineToClear << "\n";
 	while (((board[placeToCenter][AIlineToClear]>1000000)||(board[placeToCenter][AIlineToClear+1]>1000000)||(board[placeToCenter][AIlineToClear+2]>1000000))&&(unlimitedLoop<10)) {
 		unlimitedLoop++;
 		placeToCenter++;
@@ -1600,9 +1585,7 @@ void BlockGame::AI_ClearVertical() {
 		AIstatus = 0;
 		return;
 	}
-	//cout << ", ptc: " << placeToCenter << ", line: " << AIlineToClear << ", cy: " << cursory;
 	if (cursory+1>AIlineToClear+2) {
-		// cout << ", cursory>line+2";
 		MoveCursor('S');
 	}
 	if (cursory+1<AIlineToClear) {
@@ -1618,7 +1601,6 @@ void BlockGame::AI_ClearVertical() {
 	if (board[placeToCenter][AIlineToClear+2]==AIcolorToClear) {
 		toAlign[2]=false;
 	}
-	//cout << "status: " << toAlign[0] << " " << toAlign[1] << " " << toAlign[2];
 	if (cursory+1==AIlineToClear) {
 		if (toAlign[0]==false) {
 			MoveCursor('N');
@@ -1679,7 +1661,6 @@ void BlockGame::AI_ClearVertical() {
 	if ((nrOfType(AIlineToClear, AIcolorToClear)==0)||(nrOfType(AIlineToClear+1, AIcolorToClear)==0)||(nrOfType(AIlineToClear+2, AIcolorToClear)==0)) {
 		AIstatus = 0;
 	}
-	//cout << "\n";
 }
 
 
