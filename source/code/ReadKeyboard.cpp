@@ -37,9 +37,7 @@ int ReadKeyboard::CharsBeforeCursor() {
 	return std::distance(text_string.begin(), position);
 }
 
-ReadKeyboard::ReadKeyboard(const char* oldName) {
-	maxLength = 16;
-	text_string = oldName;
+ReadKeyboard::ReadKeyboard(const char* oldName) : maxLength(16), text_string(oldName) {
 	position = text_string.end();
 }
 

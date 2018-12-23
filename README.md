@@ -5,7 +5,7 @@ A Tetris Attack Clone under the GPL.
 Homepage: <https://blockattack.net><br/>
 Source: <https://github.com/blockattack/blockattack-game>
 
-##Screen shot
+## Screen shot
 ![Block Attack - Rise of the Blocks 2.0.0 snapshot](/source/misc/screenshots/screen_shot_2016_01_19.png?raw=true "Screen shot from 2016-01-19")
 
 ## Dependencies
@@ -64,7 +64,6 @@ and
 ```
 docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
 ```
-
 
 ## Source Structure
 This project is a bit unconversionel because I didn't know any better at the time.
