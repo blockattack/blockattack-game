@@ -48,11 +48,6 @@ private:
 	void writeFile();
 	double speed = 0.5;
 public:
-
-	Highscore(double speed) : speed(speed)
-	{
-	}
-
 	Highscore(const std::string& type, double speed);
 
 	bool isHighScore(int);

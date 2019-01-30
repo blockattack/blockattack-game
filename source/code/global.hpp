@@ -66,10 +66,10 @@ struct GlobalData {
 	sago::SoundHandler typingChunk;
 	sago::SagoSprite mouse;
 	bool highPriority = false;
-	bool NoSound = false;	
+	bool NoSound = false;
 	int verboseLevel = 0;
-	Highscore theTopScoresEndless = Highscore(0.5);      //Stores highscores for endless
-	Highscore theTopScoresTimeTrial = Highscore(0.5);    //Stores highscores for timetrial
+	Highscore theTopScoresEndless = Highscore("endless", 0.5);      //Stores highscores for endless
+	Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);    //Stores highscores for timetrial
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 	
 	TextManager theTextManager;
