@@ -46,13 +46,14 @@ private:
 	std::string filename;
 	std::string type;
 	void writeFile();
+	double speed = 0.5;
 public:
 
-	Highscore()
+	Highscore(double speed) : speed(speed)
 	{
 	}
 
-	Highscore(const std::string& type);
+	Highscore(const std::string& type, double speed);
 
 	bool isHighScore(int);
 	void addScore(const std::string& newName, int);

@@ -154,19 +154,19 @@ void BlockGame::setGameSpeed(int globalSpeedLevel) {
 		baseSpeed=0.5;
 		break;
 	case 1:
-		baseSpeed=0.4;
-		break;
-	case 2:
 		baseSpeed=0.3;
 		break;
+	case 2:
+		baseSpeed=0.1;
+		break;
 	case 3:
-		baseSpeed=0.25;
+		baseSpeed=0.07;
 		break;
 	case 4:
-		baseSpeed=0.2;
+		baseSpeed=0.04;
 		break;
 	default:
-		baseSpeed=0.15;
+		baseSpeed=0.015;
 		break;
 	};
 }
@@ -269,7 +269,7 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 	if (s.AI) {
 		recordStats = false;
 	}
-	NewGame(s.ticks);
+	NewGameInternal(s.ticks);
 	if (s.timeTrial) {
 		timetrial = true;
 		putStartBlocks();
@@ -333,11 +333,12 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 	}
 	if (s.gameSpeed > 0) {
 		setGameSpeed(s.gameSpeed);
+		speed = baseSpeed;
 	}
 }
 
 //Instead of creating new object new game is called, to prevent memory leaks
-void BlockGame::NewGame( unsigned int ticks) {
+void BlockGame::NewGameInternal( unsigned int ticks) {
 	this->ticks = ticks;
 	stageButtonStatus = SBdontShow;
 	nrFellDown = 0;

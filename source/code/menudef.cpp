@@ -138,8 +138,50 @@ void InitMenues() {
 	standardButton.setSurfaces();
 }
 
-static void runSinglePlayerEndless() {
+static void runSinglePlayerEndless0() {
 	runGame(Gametype::SinglePlayerEndless, 0);
+}
+
+static void runSinglePlayerEndless1() {
+	runGame(Gametype::SinglePlayerEndless, 1);
+}
+
+static void runSinglePlayerEndless2() {
+	runGame(Gametype::SinglePlayerEndless, 2);
+}
+
+static void runSinglePlayerEndless3() {
+	runGame(Gametype::SinglePlayerEndless, 3);
+}
+
+static void runSinglePlayerEndless4() {
+	runGame(Gametype::SinglePlayerEndless, 4);
+}
+
+static void runSinglePlayerEndless() {
+	Menu sp(globalData.screen,_("Single Player Endless"),true);
+	Button d0,d1,d2,d3,d4;
+	d0.setPopOnRun(true);
+	d1.setPopOnRun(true);
+	d2.setPopOnRun(true);
+	d3.setPopOnRun(true);
+	d4.setPopOnRun(true);
+	d0.setLabel(_("Slow"));
+	d1.setLabel(_("Fast"));
+	d2.setLabel(_("Faster"));
+	d3.setLabel(_("Even faster"));
+	d4.setLabel(_("Fastest"));
+	d0.setAction(runSinglePlayerEndless0);
+	d1.setAction(runSinglePlayerEndless1);
+	d2.setAction(runSinglePlayerEndless2);
+	d3.setAction(runSinglePlayerEndless3);
+	d4.setAction(runSinglePlayerEndless4);
+	sp.addButton(&d0);
+	sp.addButton(&d1);
+	sp.addButton(&d2);
+	sp.addButton(&d3);
+	sp.addButton(&d4);
+	RunGameState(sp);
 }
 
 static void runSinglePlayerTimeTrial() {

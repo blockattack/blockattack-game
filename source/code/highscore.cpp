@@ -50,7 +50,7 @@ bool record_sorter (const record& i,const record& j) {
 	return (i.score > j.score);
 }
 
-Highscore::Highscore(const std::string& type) : filename(type+".json.dat"), type(type) {
+Highscore::Highscore(const std::string& type, double speed) : filename(type+".json.dat"), type(type), speed(speed) {
 	std::string readFileContent = sago::GetFileContent(filename.c_str());
 	if (readFileContent.length() > 0) {
 		try {

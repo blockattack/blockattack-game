@@ -674,11 +674,15 @@ static bool registerTTHighscorePlayer1 = false;
 static bool registerTTHighscorePlayer2 = false;
 static bool saveReplay = false;
 
-static void StartSinglePlayerEndless() {
+/**
+ * startSpeed is a value from 0 to 4
+ * */
+static void StartSinglePlayerEndless(int startSpeed) {
 	//1 player - endless
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.startBlocks = startInfo.ticks;
+	startInfo.gameSpeed = startSpeed;
 	player1->NewGame(startInfo);
 	twoPlayers =false;
 	BlockGameAction a;
@@ -943,8 +947,8 @@ int main(int argc, char* argv[]) {
 		globalData.SoundEnabled = true;
 		globalData.MusicEnabled = true;
 		twoPlayers = false; //true if two players splitscreen
-		globalData.theTopScoresEndless = Highscore("endless");
-		globalData.theTopScoresTimeTrial = Highscore("timetrial");
+		globalData.theTopScoresEndless = Highscore("endless", 0.5);
+		globalData.theTopScoresTimeTrial = Highscore("timetrial", 0.5);
 		drawBalls = true;
 		puzzleLoaded = false;
 		theBallManager = BallManager();
@@ -1203,8 +1207,8 @@ int main(int argc, char* argv[]) {
 }
 
 int runGame(Gametype gametype, int level) {
-	globalData.theTopScoresEndless = Highscore("endless");
-	globalData.theTopScoresTimeTrial = Highscore("timetrial");
+	globalData.theTopScoresEndless = Highscore("endless", 0.5);
+	globalData.theTopScoresTimeTrial = Highscore("timetrial", 0.5);
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool bNearDeath = false;  //Play music faster or louder while tru
@@ -1302,7 +1306,7 @@ int runGame(Gametype gametype, int level) {
 				break;
 			case Gametype::SinglePlayerEndless:
 			default:
-				StartSinglePlayerEndless();
+				StartSinglePlayerEndless(level);
 			};
 			mustsetupgame = false;
 			DrawBackground(globalData.screen);

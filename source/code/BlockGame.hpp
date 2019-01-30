@@ -265,7 +265,7 @@ public:
 		return replayInfo;
 	}
 private:
-	void NewGame(unsigned int ticks);
+	void NewGameInternal(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
 	bool LineEmpty(int lineNr) const;
 	//Test if the entire board is empty (used for Puzzles)
