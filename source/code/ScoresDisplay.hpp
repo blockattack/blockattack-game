@@ -28,6 +28,7 @@ http://www.blockattack.net
 #include "sago/SagoTextField.hpp"
 #include <map>
 #include <memory>
+#include "highscore.h"
 
 class ScoresDisplay : public sago::GameStateInterface {
 public:
@@ -46,6 +47,8 @@ public:
 	int scoreY = 0;
 	int buttonXsize = 0;
 	int buttonYsize = 0;
+	Highscore theTopScoresEndless = Highscore("endless", 0.5);      //Stores highscores for endless
+	Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);    //Stores highscores for timetrial
 private:
 	void DrawHighscores(int x, int y, bool endless);
 	void DrawStats();

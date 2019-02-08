@@ -72,10 +72,10 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 	for (int i =0; i<10; i++) {
 		record r;
 		if (endless) {
-			r = globalData.theTopScoresEndless.getScoreNumber(i);
+			r = theTopScoresEndless.getScoreNumber(i);
 		}
 		else {
-			r = globalData.theTopScoresTimeTrial.getScoreNumber(i);
+			r = theTopScoresTimeTrial.getScoreNumber(i);
 		}
 		char playerScore[32];
 		char playerName[32];

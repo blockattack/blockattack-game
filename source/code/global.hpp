@@ -68,8 +68,6 @@ struct GlobalData {
 	bool highPriority = false;
 	bool NoSound = false;
 	int verboseLevel = 0;
-	Highscore theTopScoresEndless = Highscore("endless", 0.5);      //Stores highscores for endless
-	Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);    //Stores highscores for timetrial
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 	
 	TextManager theTextManager;

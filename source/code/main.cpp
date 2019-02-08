@@ -947,8 +947,6 @@ int main(int argc, char* argv[]) {
 		globalData.SoundEnabled = true;
 		globalData.MusicEnabled = true;
 		twoPlayers = false; //true if two players splitscreen
-		globalData.theTopScoresEndless = Highscore("endless", 0.5);
-		globalData.theTopScoresTimeTrial = Highscore("timetrial", 0.5);
 		drawBalls = true;
 		puzzleLoaded = false;
 		theBallManager = BallManager();
@@ -1207,8 +1205,8 @@ int main(int argc, char* argv[]) {
 }
 
 int runGame(Gametype gametype, int level) {
-	globalData.theTopScoresEndless = Highscore("endless", 0.5);
-	globalData.theTopScoresTimeTrial = Highscore("timetrial", 0.5);
+	 Highscore theTopScoresEndless = Highscore("endless", 0.5);
+	 Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool bNearDeath = false;  //Play music faster or louder while tru
@@ -1728,15 +1726,15 @@ int runGame(Gametype gametype, int level) {
 
 		if (theGame.isGameOver() && registerTTHighscorePlayer1) {
 			registerTTHighscorePlayer1 = false;
-			globalData.theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
+			theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
 		}
 		if (theGame2.isGameOver() && registerTTHighscorePlayer2) {
 			registerTTHighscorePlayer2 = false;
-			globalData.theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
+			theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
 		}
 		if (theGame.isGameOver() && registerEndlessHighscore) {
 			registerEndlessHighscore = false;
-			globalData.theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
+			theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
 			theGame.EndlessHighscoreEvent();
 		}
 #ifdef REPLAY_IMPLEMENTED
