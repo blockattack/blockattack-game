@@ -52,17 +52,17 @@ struct GlobalData {
 	sago::SagoSprite bHighScore;
 	sago::SagoSprite bBack;
 	sago::SagoSprite bNext;
-	sago::SagoSprite iLevelCheck;		//To the level select screen
+	sago::SagoSprite iLevelCheck;  //To the level select screen
 	sago::SagoSprite iLevelCheckBox;
 	sago::SagoSprite iLevelCheckBoxMarked;
 	sago::SagoSprite iCheckBoxArea;
-	bool MusicEnabled;			//true if background music is enabled
-	bool SoundEnabled;			//true if sound effects is enabled
-	bool bFullscreen;			//true if game is running fullscreen
-	std::string replayArgument; //Name of the replay to play (if given as a commandline argument)
+	bool MusicEnabled;  //true if background music is enabled
+	bool SoundEnabled;  //true if sound effects is enabled
+	bool bFullscreen;  //true if game is running fullscreen
+	std::string replayArgument;  //Name of the replay to play (if given as a commandline argument)
 	std::string player1name;
 	std::string player2name;
-	SDL_Renderer *screen = nullptr;        //The whole screen;
+	SDL_Renderer *screen = nullptr;  //The whole screen;
 	sago::SoundHandler typingChunk;
 	sago::SagoSprite mouse;
 	bool highPriority = false;
