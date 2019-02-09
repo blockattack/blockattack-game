@@ -28,6 +28,7 @@ https://blockattack.net
 #include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
 #include <algorithm>
+#include "common.h"
 
 namespace cereal {
 
@@ -51,6 +52,13 @@ bool record_sorter (const record& i,const record& j) {
 }
 
 Highscore::Highscore(const std::string& type, double speed) : filename(type+".json.dat"), type(type), speed(speed) {
+	if (speed < 0.4) {
+		std::string old_locale = setlocale (LC_NUMERIC, nullptr);
+		setlocale (LC_NUMERIC, "C");
+		//Use special filenames for higher speeds (higher speed = lower number)
+		filename = SPrintStringF("%s_%.4f.json.dat", type.c_str(), speed);
+		setlocale(LC_NUMERIC, old_locale.c_str());
+	}
 	std::string readFileContent = sago::GetFileContent(filename.c_str());
 	if (readFileContent.length() > 0) {
 		try {

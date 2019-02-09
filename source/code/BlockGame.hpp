@@ -261,6 +261,7 @@ public:
 	int getLevel() const;
 	bool GetAIenabled() const;
 	bool IsNearDeath() const;
+	double GetBaseSpeed() const { return baseSpeed; }
 	const BlockGameInfo& GetBlockGameInfo() {
 		return replayInfo;
 	}

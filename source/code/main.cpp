@@ -1205,8 +1205,7 @@ int main(int argc, char* argv[]) {
 }
 
 int runGame(Gametype gametype, int level) {
-	 Highscore theTopScoresEndless = Highscore("endless", 0.5);
-	 Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);
+	Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool bNearDeath = false;  //Play music faster or louder while tru
@@ -1733,6 +1732,7 @@ int runGame(Gametype gametype, int level) {
 			theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
 		}
 		if (theGame.isGameOver() && registerEndlessHighscore) {
+			Highscore theTopScoresEndless = Highscore("endless", theGame.GetBaseSpeed());
 			registerEndlessHighscore = false;
 			theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
 			theGame.EndlessHighscoreEvent();
