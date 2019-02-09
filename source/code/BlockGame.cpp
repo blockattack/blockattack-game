@@ -154,19 +154,19 @@ void BlockGame::setGameSpeed(int globalSpeedLevel) {
 		baseSpeed=0.5;
 		break;
 	case 1:
-		baseSpeed=0.3;
-		break;
-	case 2:
 		baseSpeed=0.1;
 		break;
-	case 3:
+	case 2:
 		baseSpeed=0.07;
 		break;
-	case 4:
+	case 3:
 		baseSpeed=0.04;
 		break;
-	default:
+	case 4:
 		baseSpeed=0.015;
+		break;
+	default:
+		baseSpeed=0.005;
 		break;
 	};
 }
@@ -1764,7 +1764,7 @@ void BlockGame::Update() {
 
 		//increse speed:
 		if ((nowTime>gameStartedAt+20000*speedLevel)&&(speedLevel <99)&&(!bGameOver)) {
-			speed = (baseSpeed*0.9)/((double)speedLevel*0.5);
+			speed = (baseSpeed*0.9)/((double)speedLevel*0.8);
 			speedLevel++;
 			nrPushedPixel=(int)((double)(nowTime-gameStartedAt)/(1000.0*speed));
 		}
