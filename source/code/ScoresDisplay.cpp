@@ -51,7 +51,7 @@ void ScoresDisplay::Write(SDL_Renderer* target, int x, int y, const char* text) 
 	getCachedText(text)->Draw(target, x, y);
 }
 
-const int numberOfPages = 3;
+const int numberOfPages = 7;
 
 void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
 	DrawBackground(globalData.screen);
@@ -61,10 +61,11 @@ void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
 }
 
 //Draws the highscores
-void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
+void ScoresDisplay::DrawHighscores(int x, int y, bool endless, int level = 0) {
 	DrawBackgroundAndCalcPlacements();
 	if (endless) {
-		Write(globalData.screen, x+100,y+100, _("Endless:") );
+		std::string header = SPrintStringF(_("Endless (%s):"), std::to_string(level).c_str());
+		Write(globalData.screen, x+100,y+100, header.c_str() );
 	}
 	else {
 		Write(globalData.screen, x+100,y+100, _("Time Trial:") );
@@ -72,7 +73,22 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless) {
 	for (int i =0; i<10; i++) {
 		record r;
 		if (endless) {
-			r = theTopScoresEndless.getScoreNumber(i);
+			switch(level) {
+				case 1:
+					r = theTopScoresEndless1.getScoreNumber(i);
+					break;
+				case 2:
+					r = theTopScoresEndless2.getScoreNumber(i);
+					break;
+				case 3:
+					r = theTopScoresEndless3.getScoreNumber(i);
+					break;
+				case 4:
+					r = theTopScoresEndless4.getScoreNumber(i);
+					break;
+				default:
+					r = theTopScoresEndless0.getScoreNumber(i);
+			}
 		}
 		else {
 			r = theTopScoresTimeTrial.getScoreNumber(i);
@@ -159,17 +175,21 @@ bool ScoresDisplay::IsActive() {
 
 void ScoresDisplay::Draw(SDL_Renderer*) {
 	switch (page) {
-	case 0:
-		//Highscores, endless
-		DrawHighscores(100,100,true);
-		break;
-	case 1:
-		//Highscores, Time Trial
-		DrawHighscores(100,100,false);
-		break;
-	case 2:
-	default:
-		DrawStats();
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			//Highscores, endless
+			DrawHighscores(100,100,true, page);
+			break;
+		case 5:
+			//Highscores, Time Trial
+			DrawHighscores(100,100,false);
+			break;
+		case 6:
+		default:
+			DrawStats();
 	};
 
 	const sago::SagoDataHolder* holder = &globalData.spriteHolder->GetDataHolder();
@@ -193,7 +213,7 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 
 	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 
-	if (isLeftEvent(event)) {
+	if (isRightEvent(event)) {
 		page++;
 		if (page>=numberOfPages) {
 			page = 0;
@@ -201,7 +221,7 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 		processed = true;
 	}
 
-	if (isRightEvent(event)) {
+	if (isLeftEvent(event)) {
 		page--;
 		if (page<0) {
 			page = numberOfPages-1;

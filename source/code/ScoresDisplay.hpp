@@ -47,10 +47,14 @@ public:
 	int scoreY = 0;
 	int buttonXsize = 0;
 	int buttonYsize = 0;
-	Highscore theTopScoresEndless = Highscore("endless", 0.5);      //Stores highscores for endless
+	Highscore theTopScoresEndless0 = Highscore("endless", 0.5);      //Stores highscores for endless
+	Highscore theTopScoresEndless1 = Highscore("endless", 0.1);      //Stores highscores for endless
+	Highscore theTopScoresEndless2 = Highscore("endless", 0.07);      //Stores highscores for endless
+	Highscore theTopScoresEndless3 = Highscore("endless", 0.04);      //Stores highscores for endless
+	Highscore theTopScoresEndless4 = Highscore("endless", 0.015);      //Stores highscores for endless
 	Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);    //Stores highscores for timetrial
 private:
-	void DrawHighscores(int x, int y, bool endless);
+	void DrawHighscores(int x, int y, bool endless, int speedLevel);
 	void DrawStats();
 	void DrawBackgroundAndCalcPlacements();
 	void Write(SDL_Renderer* target, int x, int y, const char* text);
