@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -31,6 +31,8 @@ std::string getPathToSaveFiles();
 #if defined(_WIN32)
 std::string getMyDocumentsPath();
 #endif
+
+std::string defaultPlayerName();
 
 void setPathToSaveFiles(const std::string& path);
 

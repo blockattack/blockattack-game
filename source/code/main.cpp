@@ -998,7 +998,7 @@ int main(int argc, char* argv[]) {
 		keySettings[player2keys].change = SDLK_LCTRL;
 		keySettings[player2keys].push = SDLK_LSHIFT;
 
-		globalData.player1name = _("Player 1");
+		globalData.player1name = defaultPlayerName();
 		globalData.player2name = _("Player 2");
 
 		Config* configSettings = Config::getInstance();

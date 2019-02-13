@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://blockattack.net
+https://blockattack.net
 ===========================================================================
 */
 
@@ -26,6 +26,11 @@ http://blockattack.net
 #include <physfs.h>
 #include "sago/platform_folders.h"
 #include "version.h"
+
+#if defined(__unix__)
+#include <pwd.h>
+#include <unistd.h>
+#endif
 
 static sago::PlatformFolders pf;
 
@@ -46,6 +51,22 @@ std::string getPathToSaveFiles() {
 
 void setPathToSaveFiles(const std::string& path) {
 	overrideSavePath = path;
+}
+
+std::string defaultPlayerName() {
+	std::string ret;
+	#if defined(__unix__)
+	int uid = getuid();
+	struct passwd* pw = getpwuid(uid);
+	if (pw && pw->pw_gecos) {
+		ret = pw->pw_gecos;
+		ret = ret.substr(0, ret.find_first_of(',',0));
+	}
+	if (pw && pw->pw_name && ret.empty()) {
+		ret = pw->pw_name;
+	}
+	#endif
+	return ret;
 }
 
 void OsCreateSaveFolder() {
