@@ -64,7 +64,23 @@ void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
 void ScoresDisplay::DrawHighscores(int x, int y, bool endless, int level = 0) {
 	DrawBackgroundAndCalcPlacements();
 	if (endless) {
-		std::string header = SPrintStringF(_("Endless (%s):"), std::to_string(level).c_str());
+		std::string header;
+		switch (level) {
+			case 1:
+				header = _("Endless (Fast):");
+				break;
+			case 2:
+				header = _("Endless (Faster):");
+				break;
+			case 3:
+				header = _("Endless (Even faster):");
+				break;
+			case 4:
+				header = _("Endless (Fastest):");
+				break;
+			default:
+				header = _("Endless:");
+		};
 		Write(globalData.screen, x+100,y+100, header.c_str() );
 	}
 	else {
