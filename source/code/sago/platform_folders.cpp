@@ -80,7 +80,10 @@ static std::string getHome() {
 // For SHGetFolderPathW and various CSIDL "magic numbers"
 #include <shlobj.h>
 
-static std::string win32_utf16_to_utf8(const wchar_t* wstr) {
+namespace sago {
+namespace internal {
+
+std::string win32_utf16_to_utf8(const wchar_t* wstr) {
 	std::string res;
 	// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
 	int actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
@@ -97,6 +100,9 @@ static std::string win32_utf16_to_utf8(const wchar_t* wstr) {
 	}
 	return res;
 }
+
+}  // namesapce internal
+}  // namespace sago
 
 class FreeCoTaskMemory {
 	LPWSTR pointer = NULL;
@@ -116,7 +122,7 @@ static std::string GetKnownWindowsFolder(REFKNOWNFOLDERID folderId, const char* 
 	if (!SUCCEEDED(hr)) {
 		throw std::runtime_error(errorMsg);
 	}
-	return win32_utf16_to_utf8(wszPath);
+	return sago::internal::win32_utf16_to_utf8(wszPath);
 }
 
 static std::string GetAppData() {

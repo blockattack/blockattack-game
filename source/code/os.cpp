@@ -26,6 +26,7 @@ https://blockattack.net
 #include <physfs.h>
 #include "sago/platform_folders.h"
 #include "version.h"
+#include "common.h"
 
 #if defined(__unix__)
 #include <pwd.h>
@@ -55,7 +56,15 @@ void setPathToSaveFiles(const std::string& path) {
 
 std::string defaultPlayerName() {
 	std::string ret;
-	#if defined(__unix__)
+#if defined(_WIN32)
+	wchar_t win_buffer[50];
+	DWORD win_buffer_size = sizeof(win_buffer);
+	bool success = GetUserNameW(win_buffer, &win_buffer_size);
+	if (success) {
+		ret = sago::internal::win32_utf16_to_utf8(win_buffer);
+	}
+#endif
+#if defined(__unix__)
 	int uid = getuid();
 	struct passwd* pw = getpwuid(uid);
 	if (pw && pw->pw_gecos) {
@@ -65,7 +74,10 @@ std::string defaultPlayerName() {
 	if (pw && pw->pw_name && ret.empty()) {
 		ret = pw->pw_name;
 	}
-	#endif
+#endif
+	if (ret.empty()) {
+		ret = _("Player 1");
+	}
 	return ret;
 }
 
