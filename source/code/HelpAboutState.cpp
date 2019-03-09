@@ -54,10 +54,20 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetText(text);
 }
 
-static SDL_RendererInfo renderInfo;
+
+
 
 HelpAboutState::HelpAboutState() {
+	SDL_RendererInfo renderInfo;
+	SDL_version compiled;
+	SDL_version linked;
 	SDL_GetRendererInfo(globalData.screen, &renderInfo);
+	SDL_VERSION(&compiled);
+	SDL_GetVersion(&linked);
+	const char* audio_driver_name = SDL_GetCurrentAudioDriver();
+	if (!audio_driver_name) {
+		audio_driver_name = _("No audio driver");
+	}
 	std::stringstream infoStream;
 	infoStream << _("Name:") << " " << _("Block Attack - Rise of the Blocks") << "\n";
 	infoStream << _("Original name:") << " Block Attack - Rise of the Blocks" << "\n";
@@ -65,6 +75,9 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Homepage:") << " " << "https://blockattack.net\n";
 	infoStream << _("Github page:") << " " << "https://github.com/blockattack/blockattack-game\n";
 	infoStream << _("SDL render:") << " " << renderInfo.name << "\n";
+	infoStream << _("SDL audio driver:") << " " << audio_driver_name << "\n";
+	infoStream << _("SDL compiled version:") << " " << (int)compiled.major << "." << (int)compiled.minor << "." << (int)compiled.patch << "\n";
+	infoStream << _("SDL linked version:") << " " << (int)linked.major << "." << (int)linked.minor << "." << (int)linked.patch << "\n";
 	infoStream << _("Save folder:") << " " << PHYSFS_getWriteDir() << "\n";
 	infoStream << _("Locale:") << " " << setlocale( LC_CTYPE, nullptr ) << "\n";
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
