@@ -1,0 +1,23 @@
+FROM fedora:29
+
+RUN dnf -y install cmake \
+make \
+gcc-c++ \
+SDL2-devel \
+boost-devel \
+physfs-devel \
+SDL2_image-devel SDL2_ttf-devel SDL2_mixer-devel \
+utf8cpp-devel \
+findutils \
+gettext \
+zip \
+&& dnf -y clean all
+
+COPY . /staging/blockattack-game
+
+ENV BLOCKATTACK_VERSION 2.4.0-SNAPSHOT
+
+RUN cd /staging/blockattack-game && \
+./packdata.sh && \
+cmake . && \
+make
