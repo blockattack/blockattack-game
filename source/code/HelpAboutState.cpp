@@ -27,6 +27,7 @@ https://blockattack.net
 #include "MenuSystem.h"
 #include "sstream"
 #include "version.h"
+#include "sago/SagoMisc.hpp"
 
 const int xsize = 1024;
 const int ysize = 768;
@@ -82,6 +83,7 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Locale:") << " " << setlocale( LC_CTYPE, nullptr ) << "\n";
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
+	sago::WriteFileContent("about.txt", infoStream.str());
 }
 
 HelpAboutState::~HelpAboutState() {
