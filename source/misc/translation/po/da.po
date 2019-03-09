@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-13 19:17+0100\n"
-"PO-Revision-Date: 2019-02-13 19:21+0100\n"
+"POT-Creation-Date: 2019-03-09 16:05+0100\n"
+"PO-Revision-Date: 2019-03-09 16:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.1.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../../code/DialogBox.cpp:92
@@ -26,43 +26,59 @@ msgstr "Bekræft med Enter"
 msgid "Esc to cancel"
 msgstr "Annuller med Esc"
 
-#: ../../code/HelpAboutState.cpp:62
+#: ../../code/HelpAboutState.cpp:69
+msgid "No audio driver"
+msgstr "Ingen lyd driver"
+
+#: ../../code/HelpAboutState.cpp:72
 msgid "Name:"
 msgstr "Navn:"
 
-#: ../../code/HelpAboutState.cpp:62
+#: ../../code/HelpAboutState.cpp:72
 msgid "Block Attack - Rise of the Blocks"
 msgstr "Block Attack - Blokkenes opstand"
 
-#: ../../code/HelpAboutState.cpp:63
+#: ../../code/HelpAboutState.cpp:73
 msgid "Original name:"
 msgstr "Originalt navn:"
 
-#: ../../code/HelpAboutState.cpp:64
+#: ../../code/HelpAboutState.cpp:74
 msgid "Version:"
 msgstr "Version:"
 
-#: ../../code/HelpAboutState.cpp:65
+#: ../../code/HelpAboutState.cpp:75
 msgid "Homepage:"
 msgstr "Hjemmeside:"
 
-#: ../../code/HelpAboutState.cpp:66
+#: ../../code/HelpAboutState.cpp:76
 msgid "Github page:"
 msgstr "Github side:"
 
-#: ../../code/HelpAboutState.cpp:67
+#: ../../code/HelpAboutState.cpp:77
 msgid "SDL render:"
 msgstr "SDL render:"
 
-#: ../../code/HelpAboutState.cpp:68
+#: ../../code/HelpAboutState.cpp:78
+msgid "SDL audio driver:"
+msgstr "SDL lyd driver:"
+
+#: ../../code/HelpAboutState.cpp:79
+msgid "SDL compiled version:"
+msgstr "SDL kompileret version:"
+
+#: ../../code/HelpAboutState.cpp:80
+msgid "SDL linked version:"
+msgstr "SDL lænket version:"
+
+#: ../../code/HelpAboutState.cpp:81
 msgid "Save folder:"
 msgstr "Mappe til gemte spil:"
 
-#: ../../code/HelpAboutState.cpp:69
+#: ../../code/HelpAboutState.cpp:82
 msgid "Locale:"
 msgstr "Lokalitet:"
 
-#: ../../code/HelpAboutState.cpp:70 ../../code/menudef.cpp:387
+#: ../../code/HelpAboutState.cpp:83 ../../code/menudef.cpp:387
 msgid "About"
 msgstr "Om"
 
@@ -213,10 +229,6 @@ msgstr "Genstart: "
 #: ../../code/main.cpp:576
 msgid "Push line: "
 msgstr "Skub linje: "
-
-#: ../../code/main.cpp:1001
-msgid "Player 1"
-msgstr "Spiller 1"
 
 #: ../../code/main.cpp:1002
 msgid "Player 2"
@@ -482,6 +494,10 @@ msgstr "Tilbage"
 #: ../../code/MenuSystem.cpp:170 ../../code/MenuSystem.cpp:182
 msgid "Exit"
 msgstr "Afslut"
+
+#: ../../code/os.cpp:99
+msgid "Player 1"
+msgstr "Spiller 1"
 
 #: ../../code/ScoresDisplay.cpp:70
 msgid "Endless (Fast):"

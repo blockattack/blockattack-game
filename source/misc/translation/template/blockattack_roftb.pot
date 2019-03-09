@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-13 19:17+0100\n"
+"POT-Creation-Date: 2019-03-09 16:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,43 +25,59 @@ msgstr ""
 msgid "Esc to cancel"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:62
+#: ../../code/HelpAboutState.cpp:69
+msgid "No audio driver"
+msgstr ""
+
+#: ../../code/HelpAboutState.cpp:72
 msgid "Name:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:62
+#: ../../code/HelpAboutState.cpp:72
 msgid "Block Attack - Rise of the Blocks"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:63
+#: ../../code/HelpAboutState.cpp:73
 msgid "Original name:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:64
+#: ../../code/HelpAboutState.cpp:74
 msgid "Version:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:65
+#: ../../code/HelpAboutState.cpp:75
 msgid "Homepage:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:66
+#: ../../code/HelpAboutState.cpp:76
 msgid "Github page:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:67
+#: ../../code/HelpAboutState.cpp:77
 msgid "SDL render:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:68
+#: ../../code/HelpAboutState.cpp:78
+msgid "SDL audio driver:"
+msgstr ""
+
+#: ../../code/HelpAboutState.cpp:79
+msgid "SDL compiled version:"
+msgstr ""
+
+#: ../../code/HelpAboutState.cpp:80
+msgid "SDL linked version:"
+msgstr ""
+
+#: ../../code/HelpAboutState.cpp:81
 msgid "Save folder:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:69
+#: ../../code/HelpAboutState.cpp:82
 msgid "Locale:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:70 ../../code/menudef.cpp:387
+#: ../../code/HelpAboutState.cpp:83 ../../code/menudef.cpp:387
 msgid "About"
 msgstr ""
 
@@ -209,10 +225,6 @@ msgstr ""
 
 #: ../../code/main.cpp:576
 msgid "Push line: "
-msgstr ""
-
-#: ../../code/main.cpp:1001
-msgid "Player 1"
 msgstr ""
 
 #: ../../code/main.cpp:1002
@@ -478,6 +490,10 @@ msgstr ""
 
 #: ../../code/MenuSystem.cpp:170 ../../code/MenuSystem.cpp:182
 msgid "Exit"
+msgstr ""
+
+#: ../../code/os.cpp:99
+msgid "Player 1"
 msgstr ""
 
 #: ../../code/ScoresDisplay.cpp:70
