@@ -1,0 +1,14 @@
+This is Block Attack - Rise of the Blocks - version 2.4.0
+Changes since 2.3.0:
+Different starting speeds for Endless
+Minor code cleanup
+Improved "About" page with technical information
+Also dumps the about page info to "about.txt" when viewed
+Default player 1 name is now fetched from the OS
+
+Windows specific:
+Improved unicode support (--homepath can now be used with Unicode chars)
+Windows 7 is now required
+Build against SDL 2.0.9 fixing some scaling problems and improving gamepad support
+
+Feedback can be given on https://blockattack.net or https://github.com/blockattack/blockattack-game
