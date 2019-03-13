@@ -942,8 +942,9 @@ int main(int argc, char* argv[]) {
 		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
-		//Os create folders must be after the paramters because they can change the home folder
+		//Os create folders must be after the parameters because they can change the home folder
 		PhysFsCreateFolders();
+		sago::WriteFileContent("gameRunning", "Started");
 		globalData.SoundEnabled = true;
 		globalData.MusicEnabled = true;
 		twoPlayers = false; //true if two players splitscreen
@@ -1202,6 +1203,7 @@ int main(int argc, char* argv[]) {
 	catch (exception& e) {
 		sago::SagoFatalError(e.what());
 	}
+	PHYSFS_delete("gameRunning");
 	//Close file system Apstraction layer!
 	PHYSFS_deinit();
 	return 0;
