@@ -216,6 +216,18 @@ static void SetAlwaysSoftwareLabel(Button* b) {
 			: _("Always use software render: Off"));
 }
 
+static void SetMusicLabel (Button* b) {
+	b->setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off") );
+}
+
+static void SetSoundLabel (Button* b) {
+	b->setLabel(globalData.SoundEnabled? _("Sound: On") : _("Sound: Off") );
+}
+
+static void SetFullscreenLabel (Button* b) {
+	b->setLabel(globalData.bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
+}
+
 class AlwaysSoftwareRenderButton : public Button {
 	virtual void doAction() override {
 		Config::getInstance()->setInt("always-software", !Config::getInstance()->getInt("always-software"));
@@ -226,21 +238,21 @@ class AlwaysSoftwareRenderButton : public Button {
 class MusicButton : public Button {
 	virtual void doAction() override {
 		globalData.MusicEnabled = !globalData.MusicEnabled;
-		setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off"));
+		SetMusicLabel(this);
 	}
 };
 
 class SoundButton : public Button {
 	virtual void doAction() override {
 		globalData.SoundEnabled = !globalData.SoundEnabled;
-		setLabel(globalData.SoundEnabled? _("Sound: On") : _("Sound: Off") );
+		SetSoundLabel(this);
 	}
 };
 
 class FullscreenButton : public Button {
 	virtual void doAction() override {
 		globalData.bFullscreen = !globalData.bFullscreen;
-		setLabel(globalData.bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
+		SetFullscreenLabel(this);
 		ResetFullscreen();
 	}
 };
@@ -295,9 +307,9 @@ static void ConfigureMenu() {
 	SoundButton bSound;
 	FullscreenButton buttonFullscreen;
 	SetAlwaysSoftwareLabel(&bSoftware);
-	bMusic.setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off") );
-	bSound.setLabel(globalData.SoundEnabled? _("Sound: On") : _("Sound: Off") );
-	buttonFullscreen.setLabel(globalData.bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
+	SetMusicLabel(&bMusic);
+	SetSoundLabel(&bSound);
+	SetFullscreenLabel(&buttonFullscreen);
 	bPlayer1Name.setAction(buttonActionPlayer1Name);
 	bPlayer1Name.setLabel(_("Change player 1's name") );
 	bPlayer2Name.setAction(buttonActionPlayer2Name);
