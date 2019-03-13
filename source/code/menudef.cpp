@@ -210,12 +210,24 @@ static void runTwoPlayerVs() {
 	runGame(Gametype::TwoPlayerVs, 0);
 }
 
+static void SetAlwaysSoftwareLabel(Button* b) {
+	b->setLabel(Config::getInstance()->getInt("always-software")?
+			_("Always use software render: On")
+			: _("Always use software render: Off"));
+}
+
+class AlwaysSoftwareRenderButton : public Button {
+	virtual void doAction() override {
+		Config::getInstance()->setInt("always-software", !Config::getInstance()->getInt("always-software"));
+		SetAlwaysSoftwareLabel(this);
+	}
+};
+
 class MusicButton : public Button {
 	virtual void doAction() override {
 		globalData.MusicEnabled = !globalData.MusicEnabled;
 		setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off"));
 	}
-
 };
 
 class SoundButton : public Button {
@@ -278,9 +290,11 @@ static void ConfigureMenu() {
 	Menu cm(globalData.screen,_("Configuration"),true);
 	Button bPlayer1Name,bPlayer2Name;
 	Button bPlayer1Keys, bPlayer2Keys;
+	AlwaysSoftwareRenderButton bSoftware;
 	MusicButton bMusic;
 	SoundButton bSound;
 	FullscreenButton buttonFullscreen;
+	SetAlwaysSoftwareLabel(&bSoftware);
 	bMusic.setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off") );
 	bSound.setLabel(globalData.SoundEnabled? _("Sound: On") : _("Sound: Off") );
 	buttonFullscreen.setLabel(globalData.bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
@@ -294,6 +308,7 @@ static void ConfigureMenu() {
 	bPlayer2Keys.setLabel(_("Change player 2's keys") );
 	cm.addButton(&bMusic);
 	cm.addButton(&bSound);
+	cm.addButton(&bSoftware);
 	cm.addButton(&buttonFullscreen);
 	cm.addButton(&bPlayer1Name);
 	cm.addButton(&bPlayer2Name);
