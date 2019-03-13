@@ -438,6 +438,24 @@ static void SinglePlayerMenu() {
 	RunGameState(m);
 }
 
+void SafeModeMenu() {
+	if (Config::getInstance()->getInt("always-software")) {
+		return;
+	}
+	InitMenues();
+	Menu safeMode(globalData.screen, _("Game did not shutdown as it should"), true);
+	Button bOnce;
+	Button bAlways;
+	bOnce.setLabel(_("Use software renderer this time"));
+	bAlways.setLabel(_("Always use software renderer"));
+	bOnce.setPopOnRun(true);
+	bAlways.setAction([]() {Config::getInstance()->setInt("always-software", 1); });
+	bAlways.setPopOnRun(true);
+	safeMode.addButton(&bOnce);
+	safeMode.addButton(&bAlways);
+	RunGameState(safeMode);
+}
+
 void MainMenu() {
 	InitMenues();
 	Menu m(globalData.screen,_("Block Attack - Rise of the blocks"),false);

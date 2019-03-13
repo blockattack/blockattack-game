@@ -944,6 +944,10 @@ int main(int argc, char* argv[]) {
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
 		//Os create folders must be after the parameters because they can change the home folder
 		PhysFsCreateFolders();
+		bool gameShutdownProperly = true;
+		if (sago::FileExists("gameRunning")) {
+			gameShutdownProperly = false;
+		}
 		sago::WriteFileContent("gameRunning", "Started");
 		globalData.SoundEnabled = true;
 		globalData.MusicEnabled = true;
@@ -1075,6 +1079,10 @@ int main(int argc, char* argv[]) {
 		if (configSettings->getInt("always-software")) {
 			config.softwareRenderer = true;
 		}
+		if (!gameShutdownProperly) {
+			std::cerr << "Game not shotdown. Using software renderer.\n";
+			config.softwareRenderer = true;
+		}
 
 		// "Block Attack - Rise of the Blocks"
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
@@ -1147,6 +1155,9 @@ int main(int argc, char* argv[]) {
 			RunGameState(rp);
 		}
 		else {
+			if (!gameShutdownProperly) {
+				SafeModeMenu();
+			}
 			//game loop
 			MainMenu();
 		}

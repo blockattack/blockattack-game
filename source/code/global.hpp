@@ -33,6 +33,7 @@ http://www.blockattack.net
 #include "sago/SagoTextField.hpp"
 
 void MainMenu();
+void SafeModeMenu();
 void ResetFullscreen();
 void RunGameState(sago::GameStateInterface& state );
 
