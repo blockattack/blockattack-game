@@ -36,6 +36,15 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
+"background_ground" : {
+	"texture" : "background_ground",
+ 	"topx" : 0,
+	"topy" : 0,
+	"height" : 511,
+	"width" : 1920,
+	"number_of_frames" : 1,
+	"frame_time" : 1
+},
 "ball_blue" : {
 	"texture" : "ball_blue",
  	"topx" : 0,

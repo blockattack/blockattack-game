@@ -271,7 +271,8 @@ void DrawBackground(SDL_Renderer* target) {
 	}
 	SDL_SetRenderDrawColor(target, 135, 206, 250, 255);
 	SDL_RenderClear(target);
-	globalData.spriteHolder->GetSprite("background_sun").Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-500, -400);
+	globalData.spriteHolder->GetSprite("background_sun").DrawScaled(globalData.screen, SDL_GetTicks(), globalData.xsize-320, -200, 600, 600);
+	globalData.spriteHolder->GetSprite("background_ground").DrawScaled(globalData.screen, SDL_GetTicks(), 0, globalData.ysize-200, globalData.xsize, 200);
 	//backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
 }
 
