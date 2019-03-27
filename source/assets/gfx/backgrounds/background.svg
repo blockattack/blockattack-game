@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -10,7 +11,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    width="1024"
    height="768"
    version="1.0"
@@ -53,8 +54,8 @@
     </filter>
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="951"
-     inkscape:window-width="1280"
+     inkscape:window-height="1016"
+     inkscape:window-width="927"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -66,18 +67,21 @@
      id="base"
      showgrid="false"
      inkscape:zoom="0.5"
-     inkscape:cx="564.234"
-     inkscape:cy="314.12607"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:current-layer="svg2">
+     inkscape:cx="387.28966"
+     inkscape:cy="362.22947"
+     inkscape:window-x="67"
+     inkscape:window-y="27"
+     inkscape:current-layer="svg2"
+     inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
        id="grid3193"
        visible="true"
        enabled="true"
-       spacingx="128px"
-       spacingy="128px" />
+       spacingx="128"
+       spacingy="128"
+       originx="0"
+       originy="0" />
   </sodipodi:namedview>
   <rect
      style="opacity:1;fill:#a1dbee;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1"
@@ -97,11 +101,14 @@
        sodipodi:cy="68.855171"
        sodipodi:rx="180.08276"
        sodipodi:ry="180.08276"
-       d="M 1084.0276,68.855171 A 180.08276,180.08276 0 1 1 723.86206,68.855171 A 180.08276,180.08276 0 1 1 1084.0276,68.855171 z"
-       transform="matrix(1.5261598,0,0,1.5261598,-456.19872,25.564281)" />
+       d="M 1084.0276,68.855171 A 180.08276,180.08276 0 0 1 903.94482,248.93793 180.08276,180.08276 0 0 1 723.86206,68.855171 180.08276,180.08276 0 0 1 903.94482,-111.22759 180.08276,180.08276 0 0 1 1084.0276,68.855171 Z"
+       transform="matrix(1.5261598,0,0,1.5261598,-456.19872,25.564281)"
+       inkscape:export-filename="/home/poul/programmering/git/blockattack-game/Game/data/textures/background_sun.png"
+       inkscape:export-xdpi="144.22725"
+       inkscape:export-ydpi="144.22725" />
     <path
        transform="translate(19.42069,61.793103)"
-       d="M 1084.0276,68.855171 A 180.08276,180.08276 0 1 1 723.86206,68.855171 A 180.08276,180.08276 0 1 1 1084.0276,68.855171 z"
+       d="M 1084.0276,68.855171 A 180.08276,180.08276 0 0 1 903.94482,248.93793 180.08276,180.08276 0 0 1 723.86206,68.855171 180.08276,180.08276 0 0 1 903.94482,-111.22759 180.08276,180.08276 0 0 1 1084.0276,68.855171 Z"
        sodipodi:ry="180.08276"
        sodipodi:rx="180.08276"
        sodipodi:cy="68.855171"
@@ -116,7 +123,7 @@
        style="opacity:1;fill:#f77935;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1" />
     <path
        transform="matrix(0.9262219,0,0,1,33.836039,-13.732501)"
-       d="M 861.40233,77.005501 A 23.719774,30.586025 0 1 1 813.96278,77.005501 A 23.719774,30.586025 0 1 1 861.40233,77.005501 z"
+       d="M 861.40233,77.005501 A 23.719774,30.586025 0 0 1 837.68256,107.59153 23.719774,30.586025 0 0 1 813.96278,77.005501 23.719774,30.586025 0 0 1 837.68256,46.419476 23.719774,30.586025 0 0 1 861.40233,77.005501 Z"
        sodipodi:ry="30.586025"
        sodipodi:rx="23.719774"
        sodipodi:cy="77.005501"
@@ -132,7 +139,7 @@
        sodipodi:cy="77.005501"
        sodipodi:rx="23.719774"
        sodipodi:ry="30.586025"
-       d="M 861.40233,77.005501 A 23.719774,30.586025 0 1 1 813.96278,77.005501 A 23.719774,30.586025 0 1 1 861.40233,77.005501 z"
+       d="M 861.40233,77.005501 A 23.719774,30.586025 0 0 1 837.68256,107.59153 23.719774,30.586025 0 0 1 813.96278,77.005501 23.719774,30.586025 0 0 1 837.68256,46.419476 23.719774,30.586025 0 0 1 861.40233,77.005501 Z"
        transform="matrix(0.9946296,0,0,1.1020408,71.785455,-0.9914533)" />
     <path
        sodipodi:type="arc"
@@ -142,11 +149,11 @@
        sodipodi:cy="77.005501"
        sodipodi:rx="23.719774"
        sodipodi:ry="30.586025"
-       d="M 861.40233,77.005501 A 23.719774,30.586025 0 1 1 813.96278,77.005501 A 23.719774,30.586025 0 1 1 861.40233,77.005501 z"
+       d="M 861.40233,77.005501 A 23.719774,30.586025 0 0 1 837.68256,107.59153 23.719774,30.586025 0 0 1 813.96278,77.005501 23.719774,30.586025 0 0 1 837.68256,46.419476 23.719774,30.586025 0 0 1 861.40233,77.005501 Z"
        transform="matrix(0.5510204,0,0,0.5510204,345.51635,33.013387)" />
     <path
        transform="matrix(0.5773697,0,0,0.5878019,415.69998,50.683724)"
-       d="M 861.40233,77.005501 A 23.719774,30.586025 0 1 1 813.96278,77.005501 A 23.719774,30.586025 0 1 1 861.40233,77.005501 z"
+       d="M 861.40233,77.005501 A 23.719774,30.586025 0 0 1 837.68256,107.59153 23.719774,30.586025 0 0 1 813.96278,77.005501 23.719774,30.586025 0 0 1 837.68256,46.419476 23.719774,30.586025 0 0 1 861.40233,77.005501 Z"
        sodipodi:ry="30.586025"
        sodipodi:rx="23.719774"
        sodipodi:cy="77.005501"

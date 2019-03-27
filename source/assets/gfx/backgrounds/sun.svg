@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg3885"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="sun.svg">
+  <defs
+     id="defs3879">
+    <filter
+       inkscape:collect="always"
+       id="filter3189-3"
+       x="-0.12"
+       width="1.24"
+       y="-0.12"
+       height="1.24">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="18.008276"
+         id="feGaussianBlur3191-6" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="289.38896"
+     inkscape:cy="560"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="927"
+     inkscape:window-height="1016"
+     inkscape:window-x="993"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3882">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3171"
+       transform="matrix(0.26458333,0,0,0.26458333,-145.27737,57.569548)"
+       inkscape:export-filename="/home/poul/programmering/git/blockattack-game/Game/data/textures/background_sun.png"
+       inkscape:export-xdpi="144.23"
+       inkscape:export-ydpi="144.23">
+      <circle
+         r="180.08276"
+         cy="68.855171"
+         cx="903.94482"
+         style="opacity:1;fill:#fff839;fill-opacity:0.65596331;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter3189-3)"
+         id="path3179-7"
+         transform="matrix(1.5261598,0,0,1.5261598,-456.19872,25.564281)"
+         inkscape:export-filename="/home/poul/programmering/git/blockattack-game/Game/data/textures/background_sun.png"
+         inkscape:export-xdpi="144.22725"
+         inkscape:export-ydpi="144.22725" />
+      <circle
+         r="180.08276"
+         cy="68.855171"
+         cx="903.94482"
+         transform="translate(19.42069,61.793103)"
+         id="path2384"
+         style="opacity:1;fill:#ffec25;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cscc"
+         id="path2386"
+         d="m 775.8067,156.28546 c 2.33031,68.41998 31.14447,124.49841 100.12875,124.49841 68.98426,0 62.81174,-24.8682 65.14204,-93.28818 z"
+         style="opacity:1;fill:#f77935;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1" />
+      <ellipse
+         ry="30.586025"
+         rx="23.719774"
+         cy="77.005501"
+         cx="837.68256"
+         transform="matrix(0.9262219,0,0,1,33.836039,-13.732501)"
+         id="path3161"
+         style="opacity:1;fill:#fffdb9;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1" />
+      <ellipse
+         ry="30.586025"
+         rx="23.719774"
+         cy="77.005501"
+         cx="837.68256"
+         style="opacity:1;fill:#fffdb9;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1"
+         id="path3163"
+         transform="matrix(0.9946296,0,0,1.1020408,71.785455,-0.9914533)" />
+      <ellipse
+         ry="30.586025"
+         rx="23.719774"
+         cy="77.005501"
+         cx="837.68256"
+         style="opacity:1;fill:#132d6b;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1"
+         id="path3165"
+         transform="matrix(0.5510204,0,0,0.5510204,345.51635,33.013387)" />
+      <ellipse
+         ry="30.586025"
+         rx="23.719774"
+         cy="77.005501"
+         cx="837.68256"
+         transform="matrix(0.5773697,0,0,0.5878019,415.69998,50.683724)"
+         id="path3167"
+         style="opacity:1;fill:#132d6b;fill-opacity:1;stroke:none;stroke-width:16;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:16, 16;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>

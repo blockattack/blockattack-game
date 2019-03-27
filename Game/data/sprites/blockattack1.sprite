@@ -18,6 +18,24 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
+"background_sun" : {
+	"texture" : "background_sun",
+ 	"topx" : 0,
+	"topy" : 0,
+	"height" : 1024,
+	"width" : 1024,
+	"number_of_frames" : 1,
+	"frame_time" : 1
+},
+"background_cloud" : {
+	"texture" : "background_cloud",
+ 	"topx" : 0,
+	"topy" : 0,
+	"height" : 301,
+	"width" : 511,
+	"number_of_frames" : 1,
+	"frame_time" : 1
+},
 "ball_blue" : {
 	"texture" : "ball_blue",
  	"topx" : 0,
