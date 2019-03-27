@@ -58,7 +58,7 @@ As getting a C++ project with many dependencies to compile can be a daunting tas
 
 On a fresh checkout you can use:
 ```
-docker build -f source/misc/docker/Dockerfile.Ubuntu14.04build . -t blockattack_test
+docker build -f source/misc/docker/Dockerfile.Ubuntu16.04build . -t blockattack_test
 ```
 and
 ```
