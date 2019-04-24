@@ -29,8 +29,6 @@ https://blockattack.net
 #include "version.h"
 #include "sago/SagoMisc.hpp"
 
-const int xsize = 1024;
-const int ysize = 768;
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
 
@@ -111,7 +109,7 @@ void HelpAboutState::Draw(SDL_Renderer* target) {
 	DrawRectYellow(target, 40, 90, 600, 900);
 	infoBox.SetMaxWidth(850);
 	infoBox.Draw(target, 50, 100);
-	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
+	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 #if DEBUG
 	static sago::SagoTextField mousePos;
 	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
@@ -132,8 +130,8 @@ void HelpAboutState::Update() {
 		bMouseUp = false;
 
 		//The Score button:
-		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth())
-		        && (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
+		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
+		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
 			isActive = false;
 		}
 

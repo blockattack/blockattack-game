@@ -27,8 +27,6 @@ https://blockattack.net
 #include "MenuSystem.h"
 #include "gamecontroller.h"
 
-const int xsize = 1024;
-const int ysize = 768;
 const int buttonOffset = 160;
 
 static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
@@ -111,7 +109,7 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	SDL_RenderDrawLine(target, 900, 207, 900, 400);
 	switchLabel.Draw(target, 900, 404, sago::SagoTextField::Alignment::center);
 	confirmLabel.Draw(target, 900, 404+30, sago::SagoTextField::Alignment::center);
-	bExit.Draw(globalData.screen, SDL_GetTicks(), xsize-buttonOffset, ysize-buttonOffset);
+	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 	supportedControllers.Draw(target, 10, 600);
 
 #if DEBUG
@@ -134,8 +132,8 @@ void HelpGamepadState::Update() {
 		bMouseUp = false;
 
 		//The Score button:
-		if ((globalData.mousex>xsize-buttonOffset) && (globalData.mousex<xsize-buttonOffset+bExit.GetWidth())
-		        && (globalData.mousey>ysize-buttonOffset) && (globalData.mousey<ysize-buttonOffset+bExit.GetHeight())) {
+		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
+		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
 			isActive = false;
 		}
 
