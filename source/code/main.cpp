@@ -253,6 +253,9 @@ void ResetFullscreen() {
 	}
 	else {
 		globalData.xsize = 1024;
+		if (globalData.alwaysSixteenNine) {
+			globalData.xsize = 1366;
+		}
 		globalData.ysize = 768;
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
@@ -1104,7 +1107,10 @@ int main(int argc, char* argv[]) {
 		if (config.allowResize) {
 			createWindowParams |= SDL_WINDOW_RESIZABLE;
 		}
-		globalData.xsize = 1366;
+		globalData.xsize = 1024;
+		if (globalData.alwaysSixteenNine) {
+			globalData.xsize = 1366;
+		}
 		globalData.ysize = 768;
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
