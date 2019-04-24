@@ -252,6 +252,7 @@ void ResetFullscreen() {
 	else {
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
+	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
 	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
 	InitImages(*(globalData.spriteHolder.get()) );
@@ -262,18 +263,18 @@ static bool logicalRenderer = false;
 
 void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
-	if (logicalRenderer) {
+	/*if (logicalRenderer) {
 		globalData.xsize = 1024;
 		globalData.ysize = 768;
 	}
 	else {
 		SDL_GetWindowSize(sdlWindow, &globalData.xsize, &globalData.ysize);
-	}
-	SDL_SetRenderDrawColor(target, 135, 206, 250, 255);
+	}*/
+	//SDL_SetRenderDrawColor(target, 135, 206, 250, 255);
 	SDL_RenderClear(target);
-	globalData.spriteHolder->GetSprite("background_sun").DrawScaled(globalData.screen, SDL_GetTicks(), globalData.xsize-320, -200, 600, 600);
-	globalData.spriteHolder->GetSprite("background_ground").DrawScaled(globalData.screen, SDL_GetTicks(), 0, globalData.ysize-200, globalData.xsize, 200);
-	//backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
+	//globalData.spriteHolder->GetSprite("background_sun").DrawScaled(globalData.screen, SDL_GetTicks(), globalData.xsize-320, -200, 600, 600);
+	//globalData.spriteHolder->GetSprite("background_ground").DrawScaled(globalData.screen, SDL_GetTicks(), 0, globalData.ysize-200, globalData.xsize, 200);
+	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
 }
 
 /**
@@ -1095,10 +1096,12 @@ int main(int argc, char* argv[]) {
 		if (config.allowResize) {
 			createWindowParams |= SDL_WINDOW_RESIZABLE;
 		}
+		globalData.xsize = 1280;
+		globalData.ysize = 720;
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
-		                             (screenHeight)*4/3, screenHeight,
+		                             (screenHeight)*globalData.xsize/globalData.ysize, screenHeight,
 		                             createWindowParams );
 		dieOnNullptr(sdlWindow, "Unable to create window");
 		int rendererFlags = 0;
@@ -1108,7 +1111,7 @@ int main(int argc, char* argv[]) {
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, rendererFlags);
 		dieOnNullptr(renderer, "Unable to create render");
 		if (config.autoScale) {
-			SDL_RenderSetLogicalSize(renderer, 1024, 768);
+			SDL_RenderSetLogicalSize(renderer, globalData.xsize, globalData.ysize);
 			logicalRenderer = true;
 		}
 		if (globalData.verboseLevel) {
