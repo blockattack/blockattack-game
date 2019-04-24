@@ -271,17 +271,6 @@ static bool logicalRenderer = false;
 
 void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
-	/*if (logicalRenderer) {
-		globalData.xsize = 1024;
-		globalData.ysize = 768;
-	}
-	else {
-		SDL_GetWindowSize(sdlWindow, &globalData.xsize, &globalData.ysize);
-	}*/
-	//SDL_SetRenderDrawColor(target, 135, 206, 250, 255);
-	SDL_RenderClear(target);
-	//globalData.spriteHolder->GetSprite("background_sun").DrawScaled(globalData.screen, SDL_GetTicks(), globalData.xsize-320, -200, 600, 600);
-	//globalData.spriteHolder->GetSprite("background_ground").DrawScaled(globalData.screen, SDL_GetTicks(), 0, globalData.ysize-200, globalData.xsize, 200);
 	if ( (double)globalData.xsize/globalData.ysize > 1.5) {
 		backgroundSixteenNineImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
 	}
