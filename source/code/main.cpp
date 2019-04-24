@@ -1201,7 +1201,7 @@ int main(int argc, char* argv[]) {
 
 			configSettings->setString("player1name", globalData.player1name);
 			configSettings->setString("player2name", globalData.player2name);
-			{
+			if (!globalData.bFullscreen){
 				//Store physical height of window
 				int height = 0;
 				SDL_GetWindowSize(sdlWindow, nullptr, &height);
