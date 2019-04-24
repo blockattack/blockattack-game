@@ -18,6 +18,15 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
+"background_sixteen_nine" : {
+	"texture" : "background_sixteen_nine",
+ 	"topx" : 0,
+	"topy" : 0,
+	"height" : 768,
+	"width" : 1366,
+	"number_of_frames" : 1,
+	"frame_time" : 1
+},
 "background_sun" : {
 	"texture" : "background_sun",
  	"topx" : 0,

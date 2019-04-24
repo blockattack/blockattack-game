@@ -132,6 +132,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	bricks[6] = holder.GetSprite("block_grey");
 	bomb = holder.GetSprite("block_bomb");
 	backgroundImage = holder.GetSprite("background");
+	backgroundSixteenNineImage = holder.GetSprite("background_sixteen_nine");
 	globalData.bHighScore = holder.GetSprite("b_highscore");
 	globalData.bBack = holder.GetSprite("b_blank");
 	bForward = holder.GetSprite("b_forward");
@@ -281,7 +282,12 @@ void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
 	//globalData.spriteHolder->GetSprite("background_sun").DrawScaled(globalData.screen, SDL_GetTicks(), globalData.xsize-320, -200, 600, 600);
 	//globalData.spriteHolder->GetSprite("background_ground").DrawScaled(globalData.screen, SDL_GetTicks(), 0, globalData.ysize-200, globalData.xsize, 200);
-	backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
+	if ( (double)globalData.xsize/globalData.ysize > 1.5) {
+		backgroundSixteenNineImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
+	}
+	else {
+		backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
+	}
 }
 
 /**

@@ -17,6 +17,7 @@ penguinattack.ttf       Dustin Norlander - GPLv2
 /textures/
 back_board.png          qubodup
 background.png          qubodup
+background_sixteen_nine.png  Poul Sander (based of qubodup's background.png)
 ball_blue.png           qubodup
 ball_gray.png           qubodup
 ball_green.png          qubodup
