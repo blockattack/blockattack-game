@@ -247,9 +247,13 @@ sago::SagoDataHolder dataHolder;
 void ResetFullscreen() {
 	Mix_HaltMusic();  //We need to reload all data in case the screen type changes. Music must be stopped before unload.
 	if (globalData.bFullscreen) {
+		globalData.xsize = 1366;
+		globalData.ysize = 768;
 		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else {
+		globalData.xsize = 1024;
+		globalData.ysize = 768;
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
 	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
@@ -792,8 +796,8 @@ static void StartTwoPlayerVs() {
 }
 
 static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
-	game1.SetTopXY(50, globalData.ysize/2-284);
-	game2.SetTopXY(globalData.xsize-500, globalData.ysize/2-284);
+	game1.SetTopXY(globalData.xsize/2-440, globalData.ysize/2-284);
+	game2.SetTopXY(globalData.xsize/2+50, globalData.ysize/2-284);
 }
 
 struct globalConfig {
@@ -828,6 +832,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("verbose-game-controller", "Enables verbose messages regarding controllers")
 	("print-search-path", "Prints the search path and quits")
 	("no-auto-scale", "Do not automatically auto scale")
+	("always-sixteen-nine", "Use 16:9 format even in Window mode")
 	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 #ifdef REPLAY_IMPLEMENTED
@@ -918,6 +923,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("no-auto-scale")) {
 		conf.autoScale = false;
+	}
+	if (vm.count("always-sixteen-nine")) {
+		globalData.alwaysSixteenNine = true;
 	}
 	if (vm.count("puzzle-level-file")) {
 		conf.puzzleName = vm["puzzle-level-file"].as<string>();
@@ -1096,8 +1104,8 @@ int main(int argc, char* argv[]) {
 		if (config.allowResize) {
 			createWindowParams |= SDL_WINDOW_RESIZABLE;
 		}
-		globalData.xsize = 1280;
-		globalData.ysize = 720;
+		globalData.xsize = 1366;
+		globalData.ysize = 768;
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
@@ -1127,8 +1135,8 @@ int main(int argc, char* argv[]) {
 			cout << "Images loaded" << "\n";
 		}
 
-		BlockGameSdl theGame = BlockGameSdl(50, 100, &globalData.spriteHolder->GetDataHolder());            //creates game objects
-		BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500, 100, &globalData.spriteHolder->GetDataHolder());
+		BlockGameSdl theGame = BlockGameSdl(globalData.xsize/2-426, 100, &globalData.spriteHolder->GetDataHolder());            //creates game objects
+		BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize/2+40, 100, &globalData.spriteHolder->GetDataHolder());
 		player1 = &theGame;
 		player2 = &theGame2;
 
@@ -1235,8 +1243,8 @@ int runGame(Gametype gametype, int level) {
 
 	theBallManager = BallManager();
 	theExplosionManager = ExplosionManager();
-	BlockGameSdl theGame = BlockGameSdl(50, 100, &globalData.spriteHolder->GetDataHolder());  //creates game objects
-	BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize-500, 100, &globalData.spriteHolder->GetDataHolder());
+	BlockGameSdl theGame = BlockGameSdl(globalData.xsize/2-426, 100, &globalData.spriteHolder->GetDataHolder());  //creates game objects
+	BlockGameSdl theGame2 = BlockGameSdl(globalData.xsize/2+4, 100, &globalData.spriteHolder->GetDataHolder());
 	player1 = &theGame;
 	player2 = &theGame2;
 	theGame.DoPaintJob();  //Makes sure what there is something to paint

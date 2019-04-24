@@ -68,12 +68,12 @@ struct GlobalData {
 	sago::SagoSprite mouse;
 	bool highPriority = false;
 	bool NoSound = false;
+	bool alwaysSixteenNine = false;
 	int verboseLevel = 0;
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
-	
+
 	TextManager theTextManager;
 
-	//The xsize and ysize are updated everytime the background is drawn
 	int xsize = 1024;
 	int ysize = 768;
 	int mousex = 0;
