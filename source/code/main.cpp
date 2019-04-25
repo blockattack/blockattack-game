@@ -248,17 +248,24 @@ sago::SagoDataHolder dataHolder;
 void ResetFullscreen() {
 	Mix_HaltMusic();  //We need to reload all data in case the screen type changes. Music must be stopped before unload.
 	if (globalData.bFullscreen) {
+		SDL_DisplayMode dm;
 		globalData.xsize = 1366;
 		globalData.ysize = 768;
+		if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
+			globalData.xsize = globalData.ysize*dm.w/(double)dm.h;
+		}
 		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else {
 		globalData.xsize = 1024;
-		if (globalData.alwaysSixteenNine) {
-			globalData.xsize = 1366;
-		}
 		globalData.ysize = 768;
 		SDL_SetWindowFullscreen(sdlWindow, 0);
+	}
+	if (globalData.alwaysSixteenNine || globalData.xsize > 1366) {
+		globalData.xsize = 1366;
+	}
+	if (globalData.xsize < 1024) {
+		globalData.xsize = 1024;
 	}
 	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
