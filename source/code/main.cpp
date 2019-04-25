@@ -98,9 +98,9 @@ static void FsSearchParthMainAppend(std::vector<std::string>& paths) {
 
 static void PhysFsSetSearchPath(const vector<string>& paths, const string& savepath) {
 	for (const string& path : paths) {
-		PHYSFS_mount(path.c_str(), "/", 1);
+		PHYSFS_mount(path.c_str(), "/", 0);
 	}
-	PHYSFS_mount(savepath.c_str(), "/", 1);
+	PHYSFS_mount(savepath.c_str(), "/", 0);
 	PHYSFS_setWriteDir(savepath.c_str());
 }
 
