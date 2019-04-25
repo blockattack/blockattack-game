@@ -89,10 +89,10 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	const sago::SagoSprite& gamepad = globalData.spriteHolder->GetSprite("help_controller");
 	gamepad.Draw(target, SDL_GetTicks(), globalData.xsize/2-480/2, 100);
-	SDL_RenderDrawLine(target, 100, 210, globalData.xsize/2-480/2+130, 210);
-	SDL_RenderDrawLine(target, 100, 298, globalData.xsize/2-480/2+158, 298);
-	SDL_RenderDrawLine(target, 100, 210, 100, 400);
-	moveLabel.Draw(target, 100, 404, sago::SagoTextField::Alignment::center);
+	SDL_RenderDrawLine(target, 100+OFFSETX, 210, globalData.xsize/2-480/2+130, 210);
+	SDL_RenderDrawLine(target, 100+OFFSETX, 298, globalData.xsize/2-480/2+158, 298);
+	SDL_RenderDrawLine(target, 100+OFFSETX, 210, 100+OFFSETX, 400);
+	moveLabel.Draw(target, 100+OFFSETX, 404, sago::SagoTextField::Alignment::center);
 	//Push lines
 	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140, 90, globalData.xsize/2-480/2+140, 105);
 	SDL_RenderDrawLine(target, globalData.xsize/2+480/2-140, 90, globalData.xsize/2+480/2-140, 105);
