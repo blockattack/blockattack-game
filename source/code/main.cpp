@@ -249,23 +249,23 @@ void ResetFullscreen() {
 	Mix_HaltMusic();  //We need to reload all data in case the screen type changes. Music must be stopped before unload.
 	if (globalData.bFullscreen) {
 		SDL_DisplayMode dm;
-		globalData.xsize = 1366;
-		globalData.ysize = 768;
+		globalData.xsize = SIXTEEN_NINE_WIDTH;
+		globalData.ysize = SCREEN_HIGHT;
 		if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
 			globalData.xsize = globalData.ysize*dm.w/(double)dm.h;
 		}
 		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else {
-		globalData.xsize = 1024;
-		globalData.ysize = 768;
+		globalData.xsize = FOUR_THREE_WIDTH;
+		globalData.ysize = SCREEN_HIGHT;
 		SDL_SetWindowFullscreen(sdlWindow, 0);
 	}
-	if (globalData.alwaysSixteenNine || globalData.xsize > 1366) {
-		globalData.xsize = 1366;
+	if (globalData.alwaysSixteenNine || globalData.xsize > SIXTEEN_NINE_WIDTH) {
+		globalData.xsize = SIXTEEN_NINE_WIDTH;
 	}
-	if (globalData.xsize < 1024) {
-		globalData.xsize = 1024;
+	if (globalData.xsize < FOUR_THREE_WIDTH) {
+		globalData.xsize = FOUR_THREE_WIDTH;
 	}
 	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
@@ -325,7 +325,6 @@ static ExplosionManager theExplosionManager;
 #include "ReplayPlayer.hpp"
 
 
-
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
 void writeScreenShot() {
 	if (globalData.verboseLevel) {
@@ -333,8 +332,24 @@ void writeScreenShot() {
 	}
 	int rightNow = (int)time(nullptr);
 	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+std::to_string(rightNow)+".bmp";
-	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurface(0, 1024, 768, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-	SDL_RenderReadPixels(globalData.screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
+	SDL_Surface* infoSurface = SDL_GetWindowSurface(sdlWindow);
+	if (!infoSurface) {
+		std::cerr << "Could not get infoSurface. No screenshot written. Be aware that the screenshot feature only works with software render\n";
+		return;
+	}
+	std::vector<char> pixels(infoSurface->w * infoSurface->h * infoSurface->format->BytesPerPixel);
+	int errorCode = SDL_RenderReadPixels(globalData.screen, &infoSurface->clip_rect, infoSurface->format->format, static_cast<void*>(pixels.data()), infoSurface->w * infoSurface->format->BytesPerPixel);
+	if (errorCode) {
+		SDL_FreeSurface(infoSurface);
+		std::cerr << "Could not do SDL_RenderReadPixels. Error code: " << errorCode << ". No screenshot written\n";
+		return;
+	}
+	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurfaceFrom(static_cast<void*>(pixels.data()), infoSurface->w, infoSurface->h, infoSurface->format->BitsPerPixel, infoSurface->w * infoSurface->format->BytesPerPixel, infoSurface->format->Rmask, infoSurface->format->Gmask, infoSurface->format->Bmask, infoSurface->format->Amask);
+	SDL_FreeSurface(infoSurface);
+	if (!sreenshotSurface) {
+		std::cerr << "Could not get sreenshotSurface. No screenshot written\n";
+		return;
+	}
 	SDL_SaveBMP(sreenshotSurface, buf.c_str());
 	SDL_FreeSurface(sreenshotSurface);
 	if (!globalData.NoSound) {
@@ -1109,11 +1124,11 @@ int main(int argc, char* argv[]) {
 		if (config.allowResize) {
 			createWindowParams |= SDL_WINDOW_RESIZABLE;
 		}
-		globalData.xsize = 1024;
+		globalData.xsize = FOUR_THREE_WIDTH;
 		if (globalData.alwaysSixteenNine) {
-			globalData.xsize = 1366;
+			globalData.xsize = SIXTEEN_NINE_WIDTH;
 		}
-		globalData.ysize = 768;
+		globalData.ysize = SCREEN_HIGHT;
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,

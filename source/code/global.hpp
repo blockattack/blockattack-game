@@ -49,6 +49,10 @@ void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x
 void sagoTextSetHelpFont(sago::SagoTextField& field);
 void sagoTextSetBlueFont(sago::SagoTextField& field);
 
+const int SIXTEEN_NINE_WIDTH = 1364;
+const int FOUR_THREE_WIDTH = 1024;
+const int SCREEN_HIGHT = 768;
+
 struct GlobalData {
 	sago::SagoSprite bHighScore;
 	sago::SagoSprite bBack;
@@ -74,8 +78,8 @@ struct GlobalData {
 
 	TextManager theTextManager;
 
-	int xsize = 1024;
-	int ysize = 768;
+	int xsize = FOUR_THREE_WIDTH;
+	int ysize = SCREEN_HIGHT;
 	int mousex = 0;
 	int mousey = 0;
 };
