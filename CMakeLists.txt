@@ -18,6 +18,7 @@ set(INSTALL_MAN_DIR "share/man/man6" CACHE STRING "Install the man page to this 
 set(INSTALL_APPLICATIONS_DIR "share/applications" CACHE STRING "Install the .desktop file to this directory")
 set(INSTALL_ICONS_DIR "share/icons/hicolor" CACHE STRING "Install the icon in a subfolder in this directory")
 set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install translation to this dir")
+set(INSTALL_METAINFO_DIR "share/metainfo" CACHE STRING "Install appstream matedata to this directory")
 
 # This sets up the exe icon for windows under mingw.
 # Taken from https://hansonry.wordpress.com/2010/12/15/windows-application-icon-using-mingw-and-cmake/
@@ -89,6 +90,7 @@ install(TARGETS blockattack RUNTIME DESTINATION ${INSTALL_BIN_DIR} )
 install(FILES Game/blockattack.data DESTINATION ${INSTALL_DATA_DIR} )
 install(FILES man/blockattack.6.gz DESTINATION ${INSTALL_MAN_DIR} )
 install(FILES source/misc/blockattack.desktop DESTINATION ${INSTALL_APPLICATIONS_DIR} )
+install(FILES source/misc/net.blockattack.game.metainfo.xml DESTINATION ${INSTALL_METAINFO_DIR} )
 install(FILES source/misc/icons/blockattack16.xpm DESTINATION "${INSTALL_ICONS_DIR}/16x16/apps" RENAME blockattack.xpm )
 install(FILES source/misc/icons/blockattack48.xpm DESTINATION "${INSTALL_ICONS_DIR}/48x48/apps" RENAME blockattack.xpm )
 install(FILES source/misc/icons/blockattack128.xpm DESTINATION "${INSTALL_ICONS_DIR}/128x128/apps" RENAME blockattack.xpm )
