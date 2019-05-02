@@ -4,7 +4,7 @@
 	<metadata_license>MIT</metadata_license>
 	<project_license>GPL-2.0+</project_license>
 	<name>Block Attack - Rise of the Blocks</name>
-	<summary>A fast pased match 3 game</summary>
+	<summary>A fast paced match-3/blockfall game</summary>
 	<description>
 		<p>This a puzzle/blockfall game inspired by Nintendo’s Tetris Attack (or “Panel de Pon”) for the Super Nintendo.
 			It might seem like any other match-3 style game but it is generally much faster.
@@ -12,6 +12,8 @@
 			While you can setup the perfect chain it is much more likely that you will construct chains while blocks are still dropping around you.</p>
 		<p>In addition to traditional game types like endless, time trial and stage clear the game does also feature a VS-mode.
 			The VS mode is a dual like you rarely see in a puzzle game.</p>
+		<p>The game can be played with keyboard, gamepad or mouse. Keyboard or gamepad are strongly recommended.</p>
+		<p>The game allows two players to compete on the same machine.</p>
 	</description>
 	<categories>
 		<category>Game</category>
