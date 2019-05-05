@@ -37,3 +37,5 @@ std::string defaultPlayerName();
 void setPathToSaveFiles(const std::string& path);
 
 void OsCreateSaveFolder();
+
+void OsCreateFolder(const std::string& path);

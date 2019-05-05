@@ -106,7 +106,7 @@ static void PhysFsSetSearchPath(const vector<string>& paths, const string& savep
 
 
 static void PhysFsCreateFolders() {
-	PHYSFS_mkdir("screenshots");
+	//PHYSFS_mkdir("screenshots");
 	PHYSFS_mkdir("replays");
 	PHYSFS_mkdir("puzzles");
 }
@@ -323,7 +323,11 @@ static ExplosionManager theExplosionManager;
 #include "BlockGameSdl.inc"
 #include "sago/SagoMisc.hpp"
 #include "ReplayPlayer.hpp"
+#include "sago/platform_folders.h"
 
+std::string pathToScreenShots() {
+	return sago::getPicturesFolder() + "/blockattack";
+}
 
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
 void writeScreenShot() {
@@ -331,7 +335,6 @@ void writeScreenShot() {
 		cout << "Saving screenshot" << "\n";
 	}
 	int rightNow = (int)time(nullptr);
-	string buf = getPathToSaveFiles() + "/screenshots/screenshot"+std::to_string(rightNow)+".bmp";
 	SDL_Surface* infoSurface = SDL_GetWindowSurface(sdlWindow);
 	if (!infoSurface) {
 		std::cerr << "Could not get infoSurface. No screenshot written. Be aware that the screenshot feature only works with software render\n";
@@ -350,6 +353,8 @@ void writeScreenShot() {
 		std::cerr << "Could not get sreenshotSurface. No screenshot written\n";
 		return;
 	}
+	OsCreateFolder(pathToScreenShots());
+	std::string buf = pathToScreenShots() + "/screenshot"+std::to_string(rightNow)+".bmp";
 	SDL_SaveBMP(sreenshotSurface, buf.c_str());
 	SDL_FreeSurface(sreenshotSurface);
 	if (!globalData.NoSound) {

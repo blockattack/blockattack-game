@@ -101,7 +101,15 @@ std::string defaultPlayerName() {
 	return ret;
 }
 
-static void OsCreateFolder(const std::string& path) {
+static bool OsPathIsRelative(const std::string& path) {
+#if defined(_WIN32)
+	return PathIsRelativeW(win32_utf8_to_utf16(path.c_str()));
+#else
+	return path[0] != '/';
+#endif
+}
+
+void OsCreateFolder(const std::string& path) {
 #if defined(__unix__)
 	std::string cmd = "mkdir -p '"+path+"/'";
 	int retcode = system(cmd.c_str());
@@ -113,6 +121,8 @@ static void OsCreateFolder(const std::string& path) {
 	CreateDirectoryW(win32_utf8_to_utf16(pf.getSaveGamesFolder1().c_str()).c_str(), nullptr);
 	std::string tempA = path;
 	CreateDirectoryW(win32_utf8_to_utf16(tempA.c_str()).c_str(), nullptr);
+#else
+	std::cerr << "Failed to create: \"" << path << "\"\n";
 #endif
 }
 
