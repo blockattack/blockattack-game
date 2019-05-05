@@ -55,7 +55,7 @@ void setPathToSaveFiles(const std::string& path) {
 }
 
 #if defined(_WIN32)
-static std::wstring win32_utf16_to_utf8(const char* str) {
+static std::wstring win32_utf8_to_utf16(const char* str) {
 	std::wstring res;
 	// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
 	int actualSize = MultiByteToWideChar(CP_UTF8, 0, str, -1, nullptr, 0);
@@ -101,17 +101,22 @@ std::string defaultPlayerName() {
 	return ret;
 }
 
-void OsCreateSaveFolder() {
+static void OsCreateFolder(const std::string& path) {
 #if defined(__unix__)
-	std::string cmd = "mkdir -p '"+getPathToSaveFiles()+"/'";
+	std::string cmd = "mkdir -p '"+path+"/'";
 	int retcode = system(cmd.c_str());
 	if (retcode != 0) {
-		std::cerr << "Failed to create: " << getPathToSaveFiles()+"/" << "\n";
+		std::cerr << "Failed to create: " << path+"/" << "\n";
 	}
 #elif defined(_WIN32)
 	//Now for Windows NT/2k/xp/2k3 etc.
-	CreateDirectoryW(win32_utf16_to_utf8(pf.getSaveGamesFolder1().c_str()).c_str(), nullptr);
-	std::string tempA = getPathToSaveFiles();
-	CreateDirectoryW(win32_utf16_to_utf8(tempA.c_str()).c_str(), nullptr);
+	CreateDirectoryW(win32_utf8_to_utf16(pf.getSaveGamesFolder1().c_str()).c_str(), nullptr);
+	std::string tempA = path;
+	CreateDirectoryW(win32_utf8_to_utf16(tempA.c_str()).c_str(), nullptr);
 #endif
+}
+
+void OsCreateSaveFolder() {
+	std::string path = getPathToSaveFiles();
+	OsCreateFolder(path);
 }
