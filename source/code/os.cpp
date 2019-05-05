@@ -55,6 +55,8 @@ void setPathToSaveFiles(const std::string& path) {
 }
 
 #if defined(_WIN32)
+#include "shlwapi.h"
+
 static std::wstring win32_utf8_to_utf16(const char* str) {
 	std::wstring res;
 	// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
@@ -101,9 +103,9 @@ std::string defaultPlayerName() {
 	return ret;
 }
 
-static bool OsPathIsRelative(const std::string& path) {
+bool OsPathIsRelative(const std::string& path) {
 #if defined(_WIN32)
-	return PathIsRelativeW(win32_utf8_to_utf16(path.c_str()));
+	return PathIsRelativeW(win32_utf8_to_utf16(path.c_str()).c_str());
 #else
 	return path[0] != '/';
 #endif

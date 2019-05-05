@@ -38,4 +38,6 @@ void setPathToSaveFiles(const std::string& path);
 
 void OsCreateSaveFolder();
 
+bool OsPathIsRelative(const std::string& path);
+
 void OsCreateFolder(const std::string& path);

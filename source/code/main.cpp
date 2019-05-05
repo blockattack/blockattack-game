@@ -326,7 +326,12 @@ static ExplosionManager theExplosionManager;
 #include "sago/platform_folders.h"
 
 std::string pathToScreenShots() {
-	return sago::getPicturesFolder() + "/blockattack";
+	Config::getInstance()->setDefault("screenshot_dir", _("Block Attack - Rise of the Blocks"));
+	std::string screenshot_dir = Config::getInstance()->getString("screenshot_dir");
+	if (OsPathIsRelative(screenshot_dir)) {
+		return sago::getPicturesFolder() + "/" + screenshot_dir;
+	}
+	return screenshot_dir;
 }
 
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
