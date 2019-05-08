@@ -356,6 +356,7 @@ void Menu::ProcessInput(const SDL_Event& event, bool& processed) {
 	}
 
 	if (isConfirmEvent(event)) {
+		bMouseUp = false;
 		if (marked < (int)buttons.size()) {
 			buttons.at(marked)->doAction();
 			if (buttons.at(marked)->isPopOnRun()) {
