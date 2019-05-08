@@ -42,7 +42,7 @@ struct SagoDataHolder::SagoDataHolderData {
 	std::vector<SDL_RWops*> rwOpsToFree;
 	std::vector<std::unique_ptr<char[]>> dataToFree;
 	bool verbose = false;
-	Uint64 version = 0;
+	Uint64 version = 1;
 	SDL_Renderer* renderer = nullptr;
 };
 
@@ -273,9 +273,9 @@ Uint64 SagoDataHolder::getVersion() const {
 
 TextureHandler::TextureHandler(const SagoDataHolder* holder, const std::string &textureName) {
 	this->holder = holder;
-	this->version = this->holder->getVersion();
+	this->version = 0;
 	this->textureName = textureName;
-	this->data = this->holder->getTexturePtr(this->textureName);
+	this->data = nullptr;
 }
 
 SDL_Texture* TextureHandler::get() {
@@ -289,9 +289,9 @@ SDL_Texture* TextureHandler::get() {
 
 MusicHandler::MusicHandler(const SagoDataHolder* holder, const std::string& musicName) {
 	this->holder = holder;
-	this->version = this->holder->getVersion();
+	this->version = 0;
 	this->musicName = musicName;
-	this->data = this->holder->getMusicPtr(this->musicName);
+	this->data = nullptr;
 }
 
 Mix_Music* MusicHandler::get() {
@@ -304,9 +304,9 @@ Mix_Music* MusicHandler::get() {
 
 SoundHandler::SoundHandler(const SagoDataHolder* holder, const std::string& soundName) {
 	this->holder = holder;
-	this->version = this->holder->getVersion();
+	this->version = 0;
 	this->soundName = soundName;
-	this->data = this->holder->getSoundPtr(this->soundName);
+	this->data = nullptr;
 }
 
 Mix_Chunk* SoundHandler::get() {
