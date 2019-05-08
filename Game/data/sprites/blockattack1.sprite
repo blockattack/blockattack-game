@@ -20,10 +20,10 @@
 },
 "background_sixteen_nine" : {
 	"texture" : "background_sixteen_nine",
- 	"topx" : 0,
+	"topx" : 2,
 	"topy" : 0,
 	"height" : 768,
-	"width" : 1366,
+	"width" : 1364,
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
