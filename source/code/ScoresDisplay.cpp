@@ -27,6 +27,10 @@ http://www.blockattack.net
 #include "stats.h"
 #include "MenuSystem.h"
 
+const int buttonOffsetX = 140;
+const int buttonOffsetY = 180;
+extern sago::SagoSprite bExit;
+
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
@@ -210,7 +214,7 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 
 	const sago::SagoDataHolder* holder = &globalData.spriteHolder->GetDataHolder();
 	//Draw buttons:
-	globalData.bHighScore.Draw(globalData.screen, 0, scoreX,scoreY);
+	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffsetX, globalData.ysize-buttonOffsetY);
 	globalData.bBack.Draw(globalData.screen, 0, backX, backY);
 	static sago::SagoTextField backLabel;
 	setButtonFont(holder, backLabel, _("Back"));
@@ -260,8 +264,9 @@ void ScoresDisplay::Update() {
 	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
 
-		//The Score button:
-		if ((globalData.mousex>scoreX) && (globalData.mousex<scoreX+buttonXsize) && (globalData.mousey>scoreY) && (globalData.mousey<scoreY+buttonYsize)) {
+		//The Exit button:
+		if ((globalData.mousex>globalData.xsize-buttonOffsetX) && (globalData.mousex<globalData.xsize-buttonOffsetX+bExit.GetWidth())
+		        && (globalData.mousey>globalData.ysize-buttonOffsetY) && (globalData.mousey<globalData.ysize-buttonOffsetY+bExit.GetHeight())) {
 			isActive = false;
 		}
 
