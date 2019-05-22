@@ -52,8 +52,16 @@ static std::string getHome() {
 		res = homeEnv;
 		return res;
 	}
-	struct passwd* pw = getpwuid(uid);
-	if (!pw) {
+	struct passwd* pw = nullptr;
+	struct passwd pwd;
+	long bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+	if (bufsize < 0) {
+		bufsize = 16384;
+	}
+	std::vector<char> buffer;
+	buffer.resize(bufsize);
+	int error_code = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
+	if (error_code) {
 		throw std::runtime_error("Unable to get passwd struct.");
 	}
 	const char* tempRes = pw->pw_dir;
@@ -64,7 +72,7 @@ static std::string getHome() {
 	return res;
 }
 
-#endif 
+#endif
 
 #ifdef _WIN32
 // Make sure we don't bring in all the extra junk with windows.h
@@ -90,7 +98,7 @@ std::string win32_utf16_to_utf8(const wchar_t* wstr) {
 	if (actualSize > 0) {
 		//If the converted UTF-8 string could not be in the initial buffer. Allocate one that can hold it.
 		std::vector<char> buffer(actualSize);
-		actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &buffer[0], buffer.size(), nullptr, nullptr);
+		actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &buffer[0], static_cast<int>(buffer.size()), nullptr, nullptr);
 		res = buffer.data();
 	}
 	if (actualSize == 0) {
@@ -183,20 +191,20 @@ namespace sago {
 
 #if !defined(_WIN32) && !defined(__APPLE__)
 namespace internal {
-	void appendExtraFoldersTokenizer(const char* envName, const char* envValue, std::vector<std::string>& folders) {
-		std::stringstream ss(envValue);
-		std::string value;
-		while (std::getline(ss, value, ':')) {
-			if (value[0] == '/') {
-				folders.push_back(value);
-			}
-			else {
-				//Unless the system is wrongly configured this should never happen... But of course some systems will be incorectly configured.
-				//The XDG documentation indicates that the folder should be ignored but that the program should continue.
-				std::cerr << "Skipping path \"" << value << "\" in \"" << envName << "\" because it does not start with a \"/\"\n";
-			}
+void appendExtraFoldersTokenizer(const char* envName, const char* envValue, std::vector<std::string>& folders) {
+	std::stringstream ss(envValue);
+	std::string value;
+	while (std::getline(ss, value, ':')) {
+		if (value[0] == '/') {
+			folders.push_back(value);
+		}
+		else {
+			//Unless the system is wrongly configured this should never happen... But of course some systems will be incorectly configured.
+			//The XDG documentation indicates that the folder should be ignored but that the program should continue.
+			std::cerr << "Skipping path \"" << value << "\" in \"" << envName << "\" because it does not start with a \"/\"\n";
 		}
 	}
+}
 }
 #endif
 
@@ -265,7 +273,8 @@ static void PlatformFoldersAddFromFile(const std::string& filename, std::map<std
 			std::size_t valueEnd = line.find('"', valueStart+1);
 			std::string value = line.substr(valueStart+1, valueEnd - valueStart - 1);
 			folders[key] = value;
-		} catch (std::exception&  e) {
+		}
+		catch (std::exception&  e) {
 			std::cerr << "WARNING: Failed to process \"" << line << "\" from \"" << filename << "\". Error: "<< e.what() << "\n";
 			continue;
 		}
