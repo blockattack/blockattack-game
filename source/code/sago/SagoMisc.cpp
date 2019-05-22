@@ -29,6 +29,11 @@ SOFTWARE.
 #include <string.h>
 #include <memory>
 
+#if PHYSFS_VER_MAJOR < 3
+#define PHYSFS_readBytes(X,Y,Z) PHYSFS_read(X,Y,1,Z)
+#define PHYSFS_writeBytes(X,Y,Z) PHYSFS_write(X,Y,1,Z)
+#endif
+
 using std::string;
 using std::cerr;
 using std::vector;
@@ -85,8 +90,12 @@ void WriteFileContent(const char* filename, const std::string& content) {
 	CreatePathToFile(filename);
 	PHYSFS_file* myfile = PHYSFS_openWrite(filename);
 	if (!myfile) {
+#if PHYSFS_VER_MAJOR > 2
 		PHYSFS_ErrorCode code = PHYSFS_getLastErrorCode();
-		cerr << "Failed to open file for writing, " << PHYSFS_getErrorByCode(code) << " (" << code << ")\n";
+		std::cerr << "Failed to open file for writing, " << PHYSFS_getErrorByCode(code) << " (" << code << ")\n";
+#else
+		std::cerr << "Failed to open file for writing, " << PHYSFS_getLastError() << "\n";
+#endif
 		return;
 	}
 	PHYSFS_writeBytes(myfile, content.c_str(), sizeof(char)*content.length());

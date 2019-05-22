@@ -32,6 +32,11 @@ SOFTWARE.
 #include <SDL_mixer.h>
 #include "SagoMiscSdl2.hpp"
 
+#if PHYSFS_VER_MAJOR < 3
+#define PHYSFS_readBytes(X,Y,Z) PHYSFS_read(X,Y,1,Z)
+#define PHYSFS_writeBytes(X,Y,Z) PHYSFS_write(X,Y,1,Z)
+#endif
+
 namespace sago {
 
 struct SagoDataHolder::SagoDataHolderData {
