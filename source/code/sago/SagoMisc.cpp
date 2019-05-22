@@ -59,7 +59,7 @@ std::string GetFileContent(const char* filename) {
 	PHYSFS_file* myfile = PHYSFS_openRead(filename);
 	unsigned int m_size = PHYSFS_fileLength(myfile);
 	std::unique_ptr<char[]> m_data(new char[m_size]);
-	int length_read = PHYSFS_read (myfile, m_data.get(), 1, m_size);
+	int length_read = PHYSFS_readBytes (myfile, m_data.get(), m_size);
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
 		cerr << "Error: Curropt data file: " << filename << "\n";
@@ -85,10 +85,11 @@ void WriteFileContent(const char* filename, const std::string& content) {
 	CreatePathToFile(filename);
 	PHYSFS_file* myfile = PHYSFS_openWrite(filename);
 	if (!myfile) {
-		cerr << "Failed to open file for writing, " << PHYSFS_getLastError() << "\n";
+		PHYSFS_ErrorCode code = PHYSFS_getLastErrorCode();
+		cerr << "Failed to open file for writing, " << PHYSFS_getErrorByCode(code) << " (" << code << ")\n";
 		return;
 	}
-	PHYSFS_write(myfile, content.c_str(), sizeof(char), content.length());
+	PHYSFS_writeBytes(myfile, content.c_str(), sizeof(char)*content.length());
 	PHYSFS_close(myfile);
 }
 
