@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Block Attack - Rise Of the Blocks"
-!define PRODUCT_VERSION "2.5.0-SNAPSHOT"
+!define PRODUCT_VERSION "2.5.0"
 !define PRODUCT_PUBLISHER "Poul Sander"
 !define PRODUCT_WEB_SITE "http://www.blockattack.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\blockattack.exe"

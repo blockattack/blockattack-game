@@ -1,0 +1,11 @@
+This is Block Attack - Rise of the Blocks - version 2.5.0
+
+Changes since 2.4.0:
+Added option to always use the software renderer
+Automatically start in software render the first time after a crash
+Fixed the search order in archives
+Added widescreen support. Only used in fullscreen by default.
+Added appstream metadata
+Screenshot feature no longer crashes in hardware acceleration. Still only works in software mode
+
+Feedback can be given on https://blockattack.net or https://github.com/blockattack/blockattack-game
