@@ -2,20 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Poul Sander <poul@poulsander.com>, 2019. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-09 16:05+0100\n"
-"PO-Revision-Date: 2019-03-09 16:10+0100\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: da\n"
+"POT-Creation-Date: 2019-05-02 19:35+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"PO-Revision-Date: 2019-05-02 05:39+0000\n"
+"Last-Translator: Poul Sander <poul@poulsander.com>\n"
+"Language-Team: \n"
+"Language: da\n"
+"X-Generator: Zanata 4.6.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../../code/DialogBox.cpp:92
@@ -26,83 +26,83 @@ msgstr "Bekræft med Enter"
 msgid "Esc to cancel"
 msgstr "Annuller med Esc"
 
-#: ../../code/HelpAboutState.cpp:69
+#: ../../code/HelpAboutState.cpp:68
 msgid "No audio driver"
 msgstr "Ingen lyd driver"
 
-#: ../../code/HelpAboutState.cpp:72
+#: ../../code/HelpAboutState.cpp:71
 msgid "Name:"
 msgstr "Navn:"
 
-#: ../../code/HelpAboutState.cpp:72
+#: ../../code/HelpAboutState.cpp:71
 msgid "Block Attack - Rise of the Blocks"
 msgstr "Block Attack - Blokkenes opstand"
 
-#: ../../code/HelpAboutState.cpp:73
+#: ../../code/HelpAboutState.cpp:72
 msgid "Original name:"
 msgstr "Originalt navn:"
 
-#: ../../code/HelpAboutState.cpp:74
+#: ../../code/HelpAboutState.cpp:73
 msgid "Version:"
 msgstr "Version:"
 
-#: ../../code/HelpAboutState.cpp:75
+#: ../../code/HelpAboutState.cpp:74
 msgid "Homepage:"
 msgstr "Hjemmeside:"
 
-#: ../../code/HelpAboutState.cpp:76
+#: ../../code/HelpAboutState.cpp:75
 msgid "Github page:"
 msgstr "Github side:"
 
-#: ../../code/HelpAboutState.cpp:77
+#: ../../code/HelpAboutState.cpp:76
 msgid "SDL render:"
 msgstr "SDL render:"
 
-#: ../../code/HelpAboutState.cpp:78
+#: ../../code/HelpAboutState.cpp:77
 msgid "SDL audio driver:"
 msgstr "SDL lyd driver:"
 
-#: ../../code/HelpAboutState.cpp:79
+#: ../../code/HelpAboutState.cpp:78
 msgid "SDL compiled version:"
 msgstr "SDL kompileret version:"
 
-#: ../../code/HelpAboutState.cpp:80
+#: ../../code/HelpAboutState.cpp:79
 msgid "SDL linked version:"
 msgstr "SDL lænket version:"
 
-#: ../../code/HelpAboutState.cpp:81
+#: ../../code/HelpAboutState.cpp:80
 msgid "Save folder:"
 msgstr "Mappe til gemte spil:"
 
-#: ../../code/HelpAboutState.cpp:82
+#: ../../code/HelpAboutState.cpp:81
 msgid "Locale:"
 msgstr "Lokalitet:"
 
-#: ../../code/HelpAboutState.cpp:83 ../../code/menudef.cpp:387
+#: ../../code/HelpAboutState.cpp:82 ../../code/menudef.cpp:414
 msgid "About"
 msgstr "Om"
 
-#: ../../code/HelpGamepadState.cpp:54
+#: ../../code/HelpGamepadState.cpp:52
 msgid "Move cursor"
 msgstr "Flyt markøren"
 
-#: ../../code/HelpGamepadState.cpp:55
+#: ../../code/HelpGamepadState.cpp:53
 msgid "Push line"
 msgstr "Skub linje"
 
-#: ../../code/HelpGamepadState.cpp:56
+#: ../../code/HelpGamepadState.cpp:54
 msgid "Back (Menu)"
 msgstr "Tilbage (Menu)"
 
-#: ../../code/HelpGamepadState.cpp:57
+#: ../../code/HelpGamepadState.cpp:55
 msgid "Switch"
 msgstr "Skift"
 
-#: ../../code/HelpGamepadState.cpp:58
+#: ../../code/HelpGamepadState.cpp:56
 msgid "Confirm"
 msgstr "Bekræft"
 
-#: ../../code/HelpGamepadState.cpp:59
+#: ../../code/HelpGamepadState.cpp:57
 msgid ""
 "Only SDL2 compatible controllers are supported!\n"
 "Supported controllers: "
@@ -110,23 +110,23 @@ msgstr ""
 "Kun SDL2 kompatible kontrollere er understøttet!\n"
 "Understøttede kontrollere: "
 
-#: ../../code/HelpHowtoState.cpp:127
+#: ../../code/HelpHowtoState.cpp:125
 msgid "Switch block horizontally"
 msgstr "Skift blokke horisontalt"
 
-#: ../../code/HelpHowtoState.cpp:128
+#: ../../code/HelpHowtoState.cpp:126
 msgid "Match 3 to clear"
 msgstr "Sammensæt 3 for at fjerne"
 
-#: ../../code/HelpHowtoState.cpp:129
+#: ../../code/HelpHowtoState.cpp:127
 msgid "Create combos!"
 msgstr "Sammensæt mange!"
 
-#: ../../code/HelpHowtoState.cpp:130
+#: ../../code/HelpHowtoState.cpp:128
 msgid "Drop blocks!"
 msgstr "Lad blokke falde!"
 
-#: ../../code/HelpHowtoState.cpp:131
+#: ../../code/HelpHowtoState.cpp:129
 msgid "Create a chain effect"
 msgstr "Lav en kæde effekt"
 
@@ -158,79 +158,79 @@ msgstr "Tid brugt: %d : %02d"
 msgid "Total score: %i in %i:%02i"
 msgstr "Sammenlagt: %i på %i:%02i"
 
-#: ../../code/main.cpp:157
+#: ../../code/main.cpp:158
 msgid "GAME OVER"
 msgstr "SPILLET ER SLUT"
 
-#: ../../code/main.cpp:158
+#: ../../code/main.cpp:159
 msgid "WINNER"
 msgstr "VINDER"
 
-#: ../../code/main.cpp:159
+#: ../../code/main.cpp:160
 msgid "DRAW"
 msgstr "UAFGJORT"
 
-#: ../../code/main.cpp:458 ../../code/main.cpp:589
+#: ../../code/main.cpp:487 ../../code/main.cpp:618
 msgid "AI"
 msgstr "Computer"
 
-#: ../../code/main.cpp:461
+#: ../../code/main.cpp:490
 msgid "Playing field"
 msgstr "Spilleflade"
 
-#: ../../code/main.cpp:535
+#: ../../code/main.cpp:564
 msgid "Time Trial"
 msgstr "På tid"
 
-#: ../../code/main.cpp:536
+#: ../../code/main.cpp:565
 msgid "Score as much as possible in 2 minutes"
 msgstr "Se hvor mange point du kan opnå på 2 minutter"
 
-#: ../../code/main.cpp:540
+#: ../../code/main.cpp:569
 msgid "Stage Clear"
 msgstr "Stage Clear"
 
-#: ../../code/main.cpp:541
+#: ../../code/main.cpp:570
 msgid "You must clear a number of lines. Speed is rapidly increased."
 msgstr "Fjern et specifik antal linjer. Hastigheden stiger hurtigt."
 
-#: ../../code/main.cpp:544
+#: ../../code/main.cpp:573
 msgid "Puzzle"
 msgstr "Gåde"
 
-#: ../../code/main.cpp:545
+#: ../../code/main.cpp:574
 msgid "Clear the entire board with a limited number of moves."
 msgstr "Fjern alle blokke med et begrænset antal flyt."
 
-#: ../../code/main.cpp:548
+#: ../../code/main.cpp:577
 msgid "Endless"
 msgstr "Evighed"
 
-#: ../../code/main.cpp:549
+#: ../../code/main.cpp:578
 msgid "Score as much as possible. No time limit."
 msgstr "Opnå så mange point som muligt. Ingen tidsbegrænsning."
 
-#: ../../code/main.cpp:559
+#: ../../code/main.cpp:588
 msgid "Objective:"
 msgstr "Formål:"
 
-#: ../../code/main.cpp:569
+#: ../../code/main.cpp:598
 msgid "Movement keys:"
 msgstr "Bevægelsestaster:"
 
-#: ../../code/main.cpp:571
+#: ../../code/main.cpp:600
 msgid "Switch: "
 msgstr "Skift: "
 
-#: ../../code/main.cpp:573
+#: ../../code/main.cpp:602
 msgid "Restart: "
 msgstr "Genstart: "
 
-#: ../../code/main.cpp:576
+#: ../../code/main.cpp:605
 msgid "Push line: "
 msgstr "Skub linje: "
 
-#: ../../code/main.cpp:1002
+#: ../../code/main.cpp:1040
 msgid "Player 2"
 msgstr "Spiller 2"
 
@@ -306,183 +306,203 @@ msgstr "Endnu hurtigere"
 msgid "Fastest"
 msgstr "Hurtigst"
 
-#: ../../code/menudef.cpp:216 ../../code/menudef.cpp:284
+#: ../../code/menudef.cpp:215
+msgid "Always use software render: On"
+msgstr "Brug altid software tilstand: Til"
+
+#: ../../code/menudef.cpp:216
+msgid "Always use software render: Off"
+msgstr "Brug altid software tilstand: Fra"
+
+#: ../../code/menudef.cpp:220
 msgid "Music: On"
 msgstr "Musik: Til"
 
-#: ../../code/menudef.cpp:216 ../../code/menudef.cpp:284
+#: ../../code/menudef.cpp:220
 msgid "Music: Off"
 msgstr "Musik: Fra"
 
-#: ../../code/menudef.cpp:224 ../../code/menudef.cpp:285
+#: ../../code/menudef.cpp:224
 msgid "Sound: On"
 msgstr "Lyd: Til"
 
-#: ../../code/menudef.cpp:224 ../../code/menudef.cpp:285
+#: ../../code/menudef.cpp:224
 msgid "Sound: Off"
 msgstr "Lyd: Fra"
 
-#: ../../code/menudef.cpp:231 ../../code/menudef.cpp:286
+#: ../../code/menudef.cpp:228
 msgid "Fullscreen: On"
 msgstr "Fuldskærm: Til"
 
-#: ../../code/menudef.cpp:231 ../../code/menudef.cpp:286
+#: ../../code/menudef.cpp:228
 msgid "Fullscreen: Off"
 msgstr "Fuldskærm: Fra"
 
-#: ../../code/menudef.cpp:237
+#: ../../code/menudef.cpp:261
 msgid "Enter player 1 name:"
 msgstr "Indtast navnet på spiller 1:"
 
-#: ../../code/menudef.cpp:243
+#: ../../code/menudef.cpp:267
 msgid "Enter player 2 name:"
 msgstr "Indtast navnet på spiller 2:"
 
-#: ../../code/menudef.cpp:253
+#: ../../code/menudef.cpp:277
 msgid "Change key bindings"
 msgstr "Skift taster"
 
-#: ../../code/menudef.cpp:254
+#: ../../code/menudef.cpp:278
 msgid "Left"
 msgstr "Venstre"
 
-#: ../../code/menudef.cpp:255
+#: ../../code/menudef.cpp:279
 msgid "Right"
 msgstr "Højre"
 
-#: ../../code/menudef.cpp:256
+#: ../../code/menudef.cpp:280
 msgid "Up"
 msgstr "Op"
 
-#: ../../code/menudef.cpp:257
+#: ../../code/menudef.cpp:281
 msgid "Down"
 msgstr "Ned"
 
-#: ../../code/menudef.cpp:258
+#: ../../code/menudef.cpp:282
 msgid "Push"
 msgstr "Skub"
 
-#: ../../code/menudef.cpp:259
+#: ../../code/menudef.cpp:283
 msgid "Change"
 msgstr "Skift"
 
-#: ../../code/menudef.cpp:278
+#: ../../code/menudef.cpp:302
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: ../../code/menudef.cpp:288
+#: ../../code/menudef.cpp:314
 msgid "Change player 1's name"
 msgstr "Skift navn på spiller 1"
 
-#: ../../code/menudef.cpp:290
+#: ../../code/menudef.cpp:316
 msgid "Change player 2's name"
 msgstr "Skift navn på spiller 2"
 
-#: ../../code/menudef.cpp:292
+#: ../../code/menudef.cpp:318
 msgid "Change player 1's keys"
 msgstr "Tildel taster til spiller 1"
 
-#: ../../code/menudef.cpp:294
+#: ../../code/menudef.cpp:320
 msgid "Change player 2's keys"
 msgstr "Tildel taster til spiller 2"
 
-#: ../../code/menudef.cpp:306
+#: ../../code/menudef.cpp:333
 msgid "Single player VS"
 msgstr "En spiller - VS"
 
-#: ../../code/menudef.cpp:322
+#: ../../code/menudef.cpp:349
 msgid "Very easy"
 msgstr "Meget let"
 
-#: ../../code/menudef.cpp:323
+#: ../../code/menudef.cpp:350
 msgid "Easy"
 msgstr "Let"
 
-#: ../../code/menudef.cpp:324
+#: ../../code/menudef.cpp:351
 msgid "Below normal"
 msgstr "Under normal"
 
-#: ../../code/menudef.cpp:325
+#: ../../code/menudef.cpp:352
 msgid "Normal"
 msgstr "Normal"
 
-#: ../../code/menudef.cpp:326
+#: ../../code/menudef.cpp:353
 msgid "Above normal"
 msgstr "Over normal"
 
-#: ../../code/menudef.cpp:327
+#: ../../code/menudef.cpp:354
 msgid "Hard"
 msgstr "Svær"
 
-#: ../../code/menudef.cpp:328
+#: ../../code/menudef.cpp:355
 msgid "Hardest"
 msgstr "Meget svær"
 
-#: ../../code/menudef.cpp:340
+#: ../../code/menudef.cpp:367
 msgid "Multiplayer"
 msgstr "Flerspiller"
 
-#: ../../code/menudef.cpp:342
+#: ../../code/menudef.cpp:369
 msgid "Two player - time trial"
 msgstr "To spillere - På tid"
 
-#: ../../code/menudef.cpp:344
+#: ../../code/menudef.cpp:371
 msgid "Two player - vs"
 msgstr "To spillere - VS"
 
-#: ../../code/menudef.cpp:368 ../../code/menudef.cpp:383
+#: ../../code/menudef.cpp:395 ../../code/menudef.cpp:410
 msgid "Credits"
 msgstr "Bidragydere"
 
-#: ../../code/menudef.cpp:373 ../../code/menudef.cpp:426
+#: ../../code/menudef.cpp:400 ../../code/menudef.cpp:471
 msgid "Help"
 msgstr "Hjælp"
 
-#: ../../code/menudef.cpp:375
+#: ../../code/menudef.cpp:402
 msgid "How to"
 msgstr "Guide"
 
-#: ../../code/menudef.cpp:379
+#: ../../code/menudef.cpp:406
 msgid "Gamepad"
 msgstr "Spilkontroller"
 
-#: ../../code/menudef.cpp:394 ../../code/menudef.cpp:418
+#: ../../code/menudef.cpp:421 ../../code/menudef.cpp:463
 msgid "Single player"
 msgstr "Enkeltspiller"
 
-#: ../../code/menudef.cpp:396
+#: ../../code/menudef.cpp:423
 msgid "Single player - endless"
 msgstr "En spiller - Evighed"
 
-#: ../../code/menudef.cpp:398
+#: ../../code/menudef.cpp:425
 msgid "Single player - time trial"
 msgstr "En spiller - På tid"
 
-#: ../../code/menudef.cpp:400
+#: ../../code/menudef.cpp:427
 msgid "Single player - stage clear"
 msgstr "En spiller - Stage Clear"
 
-#: ../../code/menudef.cpp:402
+#: ../../code/menudef.cpp:429
 msgid "Single player - puzzle mode"
 msgstr "En spiller - Gåde"
 
-#: ../../code/menudef.cpp:404
+#: ../../code/menudef.cpp:431
 msgid "Single player - vs"
 msgstr "En spiller - VS"
 
-#: ../../code/menudef.cpp:416
+#: ../../code/menudef.cpp:446
+msgid "Game did not shutdown as it should"
+msgstr "Spillet blev ikke afsluttet korrekt"
+
+#: ../../code/menudef.cpp:449
+msgid "Use software renderer this time"
+msgstr "Brug software tilstand denne gang"
+
+#: ../../code/menudef.cpp:450
+msgid "Always use software renderer"
+msgstr "Start altid i software tilstand"
+
+#: ../../code/menudef.cpp:461
 msgid "Block Attack - Rise of the blocks"
 msgstr "Block Attack - Blokkenes opstand"
 
-#: ../../code/menudef.cpp:420
+#: ../../code/menudef.cpp:465
 msgid "Multi player"
 msgstr "Flere spillere"
 
-#: ../../code/menudef.cpp:422
+#: ../../code/menudef.cpp:467
 msgid "Configure"
 msgstr "Instillinger"
 
-#: ../../code/menudef.cpp:424
+#: ../../code/menudef.cpp:469
 msgid "Highscores"
 msgstr "Bedste resultater"
 
@@ -621,17 +641,3 @@ msgstr "Sidste bane"
 msgid "Showing content of: %s"
 msgstr "Viser indhold af: %s"
 
-#~ msgid "Author:"
-#~ msgstr "Forfatter:"
-
-#~ msgid "Contributers:"
-#~ msgstr "Bidragydere:"
-
-#~ msgid "Other credits:"
-#~ msgstr "Andre bidrag:"
-
-#~ msgid "Total score: %1% in %2%:%3%"
-#~ msgstr "Sammenlagt resultat: %1% på %2%:%3%"
-
-#~ msgid "Page %1% of %2%"
-#~ msgstr "Side %1% af %2%"
