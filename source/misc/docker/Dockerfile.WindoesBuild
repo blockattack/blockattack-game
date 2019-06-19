@@ -26,7 +26,7 @@ cp /staging/blockattack-game/Game/blockattack.exe ./ && \
 cp /staging/blockattack-game/COPYING ./COPYING.txt && \
 cp -r /staging/blockattack-game/source/misc/translation/locale ./ && \
 echo "[InternetShortcut]" > "Block Attack - Rise Of the Blocks.url" && \
-echo "URL=http://www.blockattack.net" >> "Block Attack - Rise Of the Blocks.url" && \
+echo "URL=https://blockattack.net" >> "Block Attack - Rise Of the Blocks.url" && \
 cd /staging/package/ && \
 zip -r /output/blockattack-${BLOCKATTACK_VERSION}-windows-no-installer.zip "blockattack-${BLOCKATTACK_VERSION}" && \
 cd /output && chown nobody * && chmod 666 * && ls -lh

@@ -7,4 +7,4 @@ It has been tested on Ubuntu 14.04 and Fedora 22
 Some systems might require the game to be launched from the command line.
 PulseAudio is required for sound.
 
-Check www.blockattack.net for more info.
+Check https://blockattack.net for more info.
