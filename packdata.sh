@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
-zip -9rjX  Game/blockattack.data source/AUTH
+zip -9jX  Game/blockattack.data source/AUTH
 cd Game/data
-zip -9rX ../blockattack.data * -x \*svn*
+zip -9X $(find ../blockattack.data * | sort) -x \*svn*
 cd ../../man
-gzip -9 -c blockattack.man > blockattack.6.gz
+gzip -9n -c blockattack.man > blockattack.6.gz
 cd ../source/misc/translation/
 ./build_mo_all.sh
 
