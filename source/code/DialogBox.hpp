@@ -58,6 +58,11 @@ private:
 	sago::SagoTextField cancelLabel;
 	sago::SagoTextField textField;
 	sago::SagoTextField cursorLabel;
+	std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	                       "abcdefghijklmnopqrstuvwxyz"
+						   ".,:!?+_^@#%&=*";
+	std::vector<std::string> gamePadChars;
+	std::vector<sago::SagoTextField> gamePadCharFields;
 };
 
 #endif /* DIALOGBOX_HPP */

@@ -25,6 +25,7 @@ http://www.blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "ReadKeyboard.h"
+#include "utf8.h"
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -94,6 +95,16 @@ DialogBox::DialogBox(int x, int y, const std::string& name, const std::string& h
 	sagoTextSetBlueFont(textField);
 	sagoTextSetBlueFont(cursorLabel);
 	cursorLabel.SetText("|");
+	for (auto position = alphabet.begin(); position != alphabet.end() ; utf8::advance(position, 1, alphabet.end())) {
+		auto endPosition = position;
+		utf8::advance(endPosition, 1, alphabet.end());
+		std::string theChar(position, endPosition);
+		gamePadChars.push_back(theChar);
+		gamePadCharFields.emplace_back();
+		sago::SagoTextField& tf = gamePadCharFields.back();
+		setButtonFont(&globalData.spriteHolder->GetDataHolder(), tf, theChar.c_str());
+		std::cout << *position << "\n";
+	}
 }
 
 
@@ -124,6 +135,11 @@ void DialogBox::Draw(SDL_Renderer* target) {
 		textField.GetRenderedSize( strHolder.c_str(), &width);
 		width -= 2;
 		cursorLabel.Draw(target, x+40+width,y+76);
+	}
+	for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
+		int limit = 20;
+		sago::SagoTextField& f = gamePadCharFields.at(i);
+		f.Draw(target, globalData.xsize/2-400+(i%limit)*40, globalData.ysize/2+150+(i/limit)*40);
 	}
 }
 
