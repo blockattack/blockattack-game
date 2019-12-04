@@ -115,6 +115,22 @@ bool DialogBox::IsActive() {
 	return isActive;
 }
 
+static bool insideRect (int x, int y, int height, int width) {
+	if (globalData.mousex < x) {
+		return false;
+	}
+	if (globalData.mousex > x+width) {
+		return false;
+	}
+	if (globalData.mousey < y) {
+		return false;
+	}
+	if (globalData.mousey > y+height) {
+		return false;
+	}
+	return true;
+}
+
 
 void DialogBox::Draw(SDL_Renderer* target) {
 	DrawBackground(globalData.screen);
@@ -122,7 +138,9 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	this->y = globalData.ysize/2-100;
 	DrawRectYellow(target, x, y, 200, 600);
 	headerLabel.Draw(target, x+300, y+20, sago::SagoTextField::Alignment::center);
+	DrawRectYellow(target, x+25, y+128, 50, 250);
 	enterLabel.Draw(target, x+150, y+140, sago::SagoTextField::Alignment::center);
+	DrawRectYellow(target, x+325, y+128, 50, 250);
 	cancelLabel.Draw(target, x+450, y+140, sago::SagoTextField::Alignment::center);
 	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
 	textField.SetText(rk->GetString());
@@ -166,6 +184,22 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 		}
 	}
 	processed = true;
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+		bMouseUp=true;
+	}
+
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+		bMouseUp = false;
+		std::cout << "Mouse pressed\n";
+		if (insideRect(x+25, y+128, 50, 250)) {
+			name = rk->GetString();
+			updated = true;
+			isActive = false;
+		}
+		if (insideRect(x+325, y+128, 50, 250)) {
+			isActive = false;
+		}
+	}
 }
 
 void DialogBox::SetName(const std::string& name) {

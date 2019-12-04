@@ -46,6 +46,7 @@ public:
 	bool IsUpdated() const;
 private:
 	bool isActive = true;
+	bool bMouseUp = false;
 	std::shared_ptr<ReadKeyboard> rk;
 	int x;
 	int y;
@@ -60,7 +61,7 @@ private:
 	sago::SagoTextField cursorLabel;
 	std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	                       "abcdefghijklmnopqrstuvwxyz"
-						   ".,:!?+_^@#%&=*";
+	                       ".,:!?+_^@#%&=*";
 	std::vector<std::string> gamePadChars;
 	std::vector<sago::SagoTextField> gamePadCharFields;
 };
