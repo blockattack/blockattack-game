@@ -64,6 +64,7 @@ private:
 	                       ".,:!?+_^@#%&=*";
 	std::vector<std::string> gamePadChars;
 	std::vector<sago::SagoTextField> gamePadCharFields;
+	int selectedChar = 0;
 };
 
 #endif /* DIALOGBOX_HPP */

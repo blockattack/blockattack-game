@@ -154,8 +154,12 @@ void DialogBox::Draw(SDL_Renderer* target) {
 		width -= 2;
 		cursorLabel.Draw(target, x+40+width,y+76);
 	}
+	const sago::SagoSprite& marked = globalData.spriteHolder->GetSprite("i_level_check_box_marked");
 	for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
 		int limit = 20;
+		if (selectedChar == static_cast<int>(i)) {
+			marked.Draw(target, SDL_GetTicks(), globalData.xsize/2-400+(i%limit)*40-5, globalData.ysize/2+150+(i/limit)*40-5);
+		}
 		sago::SagoTextField& f = gamePadCharFields.at(i);
 		f.Draw(target, globalData.xsize/2-400+(i%limit)*40, globalData.ysize/2+150+(i/limit)*40);
 	}
