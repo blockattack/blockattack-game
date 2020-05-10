@@ -40,9 +40,17 @@ if (WIN32)
 endif()
 
 if (NOT WIN32 AND NOT STANDALONE)
-#The path to the data dir must be compiled into the binary
-add_definitions(-DSHAREDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_DATA_DIR}\")
-add_definitions(-DLOCALEDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_LOCALE_DIR}\")
+	#The path to the data dir must be compiled into the binary
+	if (IS_ABSOLUTE ${INSTALL_DATA_DIR})
+		add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
+	else()
+		add_definitions(-DSHAREDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_DATA_DIR}\")
+	endif()
+	if (IS_ABSOLUTE ${INSTALL_DATA_DIR})
+		add_definitions(-DLOCALEDIR=\"${INSTALL_LOCALE_DIR}\")
+	else()
+		add_definitions(-DLOCALEDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_LOCALE_DIR}\")
+	endif()
 endif()
 
 #Compiler options
