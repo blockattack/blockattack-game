@@ -37,13 +37,13 @@ private:
 	int maxLength = 0;
 	std::string::iterator position;
 	std::string text_string;
-	void putchar(const std::string& );
 	void removeChar();
 public:
 	ReadKeyboard(void);
 	~ReadKeyboard(void);
 	ReadKeyboard(const char*);
 	int CharsBeforeCursor(); //Where should the cursor be placed?
+	void putchar(const std::string& );
 	bool ReadKey(const SDL_Event&);
 	bool ReadKey(SDL_Keycode); //true if key accepted
 	const std::string& GetString(void) const;

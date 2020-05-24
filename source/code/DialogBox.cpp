@@ -131,6 +131,9 @@ static bool insideRect (int x, int y, int height, int width) {
 	return true;
 }
 
+// For use with the mouse/gamepad keyboard
+int keyboardRowLimit = 20;
+
 
 void DialogBox::Draw(SDL_Renderer* target) {
 	DrawBackground(globalData.screen);
@@ -156,12 +159,11 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	}
 	const sago::SagoSprite& marked = globalData.spriteHolder->GetSprite("i_level_check_box_marked");
 	for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
-		int limit = 20;
 		if (selectedChar == static_cast<int>(i)) {
-			marked.Draw(target, SDL_GetTicks(), globalData.xsize/2-400+(i%limit)*40-5, globalData.ysize/2+150+(i/limit)*40-5);
+			marked.Draw(target, SDL_GetTicks(), globalData.xsize/2-400+(i%keyboardRowLimit)*40-5, globalData.ysize/2+150+(i/keyboardRowLimit)*40-5);
 		}
 		sago::SagoTextField& f = gamePadCharFields.at(i);
-		f.Draw(target, globalData.xsize/2-400+(i%limit)*40, globalData.ysize/2+150+(i/limit)*40);
+		f.Draw(target, globalData.xsize/2-400+(i%keyboardRowLimit)*40, globalData.ysize/2+150+(i/keyboardRowLimit)*40);
 	}
 }
 
@@ -202,6 +204,25 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 		}
 		if (insideRect(x+325, y+128, 50, 250)) {
 			isActive = false;
+		}
+		for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
+			sago::SagoTextField& f = gamePadCharFields.at(i);
+			auto topx = globalData.xsize/2-400+(i%keyboardRowLimit)*40-5;
+			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
+			if (insideRect(topx, topy, 30, 30)) {
+				std::cout << f.GetText() << " pressed\n";
+				rk->putchar(f.GetText());
+			}
+		}
+	}
+
+	if (1 /*TODO: Changed to only when mouse moves*/) {
+		for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
+			auto topx = globalData.xsize/2-400+(i%keyboardRowLimit)*40-5;
+			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
+			if (insideRect(topx, topy, 30, 30)) {
+				selectedChar = i;
+			}
 		}
 	}
 }
