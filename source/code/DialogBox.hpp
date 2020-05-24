@@ -61,7 +61,10 @@ private:
 	sago::SagoTextField cursorLabel;
 	std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	                       "abcdefghijklmnopqrstuvwxyz"
-	                       ".,:!?+_^@#%&=*";
+	                       ".,:!?+_^@#%&=*" "‹›«";
+	const std::string leftChar = "‹";
+	const std::string rightChar = "›";
+	const std::string backspace = "«";
 	std::vector<std::string> gamePadChars;
 	std::vector<sago::SagoTextField> gamePadCharFields;
 	int selectedChar = 0;

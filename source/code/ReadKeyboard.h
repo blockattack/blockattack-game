@@ -44,6 +44,9 @@ public:
 	ReadKeyboard(const char*);
 	int CharsBeforeCursor(); //Where should the cursor be placed?
 	void putchar(const std::string& );
+	bool cursorLeft();
+	bool cursorRight();
+	bool emulateBackspace();
 	bool ReadKey(const SDL_Event&);
 	bool ReadKey(SDL_Keycode); //true if key accepted
 	const std::string& GetString(void) const;

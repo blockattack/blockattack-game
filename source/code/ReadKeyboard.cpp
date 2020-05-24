@@ -71,6 +71,30 @@ bool ReadKeyboard::ReadKey(const SDL_Event& key) {
 	return ReadKey(key.key.keysym.sym);
 }
 
+bool ReadKeyboard::cursorLeft() {
+	if (position>text_string.begin()) {
+		utf8::prior(position, text_string.begin());
+		return true;
+	}
+	return false;
+}
+bool ReadKeyboard::cursorRight() {
+	if (position<text_string.end()) {
+		utf8::next(position, text_string.end());
+		return true;
+	}
+	return false;
+}
+
+bool ReadKeyboard::emulateBackspace() {
+	if (position>text_string.begin()) {
+		utf8::prior(position, text_string.begin());
+		ReadKeyboard::removeChar();
+		return true;
+	}
+	return false;
+}
+
 bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
 	if (keyPressed == SDLK_DELETE) {
 		if ((text_string.length()>0)&& (position<text_string.end())) {
@@ -79,12 +103,7 @@ bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
 		return true;
 	}
 	if (keyPressed == SDLK_BACKSPACE) {
-		if (position>text_string.begin()) {
-			utf8::prior(position, text_string.begin());
-			ReadKeyboard::removeChar();
-			return true;
-		}
-		return false;
+		return emulateBackspace();
 	}
 	if (keyPressed == SDLK_HOME) {
 		position = text_string.begin();
@@ -94,12 +113,12 @@ bool ReadKeyboard::ReadKey(SDL_Keycode keyPressed) {
 		position=text_string.end();
 		return true;
 	}
-	if ((keyPressed == SDLK_LEFT) && (position>text_string.begin())) {
-		utf8::prior(position, text_string.begin());
+	if (keyPressed == SDLK_LEFT) {
+		cursorLeft();
 		return true;
 	}
-	if ((keyPressed == SDLK_RIGHT) && (position<text_string.end())) {
-		utf8::next(position, text_string.end());
+	if ((keyPressed == SDLK_RIGHT)) {
+		cursorRight();
 		return true;
 	}
 	return true;

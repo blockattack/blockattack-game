@@ -134,7 +134,6 @@ static bool insideRect (int x, int y, int height, int width) {
 // For use with the mouse/gamepad keyboard
 int keyboardRowLimit = 20;
 
-
 void DialogBox::Draw(SDL_Renderer* target) {
 	DrawBackground(globalData.screen);
 	this->x = globalData.xsize/2-300;
@@ -210,8 +209,20 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			auto topx = globalData.xsize/2-400+(i%keyboardRowLimit)*40-5;
 			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
 			if (insideRect(topx, topy, 30, 30)) {
-				std::cout << f.GetText() << " pressed\n";
-				rk->putchar(f.GetText());
+				std::string insertChar = f.GetText();
+				std::cout << insertChar << " pressed\n";
+				if (insertChar == backspace) {
+					rk->emulateBackspace();
+				}
+				else if (insertChar == leftChar) {
+					rk->cursorLeft();
+				}
+				else if (insertChar == rightChar) {
+					rk->cursorRight();
+				}
+				else {
+					rk->putchar(f.GetText());
+				}
 			}
 		}
 	}
