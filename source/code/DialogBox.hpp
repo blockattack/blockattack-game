@@ -45,6 +45,7 @@ public:
 	std::string GetName() const;
 	bool IsUpdated() const;
 private:
+	void virtualKeyboardWriteSelectedChar(ReadKeyboard *rk, const std::string& insertChar) const;
 	bool isActive = true;
 	bool bMouseUp = false;
 	std::shared_ptr<ReadKeyboard> rk;

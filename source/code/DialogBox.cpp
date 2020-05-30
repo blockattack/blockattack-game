@@ -26,6 +26,7 @@ http://www.blockattack.net
 #include "common.h"
 #include "ReadKeyboard.h"
 #include "utf8.h"
+#include "MenuSystem.h"
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -166,6 +167,62 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	}
 }
 
+
+static bool isGamePadStartEvent(const SDL_Event& event) {
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+static bool isGamePadBackEvent(const SDL_Event& event) {
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool isGamePadLEvent(const SDL_Event& event) {
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool isGamePadREvent(const SDL_Event& event) {
+	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+void DialogBox::virtualKeyboardWriteSelectedChar(ReadKeyboard *rk, const std::string& insertChar) const {
+	std::cout << insertChar << " pressed\n";
+	if (insertChar == backspace) {
+		rk->emulateBackspace();
+	}
+	else if (insertChar == leftChar) {
+		rk->cursorLeft();
+	}
+	else if (insertChar == rightChar) {
+		rk->cursorRight();
+	}
+	else {
+		rk->putchar(insertChar);
+	}
+}
+
+
 void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 	if (event.type == SDL_TEXTINPUT) {
 		if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
@@ -186,6 +243,48 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
 				Mix_PlayChannel(1, globalData.typingChunk.get(), 0);
 			}
+		}
+	}
+	else {
+		if (isGamePadStartEvent(event)) {
+			name = rk->GetString();
+			updated = true;
+			isActive = false;
+		}
+		if (isGamePadBackEvent(event)) {
+			isActive = false;
+		}
+		if (isConfirmEvent(event)) {
+			const sago::SagoTextField& f = gamePadCharFields.at(selectedChar);
+			const std::string& insertChar = f.GetText();
+			virtualKeyboardWriteSelectedChar(rk.get(), insertChar);
+		}
+		if (isEscapeEvent(event)) {
+			rk->emulateBackspace();
+		}
+		if (isGamePadLEvent(event)) {
+			rk->cursorLeft();
+		}
+		if (isGamePadREvent(event)) {
+			rk->cursorRight();
+		}
+		if (isRightEvent(event)) {
+			++selectedChar;
+		}
+		if (isLeftEvent(event)) {
+			--selectedChar;
+		}
+		if (isDownEvent(event)) {
+			selectedChar+= keyboardRowLimit;
+		}
+		if (isUpEvent(event)) {
+			selectedChar -= keyboardRowLimit;
+		}
+		if (selectedChar < 0) {
+			selectedChar = 0;
+		}
+		if (selectedChar >= static_cast<int>(gamePadCharFields.size())) {
+			selectedChar = gamePadCharFields.size()-1;
 		}
 	}
 	processed = true;
@@ -210,19 +309,7 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
 			if (insideRect(topx, topy, 30, 30)) {
 				std::string insertChar = f.GetText();
-				std::cout << insertChar << " pressed\n";
-				if (insertChar == backspace) {
-					rk->emulateBackspace();
-				}
-				else if (insertChar == leftChar) {
-					rk->cursorLeft();
-				}
-				else if (insertChar == rightChar) {
-					rk->cursorRight();
-				}
-				else {
-					rk->putchar(f.GetText());
-				}
+				virtualKeyboardWriteSelectedChar(rk.get(), insertChar);
 			}
 		}
 	}
