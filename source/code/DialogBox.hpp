@@ -60,15 +60,17 @@ private:
 	sago::SagoTextField cancelLabel;
 	sago::SagoTextField textField;
 	sago::SagoTextField cursorLabel;
-	std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	                       "abcdefghijklmnopqrstuvwxyz"
-	                       ".,:!?+_^@#%&=*" "‹›«";
 	const std::string leftChar = "‹";
 	const std::string rightChar = "›";
 	const std::string backspace = "«";
+	std::string alphabet = std::string(_("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	                       "abcdefghijklmnopqrstuvwxyz"
+	                       ".,:!?+_^@#%&=*")) + leftChar + rightChar + backspace;
 	std::vector<std::string> gamePadChars;
 	std::vector<sago::SagoTextField> gamePadCharFields;
 	int selectedChar = 0;
+	int oldmousex = 0;
+	int oldmousey = 0;
 };
 
 #endif /* DIALOGBOX_HPP */

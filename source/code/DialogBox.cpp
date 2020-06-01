@@ -104,8 +104,9 @@ DialogBox::DialogBox(int x, int y, const std::string& name, const std::string& h
 		gamePadCharFields.emplace_back();
 		sago::SagoTextField& tf = gamePadCharFields.back();
 		setButtonFont(&globalData.spriteHolder->GetDataHolder(), tf, theChar.c_str());
-		std::cout << *position << "\n";
+		std::cout << *position;
 	}
+	std::cout << "\n";
 }
 
 
@@ -207,7 +208,6 @@ static bool isGamePadREvent(const SDL_Event& event) {
 
 
 void DialogBox::virtualKeyboardWriteSelectedChar(ReadKeyboard *rk, const std::string& insertChar) const {
-	std::cout << insertChar << " pressed\n";
 	if (insertChar == backspace) {
 		rk->emulateBackspace();
 	}
@@ -294,7 +294,6 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 
 	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
-		std::cout << "Mouse pressed\n";
 		if (insideRect(x+25, y+128, 50, 250)) {
 			name = rk->GetString();
 			updated = true;
@@ -314,7 +313,7 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 		}
 	}
 
-	if (1 /*TODO: Changed to only when mouse moves*/) {
+	if (globalData.mousex != oldmousex || globalData.mousey != oldmousey) {
 		for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
 			auto topx = globalData.xsize/2-400+(i%keyboardRowLimit)*40-5;
 			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
@@ -322,6 +321,8 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 				selectedChar = i;
 			}
 		}
+		oldmousex = globalData.mousex;
+		oldmousey = globalData.mousey;
 	}
 }
 
