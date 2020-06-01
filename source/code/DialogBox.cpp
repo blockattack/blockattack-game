@@ -96,13 +96,13 @@ DialogBox::DialogBox(int x, int y, const std::string& name, const std::string& h
 	sagoTextSetBlueFont(textField);
 	sagoTextSetBlueFont(cursorLabel);
 	cursorLabel.SetText("|");
-	for (auto position = alphabet.begin(); position != alphabet.end() ; utf8::advance(position, 1, alphabet.end())) {
+	for (auto position = virtualKeyboard.alphabet.begin(); position != virtualKeyboard.alphabet.end() ; utf8::advance(position, 1, virtualKeyboard.alphabet.end())) {
 		auto endPosition = position;
-		utf8::advance(endPosition, 1, alphabet.end());
+		utf8::advance(endPosition, 1, virtualKeyboard.alphabet.end());
 		std::string theChar(position, endPosition);
-		gamePadChars.push_back(theChar);
-		gamePadCharFields.emplace_back();
-		sago::SagoTextField& tf = gamePadCharFields.back();
+		virtualKeyboard.gamePadChars.push_back(theChar);
+		virtualKeyboard.gamePadCharFields.emplace_back();
+		sago::SagoTextField& tf = virtualKeyboard.gamePadCharFields.back();
 		setButtonFont(&globalData.spriteHolder->GetDataHolder(), tf, theChar.c_str());
 		std::cout << *position;
 	}
@@ -159,11 +159,11 @@ void DialogBox::Draw(SDL_Renderer* target) {
 		cursorLabel.Draw(target, x+40+width,y+76);
 	}
 	const sago::SagoSprite& marked = globalData.spriteHolder->GetSprite("i_level_check_box_marked");
-	for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
-		if (selectedChar == static_cast<int>(i)) {
+	for (size_t i = 0; i<virtualKeyboard.gamePadCharFields.size(); ++i) {
+		if (virtualKeyboard.selectedChar == static_cast<int>(i)) {
 			marked.Draw(target, SDL_GetTicks(), globalData.xsize/2-400+(i%keyboardRowLimit)*40-5, globalData.ysize/2+150+(i/keyboardRowLimit)*40-5);
 		}
-		sago::SagoTextField& f = gamePadCharFields.at(i);
+		sago::SagoTextField& f = virtualKeyboard.gamePadCharFields.at(i);
 		f.Draw(target, globalData.xsize/2-400+(i%keyboardRowLimit)*40, globalData.ysize/2+150+(i/keyboardRowLimit)*40);
 	}
 }
@@ -208,13 +208,13 @@ static bool isGamePadREvent(const SDL_Event& event) {
 
 
 void DialogBox::virtualKeyboardWriteSelectedChar(ReadKeyboard *rk, const std::string& insertChar) const {
-	if (insertChar == backspace) {
+	if (insertChar == virtualKeyboard.backspace) {
 		rk->emulateBackspace();
 	}
-	else if (insertChar == leftChar) {
+	else if (insertChar == virtualKeyboard.leftChar) {
 		rk->cursorLeft();
 	}
-	else if (insertChar == rightChar) {
+	else if (insertChar == virtualKeyboard.rightChar) {
 		rk->cursorRight();
 	}
 	else {
@@ -255,7 +255,7 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			isActive = false;
 		}
 		if (isConfirmEvent(event)) {
-			const sago::SagoTextField& f = gamePadCharFields.at(selectedChar);
+			const sago::SagoTextField& f = virtualKeyboard.gamePadCharFields.at(virtualKeyboard.selectedChar);
 			const std::string& insertChar = f.GetText();
 			virtualKeyboardWriteSelectedChar(rk.get(), insertChar);
 		}
@@ -269,22 +269,22 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			rk->cursorRight();
 		}
 		if (isRightEvent(event)) {
-			++selectedChar;
+			++virtualKeyboard.selectedChar;
 		}
 		if (isLeftEvent(event)) {
-			--selectedChar;
+			--virtualKeyboard.selectedChar;
 		}
 		if (isDownEvent(event)) {
-			selectedChar+= keyboardRowLimit;
+			virtualKeyboard.selectedChar+= keyboardRowLimit;
 		}
 		if (isUpEvent(event)) {
-			selectedChar -= keyboardRowLimit;
+			virtualKeyboard.selectedChar -= keyboardRowLimit;
 		}
-		if (selectedChar < 0) {
-			selectedChar = 0;
+		if (virtualKeyboard.selectedChar < 0) {
+			virtualKeyboard.selectedChar = 0;
 		}
-		if (selectedChar >= static_cast<int>(gamePadCharFields.size())) {
-			selectedChar = gamePadCharFields.size()-1;
+		if (virtualKeyboard.selectedChar >= static_cast<int>(virtualKeyboard.gamePadCharFields.size())) {
+			virtualKeyboard.selectedChar = virtualKeyboard.gamePadCharFields.size()-1;
 		}
 	}
 	processed = true;
@@ -302,8 +302,8 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 		if (insideRect(x+325, y+128, 50, 250)) {
 			isActive = false;
 		}
-		for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
-			sago::SagoTextField& f = gamePadCharFields.at(i);
+		for (size_t i = 0; i<virtualKeyboard.gamePadCharFields.size(); ++i) {
+			sago::SagoTextField& f = virtualKeyboard.gamePadCharFields.at(i);
 			auto topx = globalData.xsize/2-400+(i%keyboardRowLimit)*40-5;
 			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
 			if (insideRect(topx, topy, 30, 30)) {
@@ -314,11 +314,11 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 	}
 
 	if (globalData.mousex != oldmousex || globalData.mousey != oldmousey) {
-		for (size_t i = 0; i<gamePadCharFields.size(); ++i) {
+		for (size_t i = 0; i<virtualKeyboard.gamePadCharFields.size(); ++i) {
 			auto topx = globalData.xsize/2-400+(i%keyboardRowLimit)*40-5;
 			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
 			if (insideRect(topx, topy, 30, 30)) {
-				selectedChar = i;
+				virtualKeyboard.selectedChar = i;
 			}
 		}
 		oldmousex = globalData.mousex;

@@ -31,6 +31,18 @@ http://www.blockattack.net
 #include "scopeHelpers.hpp"
 #include "global.hpp"
 
+struct VirtualKeyboard {
+	const std::string leftChar = "‹";
+	const std::string rightChar = "›";
+	const std::string backspace = "«";
+	std::string alphabet = std::string(_("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	                       "abcdefghijklmnopqrstuvwxyz"
+	                       ".,:!?+_^@#%&=*")) + leftChar + rightChar + backspace;
+	std::vector<std::string> gamePadChars;
+	std::vector<sago::SagoTextField> gamePadCharFields;
+	int selectedChar = 0;
+};
+
 class DialogBox : public sago::GameStateInterface {
 public:
 	DialogBox(int x, int y, const std::string& name, const std::string& header);
@@ -60,15 +72,7 @@ private:
 	sago::SagoTextField cancelLabel;
 	sago::SagoTextField textField;
 	sago::SagoTextField cursorLabel;
-	const std::string leftChar = "‹";
-	const std::string rightChar = "›";
-	const std::string backspace = "«";
-	std::string alphabet = std::string(_("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	                       "abcdefghijklmnopqrstuvwxyz"
-	                       ".,:!?+_^@#%&=*")) + leftChar + rightChar + backspace;
-	std::vector<std::string> gamePadChars;
-	std::vector<sago::SagoTextField> gamePadCharFields;
-	int selectedChar = 0;
+	VirtualKeyboard virtualKeyboard;
 	int oldmousex = 0;
 	int oldmousey = 0;
 };
