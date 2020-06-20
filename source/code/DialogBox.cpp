@@ -269,9 +269,18 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			rk->cursorRight();
 		}
 		if (isRightEvent(event)) {
+			if ( (virtualKeyboard.selectedChar+1)/keyboardRowLimit != virtualKeyboard.selectedChar/keyboardRowLimit ) {
+				virtualKeyboard.selectedChar -= keyboardRowLimit;
+			}
 			++virtualKeyboard.selectedChar;
+			if (virtualKeyboard.selectedChar >= static_cast<int>(virtualKeyboard.gamePadCharFields.size())) {
+				virtualKeyboard.selectedChar -= virtualKeyboard.selectedChar%keyboardRowLimit;
+			}
 		}
 		if (isLeftEvent(event)) {
+			if ( (virtualKeyboard.selectedChar-1)/keyboardRowLimit != virtualKeyboard.selectedChar/keyboardRowLimit || virtualKeyboard.selectedChar == 0 ) {
+				virtualKeyboard.selectedChar += keyboardRowLimit;
+			}
 			--virtualKeyboard.selectedChar;
 		}
 		if (isDownEvent(event)) {
