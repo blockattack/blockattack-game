@@ -39,6 +39,7 @@ struct ControllerStatus {
 static std::map<SDL_JoystickID, ControllerStatus> controllerStatusMap;
 static std::map<std::string, int> gamecontrollers_assigned;
 static std::vector<std::string> supportedControllers;
+static std::vector<SDL_GameController*> controllersOpened;
 
 
 void GameControllerSetVerbose(bool value) {
@@ -82,6 +83,19 @@ static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
 	return 1;
 }
 
+void UnInitGameControllers() {
+	if (controllersOpened.empty()) {
+		return;
+	}
+	for (SDL_GameController* t : controllersOpened) {
+		SDL_GameControllerClose(t);
+	}
+	controllersOpened.clear();
+	controllerStatusMap.clear();
+	gamecontrollers_assigned.clear();
+	supportedControllers.clear();
+}
+
 void InitGameControllers() {
 	std::string configFile = sago::getConfigHome()+"/blockattack/gamecontrollerdb.txt";
 	int errorCode = SDL_GameControllerAddMappingsFromFile(configFile.c_str());
@@ -101,6 +115,7 @@ void InitGameControllers() {
 			int assingToPlayer = GetNextPlayerByGui(guid);
 			controllerStatusMap[instanceId].player = assingToPlayer;
 			supportedControllers.push_back(GameControllerGetName(controller));
+			controllersOpened.push_back(controller);
 			if (verbose) {
 				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  "\n";
 				std::cout << "Assigned to player: " << controllerStatusMap[instanceId].player << "\n";

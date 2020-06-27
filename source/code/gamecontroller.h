@@ -31,6 +31,7 @@ http://www.blockattack.net
 const int deadZoneLimit = 20000;
 
 void InitGameControllers();
+void UnInitGameControllers();
 
 bool isPlayerDownEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerUpEvent(int playerNumber, const SDL_Event& event);

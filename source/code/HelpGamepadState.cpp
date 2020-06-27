@@ -48,12 +48,7 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 }
 
 
-HelpGamepadState::HelpGamepadState() {
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), moveLabel, _("Move cursor"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), pushLabel, _("Push line"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), backLabel, _("Back (Menu)"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), switchLabel, _("Switch"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), confirmLabel, _("Confirm"));
+static std::string getLabelForSupportedControllerNames() {
 	std::string s = _("Only SDL2 compatible controllers are supported!\nSupported controllers: ");
 	for (size_t i = 0 ; i<GetSupportedControllerNames().size(); ++i ) {
 		if (i != 0) {
@@ -61,6 +56,17 @@ HelpGamepadState::HelpGamepadState() {
 		}
 		s+= GetSupportedControllerNames().at(i);
 	}
+	return s;
+}
+
+
+HelpGamepadState::HelpGamepadState() {
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), moveLabel, _("Move cursor"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), pushLabel, _("Push line"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), backLabel, _("Back (Menu)"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), switchLabel, _("Switch"));
+	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), confirmLabel, _("Confirm"));
+	std::string s = getLabelForSupportedControllerNames();
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
 	supportedControllers.SetMaxWidth(740);
 }
@@ -74,6 +80,22 @@ bool HelpGamepadState::IsActive() {
 
 void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
+
+	switch (event.type) {
+		case SDL_CONTROLLERDEVICEADDED:
+		case SDL_CONTROLLERDEVICEREMOVED:
+		case SDL_CONTROLLERDEVICEREMAPPED:
+			UnInitGameControllers();
+			InitGameControllers();
+			{
+				std::string s = getLabelForSupportedControllerNames();
+				setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
+			}
+			break;
+		default:
+			//none
+			break;
+	};
 
 	if (isConfirmEvent(event) || isEscapeEvent(event)) {
 		isActive = false;
