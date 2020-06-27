@@ -104,9 +104,13 @@ DialogBox::DialogBox(int x, int y, const std::string& name, const std::string& h
 		virtualKeyboard.gamePadCharFields.emplace_back();
 		sago::SagoTextField& tf = virtualKeyboard.gamePadCharFields.back();
 		setButtonFont(&globalData.spriteHolder->GetDataHolder(), tf, theChar.c_str());
-		std::cout << *position;
+		if (globalData.verboseLevel) {
+			std::cout << *position;
+		}
 	}
-	std::cout << "\n";
+	if (globalData.verboseLevel) {
+		std::cout << "\n";
+	}
 }
 
 
