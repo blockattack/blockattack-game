@@ -163,6 +163,16 @@ static bool skipThisPlayer(int playerNumber, const SDL_Event& event) {
 	return true;
 }
 
+
+bool isGameControllerConnectionEvent(const SDL_Event& event) {
+	if ( event.type == SDL_CONTROLLERDEVICEADDED
+	        || event.type == SDL_CONTROLLERDEVICEREMOVED
+	        || event.type == SDL_CONTROLLERDEVICEREMAPPED ) {
+		return true;
+	}
+	return false;
+}
+
 bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 	if (skipThisPlayer(playerNumber, event)) {
 		return false;

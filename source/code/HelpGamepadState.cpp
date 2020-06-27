@@ -81,21 +81,12 @@ bool HelpGamepadState::IsActive() {
 void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 
-	switch (event.type) {
-		case SDL_CONTROLLERDEVICEADDED:
-		case SDL_CONTROLLERDEVICEREMOVED:
-		case SDL_CONTROLLERDEVICEREMAPPED:
-			UnInitGameControllers();
-			InitGameControllers();
-			{
-				std::string s = getLabelForSupportedControllerNames();
-				setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
-			}
-			break;
-		default:
-			//none
-			break;
-	};
+	if (isGameControllerConnectionEvent(event)) {
+		UnInitGameControllers();
+		InitGameControllers();
+		std::string s = getLabelForSupportedControllerNames();
+		setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
+	}
 
 	if (isConfirmEvent(event) || isEscapeEvent(event)) {
 		isActive = false;

@@ -39,6 +39,7 @@ bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerRightEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerPushEvent(int playerNumber, const SDL_Event& event);
+bool isGameControllerConnectionEvent(const SDL_Event& event);
 void GameControllerSetVerbose(bool value);
 const std::vector<std::string>& GetSupportedControllerNames();
 
