@@ -211,7 +211,7 @@ static bool isGamePadREvent(const SDL_Event& event) {
 }
 
 
-void DialogBox::virtualKeyboardWriteSelectedChar(ReadKeyboard *rk, const std::string& insertChar) const {
+void DialogBox::virtualKeyboardWriteSelectedChar(ReadKeyboard* rk, const std::string& insertChar) const {
 	if (insertChar == virtualKeyboard.backspace) {
 		rk->emulateBackspace();
 	}

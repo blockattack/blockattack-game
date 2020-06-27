@@ -70,20 +70,20 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless, int level = 0) {
 	if (endless) {
 		std::string header;
 		switch (level) {
-			case 1:
-				header = _("Endless (Fast):");
-				break;
-			case 2:
-				header = _("Endless (Faster):");
-				break;
-			case 3:
-				header = _("Endless (Even faster):");
-				break;
-			case 4:
-				header = _("Endless (Fastest):");
-				break;
-			default:
-				header = _("Endless:");
+		case 1:
+			header = _("Endless (Fast):");
+			break;
+		case 2:
+			header = _("Endless (Faster):");
+			break;
+		case 3:
+			header = _("Endless (Even faster):");
+			break;
+		case 4:
+			header = _("Endless (Fastest):");
+			break;
+		default:
+			header = _("Endless:");
 		};
 		Write(globalData.screen, x+100,y+100, header.c_str() );
 	}
@@ -93,21 +93,21 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless, int level = 0) {
 	for (int i =0; i<10; i++) {
 		record r;
 		if (endless) {
-			switch(level) {
-				case 1:
-					r = theTopScoresEndless1.getScoreNumber(i);
-					break;
-				case 2:
-					r = theTopScoresEndless2.getScoreNumber(i);
-					break;
-				case 3:
-					r = theTopScoresEndless3.getScoreNumber(i);
-					break;
-				case 4:
-					r = theTopScoresEndless4.getScoreNumber(i);
-					break;
-				default:
-					r = theTopScoresEndless0.getScoreNumber(i);
+			switch (level) {
+			case 1:
+				r = theTopScoresEndless1.getScoreNumber(i);
+				break;
+			case 2:
+				r = theTopScoresEndless2.getScoreNumber(i);
+				break;
+			case 3:
+				r = theTopScoresEndless3.getScoreNumber(i);
+				break;
+			case 4:
+				r = theTopScoresEndless4.getScoreNumber(i);
+				break;
+			default:
+				r = theTopScoresEndless0.getScoreNumber(i);
 			}
 		}
 		else {
@@ -195,21 +195,21 @@ bool ScoresDisplay::IsActive() {
 
 void ScoresDisplay::Draw(SDL_Renderer*) {
 	switch (page) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-			//Highscores, endless
-			DrawHighscores(100,100,true, page);
-			break;
-		case 5:
-			//Highscores, Time Trial
-			DrawHighscores(100,100,false);
-			break;
-		case 6:
-		default:
-			DrawStats();
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+		//Highscores, endless
+		DrawHighscores(100,100,true, page);
+		break;
+	case 5:
+		//Highscores, Time Trial
+		DrawHighscores(100,100,false);
+		break;
+	case 6:
+	default:
+		DrawStats();
 	};
 
 	const sago::SagoDataHolder* holder = &globalData.spriteHolder->GetDataHolder();

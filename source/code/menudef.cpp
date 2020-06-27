@@ -212,8 +212,8 @@ static void runTwoPlayerVs() {
 
 static void SetAlwaysSoftwareLabel(Button* b) {
 	b->setLabel(Config::getInstance()->getInt("always-software")?
-			_("Always use software render: On")
-			: _("Always use software render: Off"));
+	            _("Always use software render: On")
+	            : _("Always use software render: Off"));
 }
 
 static void SetMusicLabel (Button* b) {
@@ -449,7 +449,9 @@ void SafeModeMenu() {
 	bOnce.setLabel(_("Use software renderer this time"));
 	bAlways.setLabel(_("Always use software renderer"));
 	bOnce.setPopOnRun(true);
-	bAlways.setAction([]() {Config::getInstance()->setInt("always-software", 1); });
+	bAlways.setAction([]() {
+		Config::getInstance()->setInt("always-software", 1);
+	});
 	bAlways.setPopOnRun(true);
 	safeMode.addButton(&bOnce);
 	safeMode.addButton(&bAlways);
