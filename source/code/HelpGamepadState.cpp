@@ -86,6 +86,7 @@ void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 		InitGameControllers();
 		std::string s = getLabelForSupportedControllerNames();
 		setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
+		processed = true;
 	}
 
 	if (isConfirmEvent(event) || isEscapeEvent(event)) {

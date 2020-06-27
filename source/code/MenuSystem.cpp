@@ -334,6 +334,12 @@ void Menu::Draw(SDL_Renderer* target) {
 #endif
 }
 void Menu::ProcessInput(const SDL_Event& event, bool& processed) {
+	if (isGameControllerConnectionEvent(event)) {
+		UnInitGameControllers();
+		InitGameControllers();
+		processed = true;
+	}
+
 	if (isUpEvent(event)) {
 		marked--;
 		if (marked<0) {
