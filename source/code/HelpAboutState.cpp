@@ -21,6 +21,7 @@ https://blockattack.net
 ===========================================================================
 */
 
+#include "HelpCommon.hpp"
 #include "HelpAboutState.hpp"
 #include "global.hpp"
 #include "common.h"
@@ -43,15 +44,7 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetText(text);
 }
 
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
-	field.SetHolder(holder);
-	field.SetFont("freeserif");
-	field.SetColor({255,255,255,255});
-	field.SetColor({0,0,0,255});
-	field.SetFontSize(20);
-	field.SetOutline(0, {0,0,0,255});
-	field.SetText(text);
-}
+
 
 
 
@@ -80,7 +73,7 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Save folder:") << " " << PHYSFS_getWriteDir() << "\n";
 	infoStream << _("Locale:") << " " << setlocale( LC_CTYPE, nullptr ) << "\n";
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
+	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
 	sago::WriteFileContent("about.txt", infoStream.str());
 }
 

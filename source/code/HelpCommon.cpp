@@ -41,3 +41,13 @@ void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextField& fiel
 void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
 	setHelp30FontTemplate(holder, field, text);
 }
+
+void setHelpBoxFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
+	field.SetHolder(holder);
+	field.SetFont("freeserif");
+	field.SetColor({255,255,255,255});
+	field.SetColor({0,0,0,255});
+	field.SetFontSize(20);
+	field.SetOutline(0, {0,0,0,255});
+	field.SetText(text);
+}

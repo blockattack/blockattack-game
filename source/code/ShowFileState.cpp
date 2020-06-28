@@ -17,6 +17,7 @@ https://blockattack.net
 ===========================================================================
 */
 
+#include "HelpCommon.hpp"
 #include "ShowFileState.hpp"
 #include "global.hpp"
 #include "common.h"
@@ -34,20 +35,10 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetText(text);
 }
 
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
-	field.SetHolder(holder);
-	field.SetFont("freeserif");
-	field.SetColor({255,255,255,255});
-	field.SetColor({0,0,0,255});
-	field.SetFontSize(20);
-	field.SetOutline(0, {0,0,0,255});
-	field.SetText(text);
-}
-
 ShowFileState::ShowFileState() {
 	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, "");
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), infoBox, "");
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), filenameField, "");
+	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), infoBox, "");
+	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), filenameField, "");
 }
 
 ShowFileState::~ShowFileState() {
