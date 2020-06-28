@@ -77,5 +77,7 @@ private:
 	int oldmousey = 0;
 };
 
+void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width);
+
 #endif /* DIALOGBOX_HPP */
 

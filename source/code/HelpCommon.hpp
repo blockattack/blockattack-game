@@ -21,6 +21,10 @@ https://blockattack.net
 ===========================================================================
 */
 
+
+#ifndef _HELP_COMMON_HPP
+#define _HELP_COMMON_HPP
+
 #include "sago/SagoTextBox.hpp"
 #include "sago/SagoTextField.hpp"
 
@@ -29,3 +33,5 @@ void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextField& fiel
 void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text);
 
 void setHelpBoxFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text);
+
+#endif  //_HELP_COMMON_HPP

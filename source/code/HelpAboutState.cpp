@@ -21,6 +21,7 @@ https://blockattack.net
 ===========================================================================
 */
 
+#include "DialogBox.hpp"
 #include "HelpCommon.hpp"
 #include "HelpAboutState.hpp"
 #include "global.hpp"
@@ -93,8 +94,6 @@ void HelpAboutState::ProcessInput(const SDL_Event& event, bool& processed) {
 		processed = true;
 	}
 }
-
-extern void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width);
 
 void HelpAboutState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
