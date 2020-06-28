@@ -29,7 +29,7 @@ https://blockattack.net
 
 const int buttonOffset = 160;
 
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
+template<typename T> void setHelpGamepadFontTemplate(const sago::SagoDataHolder* holder, T& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
@@ -38,13 +38,12 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetText(text);
 }
 
+static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
+	setHelpGamepadFontTemplate(holder, field, text);
+}
+
 static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
-	field.SetHolder(holder);
-	field.SetFont("freeserif");
-	field.SetColor({255,255,255,255});
-	field.SetFontSize(30);
-	field.SetOutline(2, {0,0,0,255});
-	field.SetText(text);
+	setHelpGamepadFontTemplate(holder, field, text);
 }
 
 
