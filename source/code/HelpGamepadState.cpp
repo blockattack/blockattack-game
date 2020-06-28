@@ -21,6 +21,7 @@ https://blockattack.net
 ===========================================================================
 */
 
+#include "HelpCommon.hpp"
 #include "HelpGamepadState.hpp"
 #include "global.hpp"
 #include "common.h"
@@ -28,23 +29,6 @@ https://blockattack.net
 #include "gamecontroller.h"
 
 const int buttonOffset = 160;
-
-template<typename T> void setHelpGamepadFontTemplate(const sago::SagoDataHolder* holder, T& field, const char* text) {
-	field.SetHolder(holder);
-	field.SetFont("freeserif");
-	field.SetColor({255,255,255,255});
-	field.SetFontSize(30);
-	field.SetOutline(2, {0,0,0,255});
-	field.SetText(text);
-}
-
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
-	setHelpGamepadFontTemplate(holder, field, text);
-}
-
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text) {
-	setHelpGamepadFontTemplate(holder, field, text);
-}
 
 
 static std::string getLabelForSupportedControllerNames() {
@@ -60,13 +44,13 @@ static std::string getLabelForSupportedControllerNames() {
 
 
 HelpGamepadState::HelpGamepadState() {
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), moveLabel, _("Move cursor"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), pushLabel, _("Push line"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), backLabel, _("Back (Menu)"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), switchLabel, _("Switch"));
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), confirmLabel, _("Confirm"));
+	setHelp30Font(&globalData.spriteHolder->GetDataHolder(), moveLabel, _("Move cursor"));
+	setHelp30Font(&globalData.spriteHolder->GetDataHolder(), pushLabel, _("Push line"));
+	setHelp30Font(&globalData.spriteHolder->GetDataHolder(), backLabel, _("Back (Menu)"));
+	setHelp30Font(&globalData.spriteHolder->GetDataHolder(), switchLabel, _("Switch"));
+	setHelp30Font(&globalData.spriteHolder->GetDataHolder(), confirmLabel, _("Confirm"));
 	std::string s = getLabelForSupportedControllerNames();
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
+	setHelp30Font(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
 	supportedControllers.SetMaxWidth(740);
 }
 
@@ -84,7 +68,7 @@ void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 		UnInitGameControllers();
 		InitGameControllers();
 		std::string s = getLabelForSupportedControllerNames();
-		setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
+		setHelp30Font(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
 		processed = true;
 	}
 
