@@ -21,7 +21,10 @@ https://blockattack.net
 ===========================================================================
 */
 
-#if defined(_WIN32) 
+#ifndef OS_HPP
+#define OS_HPP
+
+#if defined(_WIN32)
 #include "windows.h"
 #include "shlobj.h"
 #endif
@@ -41,3 +44,5 @@ void OsCreateSaveFolder();
 bool OsPathIsRelative(const std::string& path);
 
 void OsCreateFolder(const std::string& path);
+
+#endif  /* OS_HPP */
