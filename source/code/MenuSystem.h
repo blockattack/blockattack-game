@@ -67,10 +67,10 @@ public:
 	int x = 0;
 	int y = 0;
 
-	Button();
+	Button() = default;
 	Button(const Button& b);
 	Button& operator=(const Button& other);
-	virtual ~Button();
+	virtual ~Button() = default;
 
 
 	//Set the text to write on the button
@@ -107,10 +107,10 @@ public:
 	Menu(SDL_Renderer *screen);
 	Menu(SDL_Renderer *screen, const std::string& title, bool isSubmenu);
 	virtual ~Menu() {}
-	
+
 	//Add a button to the menu
 	void addButton(Button *b);
-	
+
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;

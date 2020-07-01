@@ -59,15 +59,6 @@ sago::SagoTextField* ButtonGfx::getLabel(const std::string& text) {
 	return labels[text].get();
 }
 
-Button::Button() {
-	label = "";
-	marked = false;
-	action = nullptr;
-	popOnRun = false;
-}
-
-Button::~Button() {
-}
 
 Button::Button(const Button& b) : action{b.action}, label{b.label}, marked{b.marked} {
 }
