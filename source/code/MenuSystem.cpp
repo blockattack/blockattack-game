@@ -171,22 +171,7 @@ bool isUpEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP ) {
-			return true;
-		}
-	}
-	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
-		checkDeadZone(event);
-		const SDL_ControllerAxisEvent& a = event.caxis;
-		if (getDeadZone(a.which, a.axis)) {
-			if (event.caxis.value < -deadZoneLimit) {
-				setDeadZone(a.which,a.axis,false);
-				return true;
-			}
-		}
-	}
-	return false;
+	return isControllerUpEvent(event);
 }
 
 bool isDownEvent(const SDL_Event& event) {
@@ -195,22 +180,7 @@ bool isDownEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN ) {
-			return true;
-		}
-	}
-	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY ) {
-		checkDeadZone(event);
-		const SDL_ControllerAxisEvent& a = event.caxis;
-		if (getDeadZone(a.which, a.axis)) {
-			if (event.caxis.value > deadZoneLimit) {
-				setDeadZone(a.which,a.axis,false);
-				return true;
-			}
-		}
-	}
-	return false;
+	return isControllerDownEvent(event);
 }
 
 bool isLeftEvent(const SDL_Event& event) {
@@ -219,22 +189,7 @@ bool isLeftEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT ) {
-			return true;
-		}
-	}
-	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
-		checkDeadZone(event);
-		const SDL_ControllerAxisEvent& a = event.caxis;
-		if (getDeadZone(a.which, a.axis)) {
-			if (event.caxis.value < -deadZoneLimit) {
-				setDeadZone(a.which,a.axis,false);
-				return true;
-			}
-		}
-	}
-	return false;
+	return isControllerLeftEvent(event);
 }
 
 bool isRightEvent(const SDL_Event& event) {
@@ -243,22 +198,7 @@ bool isRightEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ) {
-			return true;
-		}
-	}
-	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ) {
-		checkDeadZone(event);
-		const SDL_ControllerAxisEvent& a = event.caxis;
-		if (getDeadZone(a.which, a.axis)) {
-			if (event.caxis.value > deadZoneLimit) {
-				setDeadZone(a.which,a.axis,false);
-				return true;
-			}
-		}
-	}
-	return false;
+	return isControllerRightEvent(event);
 }
 
 bool isEscapeEvent(const SDL_Event& event) {

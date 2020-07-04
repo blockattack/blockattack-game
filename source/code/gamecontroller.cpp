@@ -173,10 +173,7 @@ bool isGameControllerConnectionEvent(const SDL_Event& event) {
 	return false;
 }
 
-bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
-	if (skipThisPlayer(playerNumber, event)) {
-		return false;
-	}
+bool isControllerDownEvent(const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN ) {
 			return true;
@@ -195,10 +192,14 @@ bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 	return false;
 }
 
-bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
+bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
 	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
+	return isControllerDownEvent(event);
+}
+
+bool isControllerUpEvent(const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP ) {
 			return true;
@@ -217,10 +218,14 @@ bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
 	return false;
 }
 
-bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
+bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
 	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
+	return isControllerUpEvent(event);
+}
+
+bool isControllerLeftEvent(const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT ) {
 			return true;
@@ -239,10 +244,14 @@ bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
 	return false;
 }
 
-bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
+bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
 	if (skipThisPlayer(playerNumber, event)) {
 		return false;
 	}
+	return isControllerLeftEvent(event);
+}
+
+bool isControllerRightEvent(const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT ) {
 			return true;
@@ -259,6 +268,13 @@ bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
 		}
 	}
 	return false;
+}
+
+bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
+	if (skipThisPlayer(playerNumber, event)) {
+		return false;
+	}
+	return isControllerRightEvent(event);
 }
 
 bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event) {

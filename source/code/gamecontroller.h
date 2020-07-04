@@ -33,6 +33,11 @@ const int deadZoneLimit = 20000;
 void InitGameControllers();
 void UnInitGameControllers();
 
+bool isControllerDownEvent(const SDL_Event& event);
+bool isControllerUpEvent(const SDL_Event& event);
+bool isControllerLeftEvent(const SDL_Event& event);
+bool isControllerRightEvent(const SDL_Event& event);
+
 bool isPlayerDownEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerUpEvent(int playerNumber, const SDL_Event& event);
 bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event);
