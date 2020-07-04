@@ -27,7 +27,6 @@ SOFTWARE.
 #include <iostream>
 #include <iconv.h>
 #include <string.h>
-#include <memory>
 
 #if PHYSFS_VER_MAJOR < 3
 #define PHYSFS_readBytes(X,Y,Z) PHYSFS_read(X,Y,1,Z)
@@ -55,11 +54,11 @@ bool FileExists(const char* filename) {
 	return PHYSFS_exists(filename);
 }
 
-std::string GetFileContent(const char* filename) {
-	string ret;
+void ReadBytesFromFile(const char* filename, std::unique_ptr<char[]>& dest, unsigned int& bytes) {
+	bytes = 0;
 	if (!PHYSFS_exists(filename)) {
-		cerr << "GetFileContent - File does not exists: " << filename << "\n";
-		return ret;
+		cerr << "ReadBytesFromFile - File does not exists: " << filename << "\n";
+		return;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(filename);
 	unsigned int m_size = PHYSFS_fileLength(myfile);
@@ -68,10 +67,23 @@ std::string GetFileContent(const char* filename) {
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
 		cerr << "Error: Curropt data file: " << filename << "\n";
-		return ret;
+		return;
 	}
 	PHYSFS_close(myfile);
-	//Now create a std::string 
+	std::swap(m_data, dest);
+	bytes = m_size;
+}
+
+std::string GetFileContent(const char* filename) {
+	string ret;
+	if (!PHYSFS_exists(filename)) {
+		cerr << "GetFileContent - File does not exists: " << filename << "\n";
+		return ret;
+	}
+	unsigned int m_size = 0;
+	std::unique_ptr<char[]> m_data;
+	ReadBytesFromFile(filename, m_data, m_size);
+	//Now create a std::string
 	ret = string(m_data.get(), m_data.get()+m_size);
 	return ret;
 }

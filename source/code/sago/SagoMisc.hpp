@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace sago {
 
@@ -37,6 +38,16 @@ namespace sago {
 	 * @return A vector with the filenames in the given directory. If empty the directory was empty or did not exist
 	 */
 	std::vector<std::string> GetFileList(const char* dir);
+
+	/**
+	 * Reads an entire file into memory.
+	 * PHYSFS must be setup before hand
+	 * @param filename The file to read
+	 * @param dest The unique pointer in which the bytes will be written
+	 * @param bytes Number of bytes written
+	 * @return The content of the file. If empty either the file was empty, did not exist or could not be opened
+	 */
+	void ReadBytesFromFile(const char* filename, std::unique_ptr<char[]>& dest, unsigned int& bytes);
 
 	/**
 	 * Reads an entire file into memory.

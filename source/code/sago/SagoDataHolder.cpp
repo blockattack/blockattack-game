@@ -31,6 +31,7 @@ SOFTWARE.
 #include <memory>
 #include <SDL_mixer.h>
 #include "SagoMiscSdl2.hpp"
+#include "SagoMisc.hpp"
 
 #if PHYSFS_VER_MAJOR < 3
 #define PHYSFS_readBytes(X,Y,Z) PHYSFS_read(X,Y,1,Z)
@@ -115,20 +116,12 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 	if (!PHYSFS_exists(path.c_str())) {
 		sago::SagoFatalErrorF("getTextureFailed - Texture does not exist: %s", path.c_str());
 	}
-	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-	std::unique_ptr<char[]> m_data(new char[m_size]);
-	int length_read = PHYSFS_readBytes (myfile, m_data.get(), m_size);
-	if (length_read != (int)m_size) {
-		PHYSFS_close(myfile);
-		std::cerr << "Error: Corrupt data file: " << path << "\n";
-		return ret;
-	}
-	PHYSFS_close(myfile);
+	unsigned int m_size = 0;
+	std::unique_ptr<char[]> m_data;
+	ReadBytesFromFile(path.c_str(), m_data, m_size);
 	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
 	//The above might fail an return null.
 	if (!rw) {
-		PHYSFS_close(myfile);
 		std::cerr << "Error. Corrupt data file!\n";
 		return NULL;
 	}
@@ -157,22 +150,14 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 		std::cerr << "getFontPtr - Font does not exists: " << path << "\n";
 		return ret;
 	}
-	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-	std::unique_ptr<char[]> m_data(new char[m_size]);
-	int length_read = PHYSFS_readBytes (myfile, m_data.get(), m_size);
-	if (length_read != (int)m_size) {
-		PHYSFS_close(myfile);
-		std::cerr << "Error: Corrupt data file: " << path << "\n";
-		return ret;
-	}
-	PHYSFS_close(myfile);
+	unsigned int m_size = 0;
+	std::unique_ptr<char[]> m_data;
+	ReadBytesFromFile(path.c_str(), m_data, m_size);
 
 	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
 
 	//The above might fail an return null.
 	if (!rw) {
-		PHYSFS_close(myfile);
 		std::cerr << "Error: Corrupt data file!\n";
 		return ret;
 	}
@@ -200,21 +185,13 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 		std::cerr << "getMusicPtr - Music file does not exists: " << path << "\n";
 		return ret;
 	}
-	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-	std::unique_ptr<char[]> m_data(new char[m_size]);
-	int length_read = PHYSFS_readBytes (myfile, m_data.get(), m_size);
-	if (length_read != (int)m_size) {
-		PHYSFS_close(myfile);
-		std::cerr << "Error: Corrupt data file: " << path << "\n";
-		return ret;
-	}
-	PHYSFS_close(myfile);
+	unsigned int m_size = 0;
+	std::unique_ptr<char[]> m_data;
+	ReadBytesFromFile(path.c_str(), m_data, m_size);
 	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
 
 	//The above might fail an return null.
 	if (!rw) {
-		PHYSFS_close(myfile);
 		std::cerr << "Error. Corrupt data file!\n";
 		return NULL;
 	}
@@ -243,21 +220,13 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 		std::cerr << "getSoundPtr - Sound file does not exists: " << path << "\n";
 		return ret;
 	}
-	PHYSFS_file* myfile = PHYSFS_openRead(path.c_str());
-	unsigned int m_size = PHYSFS_fileLength(myfile);
-	std::unique_ptr<char[]> m_data(new char[m_size]);
-	int length_read = PHYSFS_readBytes (myfile, m_data.get(), m_size);
-	if (length_read != (int)m_size) {
-		PHYSFS_close(myfile);
-		std::cerr << "Error: Corrupt data file: " << path << "\n";
-		return ret;
-	}
-	PHYSFS_close(myfile);
+	unsigned int m_size = 0;
+	std::unique_ptr<char[]> m_data;
+	ReadBytesFromFile(path.c_str(), m_data, m_size);
 	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
 
 	//The above might fail an return null.
 	if (!rw) {
-		PHYSFS_close(myfile);
 		std::cerr << "Error. Corrupt data file!\n";
 		return NULL;
 	}
