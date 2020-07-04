@@ -143,15 +143,11 @@ void Menu::addButton(Button* b) {
 	placeButtons();
 }
 
-Menu::Menu(SDL_Renderer* screen) : buttons{std::vector<Button*>(10)} {
-	this->screen = screen;
-	isSubmenu = true;
+Menu::Menu(SDL_Renderer* screen) : buttons{std::vector<Button*>(10)}, isSubmenu{true}, screen{screen} {
 	exit.setLabel( _("Back") );
 }
 
-Menu::Menu(SDL_Renderer* screen,bool submenu) : buttons{std::vector<Button*>(0)} {
-	this->screen = screen;
-	isSubmenu = submenu;
+Menu::Menu(SDL_Renderer* screen,bool submenu) : buttons{std::vector<Button*>(0)}, isSubmenu{submenu}, screen{screen} {
 	if (isSubmenu) {
 		exit.setLabel( _("Back") );
 	}
@@ -160,10 +156,7 @@ Menu::Menu(SDL_Renderer* screen,bool submenu) : buttons{std::vector<Button*>(0)}
 	}
 }
 
-Menu::Menu(SDL_Renderer* screen, const std::string& title, bool submenu) : title{title} {
-	this->screen = screen;
-	buttons = std::vector<Button*>(0);
-	isSubmenu = submenu;
+Menu::Menu(SDL_Renderer* screen, const std::string& title, bool submenu) : buttons{std::vector<Button*>(0)}, isSubmenu{submenu}, screen{screen}, title{title} {
 	if (isSubmenu) {
 		exit.setLabel(_("Back") );
 	}
