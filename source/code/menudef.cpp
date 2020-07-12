@@ -110,9 +110,8 @@ public:
 };
 
 
-Button_changekey::Button_changekey(SDL_Keycode* key, string keyname) {
-	m_key2change = key;
-	m_keyname = keyname;
+Button_changekey::Button_changekey(SDL_Keycode* key, string keyname)
+	: m_key2change{key}, m_keyname{keyname} {
 	setLabel(m_keyname+" : "+getKeyName(*m_key2change));
 }
 
