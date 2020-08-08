@@ -1389,7 +1389,6 @@ int runGame(Gametype gametype, int level) {
 		bool mustWriteScreenshot = false;
 
 		BlockGameAction a;
-		a.action = BlockGameAction::Action::NONE;
 		a.tick = SDL_GetTicks();
 		if (true) {
 			SDL_Event event;
