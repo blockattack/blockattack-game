@@ -30,8 +30,6 @@ http://blockattack.net
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
 
-using std::string;
-using std::vector;
 
 #if 0
 //Menu
@@ -54,8 +52,8 @@ void OpenScoresDisplay();
 extern control keySettings[3];
 
 //Function to return the name of a key, to be displayed...
-string getKeyName(SDL_Keycode key) {
-	string keyname(SDL_GetKeyName(key));
+std::string getKeyName(SDL_Keycode key) {
+	std::string keyname(SDL_GetKeyName(key));
 	if (key == SDLK_UP) {
 		keyname = _("Up arrow");
 	}
@@ -101,7 +99,7 @@ string getKeyName(SDL_Keycode key) {
 class Button_changekey : public Button {
 private:
 	SDL_Keycode* m_key2change;
-	string m_keyname;
+	std::string m_keyname;
 public:
 	Button_changekey(SDL_Keycode* key, const char* keyname);
 	void doAction();
