@@ -99,13 +99,13 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	SDL_RenderDrawLine(target, globalData.xsize/2, 80, globalData.xsize/2, 90);
 	pushLabel.Draw(target, globalData.xsize/2, 80, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom);
 	//Back lines
-	SDL_RenderDrawLine(target, 625+OFFSETX, 168, 800+OFFSETX, 168);
-	SDL_RenderDrawLine(target, 800+OFFSETX, 158, 800+OFFSETX, 195);
-	SDL_RenderDrawLine(target, 490+OFFSETX, 195, 800+OFFSETX, 195);
+	SDL_RenderDrawLine(target, 800+OFFSETX, 158, 800+OFFSETX, 207);
+	SDL_RenderDrawLine(target, 490+OFFSETX, 180, 800+OFFSETX, 180);
+	SDL_RenderDrawLine(target, 490+OFFSETX, 180, 490+OFFSETX, 195);
+	SDL_RenderDrawLine(target, 663+OFFSETX, 207, 800+OFFSETX, 207);
 	backLabel.Draw(target, 800+OFFSETX, 156, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom);
 	SDL_RenderDrawLine(target, 625+OFFSETX, 241, 900+OFFSETX, 241);
-	SDL_RenderDrawLine(target, 663+OFFSETX, 207, 900+OFFSETX, 207);
-	SDL_RenderDrawLine(target, 900+OFFSETX, 207, 900+OFFSETX, 400);
+	SDL_RenderDrawLine(target, 900+OFFSETX, 241, 900+OFFSETX, 400);
 	switchLabel.Draw(target, 900+OFFSETX, 404, sago::SagoTextField::Alignment::center);
 	confirmLabel.Draw(target, 900+OFFSETX, 404+30, sago::SagoTextField::Alignment::center);
 	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
