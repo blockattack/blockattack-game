@@ -31,8 +31,6 @@ http://blockattack.net
 #include "ShowFileState.hpp"
 
 using std::string;
-using std::cerr;
-using std::cout;
 using std::vector;
 
 #if 0
@@ -95,7 +93,7 @@ string getKeyName(SDL_Keycode key) {
 		keyname = _("Space");
 	}
 	if (globalData.verboseLevel) {
-		cout << key << " translated to " << keyname << "\n";
+		std::cout << key << " translated to " << keyname << "\n";
 	}
 	return keyname;
 }
