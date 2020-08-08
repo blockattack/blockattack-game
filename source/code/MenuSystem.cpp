@@ -208,7 +208,7 @@ bool isEscapeEvent(const SDL_Event& event) {
 		}
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y || event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B || event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
 			return true;
 		}
 	}
@@ -222,7 +222,7 @@ bool isConfirmEvent(const SDL_Event& event) {
 		}
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A || event.cbutton.button == SDL_CONTROLLER_BUTTON_B ) {
+		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A ) {
 			return true;
 		}
 	}
