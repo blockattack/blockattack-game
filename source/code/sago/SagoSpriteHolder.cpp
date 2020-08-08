@@ -31,10 +31,6 @@ SOFTWARE.
 #include <string.h>
 #include <boost/algorithm/string/predicate.hpp>
 
-using std::string;
-using std::cerr;
-using std::cout;
-using std::vector;
 
 namespace sago {
 
@@ -80,12 +76,12 @@ static std::string getDefaultValue(const rapidjson::Value& value, const char* na
 }
 
 void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
-	string fullfile = "sprites/"+filename;
-	string content = sago::GetFileContent(fullfile.c_str());
+	std::string fullfile = "sprites/"+filename;
+	std::string content = sago::GetFileContent(fullfile.c_str());
 	rapidjson::Document document;
 	document.Parse(content.c_str());
 	if ( !document.IsObject() ) {
-		cerr << "Failed to parse: " << fullfile << "\n";
+		std::cerr << "Failed to parse: " << fullfile << "\n";
 		return;
 	}
 	for (auto& m : document.GetObject()) {
@@ -96,7 +92,7 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 			}
 			continue;
 		}
-		string textureName = getDefaultValue(m.value, "texture", "fallback");
+		std::string textureName = getDefaultValue(m.value, "texture", "fallback");
 		int topx = getDefaultValue(m.value, "topx", 0);
 		int topy = getDefaultValue(m.value, "topy",0);
 		int height = getDefaultValue(m.value, "height",0);
@@ -123,13 +119,13 @@ void SagoSpriteHolder::ReadSprites() {
 	for (std::string& item : spritefiles  ) {
 		if (boost::algorithm::ends_with(item,".sprite")) {
 			if (data->verbose) {
-				cout << "Found " << item << "\n";
+				std::cout << "Found " << item << "\n";
 			}
 			ReadSpriteFile(item);
 		}
 		else {
 			if (data->verbose) {
-				cout << "Ignoreing " << item << "\n";
+				std::cout << "Ignoreing " << item << "\n";
 			}
 		}
 	}

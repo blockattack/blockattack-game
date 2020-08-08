@@ -33,15 +33,11 @@ SOFTWARE.
 #define PHYSFS_writeBytes(X,Y,Z) PHYSFS_write(X,Y,1,Z)
 #endif
 
-using std::string;
-using std::cerr;
-using std::vector;
-
 namespace sago {
 
 
 std::vector<std::string> GetFileList(const char* dir) {
-	vector<string> ret;
+	std::vector<std::string> ret;
 	char** rc = PHYSFS_enumerateFiles(dir);
 	for (char** i = rc; *i != NULL; i++) {
 		ret.push_back(*i);
@@ -57,7 +53,7 @@ bool FileExists(const char* filename) {
 void ReadBytesFromFile(const char* filename, std::unique_ptr<char[]>& dest, unsigned int& bytes) {
 	bytes = 0;
 	if (!PHYSFS_exists(filename)) {
-		cerr << "ReadBytesFromFile - File does not exists: " << filename << "\n";
+		std::cerr << "ReadBytesFromFile - File does not exists: " << filename << "\n";
 		return;
 	}
 	PHYSFS_file* myfile = PHYSFS_openRead(filename);
@@ -66,7 +62,7 @@ void ReadBytesFromFile(const char* filename, std::unique_ptr<char[]>& dest, unsi
 	int length_read = PHYSFS_readBytes (myfile, m_data.get(), m_size);
 	if (length_read != (int)m_size) {
 		PHYSFS_close(myfile);
-		cerr << "Error: Curropt data file: " << filename << "\n";
+		std::cerr << "Error: Curropt data file: " << filename << "\n";
 		return;
 	}
 	PHYSFS_close(myfile);
@@ -75,16 +71,16 @@ void ReadBytesFromFile(const char* filename, std::unique_ptr<char[]>& dest, unsi
 }
 
 std::string GetFileContent(const char* filename) {
-	string ret;
+	std::string ret;
 	if (!PHYSFS_exists(filename)) {
-		cerr << "GetFileContent - File does not exists: " << filename << "\n";
+		std::cerr << "GetFileContent - File does not exists: " << filename << "\n";
 		return ret;
 	}
 	unsigned int m_size = 0;
 	std::unique_ptr<char[]> m_data;
 	ReadBytesFromFile(filename, m_data, m_size);
 	//Now create a std::string
-	ret = string(m_data.get(), m_data.get()+m_size);
+	ret = std::string(m_data.get(), m_data.get()+m_size);
 	return ret;
 }
 
