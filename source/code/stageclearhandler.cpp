@@ -53,9 +53,6 @@ std::vector<Sint32> stageScores(nrOfStageLevels);            //--||--
 Sint32 totalScore = 0;
 Sint32 totalTime = 0;
 
-using std::string;
-using std::cerr;
-using std::vector;
 
 static void SaveStageClearStages() {
 	std::stringstream ss;

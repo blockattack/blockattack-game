@@ -80,24 +80,18 @@ https://blockattack.net
 *******************************************************************************/
 #include "mainVars.inc"
 
-using std::string;
-using std::cerr;
-using std::cout;
-using std::exception;
-using std::vector;
-
 GlobalData globalData;
 
 static int InitImages(sago::SagoSpriteHolder& holder);
 
 static void FsSearchParthMainAppend(std::vector<std::string>& paths) {
-	paths.push_back((string)SHAREDIR+"/blockattack.data");
-	paths.push_back((string)PHYSFS_getBaseDir()+"/blockattack.data");
-	paths.push_back((string)PHYSFS_getBaseDir()+"/data");
+	paths.push_back((std::string)SHAREDIR+"/blockattack.data");
+	paths.push_back((std::string)PHYSFS_getBaseDir()+"/blockattack.data");
+	paths.push_back((std::string)PHYSFS_getBaseDir()+"/data");
 }
 
-static void PhysFsSetSearchPath(const vector<string>& paths, const string& savepath) {
-	for (const string& path : paths) {
+static void PhysFsSetSearchPath(const std::vector<std::string>& paths, const std::string& savepath) {
+	for (const std::string& path : paths) {
 		PHYSFS_mount(path.c_str(), "/", 0);
 	}
 	PHYSFS_mount(savepath.c_str(), "/", 0);
@@ -337,7 +331,7 @@ std::string pathToScreenShots() {
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
 void writeScreenShot() {
 	if (globalData.verboseLevel) {
-		cout << "Saving screenshot" << "\n";
+		std::cout << "Saving screenshot" << "\n";
 	}
 	int rightNow = (int)time(nullptr);
 	SDL_Surface* infoSurface = SDL_GetWindowSurface(sdlWindow);
@@ -370,7 +364,7 @@ void writeScreenShot() {
 }
 
 //Function to return the name of a key, to be displayed...
-string getKeyName(SDL_Keycode key);
+std::string getKeyName(SDL_Keycode key);
 
 
 void RunGameState(sago::GameStateInterface& state ) {
@@ -489,7 +483,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	DrawBackground(globalData.screen);
 	theGame->DoPaintJob();
 	theGame2->DoPaintJob();
-	string strHolder;
+	std::string strHolder;
 	strHolder = std::to_string(theGame->GetScore()+theGame->GetHandicap());
 	player1score.SetText(strHolder);
 	player1score.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+100);
@@ -568,8 +562,8 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 			//Blank player2's board:
 			DrawIMG(backBoard,globalData.screen,theGame2->GetTopX(),theGame2->GetTopY());
 			//Write a description:
-			string gametypeName;
-			string infostring;
+			std::string gametypeName;
+			std::string infostring;
 			if (theGame->isTimeTrial()) {
 				gametypeName = _("Time Trial");
 				infostring = _("Score as much as possible in 2 minutes");
@@ -831,9 +825,9 @@ static void MoveBlockGameSdls( BlockGameSdl& game1, BlockGameSdl& game2 ) {
 }
 
 struct globalConfig {
-	string savepath;
-	vector<string> search_paths;
-	string puzzleName;
+	std::string savepath;
+	std::vector<std::string> search_paths;
+	std::string puzzleName;
 	bool allowResize = true;
 	bool autoScale = true;
 	bool softwareRenderer = false;
@@ -854,7 +848,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	desc.add_options()
 	("help,h", "Displays this message")
 	("version", "Display the version information")
-	("config,c", boost::program_options::value<vector<string> >(), "Read a config file with the values. Can be given multiple times")
+	("config,c", boost::program_options::value<std::vector<std::string> >(), "Read a config file with the values. Can be given multiple times")
 	("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
 	("priority", "Causes the game to not sleep between frames.")
 	("software-renderer", "Asks SDL2 to use software renderer")
@@ -863,14 +857,14 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("print-search-path", "Prints the search path and quits")
 	("no-auto-scale", "Do not automatically auto scale")
 	("always-sixteen-nine", "Use 16:9 format even in Window mode")
-	("puzzle-level-file", boost::program_options::value<string>(), "Sets the default puzzle file to load")
+	("puzzle-level-file", boost::program_options::value<std::string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 #ifdef REPLAY_IMPLEMENTED
-	("play-replay", boost::program_options::value<string>(), "Start a replay")
+	("play-replay", boost::program_options::value<std::string>(), "Start a replay")
 #endif
-	("bind-text-domain", boost::program_options::value<string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
+	("bind-text-domain", boost::program_options::value<std::string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
 	        "Default: \"%s\"", LOCALEDIR).c_str())
-	("homepath", boost::program_options::value<string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
+	("homepath", boost::program_options::value<std::string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
 	        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
 
 	;
@@ -879,50 +873,50 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
 		boost::program_options::notify(vm);
 	}
-	catch (exception& e) {
-		cerr << e.what() << "\n";
-		cerr << desc << "\n";
+	catch (std::exception& e) {
+		std::cerr << e.what() << "\n";
+		std::cerr << desc << "\n";
 		throw;
 	}
 	if (vm.count("config")) {
-		vector<string> config_filenames = vm["config"].as<vector<string> >();
-		for ( const string& s : config_filenames) {
+		std::vector<std::string> config_filenames = vm["config"].as<std::vector<std::string> >();
+		for ( const std::string& s : config_filenames) {
 			std::ifstream config_file(s);
 			store(parse_config_file(config_file, desc), vm);
 			notify(vm);
 		}
 	}
 	if (vm.count("bind-text-domain")) {
-		string s = vm["bind-text-domain"].as<string>();
+		std::string s = vm["bind-text-domain"].as<std::string>();
 		bindtextdomain (PACKAGE, s.c_str());
 	}
 	if (vm.count("homepath")) {
-		string s = vm["homepath"].as<string>();
+		std::string s = vm["homepath"].as<std::string>();
 		setPathToSaveFiles(s);
 		conf.savepath = getPathToSaveFiles();
 	}
 	if (vm.count("help")) {
-		cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
+		std::cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
 		                      "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
 		                      "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
-		cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
-		cout << desc << "\n";
-		cout << "Examples:" << "\n";
-		cout << "\tblockattack          \tStart the game normally" << "\n";
-		cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << "\n";
-		cout << "\tblockattack --puzzle-level-file puzzle.levels --puzzle-single-level 3\tStart the game with the default puzzles in level 3" << "\n";
-		cout << "\tblockattack --bind-text-domain /dev/null\t Disables translations" << "\n";
-		cout << "\n";
-		cout << "Report bugs to the issue tracker here: <https://github.com/blockattack/blockattack-game/issues>" << "\n";
+		std::cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
+		std::cout << desc << "\n";
+		std::cout << "Examples:" << "\n";
+		std::cout << "\tblockattack          \tStart the game normally" << "\n";
+		std::cout << "\tblockattack --nosound\tStart the game without sound. Can be used if sound problems prevents the game from starting" << "\n";
+		std::cout << "\tblockattack --puzzle-level-file puzzle.levels --puzzle-single-level 3\tStart the game with the default puzzles in level 3" << "\n";
+		std::cout << "\tblockattack --bind-text-domain /dev/null\t Disables translations" << "\n";
+		std::cout << "\n";
+		std::cout << "Report bugs to the issue tracker here: <https://github.com/blockattack/blockattack-game/issues>" << "\n";
 		exit(0);
 	}
 	if (vm.count("version")) {
-		cout << "blockattack " << VERSION_NUMBER << "\n";
-		cout << "\n";
-		cout << "Copyright (C) 2005-2016 Poul Sander" << "\n";
-		cout << "License GPLv2+: GNU GPL version 2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> or later <http://gnu.org/licenses/gpl.html>" << "\n";
-		cout << "This is free software: you are free to change and redistribute it." << "\n";
-		cout << "There is NO WARRANTY, to the extent permitted by law." << "\n";
+		std::cout << "blockattack " << VERSION_NUMBER << "\n";
+		std::cout << "\n";
+		std::cout << "Copyright (C) 2005-2016 Poul Sander" << "\n";
+		std::cout << "License GPLv2+: GNU GPL version 2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> or later <http://gnu.org/licenses/gpl.html>" << "\n";
+		std::cout << "This is free software: you are free to change and redistribute it." << "\n";
+		std::cout << "There is NO WARRANTY, to the extent permitted by law." << "\n";
 		exit(0);
 	}
 	if (vm.count("nosound")) {
@@ -941,10 +935,10 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 		GameControllerSetVerbose(true);
 	}
 	if (vm.count("print-search-path")) {
-		for (const string& s : conf.search_paths) {
-			cout << s << "\n";
+		for (const std::string& s : conf.search_paths) {
+			std::cout << s << "\n";
 		}
-		cout << conf.savepath << "\n";
+		std::cout << conf.savepath << "\n";
 		exit(0);
 	}
 	if (vm.count("puzzle-single-level")) {
@@ -958,10 +952,10 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 		globalData.alwaysSixteenNine = true;
 	}
 	if (vm.count("puzzle-level-file")) {
-		conf.puzzleName = vm["puzzle-level-file"].as<string>();
+		conf.puzzleName = vm["puzzle-level-file"].as<std::string>();
 	}
 	if (vm.count("play-replay")) {
-		globalData.replayArgument = vm["play-replay"].as<string>();
+		globalData.replayArgument = vm["play-replay"].as<std::string>();
 	}
 
 }
@@ -1005,7 +999,7 @@ int main(int argc, char* argv[]) {
 			sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
 		}
 		if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER ) != 0) {
-			cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << "\n";
+			std::cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << "\n";
 		}
 		InitGameControllers();
 		TTF_Init();
@@ -1016,7 +1010,7 @@ int main(int argc, char* argv[]) {
 		if (!globalData.NoSound) {
 			//If sound has not been disabled, then load the sound system
 			if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
-				cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << "\n"
+				std::cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << "\n"
 				     << "Sound will be disabled!" << "\n";
 				globalData.NoSound = true; //Tries to stop all sound from playing/loading
 			}
@@ -1025,10 +1019,10 @@ int main(int argc, char* argv[]) {
 
 		if (globalData.verboseLevel) {
 			//Copyright notice:
-			cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2016 Poul Sander" << "\n" <<
+			std::cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2016 Poul Sander" << "\n" <<
 			     "A SDL2 based game (see www.libsdl.org)" << "\n" <<
 			     "The game is available under the GPL, see COPYING for details." << "\n";
-			cout << "-------------------------------------------" << "\n";
+			std::cout << "-------------------------------------------" << "\n";
 		}
 
 
@@ -1111,12 +1105,12 @@ int main(int argc, char* argv[]) {
 				screenHeight = configSettings->getInt("screenHeight");
 			}
 			if (globalData.verboseLevel) {
-				cout << "Data loaded from config file" << "\n";
+				std::cout << "Data loaded from config file" << "\n";
 			}
 		}
 		else {
 			if (globalData.verboseLevel) {
-				cout << "Unable to load options file, using default values" << "\n";
+				std::cout << "Unable to load options file, using default values" << "\n";
 			}
 		}
 		if (configSettings->getInt("always-software")) {
@@ -1158,14 +1152,14 @@ int main(int argc, char* argv[]) {
 		if (globalData.verboseLevel) {
 			SDL_RendererInfo info;
 			SDL_GetRendererInfo(renderer, &info);
-			cout << "Renderer: " << info.name << "\n";
+			std::cout << "Renderer: " << info.name << "\n";
 		}
 		globalData.screen = renderer;
 		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
 
 		if (globalData.verboseLevel) {
-			cout << "Images loaded" << "\n";
+			std::cout << "Images loaded" << "\n";
 		}
 
 		BlockGameSdl theGame = BlockGameSdl(globalData.xsize/2-426, 100, &globalData.spriteHolder->GetDataHolder());            //creates game objects
@@ -1248,18 +1242,18 @@ int main(int argc, char* argv[]) {
 		commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
 		if (globalData.verboseLevel) {
-			cout << SPrintStringF("Block Attack - Rise of the Blocks ran for: %i hours %i mins and %i secs", ct.hours, ct.minutes, ct.seconds) << "\n";
+			std::cout << SPrintStringF("Block Attack - Rise of the Blocks ran for: %i hours %i mins and %i secs", ct.hours, ct.minutes, ct.seconds) << "\n";
 		}
 
 		ct = TimeHandler::addTime("totalTime",ct);
 		if (globalData.verboseLevel) {
-			cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
+			std::cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
 		}
 
 		Stats::getInstance()->save();
 		Config::getInstance()->save();
 	}
-	catch (exception& e) {
+	catch (std::exception& e) {
 		sago::SagoFatalError(e.what());
 	}
 	PHYSFS_delete("gameRunning");
@@ -1305,7 +1299,7 @@ int runGame(Gametype gametype, int level) {
 	//game loop
 	int done = 0;
 	if (globalData.verboseLevel) {
-		cout << "Starting game loop" << "\n";
+		std::cout << "Starting game loop" << "\n";
 	}
 
 
@@ -1768,7 +1762,7 @@ int runGame(Gametype gametype, int level) {
 					a.action = BlockGameAction::Action::SET_WON;
 					theGame.DoAction(a);
 				}
-				vector<GarbageStruct> gs;
+				std::vector<GarbageStruct> gs;
 				theGame.PopSendGarbage(gs);
 				for (const GarbageStruct& g : gs ) {
 					BlockGameAction a;

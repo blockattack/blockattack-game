@@ -27,11 +27,6 @@ http://www.blockattack.net
 #include "sago/SagoMisc.hpp"
 #include <sstream>
 
-using std::string;
-using std::stringstream;
-using std::cerr;
-using std::map;
-using std::vector;
 
 Stats* Stats::instance = nullptr;
 
@@ -43,10 +38,10 @@ Stats::Stats() {
 }
 
 void Stats::load() {
-	string fileContent = sago::GetFileContent(statsFileName);
-	stringstream inFile(fileContent);
-	string key;
-	string value;
+	std::string fileContent = sago::GetFileContent(statsFileName);
+	std::stringstream inFile(fileContent);
+	std::string key;
+	std::string value;
 	if (inFile) {
 		while (!inFile.eof()) {
 			inFile >> key; // The key is first on line
@@ -67,14 +62,14 @@ Stats* Stats::getInstance() {
 
 void Stats::save() {
 	std::stringstream outFile;
-	map<string,unsigned int>::iterator iter;
+	std::map<std::string, unsigned int>::iterator iter;
 	for (iter = statMap.begin(); iter != statMap.end(); ++iter) {
 		outFile << iter->first << " " << iter->second << "\n";
 	}
 	sago::WriteFileContent(statsFileName, outFile.str());
 }
 
-unsigned int Stats::getNumberOf(const string& statName) {
+unsigned int Stats::getNumberOf(const std::string& statName) {
 	if (exists(statName)) {
 		return statMap[statName];
 	}
@@ -83,8 +78,8 @@ unsigned int Stats::getNumberOf(const string& statName) {
 	}
 }
 
-void Stats::addOne(const string& statName) {
-	map<string,unsigned int>::iterator iter = statMap.find(statName);
+void Stats::addOne(const std::string& statName) {
+	std::map<std::string, unsigned int>::iterator iter = statMap.find(statName);
 	if (iter == statMap.end()) {
 		statMap[statName] = 1;
 	}
@@ -93,7 +88,7 @@ void Stats::addOne(const string& statName) {
 	}
 }
 
-bool Stats::exists(const string& statName) {
+bool Stats::exists(const std::string& statName) {
 	//Using that 'find' returns an iterator to the end of the map if not found
 	return statMap.find(statName) != statMap.end();
 }

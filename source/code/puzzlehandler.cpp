@@ -31,10 +31,6 @@ http://blockattack.net
 #include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
 
-using std::string;
-using std::cerr;
-using std::vector;
-
 const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
 
 static std::string puzzleSavePath;

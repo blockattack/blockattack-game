@@ -65,13 +65,9 @@ static void block_setFalling(int& block, bool value) {
 #include <sstream>
 #include <deque>
 
-using std::string;
-using std::stringstream;
-using std::cerr;
-using std::vector;
 
 //Function to convert numbers to string (2 diget)
-static string itoa2(int num) {
+static std::string itoa2(int num) {
 	char buffer[20];
 	snprintf(buffer, sizeof(buffer), "%02i", num);
 	return buffer;
@@ -1056,7 +1052,7 @@ void BlockGame::ClearBlocks() {
 					LongChainDoneEvent();
 				}
 				if (chainSize[i]>1 && !puzzleMode && recordStats) {
-					Stats::getInstance()->addOne((string)"chainX"+std::to_string(chainSize[i]));
+					Stats::getInstance()->addOne((std::string)"chainX"+std::to_string(chainSize[i]));
 				}
 				chainUsed[i]=false;
 			}
@@ -1393,7 +1389,7 @@ bool BlockGame::ThereIsATower() {
 
 double BlockGame::firstInLine1(int line) {
 	if (line > 20 || line < 0) {
-		cerr << "Warning: first in Line1: " << line << "\n";
+		std::cerr << "Warning: first in Line1: " << line << "\n";
 		return 3.0;
 	}
 	for (int i=0; i<6; i++) {
@@ -1407,7 +1403,7 @@ double BlockGame::firstInLine1(int line) {
 //returns the first coordinate of the block of type
 double BlockGame::firstInLine(int line, int type) {
 	if (line > 20 || line < 0) {
-		cerr << "Warning: first in Line: " << line << "\n";
+		std::cerr << "Warning: first in Line: " << line << "\n";
 		return 3.0;
 	}
 	for (int i=0; i<6; i++) {
@@ -1568,11 +1564,11 @@ void BlockGame::AI_ClearVertical() {
 	int placeToCenter = (int)(firstInLine(AIlineToClear, AIcolorToClear)/3.0+firstInLine(AIlineToClear+1, AIcolorToClear)/3.0+firstInLine(AIlineToClear+2, AIcolorToClear)/3.0);
 	int unlimitedLoop=0;
 	if (AIlineToClear < 0 || AIlineToClear > 20) {
-		cerr << "AIlineToClear out of range: " << AIlineToClear << "\n";
+		std::cerr << "AIlineToClear out of range: " << AIlineToClear << "\n";
 		return;
 	}
 	if (placeToCenter<0 || placeToCenter > 5) {
-		cerr << "placeToCenter out of range: " << placeToCenter << "\n";
+		std::cerr << "placeToCenter out of range: " << placeToCenter << "\n";
 		return;
 	}
 	while (((board[placeToCenter][AIlineToClear]>1000000)||(board[placeToCenter][AIlineToClear+1]>1000000)||(board[placeToCenter][AIlineToClear+2]>1000000))&&(unlimitedLoop<10)) {
