@@ -105,12 +105,12 @@ private:
 	SDL_Keycode* m_key2change;
 	string m_keyname;
 public:
-	Button_changekey(SDL_Keycode* key, string keyname);
+	Button_changekey(SDL_Keycode* key, const char* keyname);
 	void doAction();
 };
 
 
-Button_changekey::Button_changekey(SDL_Keycode* key, string keyname)
+Button_changekey::Button_changekey(SDL_Keycode* key, const char* keyname)
 	: m_key2change{key}, m_keyname{keyname} {
 	setLabel(m_keyname+" : "+getKeyName(*m_key2change));
 }
