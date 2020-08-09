@@ -182,16 +182,6 @@ static bool isGamePadStartEvent(const SDL_Event& event) {
 	return false;
 }
 
-
-static bool isGamePadBackEvent(const SDL_Event& event) {
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
-			return true;
-		}
-	}
-	return false;
-}
-
 static bool isGamePadLEvent(const SDL_Event& event) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER ) {
@@ -255,7 +245,7 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			updated = true;
 			isActive = false;
 		}
-		if (isGamePadBackEvent(event)) {
+		if (isEscapeEvent(event)) {
 			isActive = false;
 		}
 		if (isConfirmEvent(event)) {
@@ -263,8 +253,13 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			const std::string& insertChar = f.GetText();
 			virtualKeyboardWriteSelectedChar(rk.get(), insertChar);
 		}
-		if (isEscapeEvent(event)) {
-			rk->emulateBackspace();
+		if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+			if (event.cbutton.button == SDL_CONTROLLER_BUTTON_X ) {
+				rk->emulateBackspace();
+			}
+			if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y ) {
+				rk->putchar(" ");
+			}
 		}
 		if (isGamePadLEvent(event)) {
 			rk->cursorLeft();
