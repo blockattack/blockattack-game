@@ -168,8 +168,8 @@ public:
 private:
 	//Draws all the bricks to the board (including garbage)
 	void PaintBricks() const {
-		for (int i=0; ((i<13)&&(i<30)); i++) {
-			for (int j=0; j<6; j++) {
+		for (int i=0; i<13; ++i) {
+			for (int j=0; j<6; ++j) {
 				int basicBrick = board[j][i]%10; //The basic brick, stored on the least significant digit
 				if ((basicBrick > -1) && (basicBrick < 7) && ((board[j][i]/1000000)%10==0)) {
 					DrawImgBoardBounded(bricks[basicBrick],  j*bsize, bsize*12-i*bsize-pixels);
@@ -265,18 +265,8 @@ private:
 			if ((board[j][i]/1000000)%10==1) {
 				int left, right, over, under;
 				int number = board[j][i];
-				if (j<1) {
-					left = -1;
-				}
-				else {
-					left = board[j-1][i];
-				}
-				if (j>5) {
-					right = -1;
-				}
-				else {
-					right = board[j+1][i];
-				}
+				left = -1;
+				right = board[j+1][i];
 				if (i>28) {
 					over = -1;
 				}

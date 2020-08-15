@@ -66,8 +66,6 @@ int PuzzleLevelSelect(int Type) {
 	//Loads the levels, if they havn't been loaded:
 	if (Type == 0) {
 		LoadPuzzleStages();
-	}
-	if (Type == 0) {
 		nrOfLevels = PuzzleGetNumberOfPuzzles();
 	}
 	if (Type == 1) {

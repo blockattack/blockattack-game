@@ -41,7 +41,7 @@ private:
 public:
 	ReadKeyboard(void);
 	~ReadKeyboard(void);
-	ReadKeyboard(const char*);
+	explicit ReadKeyboard(const char*);
 	int CharsBeforeCursor(); //Where should the cursor be placed?
 	void putchar(const std::string& );
 	bool cursorLeft();

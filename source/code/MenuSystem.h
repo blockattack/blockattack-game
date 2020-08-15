@@ -104,7 +104,7 @@ public:
 	//numberOfItems is the expected numberOfItems for vector initialization
 	//SubMenu is true by default
 	Menu(SDL_Renderer *screen,bool isSubmenu);
-	Menu(SDL_Renderer *screen);
+	explicit Menu(SDL_Renderer *screen);
 	Menu(SDL_Renderer *screen, const std::string& title, bool isSubmenu);
 	virtual ~Menu() {}
 
