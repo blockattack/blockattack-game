@@ -64,7 +64,16 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) cons
 	DrawScaled(target, frameTime, x, y, data->imgCord.w, data->imgCord.h);
 }
 
+void SagoSprite::DrawRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, const double angleRadian) const {
+	SDL_Point center = {this->data->origin.x, this->data->origin.y};
+	DrawScaledAndRotated(target, frameTime, x, y, data->imgCord.w, data->imgCord.h, angleRadian, &center, SDL_FLIP_NONE);
+}
+
 void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h) const {
+	DrawScaledAndRotated(target, frameTime, x, y, w, h, 0.0, nullptr, SDL_FLIP_NONE);
+}
+
+void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip) const {
 	if (!data->tex.get()) {
 		std::cerr << "Texture is null!\n";
 	}
@@ -79,7 +88,8 @@ void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y
 	if (h > 0) {
 		pos.h = h;
 	}
-	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
+	double angleDegress = angleRadian/M_PI*180.0;
+	SDL_RenderCopyEx(target, data->tex.get(), &rect, &pos, angleDegress, center, flip);
 }
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part) const {
