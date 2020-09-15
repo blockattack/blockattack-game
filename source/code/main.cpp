@@ -897,8 +897,8 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("help")) {
 		std::cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
-		                      "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
-		                      "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
+		                           "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
+		                           "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
 		std::cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
 		std::cout << desc << "\n";
 		std::cout << "Examples:" << "\n";
@@ -1011,7 +1011,7 @@ int main(int argc, char* argv[]) {
 			//If sound has not been disabled, then load the sound system
 			if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
 				std::cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << "\n"
-				     << "Sound will be disabled!" << "\n";
+				          << "Sound will be disabled!" << "\n";
 				globalData.NoSound = true; //Tries to stop all sound from playing/loading
 			}
 		}
@@ -1020,8 +1020,8 @@ int main(int argc, char* argv[]) {
 		if (globalData.verboseLevel) {
 			//Copyright notice:
 			std::cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2016 Poul Sander" << "\n" <<
-			     "A SDL2 based game (see www.libsdl.org)" << "\n" <<
-			     "The game is available under the GPL, see COPYING for details." << "\n";
+			          "A SDL2 based game (see www.libsdl.org)" << "\n" <<
+			          "The game is available under the GPL, see COPYING for details." << "\n";
 			std::cout << "-------------------------------------------" << "\n";
 		}
 
