@@ -82,12 +82,14 @@ public:
 	 */
 	SagoDataHolder();
 	explicit SagoDataHolder(SDL_Renderer* renderer);
+
 	/**
 	 * Return a pointer to the given texture. The pointer is valid for the lifetime of SagoDataHolder object it was taken from or until invalidateAll is called.
 	 * @param textureName Name of the texture
 	 * @return  Pointer to the loaded texture
 	 */
 	SDL_Texture* getTexturePtr(const std::string &textureName) const;
+
 	TextureHandler getTextureHandler(const std::string &textureName) const;
 	TTF_Font* getFontPtr(const std::string &fontName, int ptsize) const;
 	Mix_Music* getMusicPtr(const std::string &musicName) const;
@@ -95,10 +97,12 @@ public:
 	Mix_Chunk* getSoundPtr(const std::string &soundName) const;
 	SoundHandler getSoundHandler(const std::string &soundName) const;
 	void setVerbose(bool value);
+
 	/**
 	 * Invalidates all pointers returned by any of the get variables
 	 */
 	void invalidateAll();
+
 	/**
 	 * Invalidates all pointers returned by any of the get variables.
 	 * Also sets a new renderer.
@@ -106,12 +110,14 @@ public:
 	 * Setting a new renderer might cause all old textures to no longer match the renderer format.
 	 */
 	void invalidateAll(SDL_Renderer* renderer);
+
 	/**
 	 * The version number. Changes everytime the pointers are invalidated.
 	 * Can be used to determen if it is neccecary to get a new pointer.
 	 * @return A globally unique number.
 	 */
 	Uint64 getVersion() const;
+	
 	~SagoDataHolder();
 private:
 	SagoDataHolder(const SagoDataHolder& base) = delete;

@@ -47,6 +47,7 @@ public:
 	void SetFont(const char* fontName);
 	void SetFontSize(int fontSize);
 	void SetOutline(int outlineSize, const SDL_Color& color);
+	
 	/**
 	 * Sets the max width to generate. SagoTextBox will insert line breaks to keep the width below this number.
 	 * Outline is not included in the width: If you have a 2 pixels outline the rendere may go 2 pixels beyond.

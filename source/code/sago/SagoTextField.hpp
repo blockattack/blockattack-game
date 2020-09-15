@@ -45,6 +45,7 @@ public:
 	SagoTextField& operator=(const SagoTextField&& base) = delete;
 	SagoTextField& operator=(const SagoTextField& base) = delete;
 	~SagoTextField();
+
 	/**
 	 * This method creates a copy of a given font.
 	 * The cache will not be copied.
@@ -53,40 +54,49 @@ public:
 	 * @return A reference to this object.
 	 */
 	SagoTextField& CopyFrom(const SagoTextField& base);
+
 	/**
 	 * Sets the data holder. This is MANDATORY
 	 * @param holder The data holder to fetch the fonts from
 	 */
 	void SetHolder(const SagoDataHolder* holder);
+
 	/**
 	 * Set the text to display.
 	 * @param text The actual UTF-8 encoded text
 	 */
 	void SetText(const char* text);
+
 	/**
 	 * Set the text to display.
 	 * @param text The actual UTF-8 encoded text
 	 */
 	void SetText(const std::string& text);
+
 	void SetColor(const SDL_Color& color);
+
 	/**
 	 * Set the name of the font. Must be known to the data holder.
 	 * The name could for instance be "freeserif".
 	 * @param fontName Name of the font as required by SagoDataHolder
 	 */
 	void SetFont(const char* fontName);
+
 	void SetFontSize(int fontSize);
+
 	/**
 	 * Enable outline against the font.
 	 * @param outlineSize Number of pixels of outline.
 	 * @param color The color of the outline.
 	 */
 	void SetOutline(int outlineSize, const SDL_Color& color);
+
 	/**
 	 * Get the text we are currently drawing
 	 * @return The text
 	 */
 	const std::string& GetText() const;
+
 	/**
 	 * A Shorthand for calling TTF_SizeUTF8 on the right font
 	 * The size is measuered WITHOUT the outline!
@@ -96,9 +106,11 @@ public:
 	 * @param h Pointer to an int where the hight of the text will be stored. Maybe null.
 	 */
 	void GetRenderedSize(const char* text, int* w = nullptr, int* h = nullptr);
+
 	enum class Alignment { left = 0, right=1, center = 2 };
 	enum class VerticalAlignment { top = 0, center = 1, bottom = 2};
 	void Draw(SDL_Renderer* target, int x, int y, Alignment alignment = Alignment::left, VerticalAlignment verticalAlignment = VerticalAlignment::top);
+
 	/**
 	 * Updates the cache.
 	 * You normally do not want to call this from the outside as it is done just in time.
@@ -106,6 +118,7 @@ public:
 	 * @param target Target the the text will eventually be rendered to
 	 */
 	void UpdateCache(SDL_Renderer* target);
+
 	/**
 	 * Clears the cache and forces the SagoTextField to render it again the next time it is drawn.
 	 * Can be used if you have changed font, color or sizes.
