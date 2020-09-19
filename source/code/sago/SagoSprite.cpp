@@ -25,6 +25,11 @@ SOFTWARE.
 #include "SagoSprite.hpp"
 #include <iostream>
 
+#ifndef M_PI
+// M_PI is a custom extension that most C++ toolchains provide. Out Windows compiler does not provide it.
+# define M_PI 3.14159265358979323846
+#endif
+
 namespace sago {
 
 struct SagoSprite::SagoSpriteData {
