@@ -199,9 +199,32 @@ Preview release for SDL2 support
  - Basic AI
 
 ### Changed
+ - Now always uses software surfaces
  - Better puzzle managment
  - Better controls
  - New Makefile
+ - Now hosted on blockattack.sf.net
 
 ### Removed
  - Windows 9x support
+
+## [1.1.0] - 2005-06-12
+
+### Changed
+ - Radically changed gameplay
+ - Blocks no longer falls instantly
+ - Blocks will not match while falling
+ - Chains give more points
+ - Combos give less points
+
+## [1.0.6] - 2005-05-08
+
+### Added
+ - Mouse play
+ - Joypad support
+
+### Changed
+ - Renamed to "Block Attack - Rise of the Blocks"
+
+## [1.0.5] - 2005-05-02
+First non beta release
