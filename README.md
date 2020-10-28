@@ -17,7 +17,6 @@ Source: <https://github.com/blockattack/blockattack-game>
 * libphysfs
 * libboost (only needed for compiling)
 * libboost-program-options
-* libutfcpp (only needed for compiling)
 
 ## Building
 The only supported build method is using the CMake<br/>
@@ -45,7 +44,6 @@ Windows build uses MXE (mxe.cc) with these installed:
 ```
 sdl2 sdl2_image sdl2_mixer sdl2_ttf physfs libtool gettext freetype zlib boost
 ```
-and libutfcpp copied from "source/misc/travis_help/utf8_v2_3_4/source/" to "/path/to/mxe/usr/lib/gcc/i686-w64-mingw32.static/4.9.3/include"
 
 Compiled with:
 ```

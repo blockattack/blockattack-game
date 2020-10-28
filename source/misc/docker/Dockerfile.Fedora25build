@@ -7,7 +7,6 @@ SDL2-devel \
 boost-devel \
 physfs-devel \
 SDL2_image-devel SDL2_ttf-devel SDL2_mixer-devel \
-utf8cpp-devel \
 findutils \
 gettext \
 zip \
