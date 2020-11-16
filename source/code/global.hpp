@@ -75,6 +75,7 @@ struct GlobalData {
 	bool alwaysSixteenNine = false;
 	int verboseLevel = 0;
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
+	std::vector<std::string> modList;
 
 	TextManager theTextManager;
 

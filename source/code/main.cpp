@@ -90,6 +90,15 @@ static void FsSearchParthMainAppend(std::vector<std::string>& paths) {
 	paths.push_back((std::string)PHYSFS_getBaseDir()+"/data");
 }
 
+static void FsSearchPathModAppend(std::vector<std::string>& paths, const std::vector<std::string>& modlist) {
+	for (const std::string& mod : modlist) {
+		std::string filename = std::string(SHAREDIR)+"/mods/"+mod+".data";
+		paths.push_back(filename);
+		filename = std::string(PHYSFS_getBaseDir())+"/mods/"+mod+".data";
+		paths.push_back(filename);
+	}
+}
+
 static void PhysFsSetSearchPath(const std::vector<std::string>& paths, const std::string& savepath) {
 	for (const std::string& path : paths) {
 		PHYSFS_mount(path.c_str(), "/", 0);
@@ -866,6 +875,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	        "Default: \"%s\"", LOCALEDIR).c_str())
 	("homepath", boost::program_options::value<std::string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
 	        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
+	("mod,m", boost::program_options::value<std::vector<std::string> >(), "Loads a mod. Later mods have preference")
 
 	;
 	boost::program_options::variables_map vm;
@@ -957,6 +967,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	if (vm.count("play-replay")) {
 		globalData.replayArgument = vm["play-replay"].as<std::string>();
 	}
+	if (vm.count("mod")) {
+		globalData.modList = vm["mod"].as<std::vector<std::string> >();
+	}
 
 }
 
@@ -978,6 +991,7 @@ int main(int argc, char* argv[]) {
 		textdomain (PACKAGE);
 		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
+		FsSearchPathModAppend(config.search_paths, globalData.modList);
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
 		//Os create folders must be after the parameters because they can change the home folder
 		PhysFsCreateFolders();
