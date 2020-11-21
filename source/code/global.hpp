@@ -31,6 +31,7 @@ http://www.blockattack.net
 #include "TextManager.hpp"
 #include "ExplosionManager.hpp"
 #include "sago/SagoTextField.hpp"
+#include "ModInfo.hpp"
 
 void MainMenu();
 void SafeModeMenu();
@@ -76,6 +77,7 @@ struct GlobalData {
 	int verboseLevel = 0;
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 	std::vector<std::string> modList;
+	ModInfo modinfo;
 
 	TextManager theTextManager;
 

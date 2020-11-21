@@ -273,6 +273,7 @@ void ResetFullscreen() {
 	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
 	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
+	globalData.spriteHolder->ReadSprites(globalData.modinfo.getModSpriteFiles());
 	InitImages(*(globalData.spriteHolder.get()) );
 	SDL_ShowCursor(SDL_DISABLE);
 }
@@ -992,6 +993,7 @@ int main(int argc, char* argv[]) {
 		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
 		FsSearchPathModAppend(config.search_paths, globalData.modList);
+		globalData.modinfo.InitModList(globalData.modList);
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
 		//Os create folders must be after the parameters because they can change the home folder
 		PhysFsCreateFolders();
