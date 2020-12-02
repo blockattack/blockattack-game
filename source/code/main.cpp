@@ -64,6 +64,8 @@ https://blockattack.net
 #define PACKAGE "blockattack_roftb"
 #endif
 
+#define MODLIST_TXT "modList.txt"
+
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "stats.h"          //Saves general stats
@@ -71,6 +73,7 @@ https://blockattack.net
 
 #include "common.h"
 #include "gamecontroller.h"
+#include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
 #include <fstream>
 #include "levelselect.hpp"
@@ -992,9 +995,17 @@ int main(int argc, char* argv[]) {
 		textdomain (PACKAGE);
 		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
-		FsSearchPathModAppend(config.search_paths, globalData.modList);
-		globalData.modinfo.InitModList(globalData.modList);
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
+		if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
+			std::string modString = sago::GetFileContent(MODLIST_TXT);
+			boost::split(globalData.modList, modString, boost::is_any_of(","));
+		}
+		if (globalData.modList.size()>0) {
+			PHYSFS_unmount(config.savepath.c_str());
+			FsSearchPathModAppend(config.search_paths, globalData.modList);
+			globalData.modinfo.InitModList(globalData.modList);
+			PhysFsSetSearchPath(config.search_paths, config.savepath);
+		}
 		//Os create folders must be after the parameters because they can change the home folder
 		PhysFsCreateFolders();
 		bool gameShutdownProperly = true;
@@ -1261,11 +1272,19 @@ int main(int argc, char* argv[]) {
 			std::cout << SPrintStringF("Block Attack - Rise of the Blocks ran for: %i hours %i mins and %i secs", ct.hours, ct.minutes, ct.seconds) << "\n";
 		}
 
+		std::string modListString;
+		if (globalData.modList.size()>0) {
+			modListString = globalData.modList.at(0);
+			for (size_t i = 1; i < globalData.modList.size(); ++i) {
+				modListString += std::string(",")+globalData.modList[i];
+			}
+		}
 		ct = TimeHandler::addTime("totalTime",ct);
 		if (globalData.verboseLevel) {
 			std::cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
+			std::cout << "Mods loaded: " << modListString << "\n";
 		}
-
+		sago::WriteFileContent(MODLIST_TXT, modListString);
 		Stats::getInstance()->save();
 		Config::getInstance()->save();
 	}
