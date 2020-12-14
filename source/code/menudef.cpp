@@ -29,6 +29,7 @@ http://blockattack.net
 #include "HelpGamepadState.hpp"
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
+#include "ModConfigMenuState.hpp"
 
 
 #if 0
@@ -312,6 +313,11 @@ static void PlayerConfigMenu() {
 	RunGameState(pcm);
 }
 
+static void runModConfigMenu() {
+	ModConfigMenuState modmenu;
+	RunGameState(modmenu);
+}
+
 static void ConfigureMenu() {
 	Menu cm(globalData.screen,_("Configuration"),true);
 	AlwaysSoftwareRenderButton bSoftware;
@@ -319,8 +325,11 @@ static void ConfigureMenu() {
 	SoundButton bSound;
 	FullscreenButton buttonFullscreen;
 	Button bPlayerConfig;
+	Button bModConfig;
 	bPlayerConfig.setLabel(_("Player configuration") );
 	bPlayerConfig.setAction(PlayerConfigMenu);
+	bModConfig.setLabel(_("Configure mods"));
+	bModConfig.setAction(&runModConfigMenu);
 	SetAlwaysSoftwareLabel(&bSoftware);
 	SetMusicLabel(&bMusic);
 	SetSoundLabel(&bSound);
@@ -330,6 +339,7 @@ static void ConfigureMenu() {
 	cm.addButton(&bSoftware);
 	cm.addButton(&buttonFullscreen);
 	cm.addButton(&bPlayerConfig);
+	cm.addButton(&bModConfig);
 	RunGameState(cm);
 }
 
