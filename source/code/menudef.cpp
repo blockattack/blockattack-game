@@ -293,18 +293,10 @@ static void ChangeKeysMenu2() {
 	ChangeKeysMenu(2);
 }
 
-static void ConfigureMenu() {
-	Menu cm(globalData.screen,_("Configuration"),true);
-	Button bPlayer1Name,bPlayer2Name;
+static void PlayerConfigMenu() {
+	Menu pcm(globalData.screen,_("Player configuration"),true);
+	Button bPlayer1Name, bPlayer2Name;
 	Button bPlayer1Keys, bPlayer2Keys;
-	AlwaysSoftwareRenderButton bSoftware;
-	MusicButton bMusic;
-	SoundButton bSound;
-	FullscreenButton buttonFullscreen;
-	SetAlwaysSoftwareLabel(&bSoftware);
-	SetMusicLabel(&bMusic);
-	SetSoundLabel(&bSound);
-	SetFullscreenLabel(&buttonFullscreen);
 	bPlayer1Name.setAction(buttonActionPlayer1Name);
 	bPlayer1Name.setLabel(_("Change player 1's name") );
 	bPlayer2Name.setAction(buttonActionPlayer2Name);
@@ -313,14 +305,31 @@ static void ConfigureMenu() {
 	bPlayer1Keys.setLabel(_("Change player 1's keys") );
 	bPlayer2Keys.setAction(ChangeKeysMenu2);
 	bPlayer2Keys.setLabel(_("Change player 2's keys") );
+	pcm.addButton(&bPlayer1Name);
+	pcm.addButton(&bPlayer2Name);
+	pcm.addButton(&bPlayer1Keys);
+	pcm.addButton(&bPlayer2Keys);
+	RunGameState(pcm);
+}
+
+static void ConfigureMenu() {
+	Menu cm(globalData.screen,_("Configuration"),true);
+	AlwaysSoftwareRenderButton bSoftware;
+	MusicButton bMusic;
+	SoundButton bSound;
+	FullscreenButton buttonFullscreen;
+	Button bPlayerConfig;
+	bPlayerConfig.setLabel(_("Player configuration") );
+	bPlayerConfig.setAction(PlayerConfigMenu);
+	SetAlwaysSoftwareLabel(&bSoftware);
+	SetMusicLabel(&bMusic);
+	SetSoundLabel(&bSound);
+	SetFullscreenLabel(&buttonFullscreen);
 	cm.addButton(&bMusic);
 	cm.addButton(&bSound);
 	cm.addButton(&bSoftware);
 	cm.addButton(&buttonFullscreen);
-	cm.addButton(&bPlayer1Name);
-	cm.addButton(&bPlayer2Name);
-	cm.addButton(&bPlayer1Keys);
-	cm.addButton(&bPlayer2Keys);
+	cm.addButton(&bPlayerConfig);
 	RunGameState(cm);
 }
 
