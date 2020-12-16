@@ -27,6 +27,8 @@ https://blockattack.net
 #include "sago/GameStateInterface.hpp"
 #include "sago/SagoTextField.hpp"
 #include "sago/SagoTextBox.hpp"
+#include "global.hpp"
+#include "common.h"
 
 class ModConfigMenuState : public sago::GameStateInterface {
 public:

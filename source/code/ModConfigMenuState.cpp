@@ -24,8 +24,11 @@ https://blockattack.net
 #include "ModConfigMenuState.hpp"
 #include "MenuSystem.h"
 #include "global.hpp"
+#include "MenuSystem.h"
 
-ModConfigMenuState::ModConfigMenuState() {}
+
+ModConfigMenuState::ModConfigMenuState() {
+}
 
 ModConfigMenuState::~ModConfigMenuState() {}
 
@@ -35,6 +38,7 @@ bool ModConfigMenuState::IsActive() {
 
 void ModConfigMenuState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
+	standardButton.getLabel(_("Mod config"))->Draw(target, 50, 50);
 }
 
 void ModConfigMenuState::ProcessInput(const SDL_Event& event, bool &processed) {
