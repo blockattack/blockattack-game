@@ -26,6 +26,8 @@ https://blockattack.net
 #include "global.hpp"
 #include "MenuSystem.h"
 
+const int buttonOffset = 160;
+extern sago::SagoSprite bExit;
 
 ModConfigMenuState::ModConfigMenuState() {
 }
@@ -39,6 +41,7 @@ bool ModConfigMenuState::IsActive() {
 void ModConfigMenuState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	standardButton.getLabel(_("Mod config"))->Draw(target, 50, 50);
+	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 }
 
 void ModConfigMenuState::ProcessInput(const SDL_Event& event, bool &processed) {
@@ -48,5 +51,19 @@ void ModConfigMenuState::ProcessInput(const SDL_Event& event, bool &processed) {
 }
 
 void ModConfigMenuState::Update() {
+	// If the mouse button is released, make bMouseUp equal true
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+		bMouseUp=true;
+	}
 
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+		bMouseUp = false;
+
+		//The Score button:
+		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
+		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
+			isActive = false;
+		}
+
+	}
 }

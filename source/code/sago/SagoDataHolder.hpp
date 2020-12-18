@@ -117,7 +117,7 @@ public:
 	 * @return A globally unique number.
 	 */
 	Uint64 getVersion() const;
-	
+
 	~SagoDataHolder();
 private:
 	SagoDataHolder(const SagoDataHolder& base) = delete;
