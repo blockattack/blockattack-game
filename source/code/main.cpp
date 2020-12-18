@@ -978,8 +978,8 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 }
 
 //Physfs 2.y.z does not have PHYSFS_unmount
-#ifndef PHYSFS_unmount
-#define PHYSFs_unmount PHYSFS_removeFromSearchPath
+#if (PHYSFS_VER_MAJOR <= 2) && (PHYSFS_VER_MINOR < 1)
+#define PHYSFS_unmount PHYSFS_removeFromSearchPath
 #endif
 
 //Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it

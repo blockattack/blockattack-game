@@ -44,6 +44,7 @@ public:
 private:
 	bool isActive = true;
 	bool bMouseUp = true;
+	std::vector<std::string> mods_available;
 };
 
 #endif /* MODCONFIG_HPP */

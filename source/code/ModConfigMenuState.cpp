@@ -25,11 +25,14 @@ https://blockattack.net
 #include "MenuSystem.h"
 #include "global.hpp"
 #include "MenuSystem.h"
+#include "sago/SagoMisc.hpp"
 
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
 
+
 ModConfigMenuState::ModConfigMenuState() {
+	mods_available = sago::GetFileList("mods");
 }
 
 ModConfigMenuState::~ModConfigMenuState() {}
@@ -41,6 +44,9 @@ bool ModConfigMenuState::IsActive() {
 void ModConfigMenuState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	standardButton.getLabel(_("Mod config"))->Draw(target, 50, 50);
+	for (size_t i = 0; i < mods_available.size(); ++i) {
+		standardButton.getLabel(mods_available[i])->Draw(target, 60, 80+20*i);
+	}
 	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 }
 
