@@ -977,7 +977,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 
 }
 
-//Physfs 2.y.z does not have PHYSFS_unmount
+//Physfs 2.0.z does not have PHYSFS_unmount
 #if (PHYSFS_VER_MAJOR <= 2) && (PHYSFS_VER_MINOR < 1)
 #define PHYSFS_unmount PHYSFS_removeFromSearchPath
 #endif

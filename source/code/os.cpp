@@ -33,6 +33,8 @@ https://blockattack.net
 #include <unistd.h>
 #endif
 
+#include <dirent.h>
+
 static sago::PlatformFolders pf;
 
 static std::string overrideSavePath = "";
@@ -131,4 +133,24 @@ void OsCreateFolder(const std::string& path) {
 void OsCreateSaveFolder() {
 	std::string path = getPathToSaveFiles();
 	OsCreateFolder(path);
+}
+
+std::vector<std::string> OsGetDirFileList(const std::string& path) {
+	//At the moment dirent.h is used for all OS. Should have a Unicode version on Windows.
+	std::vector<std::string> ret;
+	DIR *dir = opendir(path.c_str());
+	struct dirent *ent;
+	if (dir) {
+		while ((ent = readdir (dir)) ) {
+			if (ent->d_name[0] == '.') {
+				continue;
+			}
+			ret.push_back(ent->d_name);
+		}
+		closedir (dir);
+	}
+	else {
+		std::cerr << "Failed to list: " << path+"/" << "\n";
+	}
+	return ret;
 }

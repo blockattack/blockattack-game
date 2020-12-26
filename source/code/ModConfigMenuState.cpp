@@ -26,13 +26,35 @@ https://blockattack.net
 #include "global.hpp"
 #include "MenuSystem.h"
 #include "sago/SagoMisc.hpp"
+#include "os.hpp"
+#include <boost/algorithm/string/predicate.hpp>
 
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
 
 
+static void sortMods(std::vector<Mod>& mod_list) {
+	for (size_t i=0;i < mod_list.size(); ++i) {
+		mod_list[i].order = i;
+	}
+}
+
+
 ModConfigMenuState::ModConfigMenuState() {
-	mods_available = sago::GetFileList("mods");
+	mods_available.clear();
+	std::string baseMods = std::string(PHYSFS_getBaseDir())+ "/mods";
+	std::vector<std::string> baseModFiles = OsGetDirFileList(baseMods);
+	for (const std::string& mod : baseModFiles) {
+		if (!boost::ends_with(mod, ".data")) {
+			continue;
+		}
+		Mod m;
+		m.name = mod.substr(0, mod.length()-5);
+		m.filename = baseMods + "/" + mod;
+		mods_available.push_back(m);
+	}
+	std::string userMods = getPathToSaveFiles()+"/mods";
+	sortMods(mods_available);
 }
 
 ModConfigMenuState::~ModConfigMenuState() {}
@@ -45,7 +67,9 @@ void ModConfigMenuState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	standardButton.getLabel(_("Mod config"))->Draw(target, 50, 50);
 	for (size_t i = 0; i < mods_available.size(); ++i) {
-		standardButton.getLabel(mods_available[i])->Draw(target, 60, 80+20*i);
+		standardButton.getLabel(mods_available[i].name)->Draw(target, 60, 80+20*i);
+		standardButton.getLabel(mods_available[i].enabled ? "true" : "false")->Draw(target, 300, 80+20*i);
+		standardButton.getLabel(std::to_string(mods_available[i].order))->Draw(target, 400, 80+20*i);
 	}
 	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 }
@@ -53,6 +77,7 @@ void ModConfigMenuState::Draw(SDL_Renderer* target) {
 void ModConfigMenuState::ProcessInput(const SDL_Event& event, bool &processed) {
 	if (isEscapeEvent(event)) {
 		isActive = false;
+		processed = true;
 	}
 }
 

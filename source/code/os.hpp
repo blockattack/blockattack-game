@@ -29,11 +29,9 @@ https://blockattack.net
 #include "shlobj.h"
 #endif
 #include <string>
+#include <vector>
 
 std::string getPathToSaveFiles();
-#if defined(_WIN32)
-std::string getMyDocumentsPath();
-#endif
 
 std::string defaultPlayerName();
 
@@ -43,6 +41,21 @@ void OsCreateSaveFolder();
 
 bool OsPathIsRelative(const std::string& path);
 
+/**
+ * Create a folder
+ * The folder path is created recursively
+ * Fails silently if failing to create the path
+ * @param path The folder to create
+ */
 void OsCreateFolder(const std::string& path);
+
+/**
+ * Lists the content of a directory.
+ * Ignores files starting with a dot (".")
+ *
+ * @param path The path to list
+ * @return std::vector<std::string> Files names in directory
+ */
+std::vector<std::string> OsGetDirFileList(const std::string& path);
 
 #endif  /* OS_HPP */

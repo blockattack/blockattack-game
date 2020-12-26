@@ -30,6 +30,17 @@ https://blockattack.net
 #include "global.hpp"
 #include "common.h"
 
+struct Mod {
+	std::string name;
+	std::string filename;
+	bool enabled = false;
+	int order = 0;
+};
+
+/**
+ * This will one day be the menu to configure mods.
+ * This will need to be able to scan the filesystem for mods
+ */
 class ModConfigMenuState : public sago::GameStateInterface {
 public:
 	ModConfigMenuState();
@@ -44,7 +55,7 @@ public:
 private:
 	bool isActive = true;
 	bool bMouseUp = true;
-	std::vector<std::string> mods_available;
+	std::vector<Mod> mods_available;
 };
 
 #endif /* MODCONFIG_HPP */
