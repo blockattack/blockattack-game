@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include "SagoDataHolder.hpp"
 #include "SagoSprite.hpp"
+#include <vector>
 
 namespace sago {
 
@@ -34,7 +35,14 @@ class SagoSpriteHolder final {
 public:
 	explicit SagoSpriteHolder(const SagoDataHolder &texHolder);
 	~SagoSpriteHolder();
+	/**
+	 * Reads all the sprites from the "sprites" directory in alphabetical order
+	 **/
 	void ReadSprites();
+	/**
+	 * Reads an additional sprites. Used to append mod data.
+	 **/
+	void ReadSprites(const std::vector<std::string>& extra_sprites);
 	const sago::SagoSprite& GetSprite(const std::string &spritename) const;
 	const SagoDataHolder& GetDataHolder() const;
 private:

@@ -131,6 +131,13 @@ void SagoSpriteHolder::ReadSprites() {
 	}
 }
 
+void SagoSpriteHolder::ReadSprites(const std::vector<std::string>& extra_sprites) {
+	for (std::string item : extra_sprites) {
+		item+=".sprite";
+		ReadSpriteFile(item);
+	}
+}
+
 const sago::SagoSprite& SagoSpriteHolder::GetSprite(const std::string& spritename) const {
 	std::unordered_map<std::string,std::shared_ptr<sago::SagoSprite>>::const_iterator got = data->sprites.find (spritename);
 	if ( got == data->sprites.end() ) {

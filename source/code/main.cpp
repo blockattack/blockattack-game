@@ -64,6 +64,8 @@ https://blockattack.net
 #define PACKAGE "blockattack_roftb"
 #endif
 
+#define MODLIST_TXT "modList.txt"
+
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "stats.h"          //Saves general stats
@@ -71,6 +73,7 @@ https://blockattack.net
 
 #include "common.h"
 #include "gamecontroller.h"
+#include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
 #include <fstream>
 #include "levelselect.hpp"
@@ -88,6 +91,15 @@ static void FsSearchParthMainAppend(std::vector<std::string>& paths) {
 	paths.push_back((std::string)SHAREDIR+"/blockattack.data");
 	paths.push_back((std::string)PHYSFS_getBaseDir()+"/blockattack.data");
 	paths.push_back((std::string)PHYSFS_getBaseDir()+"/data");
+}
+
+static void FsSearchPathModAppend(std::vector<std::string>& paths, const std::vector<std::string>& modlist) {
+	for (const std::string& mod : modlist) {
+		std::string filename = std::string(SHAREDIR)+"/mods/"+mod+".data";
+		paths.push_back(filename);
+		filename = std::string(PHYSFS_getBaseDir())+"/mods/"+mod+".data";
+		paths.push_back(filename);
+	}
 }
 
 static void PhysFsSetSearchPath(const std::vector<std::string>& paths, const std::string& savepath) {
@@ -264,6 +276,7 @@ void ResetFullscreen() {
 	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
 	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
+	globalData.spriteHolder->ReadSprites(globalData.modinfo.getModSpriteFiles());
 	InitImages(*(globalData.spriteHolder.get()) );
 	SDL_ShowCursor(SDL_DISABLE);
 }
@@ -866,6 +879,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	        "Default: \"%s\"", LOCALEDIR).c_str())
 	("homepath", boost::program_options::value<std::string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
 	        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
+	("mod,m", boost::program_options::value<std::vector<std::string> >(), "Loads a mod. Later mods have preference")
 
 	;
 	boost::program_options::variables_map vm;
@@ -957,8 +971,16 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	if (vm.count("play-replay")) {
 		globalData.replayArgument = vm["play-replay"].as<std::string>();
 	}
+	if (vm.count("mod")) {
+		globalData.modList = vm["mod"].as<std::vector<std::string> >();
+	}
 
 }
+
+//Physfs 2.0.z does not have PHYSFS_unmount
+#if (PHYSFS_VER_MAJOR <= 2) && (PHYSFS_VER_MINOR < 1)
+#define PHYSFS_unmount PHYSFS_removeFromSearchPath
+#endif
 
 //Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it
 int main(int argc, char* argv[]) {
@@ -979,6 +1001,16 @@ int main(int argc, char* argv[]) {
 		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
+		if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
+			std::string modString = sago::GetFileContent(MODLIST_TXT);
+			boost::split(globalData.modList, modString, boost::is_any_of(","));
+		}
+		if (globalData.modList.size()>0) {
+			PHYSFS_unmount(config.savepath.c_str());
+			FsSearchPathModAppend(config.search_paths, globalData.modList);
+			globalData.modinfo.InitModList(globalData.modList);
+			PhysFsSetSearchPath(config.search_paths, config.savepath);
+		}
 		//Os create folders must be after the parameters because they can change the home folder
 		PhysFsCreateFolders();
 		bool gameShutdownProperly = true;
@@ -1245,11 +1277,19 @@ int main(int argc, char* argv[]) {
 			std::cout << SPrintStringF("Block Attack - Rise of the Blocks ran for: %i hours %i mins and %i secs", ct.hours, ct.minutes, ct.seconds) << "\n";
 		}
 
+		std::string modListString;
+		if (globalData.modList.size()>0) {
+			modListString = globalData.modList.at(0);
+			for (size_t i = 1; i < globalData.modList.size(); ++i) {
+				modListString += std::string(",")+globalData.modList[i];
+			}
+		}
 		ct = TimeHandler::addTime("totalTime",ct);
 		if (globalData.verboseLevel) {
 			std::cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
+			std::cout << "Mods loaded: " << modListString << "\n";
 		}
-
+		sago::WriteFileContent(MODLIST_TXT, modListString);
 		Stats::getInstance()->save();
 		Config::getInstance()->save();
 	}
