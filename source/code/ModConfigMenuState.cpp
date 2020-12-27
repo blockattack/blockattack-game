@@ -32,11 +32,27 @@ https://blockattack.net
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
 
-
-static void sortMods(std::vector<Mod>& mod_list) {
-	for (size_t i=0;i < mod_list.size(); ++i) {
-		mod_list[i].order = i;
+bool sort_mods_enabled_order (const Mod& i,const Mod& j) {
+	if (i.enabled && !j.enabled) {
+		//Enabled mods always goes before disabled ones
+		return true;
 	}
+	if (i.enabled) {
+		return i.order < j.order;
+	}
+	return i.name < j.name;
+}
+
+static void initMods(std::vector<Mod>& mod_list) {
+	for (size_t i=0; i < globalData.modList.size(); ++i) {
+		for (Mod& m : mod_list) {
+			if (m.name == globalData.modList[i]) {
+				m.order = i;
+				m.enabled = true;
+			}
+		}
+	}
+	std::sort(mod_list.begin(), mod_list.end(), sort_mods_enabled_order);
 }
 
 
@@ -54,7 +70,7 @@ ModConfigMenuState::ModConfigMenuState() {
 		mods_available.push_back(m);
 	}
 	std::string userMods = getPathToSaveFiles()+"/mods";
-	sortMods(mods_available);
+	initMods(mods_available);
 }
 
 ModConfigMenuState::~ModConfigMenuState() {}
@@ -67,9 +83,11 @@ void ModConfigMenuState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	standardButton.getLabel(_("Mod config"))->Draw(target, 50, 50);
 	for (size_t i = 0; i < mods_available.size(); ++i) {
-		standardButton.getLabel(mods_available[i].name)->Draw(target, 60, 80+20*i);
-		standardButton.getLabel(mods_available[i].enabled ? "true" : "false")->Draw(target, 300, 80+20*i);
-		standardButton.getLabel(std::to_string(mods_available[i].order))->Draw(target, 400, 80+20*i);
+		standardButton.getLabel(mods_available[i].name)->Draw(target, 60, 160+30*i);
+		standardButton.getLabel(mods_available[i].enabled ? _("Yes") : _("No"))->Draw(target, 600, 160+30*i);
+		if (mods_available[i].enabled) {
+			standardButton.getLabel(std::to_string(mods_available[i].order))->Draw(target, 700, 160+30*i);
+		}
 	}
 	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 }
