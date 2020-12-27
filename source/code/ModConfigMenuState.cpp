@@ -92,7 +92,7 @@ void ModConfigMenuState::Draw(SDL_Renderer* target) {
 	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 }
 
-void ModConfigMenuState::ProcessInput(const SDL_Event& event, bool &processed) {
+void ModConfigMenuState::ProcessInput(const SDL_Event& event, bool& processed) {
 	if (isEscapeEvent(event)) {
 		isActive = false;
 		processed = true;
