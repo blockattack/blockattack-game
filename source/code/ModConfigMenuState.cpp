@@ -55,21 +55,27 @@ static void initMods(std::vector<Mod>& mod_list) {
 	std::sort(mod_list.begin(), mod_list.end(), sort_mods_enabled_order);
 }
 
-
-ModConfigMenuState::ModConfigMenuState() {
-	mods_available.clear();
-	std::string baseMods = std::string(PHYSFS_getBaseDir())+ "/mods";
-	std::vector<std::string> baseModFiles = OsGetDirFileList(baseMods);
-	for (const std::string& mod : baseModFiles) {
+static void appendMods(const std::vector<std::string>& mod_files, const std::string& dir, std::vector<Mod>& mods_available) {
+	for (const std::string& mod : mod_files) {
 		if (!boost::ends_with(mod, ".data")) {
 			continue;
 		}
 		Mod m;
 		m.name = mod.substr(0, mod.length()-5);
-		m.filename = baseMods + "/" + mod;
+		m.filename = dir + "/" + mod;
 		mods_available.push_back(m);
 	}
+}
+
+
+ModConfigMenuState::ModConfigMenuState() {
+	mods_available.clear();
+	std::string baseMods = std::string(PHYSFS_getBaseDir())+ "/mods";
+	std::vector<std::string> baseModFiles = OsGetDirFileList(baseMods);
+	appendMods(baseModFiles, baseMods, mods_available);
 	std::string userMods = getPathToSaveFiles()+"/mods";
+	std::vector<std::string> userModFiles = OsGetDirFileList(userMods);
+	appendMods(userModFiles, userMods, mods_available);
 	initMods(mods_available);
 }
 
