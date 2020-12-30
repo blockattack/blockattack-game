@@ -33,7 +33,7 @@ namespace sago {
  * This is a text field.
  * It represents a line of text to be drawn on screen. It is not possible to have line breaks.
  * If line breaks are needed use SagoTextBox instead.
- * 
+ *
  * This object renderes to a texture and cahces the texture. The texture will be automatically refreshed if the text changes, the SagoDataHolder is invalidated or ClearCache is called.
  * Normally all values will be set at the beginning before text is drawn.
  * SetHolder MUST be called before the field is drawn!
@@ -49,7 +49,7 @@ public:
 	/**
 	 * This method creates a copy of a given font.
 	 * The cache will not be copied.
-	 * This is ALMOST like the "= operator" but given its own name to prevent implicit calling. 
+	 * This is ALMOST like the "= operator" but given its own name to prevent implicit calling.
 	 * @param base The object to copy from
 	 * @return A reference to this object.
 	 */
@@ -128,7 +128,7 @@ public:
 private:
 	SagoTextField(const SagoTextField& orig) = delete;
 	struct SagoTextFieldData;
-	SagoTextFieldData *data;
+	SagoTextFieldData* data;
 };
 
 }  //namespace sago

@@ -28,36 +28,36 @@ SOFTWARE.
 
 namespace sago {
 
-	class OutlineHandler {
-		TTF_Font* font;
-		int originalOutline = 0;
-		int targetOutline;
-		bool doChange = false;
-	public:
-		OutlineHandler(TTF_Font* font, int outline) : font{font}, targetOutline{outline} {
-			originalOutline = TTF_GetFontOutline(font);
-			if (originalOutline == targetOutline) {
-				return;
-			}
-			doChange = true;
-			TTF_SetFontOutline(font, targetOutline);
-		};
-		
-		void reset() {
-			if (doChange) {
-				TTF_SetFontOutline(font,originalOutline);
-				doChange = false;
-			}
+class OutlineHandler {
+	TTF_Font* font;
+	int originalOutline = 0;
+	int targetOutline;
+	bool doChange = false;
+public:
+	OutlineHandler(TTF_Font* font, int outline) : font{font}, targetOutline{outline} {
+		originalOutline = TTF_GetFontOutline(font);
+		if (originalOutline == targetOutline) {
+			return;
 		}
-		
-		~OutlineHandler() {
-			reset();
-		}
-	private:
-		OutlineHandler(const OutlineHandler& orig) = delete;
-		OutlineHandler& operator=(const OutlineHandler& base) = delete;
+		doChange = true;
+		TTF_SetFontOutline(font, targetOutline);
 	};
-	
+
+	void reset() {
+		if (doChange) {
+			TTF_SetFontOutline(font,originalOutline);
+			doChange = false;
+		}
+	}
+
+	~OutlineHandler() {
+		reset();
+	}
+private:
+	OutlineHandler(const OutlineHandler& orig) = delete;
+	OutlineHandler& operator=(const OutlineHandler& base) = delete;
+};
+
 struct SagoTextField::SagoTextFieldData {
 	const sago::SagoDataHolder* tex = nullptr;
 	SDL_Surface* textSurface = nullptr;
@@ -73,7 +73,7 @@ struct SagoTextField::SagoTextFieldData {
 	std::string renderedText = "";
 	Uint64 renderedVersion = 0;
 };
-	
+
 SagoTextField::SagoTextField() {
 	data = new SagoTextFieldData();
 }
@@ -93,14 +93,15 @@ SagoTextField& SagoTextField::CopyFrom(const SagoTextField& base) {
 		data->textSurface = nullptr;
 		data->texture = nullptr;
 		return *this;
-	} catch (...) {
+	}
+	catch (...) {
 		delete data;
 		throw;
 	}
 }
 
 SagoTextField::~SagoTextField() {
-	if(!data) {
+	if (!data) {
 		return;
 	}
 	ClearCache();
@@ -165,7 +166,7 @@ void SagoTextField::UpdateCache(SDL_Renderer* target) {
 		abort();
 	}
 	ClearCache();
-	TTF_Font *font = data->tex->getFontPtr(data->fontName, data->fontSize);
+	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
 	data->textSurface = TTF_RenderUTF8_Blended (font, data->text.c_str(), data->color);
 	data->texture = SDL_CreateTextureFromSurface(target, data->textSurface);
 	if (data->outline > 0) {
@@ -179,7 +180,7 @@ void SagoTextField::UpdateCache(SDL_Renderer* target) {
 }
 
 void SagoTextField::GetRenderedSize(const char* text, int* w, int* h) {
-	TTF_Font *font = data->tex->getFontPtr(data->fontName, data->fontSize);
+	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
 	int ret = TTF_SizeUTF8(font, text, w, h);
 	if (ret) {
 		if (w) {

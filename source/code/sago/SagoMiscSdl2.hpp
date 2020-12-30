@@ -26,20 +26,20 @@ SOFTWARE.
 #define SAGOMISCSDL2_HPP
 
 namespace sago {
-	
-	/**
-	 * Writes an error message to the screen and aborts the program
-	 * @param errorMsg The message displayed in a pop-up box to the user.
-	 */
-	void SagoFatalError(const char* errorMsg);
-	
-	/**
-	 * Writes an error message to the screen and aborts the program
-	 * @param fmt A printf-style format string
-	 * @param ... Parameters to the format string
-	 */
-	void SagoFatalErrorF(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
-	
+
+/**
+ * Writes an error message to the screen and aborts the program
+ * @param errorMsg The message displayed in a pop-up box to the user.
+ */
+void SagoFatalError(const char* errorMsg);
+
+/**
+ * Writes an error message to the screen and aborts the program
+ * @param fmt A printf-style format string
+ * @param ... Parameters to the format string
+ */
+void SagoFatalErrorF(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
+
 }
 
 #endif /* SAGOMISCSDL2_HPP */

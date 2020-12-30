@@ -245,7 +245,7 @@ Uint64 SagoDataHolder::getVersion() const {
 	return data->version;
 }
 
-TextureHandler::TextureHandler(const SagoDataHolder* holder, const std::string &textureName) {
+TextureHandler::TextureHandler(const SagoDataHolder* holder, const std::string& textureName) {
 	this->holder = holder;
 	this->version = 0;
 	this->textureName = textureName;
@@ -292,15 +292,15 @@ Mix_Chunk* SoundHandler::get() {
 }
 
 
-TextureHandler SagoDataHolder::getTextureHandler(const std::string &textureName) const {
+TextureHandler SagoDataHolder::getTextureHandler(const std::string& textureName) const {
 	return TextureHandler(this, textureName);
 }
 
-MusicHandler SagoDataHolder::getMusicHandler(const std::string &musicName) const {
+MusicHandler SagoDataHolder::getMusicHandler(const std::string& musicName) const {
 	return MusicHandler(this, musicName);
 }
 
-SoundHandler SagoDataHolder::getSoundHandler(const std::string &soundName) const {
+SoundHandler SagoDataHolder::getSoundHandler(const std::string& soundName) const {
 	return SoundHandler(this, soundName);
 }
 

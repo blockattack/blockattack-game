@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 #ifndef SAGOSPRITE_HPP
-#define	SAGOSPRITE_HPP
+#define SAGOSPRITE_HPP
 
 #include "SagoDataHolder.hpp"
 
@@ -32,7 +32,7 @@ namespace sago {
 class SagoSprite final {
 public:
 	SagoSprite();
-	SagoSprite(const SagoDataHolder &texHolder, const std::string &texture,const SDL_Rect& initImage,const int animationFrames, const int animationFrameLength);
+	SagoSprite(const SagoDataHolder& texHolder, const std::string& texture,const SDL_Rect& initImage,const int animationFrames, const int animationFrameLength);
 
 	/**
 	 * Draws the sprite to a given render window
@@ -59,7 +59,7 @@ public:
 	 * @param frameTime The time in milliseonds since gamestart. Used to determen the place in the animation
 	 * @param x Place to draw the sprite
 	 * @param y Place to draw the sprite
-	 * @param part the part of the sprite that should be drawn. 
+	 * @param part the part of the sprite that should be drawn.
 	 */
 	void Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part) const;
 
@@ -72,7 +72,7 @@ public:
 	 * @param bounds A recagular area that we must not draw outside.
 	 */
 	void DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const;
-	
+
 	/**
 	 * Draws the sprite to a given render window
 	 * @param target The render window to draw on
@@ -84,11 +84,11 @@ public:
 
 	void DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h) const;
 	void DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h,
-	        const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip) const;
+	                          const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip) const;
 
 	/**
 	 * Set a different origin. Normally it is the top left cornor. But in some cases you might want to center the origin or tranform it for other reasons
-	 * @param newOrigin the coordinates that should be the new origin. Call with {0,0} to reset to default 
+	 * @param newOrigin the coordinates that should be the new origin. Call with {0,0} to reset to default
 	 */
 	void SetOrigin(const SDL_Rect& newOrigin);
 	SagoSprite(const SagoSprite& base);
@@ -98,10 +98,10 @@ public:
 	~SagoSprite();
 private:
 	struct SagoSpriteData;
-	SagoSpriteData *data;
+	SagoSpriteData* data;
 };
 
 }
 
-#endif	/* SAGOSPRITE_HPP */
+#endif  /* SAGOSPRITE_HPP */
 

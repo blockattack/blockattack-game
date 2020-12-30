@@ -161,14 +161,13 @@ void SagoTextBox::UpdateCache() {
 		std::cerr << "FATAL: SagoTextBox::UpdateCache - DataHolder not set!\n";
 		abort();
 	}
-	TTF_Font *font = data->tex->getFontPtr(data->fontName, data->fontSize);
+	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
 	const char delim = '\n';
 	const std::string& s = data->text;
 	auto start = 0U;
 	auto end = s.find(delim);
 	data->lines.clear();
-	while (end != std::string::npos)
-	{
+	while (end != std::string::npos) {
 		const std::string& theSubString = s.substr(start, end - start);
 		SplitAndAppendLineToCache(font, theSubString);
 		start = end + 1;
@@ -182,7 +181,7 @@ void SagoTextBox::Draw(SDL_Renderer* target, int x, int y, SagoTextField::Alignm
 	if (data->text != data->renderedText) {
 		UpdateCache();
 	}
-	TTF_Font *font = data->tex->getFontPtr(data->fontName, data->fontSize);
+	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
 	int lineSkip = TTF_FontLineSkip(font);
 	for (size_t i = 0; i < data->lines.size(); ++i) {
 		data->lines[i].Draw(target, x, y+i*lineSkip, alignment);

@@ -30,7 +30,7 @@ SOFTWARE.
 #include <string>
 
 #ifndef TEXTUREHOLDER_HPP
-#define	TEXTUREHOLDER_HPP
+#define TEXTUREHOLDER_HPP
 
 namespace sago {
 
@@ -39,7 +39,7 @@ class SagoDataHolder;
 class TextureHandler {
 public:
 	TextureHandler() {};
-	TextureHandler(const SagoDataHolder* holder, const std::string &textureName);
+	TextureHandler(const SagoDataHolder* holder, const std::string& textureName);
 	SDL_Texture* get();
 private:
 	std::string textureName;
@@ -52,7 +52,7 @@ private:
 class MusicHandler final {
 public:
 	MusicHandler() {};
-	MusicHandler(const SagoDataHolder* holder, const std::string &musicName);
+	MusicHandler(const SagoDataHolder* holder, const std::string& musicName);
 	Mix_Music* get();
 private:
 	std::string musicName;
@@ -65,7 +65,7 @@ private:
 class SoundHandler final {
 public:
 	SoundHandler() {};
-	SoundHandler(const SagoDataHolder* holder, const std::string &soundName);
+	SoundHandler(const SagoDataHolder* holder, const std::string& soundName);
 	Mix_Chunk* get();
 private:
 	std::string soundName;
@@ -88,14 +88,14 @@ public:
 	 * @param textureName Name of the texture
 	 * @return  Pointer to the loaded texture
 	 */
-	SDL_Texture* getTexturePtr(const std::string &textureName) const;
+	SDL_Texture* getTexturePtr(const std::string& textureName) const;
 
-	TextureHandler getTextureHandler(const std::string &textureName) const;
-	TTF_Font* getFontPtr(const std::string &fontName, int ptsize) const;
-	Mix_Music* getMusicPtr(const std::string &musicName) const;
-	MusicHandler getMusicHandler(const std::string &musicName) const;
-	Mix_Chunk* getSoundPtr(const std::string &soundName) const;
-	SoundHandler getSoundHandler(const std::string &soundName) const;
+	TextureHandler getTextureHandler(const std::string& textureName) const;
+	TTF_Font* getFontPtr(const std::string& fontName, int ptsize) const;
+	Mix_Music* getMusicPtr(const std::string& musicName) const;
+	MusicHandler getMusicHandler(const std::string& musicName) const;
+	Mix_Chunk* getSoundPtr(const std::string& soundName) const;
+	SoundHandler getSoundHandler(const std::string& soundName) const;
 	void setVerbose(bool value);
 
 	/**
@@ -123,10 +123,10 @@ private:
 	SagoDataHolder(const SagoDataHolder& base) = delete;
 	SagoDataHolder& operator=(const SagoDataHolder& base) = delete;
 	struct SagoDataHolderData;
-	mutable SagoDataHolderData *data;
+	mutable SagoDataHolderData* data;
 };
 
 } //namespace sago
 
-#endif	/* TEXTUREHOLDER_HPP */
+#endif  /* TEXTUREHOLDER_HPP */
 

@@ -38,7 +38,7 @@ public:
 	void SetText(const char* text);
 	void SetText(const std::string& text);
 	void SetColor(const SDL_Color& color);
-	
+
 	/**
 	 * Set the name of the font. Must be known to the data holder.
 	 * The name could for instance be "freeserif".
@@ -47,7 +47,7 @@ public:
 	void SetFont(const char* fontName);
 	void SetFontSize(int fontSize);
 	void SetOutline(int outlineSize, const SDL_Color& color);
-	
+
 	/**
 	 * Sets the max width to generate. SagoTextBox will insert line breaks to keep the width below this number.
 	 * Outline is not included in the width: If you have a 2 pixels outline the rendere may go 2 pixels beyond.
@@ -65,7 +65,7 @@ private:
 	SagoTextBox(const SagoTextBox& orig) = delete;
 	SagoTextBox& operator=(const SagoTextBox& base) = delete;
 	struct SagoTextBoxData;
-	SagoTextBoxData *data;
+	SagoTextBoxData* data;
 };
 
 }  //namespace sago

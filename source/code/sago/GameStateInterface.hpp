@@ -36,17 +36,17 @@ public:
 	 * @return true if active
 	 */
 	virtual bool IsActive() = 0;
-	
+
 	/**
 	 * Tells the state to draw itself to target
 	 * @param target The RenderWindow to draw to
 	 */
 	virtual void Draw(SDL_Renderer* target) = 0;
-	
-	virtual void ProcessInput(const SDL_Event& event, bool &processed) = 0;
-	
+
+	virtual void ProcessInput(const SDL_Event& event, bool& processed) = 0;
+
 	virtual void Update() {}
-	
+
 	virtual ~GameStateInterface() {}
 };
 
