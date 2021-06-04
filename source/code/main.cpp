@@ -222,7 +222,8 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 		globalData.typingChunk = holder.GetDataHolder().getSoundHandler("typing");
 		counterChunk = holder.GetDataHolder().getSoundHandler("counter");
 		counterFinalChunk = holder.GetDataHolder().getSoundHandler("counter_final");
-		const int soundVolume = 84;  //0-128
+		Config::getInstance()->setDefault("volume_sound", "24"); //0-128
+		int soundVolume = Config::getInstance()->getInt("volume_sound");
 		Mix_VolumeChunk(boing.get(), soundVolume);
 		Mix_VolumeChunk(applause.get(), soundVolume);
 		Mix_VolumeChunk(photoClick.get(), soundVolume);
@@ -1047,6 +1048,7 @@ int main(int argc, char* argv[]) {
 				globalData.NoSound = true; //Tries to stop all sound from playing/loading
 			}
 		}
+		Config::getInstance()->setDefault("volume_music", "20"); //0-128
 
 
 		if (globalData.verboseLevel) {
@@ -1740,20 +1742,22 @@ int runGame(Gametype gametype, int level) {
 		if ((!globalData.NoSound)&&(!Mix_PlayingMusic())&&(globalData.MusicEnabled)&&(!bNearDeath)) {
 			// then starts playing it.
 			Mix_PlayMusic(bgMusic.get(), -1); //music loop
-			Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
+			int musicVolume = Config::getInstance()->getInt("volume_music");
+			Mix_VolumeMusic(musicVolume);
 		}
 
 		if (bNearDeath!=bNearDeathPrev) {
+			int musicVolume = Config::getInstance()->getInt("volume_music");
 			if (bNearDeath) {
 				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
 					Mix_PlayMusic(highbeatMusic.get(), 1);
-					Mix_VolumeMusic((MIX_MAX_VOLUME*5)/10);
+					Mix_VolumeMusic(musicVolume);
 				}
 			}
 			else {
 				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
 					Mix_PlayMusic(bgMusic.get(), -1);
-					Mix_VolumeMusic((MIX_MAX_VOLUME*3)/10);
+					Mix_VolumeMusic(musicVolume);
 				}
 			}
 		}
