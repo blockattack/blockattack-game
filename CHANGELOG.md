@@ -3,6 +3,13 @@
 
 ## [Unreleased]
 
+### Added
+ - Volume for sound effect and music is now stored in the configFile
+ - Menu for changing music and sound volume
+
+### Changed
+ - Linux icons have been converted to png (patch by pinotree)
+
 ## [2.6.0] - 2020-09-26
 
 ### Added
