@@ -213,11 +213,25 @@ static void SetAlwaysSoftwareLabel(Button* b) {
 }
 
 static void SetMusicLabel (Button* b) {
-	b->setLabel(globalData.MusicEnabled? _("Music: On") : _("Music: Off") );
+	if (globalData.MusicEnabled) {
+		double volume = Config::getInstance()->getInt("volume_music");
+		int volumePct = volume*100.0/MIX_MAX_VOLUME;
+		b->setLabel(std::string(_("Music: "))+ std::to_string(volumePct)+"%" );
+	}
+	else {
+		b->setLabel(_("Music: Off") );
+	}
 }
 
 static void SetSoundLabel (Button* b) {
-	b->setLabel(globalData.SoundEnabled? _("Sound: On") : _("Sound: Off") );
+	if (globalData.SoundEnabled) {
+		double volume = Config::getInstance()->getInt("volume_sound");
+		int volumePct = volume*100.0/MIX_MAX_VOLUME;
+		b->setLabel(std::string(_("Sound: "))+ std::to_string(volumePct)+"%" );
+	}
+	else {
+		b->setLabel(_("Sound: Off") );
+	}
 }
 
 static void SetFullscreenLabel (Button* b) {
