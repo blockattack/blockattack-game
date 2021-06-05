@@ -103,7 +103,7 @@ private:
 	std::string m_keyname;
 public:
 	Button_changekey(SDL_Keycode* key, const char* keyname);
-	void doAction();
+	virtual void doAction() override;
 };
 
 
@@ -128,6 +128,33 @@ void Button_changekey::doAction() {
 		}
 	}
 	setLabel(m_keyname+" : "+getKeyName(*m_key2change));
+}
+
+
+class Button_changeVolume : public Button {
+	private:
+	std::string cvar = "";
+	int newVolume = 0;
+	public:
+	Button_changeVolume(const char* cvar, int newVolume);
+	virtual void doAction() override;
+};
+
+Button_changeVolume::Button_changeVolume(const char* cvar, int newVolume)
+	: cvar{cvar}, newVolume{newVolume} {
+	int volumePct = newVolume*100.0/MIX_MAX_VOLUME;
+	if (newVolume == 0) {
+		setLabel(_("Volume: Off") );
+	}
+	else {
+		setLabel(std::string(_("Volume: "))+ std::to_string(volumePct)+"%" );
+	}
+	this->setPopOnRun(true);
+}
+
+void Button_changeVolume::doAction() {
+	Config::getInstance()->setInt(cvar, newVolume);
+	ResetFullscreen();
 }
 
 void InitMenues() {
@@ -212,6 +239,22 @@ static void SetAlwaysSoftwareLabel(Button* b) {
 	            : _("Always use software render: Off"));
 }
 
+static void runSetMusicVolume(const char* cvar, const char* header) {
+	Menu volumeMenu(globalData.screen, header, true);
+	std::vector<Button_changeVolume> v;
+	v.emplace_back(cvar, 16);
+	v.emplace_back(cvar, 32);
+	v.emplace_back(cvar, 48);
+	v.emplace_back(cvar, 64);
+	v.emplace_back(cvar, 96);
+	v.emplace_back(cvar, 128);
+	v.emplace_back(cvar, 0);
+	for (Button_changeVolume& b : v) {
+		volumeMenu.addButton(&b);
+	}
+	RunGameState(volumeMenu);
+}
+
 static void SetMusicLabel (Button* b) {
 	if (globalData.MusicEnabled) {
 		double volume = Config::getInstance()->getInt("volume_music");
@@ -247,14 +290,16 @@ class AlwaysSoftwareRenderButton : public Button {
 
 class MusicButton : public Button {
 	virtual void doAction() override {
-		globalData.MusicEnabled = !globalData.MusicEnabled;
+		runSetMusicVolume("volume_music", _("Music volume"));
+		globalData.MusicEnabled = (Config::getInstance()->getInt("volume_music") != 0);
 		SetMusicLabel(this);
 	}
 };
 
 class SoundButton : public Button {
 	virtual void doAction() override {
-		globalData.SoundEnabled = !globalData.SoundEnabled;
+		runSetMusicVolume("volume_sound", _("Sound volume"));
+		globalData.MusicEnabled = (Config::getInstance()->getInt("volume_sound") != 0);
 		SetSoundLabel(this);
 	}
 };

@@ -59,13 +59,14 @@ sago::SagoTextField* ButtonGfx::getLabel(const std::string& text) {
 	return labels[text].get();
 }
 
-Button::Button(const Button& b) : action{b.action}, label{b.label}, marked{b.marked} {
+Button::Button(const Button& b) : action{b.action}, popOnRun{b.popOnRun}, label{b.label}, marked{b.marked} {
 }
 
 Button& Button::operator=(const Button& other) {
 	action = other.action;
 	label = other.label;
 	marked = other.marked;
+	popOnRun = other.popOnRun;
 	return *this;
 }
 
