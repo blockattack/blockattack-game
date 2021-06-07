@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.8.7)
 project (blockattack)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${blockattack_SOURCE_DIR}/source/misc/cmake")
 set(BIN_DIR ${blockattack_SOURCE_DIR}/Game)
 
 SET(CPACK_PACKAGE_VERSION "2.7.0-SNAPSHOT")
@@ -63,7 +62,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-implicit-fallthrough")
 
 #Setup SDL2
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR})
+include_directories(${SDL2_INCLUDE_DIRS})
 
 #Setup things that use pkg-config
 find_package(PkgConfig REQUIRED)
@@ -91,7 +90,7 @@ include_directories("source/code/Libs/include/cereal/external")  #Contains rapid
 
 #building/compiling/linking
 add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
-target_link_libraries( blockattack ${SDL2_LIBRARY})
+target_link_libraries( blockattack ${SDL2_LIBRARIES})
 target_link_libraries( blockattack physfs)
 target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
 target_link_libraries( blockattack ${Boost_LIBRARIES} )

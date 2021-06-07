@@ -39,6 +39,9 @@ cp /staging/blockattack-game/man/blockattack.man /output/docs/ && \
 cp /staging/blockattack-game/README.md /output/docs/README_ORG.md && \
 chown -R 1000 /output"
 
+exit 0
+# Following is from the old 32-bit build
+
 scp source/misc/standalone/compile_requirements.sh blockattack_build:/
 scp source/misc/standalone/install_requirements.sh blockattack_build:/
 ssh blockattack_build /install_requirements.sh
