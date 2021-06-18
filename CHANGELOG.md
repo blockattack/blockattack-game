@@ -9,6 +9,11 @@
 
 ### Changed
  - Linux icons have been converted to png (patch by pinotree)
+ - Now requires Ubuntu 18.04 or later (or equivalent)
+ - utfcpp is now an embedded library
+
+### Removed
+ - Linux standalone build no longer includes 32 bit binary
 
 ## [2.6.0] - 2020-09-26
 
@@ -23,12 +28,12 @@
    - SDL2: 2.0.9 to 2.0.12
    - SDL2_image: 2.0.4 to 2.0.5
    - SDL2_ttf: 2.0.14 to 2.0.15
-   - physfs: 2.0.3 to 3.0.2 
+   - physfs: 2.0.3 to 3.0.2
 
 ## [2.5.0+1] - 2019-07-04
 
 Not given a version number as the build environment is not part of the project.  
-Given a +1 to show that the build envirnoment has changed
+Given a +1 to show that the build environment has changed
 
 ### Fixed
  - New Windows build environment to prevent a crash on Windows 10 1809
@@ -55,9 +60,9 @@ Given a +1 to show that the build envirnoment has changed
 ## Changed
  - Minor code cleanup
  - Improved "About" page with technical information
- - Improved unicode support (--homepath can now be used with Unicode chars) (Windows only)
+ - Improved Unicode support (--homepath can now be used with Unicode chars) (Windows only)
 
-## Remvoed
+## Removed
  - Support for any Windows operating systems before Windows 7 (Windows only)
 
 ## Fixed
@@ -109,7 +114,7 @@ high speed Stage Clear levels.
  - Updated libraries
 
 ### Removed
- * jsoncpp is no longer a dependecy
+ * jsoncpp is no longer a dependency
 
 ## [2.1.0] - 2017-04-01 [YANKED]
 
@@ -147,7 +152,7 @@ high speed Stage Clear levels.
 
 
 ## [2.0.0-SNAPSHOT-2016-03-20] - 2016-03-20
- 
+
 Preview release for SDL2 support
 
 ## [1.4.2] - 2014-09-11
@@ -207,7 +212,7 @@ Preview release for SDL2 support
 
 ### Changed
  - Now always uses software surfaces
- - Better puzzle managment
+ - Better puzzle management
  - Better controls
  - New Makefile
  - Now hosted on blockattack.sf.net

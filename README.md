@@ -54,9 +54,11 @@ i686-w64-mingw32.static-cmake -DCMAKE_BUILD_TYPE=Release . && make
 
 As getting a C++ project with many dependencies to compile can be a daunting task then I have provided a couple of Docker images that can perform a build. Both for Windows and Linux.
 
+The project should at all time be able to compile on the oldest and latest supported version of Ubuntu. This is tested with Docker.
+
 On a fresh checkout you can use:
 ```
-docker build -f source/misc/docker/Dockerfile.Ubuntu16.04build . -t blockattack_test
+docker build -f source/misc/docker/Dockerfile.Ubuntu18.04build . -t blockattack_test
 ```
 and
 ```
@@ -64,7 +66,7 @@ docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
 ```
 
 ## Source Structure
-This project is a bit unconversionel because I didn't know any better at the time.
+This project is a bit unconventional because I didn't know any better at the time.
 
 * Game - The output is placed here
 * man - The manual file and the script to generate it. May be moved to source/misc at some point
