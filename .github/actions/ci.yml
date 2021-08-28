@@ -1,6 +1,0 @@
-# ci.yml
-name: 'Test Fedora build'
-description: 'Test that the game compiles on Fedora using Docker'
-runs:
-  using: 'docker'
-  image: 'source/misc/docker/Dockerfile.Fedora25build'
