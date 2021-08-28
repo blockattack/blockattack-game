@@ -1,0 +1,15 @@
+on: [push]
+
+jobs:
+  ci_job:
+    runs-on: ubuntu-latest
+    name: Test that the game can be compiled
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+      - name: Check lint
+        run: bash source/misc/lint/runLint.sh
+      - name: Test Fedora 25
+        run: docker build -f source/misc/docker/Dockerfile.Fedora25build . -t blockattack_test
+      - name: Test Windows MXE
+        run: docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
