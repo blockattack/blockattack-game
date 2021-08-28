@@ -58,9 +58,9 @@ private:
 	//If true the menu should also be closed then the button is clicked
 	bool popOnRun = false;
 
-public:
 	//The label. This is written on the button
 	std::string label;
+public:
 	//Is the button marked?
 	bool marked = false;
 	//Where is the button on the screen
@@ -81,6 +81,7 @@ public:
 	virtual void doAction(); //Run the callback function
 	void setPopOnRun(bool popOnRun);
 	bool isPopOnRun() const;
+	virtual const std::string& getLabel() const {return this->label; };
 
 	//May hold any other information the callback might need
 	int iGeneric1 = 0;

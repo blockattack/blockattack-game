@@ -130,31 +130,90 @@ void Button_changekey::doAction() {
 	setLabel(m_keyname+" : "+getKeyName(*m_key2change));
 }
 
-
-class Button_changeVolume : public Button {
+class Button_confirmVolume : public Button {
 	private:
-	std::string cvar = "";
-	int newVolume = 0;
+	std::string cvar="";
+	mutable std::string volumeLabel; /*used for cache*/
 	public:
-	Button_changeVolume(const char* cvar, int newVolume);
-	virtual void doAction() override;
+	Button_confirmVolume(const char* cvar);
+	virtual void doAction() override { /*Do nothing. Equal to choose "back". */ };
+	virtual const std::string& getLabel() const override;
 };
 
-Button_changeVolume::Button_changeVolume(const char* cvar, int newVolume)
-	: cvar{cvar}, newVolume{newVolume} {
-	int volumePct = newVolume*100.0/MIX_MAX_VOLUME;
-	if (newVolume == 0) {
-		setLabel(_("Volume: Off") );
-	}
-	else {
-		setLabel(std::string(_("Volume: "))+ std::to_string(volumePct)+"%" );
-	}
+Button_confirmVolume::Button_confirmVolume(const char* cvar) : cvar{cvar} {
 	this->setPopOnRun(true);
 }
 
-void Button_changeVolume::doAction() {
-	Config::getInstance()->setInt(cvar, newVolume);
-	ResetFullscreen();
+const std::string& Button_confirmVolume::getLabel() const {
+	int volumePct = Config::getInstance()->getInt(cvar)*100.0/MIX_MAX_VOLUME;
+	this->volumeLabel = SPrintStringF(_("Volume: %d%%"), volumePct); //  std::string(_("Volume: "))+ std::to_string(volumePct)+"%" ;
+	return volumeLabel;
+}
+
+class Button_increaseVolume : public Button {
+	private:
+	std::string cvar="";
+	int incrementValue = 1;
+	int lowerLimit = 0;
+	int upperLimit = MIX_MAX_VOLUME;
+	public:
+	Button_increaseVolume(const char* cvar, int incrementValue);
+	virtual void doAction() override;
+};
+
+Button_increaseVolume::Button_increaseVolume(const char* cvar, int incrementValue)
+	: cvar{cvar},incrementValue{incrementValue} {
+		char prefix = '+';
+		double value = incrementValue;
+		if (incrementValue<0) {
+			prefix = '-';
+			value = -incrementValue;
+		}
+		value = value*100.0/MIX_MAX_VOLUME;
+		setLabel(SPrintStringF("%c%.2f", prefix, value));
+}
+
+void Button_increaseVolume::doAction() {
+	int newValue = Config::getInstance()->getInt(cvar)+incrementValue;
+	if (newValue<lowerLimit) {
+		newValue = lowerLimit;
+	}
+	if (newValue>upperLimit) {
+		newValue = upperLimit;
+	}
+	Config::getInstance()->setInt(cvar, newValue);
+}
+
+class Button_testSound : public Button {
+	public:
+	Button_testSound();
+	virtual void doAction() override;
+};
+
+Button_testSound::Button_testSound() {
+	setLabel(_("Test sound"));
+}
+
+void Button_testSound::doAction() {
+	sago::SoundHandler testSound = globalData.spriteHolder->GetDataHolder().getSoundHandler("pop");
+	Mix_VolumeChunk(testSound.get(), Config::getInstance()->getInt("volume_sound"));
+	Mix_PlayChannel(1, testSound.get(), 0);
+}
+
+class Button_testMusic : public Button {
+	public:
+	Button_testMusic();
+	virtual void doAction() override;
+};
+
+Button_testMusic::Button_testMusic() {
+	setLabel(_("Test music"));
+}
+
+void Button_testMusic::doAction() {
+	Mix_VolumeMusic(Config::getInstance()->getInt("volume_music"));
+	sago::MusicHandler bgMusic = globalData.spriteHolder->GetDataHolder().getMusicHandler("bgmusic");
+	Mix_PlayMusic(bgMusic.get(), -1);
 }
 
 void InitMenues() {
@@ -241,17 +300,20 @@ static void SetAlwaysSoftwareLabel(Button* b) {
 
 static void runSetMusicVolume(const char* cvar, const char* header) {
 	Menu volumeMenu(globalData.screen, header, true);
-	std::vector<Button_changeVolume> v;
-	v.emplace_back(cvar, 16);
-	v.emplace_back(cvar, 32);
-	v.emplace_back(cvar, 48);
-	v.emplace_back(cvar, 64);
-	v.emplace_back(cvar, 96);
-	v.emplace_back(cvar, 128);
-	v.emplace_back(cvar, 0);
-	for (Button_changeVolume& b : v) {
-		volumeMenu.addButton(&b);
-	}
+	Button_confirmVolume bConfirm(cvar);
+	Button_increaseVolume plus5(cvar, 5);
+	Button_increaseVolume minus5(cvar, -5);
+	Button_increaseVolume plus1(cvar, 1);
+	Button_increaseVolume minus1(cvar, -1);
+	volumeMenu.addButton(&bConfirm);
+	volumeMenu.addButton(&plus5);
+	volumeMenu.addButton(&minus5);
+	volumeMenu.addButton(&plus1);
+	volumeMenu.addButton(&minus1);
+	Button_testSound bTestSound;
+	volumeMenu.addButton(&bTestSound);
+	Button_testMusic bTestMusic;
+	volumeMenu.addButton(&bTestMusic);
 	RunGameState(volumeMenu);
 }
 
