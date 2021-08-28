@@ -9,6 +9,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Check lint
         run: bash source/misc/lint/runLint.sh
-      - name: Test build
-        id: test_build
+      - name: Test Fedora 25
         run: docker build -f source/misc/docker/Dockerfile.Fedora25build . -t blockattack_test
+      - name: Test Windows MXE
+        run: docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
