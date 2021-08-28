@@ -5,6 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Test that the game can be compiled
     steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+      - name: Check lint
+        run: bash source/misc/lint/runLint.sh
       - name: Test build
         id: test_build
-        uses: .github/actions/ci@v1
+        run: docker build -f source/misc/docker/Dockerfile.Fedora25build . -t blockattack_test
