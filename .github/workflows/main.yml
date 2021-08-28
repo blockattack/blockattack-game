@@ -1,0 +1,10 @@
+on: [push]
+
+jobs:
+  ci_job:
+    runs-on: ubuntu-latest
+    name: Test that the game can be compiled
+    steps:
+      - name: Test build
+        id: test_build
+        uses: .github/actions/ci@v1
