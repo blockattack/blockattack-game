@@ -27,6 +27,7 @@ http://www.blockattack.net
 #include "ReadKeyboard.h"
 #include "utf8.h"
 #include "MenuSystem.h"
+#include <unordered_map>
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -37,9 +38,32 @@ static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextFiel
 	field.SetText(text);
 }
 
+
+// Cache for DrawRect
+static std::unordered_map<std::string, SDL_Texture*> draw_rect_cache;
+static Uint64 draw_rect_cache_version=0;
+
+static void draw_rect_cache_clear() {
+	for (auto&& it: draw_rect_cache) {
+		SDL_DestroyTexture(it.second);
+	}
+	draw_rect_cache.clear();
+}
+
+
 static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
 	const int size = 32;
 	SDL_Rect dstrect = { topx, topy, width, height };
+	std::string key_name = SPrintStringF("%s-%d-%d", name.c_str(),width, height);
+	Uint64 new_version = globalData.spriteHolder->GetDataHolder().getVersion();
+	if (draw_rect_cache_version != new_version) {
+		draw_rect_cache_clear();
+		draw_rect_cache_version = new_version;
+	}
+	if (draw_rect_cache.find(key_name) != draw_rect_cache.end()) {
+		SDL_RenderCopy( target, draw_rect_cache[key_name], NULL, &dstrect );
+		return;
+	}
 	SDL_Rect bounds_ns = {0, 0+size, width, height-2*size};  //bounds for south
 	SDL_Rect bounds_e = {0, 0, width-size, height};
 	SDL_Texture* mTexture = SDL_CreateTexture( target, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height );
@@ -76,7 +100,7 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 	sw.Draw(target, SDL_GetTicks(), 0, 0+height-size);
 	SDL_SetRenderTarget( target, nullptr );
 	SDL_RenderCopy( target, mTexture, NULL, &dstrect );
-	SDL_DestroyTexture( mTexture );
+	draw_rect_cache[key_name] = mTexture;
 }
 
 static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, int width) {
