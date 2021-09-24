@@ -53,7 +53,7 @@ class Button
 {
 private:
 	//Pointer to a callback function.
-	void (*action)(void);
+	void (*action)(void) = nullptr;
 
 	//If true the menu should also be closed then the button is clicked
 	bool popOnRun = false;
