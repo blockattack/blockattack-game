@@ -64,9 +64,10 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 		SDL_RenderCopy( target, draw_rect_cache[key_name], NULL, &dstrect );
 		return;
 	}
-	SDL_Rect bounds_ns = {0, 0+size, width, height-2*size};  //bounds for south
+	SDL_Rect bounds_ns = {0, size, width, height-2*size};  //bounds for south
 	SDL_Rect bounds_e = {0, 0, width-size, height};
 	SDL_Texture* mTexture = SDL_CreateTexture( target, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height );
+	draw_rect_cache[key_name] = mTexture;
 	SDL_SetRenderTarget( target, mTexture );
 
 	SDL_SetRenderDrawBlendMode(target, SDL_BLENDMODE_NONE);
@@ -81,13 +82,13 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 	const sago::SagoSprite& w = globalData.spriteHolder->GetSprite(name+"w");
 	const sago::SagoSprite& fill = globalData.spriteHolder->GetSprite(name+"fill");
 	for (int i = 1; i < width/size; ++i) {
-		n.DrawBounded(target, SDL_GetTicks(), 0+i*size, 0, bounds_e);
+		n.DrawBounded(target, SDL_GetTicks(), i*size, 0, bounds_e);
 		for (int j = 1; j < height/size; ++j) {
-			w.DrawBounded(target, SDL_GetTicks(), 0, 0+j*size, bounds_ns);
-			fill.Draw(target, SDL_GetTicks(),0+i*size, 0+j*size);
-			e.DrawBounded(target, SDL_GetTicks(), 0+width-size, 0+j*size, bounds_ns);
+			w.DrawBounded(target, SDL_GetTicks(), 0, j*size, bounds_ns);
+			fill.Draw(target, SDL_GetTicks(),i*size, j*size);
+			e.DrawBounded(target, SDL_GetTicks(), width-size, j*size, bounds_ns);
 		}
-		s.DrawBounded(target, SDL_GetTicks(), 0+i*size, 0+height-size, bounds_e);
+		s.DrawBounded(target, SDL_GetTicks(), i*size, height-size, bounds_e);
 	}
 	//Corners
 	const sago::SagoSprite& nw = globalData.spriteHolder->GetSprite(name+"nw");
@@ -95,12 +96,11 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 	const sago::SagoSprite& se = globalData.spriteHolder->GetSprite(name+"se");
 	const sago::SagoSprite& sw = globalData.spriteHolder->GetSprite(name+"sw");
 	nw.Draw(target, SDL_GetTicks(), 0, 0);
-	ne.Draw(target, SDL_GetTicks(), 0+width-size, 0);
-	se.Draw(target, SDL_GetTicks(), 0+width-size, 0+height-size);
-	sw.Draw(target, SDL_GetTicks(), 0, 0+height-size);
+	ne.Draw(target, SDL_GetTicks(), width-size, 0);
+	se.Draw(target, SDL_GetTicks(), width-size, height-size);
+	sw.Draw(target, SDL_GetTicks(), 0, height-size);
 	SDL_SetRenderTarget( target, nullptr );
 	SDL_RenderCopy( target, mTexture, NULL, &dstrect );
-	draw_rect_cache[key_name] = mTexture;
 }
 
 static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, int width) {
