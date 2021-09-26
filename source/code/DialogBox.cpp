@@ -27,6 +27,7 @@ http://www.blockattack.net
 #include "ReadKeyboard.h"
 #include "utf8.h"
 #include "MenuSystem.h"
+#include <unordered_map>
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -37,33 +38,69 @@ static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextFiel
 	field.SetText(text);
 }
 
+
+// Cache for DrawRect
+static std::unordered_map<std::string, SDL_Texture*> draw_rect_cache;
+static Uint64 draw_rect_cache_version=0;
+
+static void draw_rect_cache_clear() {
+	for (auto&& it: draw_rect_cache) {
+		SDL_DestroyTexture(it.second);
+	}
+	draw_rect_cache.clear();
+}
+
+
 static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
 	const int size = 32;
-	SDL_Rect bounds_ns = {topx, topy+size, width, height-2*size};  //bounds for south
-	SDL_Rect bounds_e = {topx, topy, width-size, height};
+	SDL_Rect dstrect = { topx, topy, width, height };
+	std::string key_name = SPrintStringF("%s-%d-%d", name.c_str(),width, height);
+	Uint64 new_version = globalData.spriteHolder->GetDataHolder().getVersion();
+	if (draw_rect_cache_version != new_version) {
+		draw_rect_cache_clear();
+		draw_rect_cache_version = new_version;
+	}
+	if (draw_rect_cache.find(key_name) != draw_rect_cache.end()) {
+		SDL_RenderCopy( target, draw_rect_cache[key_name], NULL, &dstrect );
+		return;
+	}
+	SDL_Rect bounds_ns = {0, size, width, height-2*size};  //bounds for south
+	SDL_Rect bounds_e = {0, 0, width-size, height};
+	SDL_Texture* mTexture = SDL_CreateTexture( target, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height );
+	draw_rect_cache[key_name] = mTexture;
+	SDL_SetRenderTarget( target, mTexture );
+
+	SDL_SetRenderDrawBlendMode(target, SDL_BLENDMODE_NONE);
+	SDL_SetTextureBlendMode(mTexture, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(target, 0, 0, 0, 0);
+	SDL_RenderFillRect(target, NULL);
+	SDL_SetRenderDrawBlendMode(target, SDL_BLENDMODE_BLEND);
+
 	const sago::SagoSprite& n = globalData.spriteHolder->GetSprite(name+"n");
 	const sago::SagoSprite& s = globalData.spriteHolder->GetSprite(name+"s");
 	const sago::SagoSprite& e = globalData.spriteHolder->GetSprite(name+"e");
 	const sago::SagoSprite& w = globalData.spriteHolder->GetSprite(name+"w");
 	const sago::SagoSprite& fill = globalData.spriteHolder->GetSprite(name+"fill");
 	for (int i = 1; i < width/size; ++i) {
-		n.DrawBounded(target, SDL_GetTicks(), topx+i*size, topy, bounds_e);
+		n.DrawBounded(target, SDL_GetTicks(), i*size, 0, bounds_e);
 		for (int j = 1; j < height/size; ++j) {
-			w.DrawBounded(target, SDL_GetTicks(), topx, topy+j*size, bounds_ns);
-			fill.Draw(target, SDL_GetTicks(),topx+i*size, topy+j*size);
-			e.DrawBounded(target, SDL_GetTicks(), topx+width-size, topy+j*size, bounds_ns);
+			w.DrawBounded(target, SDL_GetTicks(), 0, j*size, bounds_ns);
+			fill.Draw(target, SDL_GetTicks(),i*size, j*size);
+			e.DrawBounded(target, SDL_GetTicks(), width-size, j*size, bounds_ns);
 		}
-		s.DrawBounded(target, SDL_GetTicks(), topx+i*size, topy+height-size, bounds_e);
+		s.DrawBounded(target, SDL_GetTicks(), i*size, height-size, bounds_e);
 	}
 	//Corners
 	const sago::SagoSprite& nw = globalData.spriteHolder->GetSprite(name+"nw");
 	const sago::SagoSprite& ne = globalData.spriteHolder->GetSprite(name+"ne");
 	const sago::SagoSprite& se = globalData.spriteHolder->GetSprite(name+"se");
 	const sago::SagoSprite& sw = globalData.spriteHolder->GetSprite(name+"sw");
-	nw.Draw(target, SDL_GetTicks(), topx, topy);
-	ne.Draw(target, SDL_GetTicks(), topx+width-size, topy);
-	se.Draw(target, SDL_GetTicks(), topx+width-size, topy+height-size);
-	sw.Draw(target, SDL_GetTicks(), topx, topy+height-size);
+	nw.Draw(target, SDL_GetTicks(), 0, 0);
+	ne.Draw(target, SDL_GetTicks(), width-size, 0);
+	se.Draw(target, SDL_GetTicks(), width-size, height-size);
+	sw.Draw(target, SDL_GetTicks(), 0, height-size);
+	SDL_SetRenderTarget( target, nullptr );
+	SDL_RenderCopy( target, mTexture, NULL, &dstrect );
 }
 
 static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, int width) {
