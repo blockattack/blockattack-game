@@ -166,6 +166,55 @@ public:
 		Mix_PlayChannel(1, applause.get(), 0);
 	}
 private:
+
+	void PaintGarbageBlock(int x, int y, int size_x, int size_y) const {
+		// Bound: topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight()
+		SDL_Rect dstrect = { x, y, size_x*50, size_y*50 };
+		SDL_Texture* mTexture = SDL_CreateTexture( globalData.screen, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size_x*50, size_y*50 );
+		SDL_SetRenderTarget( globalData.screen, mTexture );
+
+		SDL_SetRenderDrawBlendMode(globalData.screen, SDL_BLENDMODE_NONE);
+		SDL_SetTextureBlendMode(mTexture, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(globalData.screen, 0, 0, 0, 0);
+		SDL_RenderFillRect(globalData.screen, NULL);
+		SDL_SetRenderDrawBlendMode(globalData.screen, SDL_BLENDMODE_BLEND);
+
+		if (size_y == 1) {
+			//single line
+			garbageML.Draw(globalData.screen, SDL_GetTicks(), 0, 0);
+			for (int i = 1; i < size_x-1; ++i) {
+				garbageM.Draw(globalData.screen, SDL_GetTicks(), i*50, 0);
+			}
+			garbageMR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, 0);
+		}
+		if (size_y > 1) {
+			// Top line
+			garbageTL.Draw(globalData.screen, SDL_GetTicks(), 0, 0);
+			for (int i = 1; i < size_x-1; ++i) {
+				garbageT.Draw(globalData.screen, SDL_GetTicks(), i*50, 0);
+			}
+			garbageTR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, 0);
+			// Middle lines (if any)
+			for (int j=1; j < size_y-1; ++j) {
+				garbageL.Draw(globalData.screen, SDL_GetTicks(), 0, j*50);
+				for (int i = 1; i < size_x-1; ++i) {
+					garbageFill.Draw(globalData.screen, SDL_GetTicks(), i*50, j*50);
+				}
+				garbageR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, j*50);
+			}
+			//Buttom line
+			garbageBL.Draw(globalData.screen, SDL_GetTicks(), 0, (size_y-1)*50);
+			for (int i = 1; i < size_x-1; ++i) {
+				garbageB.Draw(globalData.screen, SDL_GetTicks(), i*50, (size_y-1)*50);
+			}
+			garbageBR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, (size_y-1)*50);
+		}
+
+		SDL_SetRenderTarget( globalData.screen, nullptr );
+		SDL_RenderCopy( globalData.screen, mTexture, NULL, &dstrect );
+		SDL_DestroyTexture(mTexture);
+	}
+
 	std::pair<int, int> getGarbageSize(int topx, int topy) const {
 		int size_x = 0;
 		int size_y = 0;
@@ -200,72 +249,12 @@ private:
 
 				}
 				if ((board[j][i]/1000000)%10==1) {
-					int left, right, over, under;
 					int number = board[j][i];
 					if (number != lastGarbageNumber) {
 						const auto& garbage_size = getGarbageSize(j, i);
 						std::cerr << "garbage at: " << j << ", " << i << ", " << garbage_size.first << ", " << garbage_size.second << "\n";
 						lastGarbageNumber = number;
-					}
-					if (j<1) {
-						left = -1;
-					}
-					else {
-						left = board[j-1][i];
-					}
-					if (j>=5) {
-						right = -1;
-					}
-					else {
-						right = board[j+1][i];
-					}
-					if (i>28) {
-						over = -1;
-					}
-					else {
-						over = board[j][i+1];
-					}
-					if (i<1) {
-						under = -1;
-					}
-					else {
-						under = board[j][i-1];
-					}
-					if ((left == number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(garbageFill,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(garbageL,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(garbageR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(garbageT,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(garbageB,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(garbageTL,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(garbageBL,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(garbageTR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(garbageBR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(garbageMR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(garbageM,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(garbageML,  j*bsize, bsize*12-i*bsize-pixels);
+						PaintGarbageBlock(topx+j*bsize, topy+12*bsize-i*bsize-(garbage_size.second-1)*bsize -pixels, garbage_size.first, garbage_size.second);
 					}
 				}
 				if ((board[j][i]/1000000)%10==2) {
