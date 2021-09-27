@@ -166,8 +166,26 @@ public:
 		Mix_PlayChannel(1, applause.get(), 0);
 	}
 private:
+	std::pair<int, int> getGarbageSize(int topx, int topy) const {
+		int size_x = 0;
+		int size_y = 0;
+		int number = board[topx][topy];
+		for (int i=topy; i < 30 ; ++i) {
+			if(number == board[topx][i]) {
+				++size_y;
+			}
+		}
+		for (int i=topx; i < 7 ; ++i) {
+			if(number == board[i][topy]) {
+				++size_x;
+			}
+		}
+		return std::make_pair(size_x, size_y);
+	}
+
 	//Draws all the bricks to the board (including garbage)
 	void PaintBricks() const {
+		int lastGarbageNumber = 0;
 		for (int i=0; i<13; ++i) {
 			for (int j=0; j<6; ++j) {
 				int basicBrick = board[j][i]%10; //The basic brick, stored on the least significant digit
@@ -184,6 +202,11 @@ private:
 				if ((board[j][i]/1000000)%10==1) {
 					int left, right, over, under;
 					int number = board[j][i];
+					if (number != lastGarbageNumber) {
+						const auto& garbage_size = getGarbageSize(j, i);
+						std::cerr << "garbage at: " << j << ", " << i << ", " << garbage_size.first << ", " << garbage_size.second << "\n";
+						lastGarbageNumber = number;
+					}
 					if (j<1) {
 						left = -1;
 					}
