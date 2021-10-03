@@ -167,9 +167,55 @@ public:
 	}
 private:
 
+	void CropTexture(SDL_Rect& dstrect, SDL_Rect& srcrect, const SDL_Rect& bounds) const {
+		if (dstrect.x > bounds.x+bounds.w) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.y > bounds.y+bounds.h) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.x+dstrect.w < bounds.x) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.y+dstrect.h < bounds.y) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.x < bounds.x) {
+			Sint16 absDiff = bounds.x-dstrect.x;
+			dstrect.x+=absDiff;
+			srcrect.x+=absDiff;
+			dstrect.w-=absDiff;
+			srcrect.w-=absDiff;
+		}
+		if (dstrect.y < bounds.y) {
+			Sint16 absDiff = bounds.y-dstrect.y;
+			dstrect.y+=absDiff;
+			srcrect.y+=absDiff;
+			dstrect.h-=absDiff;
+			srcrect.h-=absDiff;
+		}
+		if (dstrect.x+dstrect.w > bounds.x+bounds.w) {
+			Sint16 absDiff = dstrect.x+dstrect.w-(bounds.x+bounds.w);
+			dstrect.w -= absDiff;
+			srcrect.w -= absDiff;
+		}
+		if (dstrect.y+dstrect.h > bounds.y+bounds.h) {
+			Sint16 absDiff = dstrect.y+dstrect.h-(bounds.y+bounds.h);
+			dstrect.h -= absDiff;
+			srcrect.h -= absDiff;
+		}
+	}
+
 	void PaintGarbageBlock(int x, int y, int size_x, int size_y) const {
 		// Bound: topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight()
 		SDL_Rect dstrect = { x, y, size_x*50, size_y*50 };
+		SDL_Rect srcrect = { 0, 0, size_x*50, size_y*50 };
+		SDL_Rect bound = {topx, topy, backBoard.GetWidth(), backBoard.GetHeight()};
+		CropTexture (dstrect, srcrect, bound);
 		SDL_Texture* mTexture = SDL_CreateTexture( globalData.screen, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size_x*50, size_y*50 );
 		SDL_SetRenderTarget( globalData.screen, mTexture );
 
@@ -211,7 +257,7 @@ private:
 		}
 
 		SDL_SetRenderTarget( globalData.screen, nullptr );
-		SDL_RenderCopy( globalData.screen, mTexture, NULL, &dstrect );
+		SDL_RenderCopy( globalData.screen, mTexture, &srcrect, &dstrect );
 		SDL_DestroyTexture(mTexture);
 	}
 
