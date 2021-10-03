@@ -298,7 +298,6 @@ private:
 					int number = board[j][i];
 					if (number != lastGarbageNumber) {
 						const auto& garbage_size = getGarbageSize(j, i);
-						std::cerr << "garbage at: " << j << ", " << i << ", " << garbage_size.first << ", " << garbage_size.second << "\n";
 						lastGarbageNumber = number;
 						PaintGarbageBlock(topx+j*bsize, topy+12*bsize-i*bsize-(garbage_size.second-1)*bsize -pixels, garbage_size.first, garbage_size.second);
 					}
