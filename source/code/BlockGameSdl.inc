@@ -210,10 +210,13 @@ private:
 		}
 	}
 
-	void PaintGarbageBlock(int x, int y, int size_x, int size_y) const {
-		// Bound: topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight()
-		SDL_Rect dstrect = { x, y, size_x*50, size_y*50 };
-		SDL_Rect srcrect = { 0, 0, size_x*50, size_y*50 };
+	/**
+	 * Creates a new texture for a garabge block of size size_x*size_y at x,y and crops it.
+	 * Also sets globalData.screen to point to the texture, so Draw now draws on the Texture.
+	*/
+	SDL_Texture* CreateGarbageTexture(int x, int y, int size_x, int size_y, SDL_Rect& dstrect, SDL_Rect& srcrect) const {
+		dstrect = { x, y, size_x*50, size_y*50 };
+		srcrect = { 0, 0, size_x*50, size_y*50 };
 		SDL_Rect bound = {topx, topy, backBoard.GetWidth(), backBoard.GetHeight()};
 		CropTexture (dstrect, srcrect, bound);
 		SDL_Texture* mTexture = SDL_CreateTexture( globalData.screen, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size_x*50, size_y*50 );
@@ -224,6 +227,14 @@ private:
 		SDL_SetRenderDrawColor(globalData.screen, 0, 0, 0, 0);
 		SDL_RenderFillRect(globalData.screen, NULL);
 		SDL_SetRenderDrawBlendMode(globalData.screen, SDL_BLENDMODE_BLEND);
+		return mTexture;
+	}
+
+	void PaintGarbageBlock(int x, int y, int size_x, int size_y) const {
+		// Bound: topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight()
+		SDL_Rect dstrect ;
+		SDL_Rect srcrect ;
+		SDL_Texture* mTexture = CreateGarbageTexture(x, y, size_x, size_y, dstrect, srcrect);
 
 		if (size_y == 1) {
 			//single line
@@ -254,6 +265,29 @@ private:
 				garbageB.Draw(globalData.screen, SDL_GetTicks(), i*50, (size_y-1)*50);
 			}
 			garbageBR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, (size_y-1)*50);
+		}
+
+		SDL_SetRenderTarget( globalData.screen, nullptr );
+		SDL_RenderCopy( globalData.screen, mTexture, &srcrect, &dstrect );
+		SDL_DestroyTexture(mTexture);
+	}
+
+	void PaintGreyGarbageBlock(int x, int y, int size_x) const {
+		const int size_y = bsize;
+		SDL_Rect dstrect ;
+		SDL_Rect srcrect ;
+		SDL_Texture* mTexture = CreateGarbageTexture(x, y, size_x, size_y, dstrect, srcrect);
+
+		for (int j=0; j < size_y; ++j) {
+			if (j==0) {
+				garbageGML.Draw(globalData.screen, SDL_GetTicks(), j*50, 0);
+			}
+			else if (j==5) {
+				garbageGMR.Draw(globalData.screen, SDL_GetTicks(), j*50, 0);
+			}
+			else {
+				garbageGM.Draw(globalData.screen, SDL_GetTicks(), j*50, 0);
+			}
 		}
 
 		SDL_SetRenderTarget( globalData.screen, nullptr );
@@ -303,14 +337,11 @@ private:
 					}
 				}
 				if ((board[j][i]/1000000)%10==2) {
-					if (j==0) {
-						DrawImgBoardBounded(garbageGML,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					else if (j==5) {
-						DrawImgBoardBounded(garbageGMR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					else {
-						DrawImgBoardBounded(garbageGM,  j*bsize, bsize*12-i*bsize-pixels);
+					int number = board[j][i];
+					if (number != lastGarbageNumber) {
+						const auto& garbage_size = getGarbageSize(j, i);
+						lastGarbageNumber = number;
+						PaintGreyGarbageBlock(topx+j*bsize, topy+12*bsize-i*bsize-(garbage_size.second-1)*bsize -pixels, garbage_size.first);
 					}
 				}
 			}
