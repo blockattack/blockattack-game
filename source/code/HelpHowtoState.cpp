@@ -166,6 +166,7 @@ static void DrawArrow(SDL_Renderer* target, int x1, int y1, int x2, int y2) {
 
 void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
+	SDL_SetRenderDrawColor(target, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	RenderRowOfBricks(target, switchAnimation.brickStr, 50, 50);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+switchAnimation.cursorPos*50, 50);
 	switchAnimationField.Draw(target, 50 +150+30, 50+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center);
