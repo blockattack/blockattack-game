@@ -98,19 +98,19 @@ public:
 			return;
 		}
 		match = true;
-		x = (mousex-topx) / 50;
-		y = (50*12+topy-mousey-pixels) / 50;
+		x = (mousex-topx) / bsize;
+		y = (bsize*12+topy-mousey-pixels) / bsize;
 	}
 	
 	bool IsInTheBoard(int mousex, int mousey) const {
-		if (mousex < topx || mousex > topx+50*6 || mousey < topy || mousey > topy+50*12) {
+		if (mousex < topx || mousex > topx+bsize*6 || mousey < topy || mousey > topy+bsize*12) {
 			return false;
 		}
 		return true;
 	}
 	
 	bool IsUnderTheBoard(int mousex, int mousey) const {
-		if (mousex < topx || mousex > topx+50*6 || mousey < topy+50*12) {
+		if (mousex < topx || mousex > topx+bsize*6 || mousey < topy+bsize*12) {
 			return false;
 		}
 		return true;
@@ -215,11 +215,11 @@ private:
 	 * Also sets globalData.screen to point to the texture, so Draw now draws on the Texture.
 	*/
 	SDL_Texture* CreateGarbageTexture(int x, int y, int size_x, int size_y, SDL_Rect& dstrect, SDL_Rect& srcrect) const {
-		dstrect = { x, y, size_x*50, size_y*50 };
-		srcrect = { 0, 0, size_x*50, size_y*50 };
+		dstrect = { x, y, size_x*bsize, size_y*bsize };
+		srcrect = { 0, 0, size_x*bsize, size_y*bsize };
 		SDL_Rect bound = {topx, topy, backBoard.GetWidth(), backBoard.GetHeight()};
 		CropTexture (dstrect, srcrect, bound);
-		SDL_Texture* mTexture = SDL_CreateTexture( globalData.screen, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size_x*50, size_y*50 );
+		SDL_Texture* mTexture = SDL_CreateTexture( globalData.screen, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size_x*bsize, size_y*bsize );
 		SDL_SetRenderTarget( globalData.screen, mTexture );
 
 		SDL_SetRenderDrawBlendMode(globalData.screen, SDL_BLENDMODE_NONE);
@@ -235,36 +235,37 @@ private:
 		SDL_Rect dstrect ;
 		SDL_Rect srcrect ;
 		SDL_Texture* mTexture = CreateGarbageTexture(x, y, size_x, size_y, dstrect, srcrect);
+		const Sint32 draw_time = SDL_GetTicks();
 
 		if (size_y == 1) {
 			//single line
-			garbageML.Draw(globalData.screen, SDL_GetTicks(), 0, 0);
+			garbageML.Draw(globalData.screen, draw_time, 0, 0);
 			for (int i = 1; i < size_x-1; ++i) {
-				garbageM.Draw(globalData.screen, SDL_GetTicks(), i*50, 0);
+				garbageM.Draw(globalData.screen, draw_time, i*bsize, 0);
 			}
-			garbageMR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, 0);
+			garbageMR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
 		}
 		if (size_y > 1) {
 			// Top line
-			garbageTL.Draw(globalData.screen, SDL_GetTicks(), 0, 0);
+			garbageTL.Draw(globalData.screen, draw_time, 0, 0);
 			for (int i = 1; i < size_x-1; ++i) {
-				garbageT.Draw(globalData.screen, SDL_GetTicks(), i*50, 0);
+				garbageT.Draw(globalData.screen, draw_time, i*bsize, 0);
 			}
-			garbageTR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, 0);
+			garbageTR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
 			// Middle lines (if any)
 			for (int j=1; j < size_y-1; ++j) {
-				garbageL.Draw(globalData.screen, SDL_GetTicks(), 0, j*50);
+				garbageL.Draw(globalData.screen, draw_time, 0, j*bsize);
 				for (int i = 1; i < size_x-1; ++i) {
-					garbageFill.Draw(globalData.screen, SDL_GetTicks(), i*50, j*50);
+					garbageFill.Draw(globalData.screen, draw_time, i*bsize, j*bsize);
 				}
-				garbageR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, j*50);
+				garbageR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, j*bsize);
 			}
 			//Buttom line
-			garbageBL.Draw(globalData.screen, SDL_GetTicks(), 0, (size_y-1)*50);
+			garbageBL.Draw(globalData.screen, draw_time, 0, (size_y-1)*bsize);
 			for (int i = 1; i < size_x-1; ++i) {
-				garbageB.Draw(globalData.screen, SDL_GetTicks(), i*50, (size_y-1)*50);
+				garbageB.Draw(globalData.screen, draw_time, i*bsize, (size_y-1)*bsize);
 			}
-			garbageBR.Draw(globalData.screen, SDL_GetTicks(), (size_x-1)*50, (size_y-1)*50);
+			garbageBR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, (size_y-1)*bsize);
 		}
 
 		SDL_SetRenderTarget( globalData.screen, nullptr );
@@ -277,16 +278,17 @@ private:
 		SDL_Rect dstrect ;
 		SDL_Rect srcrect ;
 		SDL_Texture* mTexture = CreateGarbageTexture(x, y, size_x, size_y, dstrect, srcrect);
+		const Sint32 draw_time = SDL_GetTicks();
 
 		for (int j=0; j < size_y; ++j) {
 			if (j==0) {
-				garbageGML.Draw(globalData.screen, SDL_GetTicks(), j*50, 0);
+				garbageGML.Draw(globalData.screen, draw_time, j*bsize, 0);
 			}
 			else if (j==5) {
-				garbageGMR.Draw(globalData.screen, SDL_GetTicks(), j*50, 0);
+				garbageGMR.Draw(globalData.screen, draw_time, j*bsize, 0);
 			}
 			else {
-				garbageGM.Draw(globalData.screen, SDL_GetTicks(), j*50, 0);
+				garbageGM.Draw(globalData.screen, draw_time, j*bsize, 0);
 			}
 		}
 
