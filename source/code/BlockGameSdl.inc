@@ -167,6 +167,10 @@ public:
 	}
 private:
 
+	/**
+	This crops "dstrect" and "srcrect" to fit inside "bounds"
+	dstrect and srcrect are modified in place.
+	*/
 	void CropTexture(SDL_Rect& dstrect, SDL_Rect& srcrect, const SDL_Rect& bounds) const {
 		if (dstrect.x > bounds.x+bounds.w) {
 			dstrect = {0,0,0,0};
@@ -230,8 +234,12 @@ private:
 		return mTexture;
 	}
 
+	/**
+	Paints a garbage block of size size_x*size_y (size in blocks) at x,y (coordinates in pixels).
+	The garbage block will be painted on an internal texture and rendered to screen to protect against tearing.
+	The result will be cropped to the playable area.
+	*/
 	void PaintGarbageBlock(int x, int y, int size_x, int size_y) const {
-		// Bound: topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight()
 		SDL_Rect dstrect ;
 		SDL_Rect srcrect ;
 		SDL_Texture* mTexture = CreateGarbageTexture(x, y, size_x, size_y, dstrect, srcrect);
@@ -273,6 +281,10 @@ private:
 		SDL_DestroyTexture(mTexture);
 	}
 
+	/**
+	Paints a grey garbage block of size size_x (size in blocks, always 6) at x,y (coordinates in pixels).
+	The result will be cropped to the playable area.
+	*/
 	void PaintGreyGarbageBlock(int x, int y, int size_x) const {
 		const int size_y = bsize;
 		SDL_Rect dstrect ;
