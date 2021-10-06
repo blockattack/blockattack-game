@@ -98,19 +98,19 @@ public:
 			return;
 		}
 		match = true;
-		x = (mousex-topx) / 50;
-		y = (50*12+topy-mousey-pixels) / 50;
+		x = (mousex-topx) / bsize;
+		y = (bsize*12+topy-mousey-pixels) / bsize;
 	}
 	
 	bool IsInTheBoard(int mousex, int mousey) const {
-		if (mousex < topx || mousex > topx+50*6 || mousey < topy || mousey > topy+50*12) {
+		if (mousex < topx || mousex > topx+bsize*6 || mousey < topy || mousey > topy+bsize*12) {
 			return false;
 		}
 		return true;
 	}
 	
 	bool IsUnderTheBoard(int mousex, int mousey) const {
-		if (mousex < topx || mousex > topx+50*6 || mousey < topy+50*12) {
+		if (mousex < topx || mousex > topx+bsize*6 || mousey < topy+bsize*12) {
 			return false;
 		}
 		return true;
@@ -166,8 +166,169 @@ public:
 		Mix_PlayChannel(1, applause.get(), 0);
 	}
 private:
+
+	/**
+	This crops "dstrect" and "srcrect" to fit inside "bounds"
+	dstrect and srcrect are modified in place.
+	*/
+	void CropTexture(SDL_Rect& dstrect, SDL_Rect& srcrect, const SDL_Rect& bounds) const {
+		if (dstrect.x > bounds.x+bounds.w) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.y > bounds.y+bounds.h) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.x+dstrect.w < bounds.x) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.y+dstrect.h < bounds.y) {
+			dstrect = {0,0,0,0};
+			return;
+		}
+		if (dstrect.x < bounds.x) {
+			Sint16 absDiff = bounds.x-dstrect.x;
+			dstrect.x+=absDiff;
+			srcrect.x+=absDiff;
+			dstrect.w-=absDiff;
+			srcrect.w-=absDiff;
+		}
+		if (dstrect.y < bounds.y) {
+			Sint16 absDiff = bounds.y-dstrect.y;
+			dstrect.y+=absDiff;
+			srcrect.y+=absDiff;
+			dstrect.h-=absDiff;
+			srcrect.h-=absDiff;
+		}
+		if (dstrect.x+dstrect.w > bounds.x+bounds.w) {
+			Sint16 absDiff = dstrect.x+dstrect.w-(bounds.x+bounds.w);
+			dstrect.w -= absDiff;
+			srcrect.w -= absDiff;
+		}
+		if (dstrect.y+dstrect.h > bounds.y+bounds.h) {
+			Sint16 absDiff = dstrect.y+dstrect.h-(bounds.y+bounds.h);
+			dstrect.h -= absDiff;
+			srcrect.h -= absDiff;
+		}
+	}
+
+	/**
+	 * Creates a new texture for a garabge block of size size_x*size_y at x,y and crops it.
+	 * Also sets globalData.screen to point to the texture, so Draw now draws on the Texture.
+	*/
+	SDL_Texture* CreateGarbageTexture(int x, int y, int size_x, int size_y, SDL_Rect& dstrect, SDL_Rect& srcrect) const {
+		dstrect = { x, y, size_x*bsize, size_y*bsize };
+		srcrect = { 0, 0, size_x*bsize, size_y*bsize };
+		SDL_Rect bound = {topx, topy, backBoard.GetWidth(), backBoard.GetHeight()};
+		CropTexture (dstrect, srcrect, bound);
+		SDL_Texture* mTexture = SDL_CreateTexture( globalData.screen, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size_x*bsize, size_y*bsize );
+		SDL_SetRenderTarget( globalData.screen, mTexture );
+
+		SDL_SetRenderDrawBlendMode(globalData.screen, SDL_BLENDMODE_NONE);
+		SDL_SetTextureBlendMode(mTexture, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(globalData.screen, 0, 0, 0, 0);
+		SDL_RenderFillRect(globalData.screen, NULL);
+		SDL_SetRenderDrawBlendMode(globalData.screen, SDL_BLENDMODE_BLEND);
+		return mTexture;
+	}
+
+	/**
+	Paints a garbage block of size size_x*size_y (size in blocks) at x,y (coordinates in pixels).
+	The garbage block will be painted on an internal texture and rendered to screen to protect against tearing.
+	The result will be cropped to the playable area.
+	*/
+	void PaintGarbageBlock(int x, int y, int size_x, int size_y) const {
+		SDL_Rect dstrect ;
+		SDL_Rect srcrect ;
+		SDL_Texture* mTexture = CreateGarbageTexture(x, y, size_x, size_y, dstrect, srcrect);
+		const Sint32 draw_time = SDL_GetTicks();
+
+		if (size_y == 1) {
+			//single line
+			garbageML.Draw(globalData.screen, draw_time, 0, 0);
+			for (int i = 1; i < size_x-1; ++i) {
+				garbageM.Draw(globalData.screen, draw_time, i*bsize, 0);
+			}
+			garbageMR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
+		}
+		if (size_y > 1) {
+			// Top line
+			garbageTL.Draw(globalData.screen, draw_time, 0, 0);
+			for (int i = 1; i < size_x-1; ++i) {
+				garbageT.Draw(globalData.screen, draw_time, i*bsize, 0);
+			}
+			garbageTR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
+			// Middle lines (if any)
+			for (int j=1; j < size_y-1; ++j) {
+				garbageL.Draw(globalData.screen, draw_time, 0, j*bsize);
+				for (int i = 1; i < size_x-1; ++i) {
+					garbageFill.Draw(globalData.screen, draw_time, i*bsize, j*bsize);
+				}
+				garbageR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, j*bsize);
+			}
+			//Buttom line
+			garbageBL.Draw(globalData.screen, draw_time, 0, (size_y-1)*bsize);
+			for (int i = 1; i < size_x-1; ++i) {
+				garbageB.Draw(globalData.screen, draw_time, i*bsize, (size_y-1)*bsize);
+			}
+			garbageBR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, (size_y-1)*bsize);
+		}
+
+		SDL_SetRenderTarget( globalData.screen, nullptr );
+		SDL_RenderCopy( globalData.screen, mTexture, &srcrect, &dstrect );
+		SDL_DestroyTexture(mTexture);
+	}
+
+	/**
+	Paints a grey garbage block of size size_x (size in blocks, always 6) at x,y (coordinates in pixels).
+	The result will be cropped to the playable area.
+	*/
+	void PaintGreyGarbageBlock(int x, int y, int size_x) const {
+		const int size_y = bsize;
+		SDL_Rect dstrect ;
+		SDL_Rect srcrect ;
+		SDL_Texture* mTexture = CreateGarbageTexture(x, y, size_x, size_y, dstrect, srcrect);
+		const Sint32 draw_time = SDL_GetTicks();
+
+		for (int j=0; j < size_y; ++j) {
+			if (j==0) {
+				garbageGML.Draw(globalData.screen, draw_time, j*bsize, 0);
+			}
+			else if (j==5) {
+				garbageGMR.Draw(globalData.screen, draw_time, j*bsize, 0);
+			}
+			else {
+				garbageGM.Draw(globalData.screen, draw_time, j*bsize, 0);
+			}
+		}
+
+		SDL_SetRenderTarget( globalData.screen, nullptr );
+		SDL_RenderCopy( globalData.screen, mTexture, &srcrect, &dstrect );
+		SDL_DestroyTexture(mTexture);
+	}
+
+	std::pair<int, int> getGarbageSize(int topx, int topy) const {
+		int size_x = 0;
+		int size_y = 0;
+		int number = board[topx][topy];
+		for (int i=topy; i < 30 ; ++i) {
+			if(number == board[topx][i]) {
+				++size_y;
+			}
+		}
+		for (int i=topx; i < 7 ; ++i) {
+			if(number == board[i][topy]) {
+				++size_x;
+			}
+		}
+		return std::make_pair(size_x, size_y);
+	}
+
 	//Draws all the bricks to the board (including garbage)
 	void PaintBricks() const {
+		int lastGarbageNumber = 0;
 		for (int i=0; i<13; ++i) {
 			for (int j=0; j<6; ++j) {
 				int basicBrick = board[j][i]%10; //The basic brick, stored on the least significant digit
@@ -182,78 +343,19 @@ private:
 
 				}
 				if ((board[j][i]/1000000)%10==1) {
-					int left, right, over, under;
 					int number = board[j][i];
-					if (j<1) {
-						left = -1;
-					}
-					else {
-						left = board[j-1][i];
-					}
-					if (j>=5) {
-						right = -1;
-					}
-					else {
-						right = board[j+1][i];
-					}
-					if (i>28) {
-						over = -1;
-					}
-					else {
-						over = board[j][i+1];
-					}
-					if (i<1) {
-						under = -1;
-					}
-					else {
-						under = board[j][i-1];
-					}
-					if ((left == number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(garbageFill,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(garbageL,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(garbageR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(garbageT,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(garbageB,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(garbageTL,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(garbageBL,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(garbageTR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(garbageBR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right != number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(garbageMR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left == number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(garbageM,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					if ((left != number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(garbageML,  j*bsize, bsize*12-i*bsize-pixels);
+					if (number != lastGarbageNumber) {
+						const auto& garbage_size = getGarbageSize(j, i);
+						lastGarbageNumber = number;
+						PaintGarbageBlock(topx+j*bsize, topy+12*bsize-i*bsize-(garbage_size.second-1)*bsize -pixels, garbage_size.first, garbage_size.second);
 					}
 				}
 				if ((board[j][i]/1000000)%10==2) {
-					if (j==0) {
-						DrawImgBoardBounded(garbageGML,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					else if (j==5) {
-						DrawImgBoardBounded(garbageGMR,  j*bsize, bsize*12-i*bsize-pixels);
-					}
-					else {
-						DrawImgBoardBounded(garbageGM,  j*bsize, bsize*12-i*bsize-pixels);
+					int number = board[j][i];
+					if (number != lastGarbageNumber) {
+						const auto& garbage_size = getGarbageSize(j, i);
+						lastGarbageNumber = number;
+						PaintGreyGarbageBlock(topx+j*bsize, topy+12*bsize-i*bsize-(garbage_size.second-1)*bsize -pixels, garbage_size.first);
 					}
 				}
 			}
