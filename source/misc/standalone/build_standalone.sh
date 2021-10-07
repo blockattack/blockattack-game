@@ -17,7 +17,7 @@ chmod +x staging/$ARCHIVENAME/blockattack
 
 cd ../../..
 
-docker build -f source/misc/docker/Dockerfile.Ubuntu12.04build_Standalone . -t blockattack_test
+docker build -f source/misc/docker/Dockerfile.Ubuntu16.04build_Standalone . -t blockattack_test
 
 echo Copying to: $(pwd)/source/misc/standalone/staging/$ARCHIVENAME
 
