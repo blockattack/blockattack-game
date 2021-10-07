@@ -11,6 +11,8 @@
  - Linux icons have been converted to png (patch by pinotree)
  - Now requires Ubuntu 18.04 or later (or equivalent)
  - utfcpp is now an embedded library
+ - Dialog boxes now uses contructed textures thus reducing tearing on some renderers
+ - Garbage blocks now uses constructed textures thus reducing tearing on some renderers
 
 ### Removed
  - Linux standalone build no longer includes 32 bit binary
