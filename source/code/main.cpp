@@ -64,7 +64,7 @@ https://blockattack.net
 #define PACKAGE "blockattack_roftb"
 #endif
 
-#define MODLIST_TXT "modList.txt"
+#define MODLIST_TXT "mod_list.txt"
 
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
@@ -1002,10 +1002,10 @@ int main(int argc, char* argv[]) {
 		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
-		if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
+		/*if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
 			std::string modString = sago::GetFileContent(MODLIST_TXT);
 			boost::split(globalData.modList, modString, boost::is_any_of(","));
-		}
+		}*/
 		if (globalData.modList.size()>0) {
 			PHYSFS_unmount(config.savepath.c_str());
 			FsSearchPathModAppend(config.search_paths, globalData.modList);
@@ -1291,7 +1291,7 @@ int main(int argc, char* argv[]) {
 			std::cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
 			std::cout << "Mods loaded: " << modListString << "\n";
 		}
-		sago::WriteFileContent(MODLIST_TXT, modListString);
+		//sago::WriteFileContent(MODLIST_TXT, modListString);
 		Stats::getInstance()->save();
 		Config::getInstance()->save();
 	}
