@@ -22,6 +22,7 @@ cd /staging/package/blockattack-${BLOCKATTACK_VERSION} && \
 cp /staging/blockattack-game/Game/blockattack.data ./ && \
 cp /staging/blockattack-game/Game/blockattack.exe ./ && \
 cp /staging/blockattack-game/COPYING ./COPYING.txt && \
+mkdir -p mods && cp /staging/blockattack-game/Game/mods/1.3.0.bricks.data ./mods/ && \
 cp -r /staging/blockattack-game/source/misc/translation/locale ./ && \
 echo "[InternetShortcut]" > "Block Attack - Rise Of the Blocks.url" && \
 echo "URL=https://blockattack.net" >> "Block Attack - Rise Of the Blocks.url" && \
