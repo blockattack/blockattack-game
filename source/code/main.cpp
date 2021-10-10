@@ -1006,10 +1006,19 @@ int main(int argc, char* argv[]) {
 			std::string modString = sago::GetFileContent(MODLIST_TXT);
 			boost::split(globalData.modList, modString, boost::is_any_of(","));
 		}*/
+		globalData.modinfo.InitModList(globalData.modList);
+		if (sago::FileExists(MODLIST_TXT)) {
+			globalData.modinfo.ParseModFile(sago::GetFileContent(MODLIST_TXT));
+			globalData.modList = globalData.modinfo.getModList();
+		}
+		std::cout << "Mod list: ";
+		for (const std::string& s : globalData.modList) {
+			std::cout << s << ",";
+		}
+		std::cout <<  "\n";
 		if (globalData.modList.size()>0) {
 			PHYSFS_unmount(config.savepath.c_str());
 			FsSearchPathModAppend(config.search_paths, globalData.modList);
-			globalData.modinfo.InitModList(globalData.modList);
 			PhysFsSetSearchPath(config.search_paths, config.savepath);
 		}
 		//Os create folders must be after the parameters because they can change the home folder
@@ -1279,17 +1288,17 @@ int main(int argc, char* argv[]) {
 			std::cout << SPrintStringF("Block Attack - Rise of the Blocks ran for: %i hours %i mins and %i secs", ct.hours, ct.minutes, ct.seconds) << "\n";
 		}
 
-		std::string modListString;
+		/*std::string modListString;
 		if (globalData.modList.size()>0) {
 			modListString = globalData.modList.at(0);
 			for (size_t i = 1; i < globalData.modList.size(); ++i) {
 				modListString += std::string(",")+globalData.modList[i];
 			}
-		}
+		}*/
 		ct = TimeHandler::addTime("totalTime",ct);
 		if (globalData.verboseLevel) {
 			std::cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
-			std::cout << "Mods loaded: " << modListString << "\n";
+			//std::cout << "Mods loaded: " << modListString << "\n";
 		}
 		//sago::WriteFileContent(MODLIST_TXT, modListString);
 		Stats::getInstance()->save();

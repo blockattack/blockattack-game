@@ -32,6 +32,7 @@ class ModInfo {
 public:
 	ModInfo() = default;
 	void InitModList(const std::vector<std::string>& modlist);
+	void ParseModFile(const std::string& content);
 	const std::vector<std::string>& getModList();
 	const std::vector<std::string>& getModSpriteFiles();
 private:

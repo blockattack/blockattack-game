@@ -11,6 +11,7 @@ ARCHIVENAME=$1
 rm -rf staging
 mkdir -p staging/$ARCHIVENAME/x86_64
 mkdir -p staging/$ARCHIVENAME/docs
+mkdir -p staging/$ARCHIVENAME/mods
 cp blockattack_standalone_launcher staging/$ARCHIVENAME/blockattack
 cp README.txt staging/$ARCHIVENAME/README
 chmod +x staging/$ARCHIVENAME/blockattack
@@ -32,6 +33,7 @@ cp /usr/local/lib/libSDL2_image-2.0.so.0  /output/x86_64/"
 
 docker run -it --rm -v $(pwd)/source/misc/standalone/staging/$ARCHIVENAME/:/output blockattack_test /bin/bash -c "cp -r /staging/blockattack-game/source/misc/translation/locale /output/ && \
 cp /staging/blockattack-game/Game/blockattack.data /output/ && \
+cp /staging/blockattack-game/Game/mods/1.3.0.bricks.data /output/mods/ && \
 cp -r /staging/blockattack-game/source/misc/icons /output/ && \
 cp /staging/blockattack-game/COPYING /output/ && \
 cp /staging/blockattack-game/man/blockattack.man /output/docs/ && \

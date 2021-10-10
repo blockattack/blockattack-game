@@ -25,6 +25,7 @@ http://blockattack.net
 #include "sago/SagoMisc.hpp"
 #include "rapidjson/document.h"
 #include <iostream>
+#include <sstream>
 #include <boost/algorithm/string.hpp>
 
 void ModInfo::InitModList(const std::vector<std::string>& modlist) {
@@ -49,6 +50,23 @@ void ModInfo::InitModList(const std::vector<std::string>& modlist) {
 			}
 		}
 	}
+}
+
+void ModInfo::ParseModFile(const std::string& content) {
+	std::istringstream ss(content);
+	std::string line;
+	while (std::getline(ss, line)) {
+		std::vector<std::string> line_vector;
+		boost::split(line_vector, line, boost::is_any_of(","));
+		if (line_vector.size() < 2) {
+			std::cerr << "skipping " << line << "\n";
+			continue;
+		}
+		if (line_vector[1] == "1") {
+			this->mod_list.push_back(line_vector[0]);
+		}
+	}
+	InitModList(this->mod_list);
 }
 
 const std::vector<std::string>& ModInfo::getModList() {
