@@ -348,24 +348,10 @@ void writeScreenShot() {
 		std::cout << "Saving screenshot" << "\n";
 	}
 	int rightNow = (int)time(nullptr);
-	SDL_Surface* infoSurface = SDL_GetWindowSurface(sdlWindow);
-	if (!infoSurface) {
-		std::cerr << "Could not get infoSurface. No screenshot written. Be aware that the screenshot feature only works with software render\n";
-		return;
-	}
-	std::vector<char> pixels(infoSurface->w * infoSurface->h * infoSurface->format->BytesPerPixel);
-	int errorCode = SDL_RenderReadPixels(globalData.screen, &infoSurface->clip_rect, infoSurface->format->format, static_cast<void*>(pixels.data()), infoSurface->w * infoSurface->format->BytesPerPixel);
-	if (errorCode) {
-		SDL_FreeSurface(infoSurface);
-		std::cerr << "Could not do SDL_RenderReadPixels. Error code: " << errorCode << ". No screenshot written\n";
-		return;
-	}
-	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurfaceFrom(static_cast<void*>(pixels.data()), infoSurface->w, infoSurface->h, infoSurface->format->BitsPerPixel, infoSurface->w * infoSurface->format->BytesPerPixel, infoSurface->format->Rmask, infoSurface->format->Gmask, infoSurface->format->Bmask, infoSurface->format->Amask);
-	SDL_FreeSurface(infoSurface);
-	if (!sreenshotSurface) {
-		std::cerr << "Could not get sreenshotSurface. No screenshot written\n";
-		return;
-	}
+	int w, h;
+	SDL_GetRendererOutputSize(globalData.screen, &w, &h);
+	SDL_Surface *sreenshotSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_RenderReadPixels(globalData.screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
 	OsCreateFolder(pathToScreenShots());
 	std::string buf = pathToScreenShots() + "/screenshot"+std::to_string(rightNow)+".bmp";
 	SDL_SaveBMP(sreenshotSurface, buf.c_str());
