@@ -135,7 +135,7 @@ class Button_confirmVolume : public Button {
 	std::string cvar="";
 	mutable std::string volumeLabel; /*used for cache*/
 	public:
-	Button_confirmVolume(const char* cvar);
+	explicit Button_confirmVolume(const char* cvar);
 	virtual void doAction() override { /*Do nothing. Equal to choose "back". */ };
 	virtual const std::string& getLabel() const override;
 };

@@ -13,6 +13,7 @@
  - utfcpp is now an embedded library
  - Dialog boxes now uses contructed textures thus reducing tearing on some renderers
  - Garbage blocks now uses constructed textures thus reducing tearing on some renderers
+ - Screen shot feature now works with hardware render
 
 ### Removed
  - Linux standalone build no longer includes 32 bit binary
