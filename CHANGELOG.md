@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [Unreleased]
+## [2.7.0] - 2021-10-23
 
 ### Added
  - Volume for sound effect and music is now stored in the configFile
@@ -14,6 +14,8 @@
  - Dialog boxes now uses contructed textures thus reducing tearing on some renderers
  - Garbage blocks now uses constructed textures thus reducing tearing on some renderers
  - Screen shot feature now works with hardware render
+ - Update library versions for the compiled version:
+   - SDL2: 2.0.12 to 2.0.16
 
 ### Removed
  - Linux standalone build no longer includes 32 bit binary
