@@ -42,7 +42,17 @@ This allows you to override individual sprites from blockattack.data without rep
 ## Sprites
 As mentioned sprites can be overridden. The documentation for Saland Adventures https://salandgame.github.io/development_info/sprites/ also applies to Block Attack - Rise of the Blocks.
 
+## Example
+The example example mod features the following:
+textures/ball_*.png just overwrites files in blockattack.data
+
+The example mod add one new texture "textures/bricks130.png" or just "bricks130".
+
+The sprite file "sprites/bricks1.3.0.sprite" uses the "bricks130" texture.
+
+The mod file "modinfo/1.3.0.bricks.json" refers the sprite file so that it takes priority.
+
 ## Tips
-Use lowercase letters for all filenames. This prevents surprises when developing on case insensitive filesystems.
+Use lowercase letters for all filenames. This prevents surprises when developing on case insensitive file systems.
 
 Create new sprite files rather than overwriting an existing one. Failure to do so might result in mod conflicts.
