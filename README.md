@@ -15,6 +15,7 @@ Source: <https://github.com/blockattack/blockattack-game>
 * libSDL2_mixer
 * libSDL2_ttf
 * libphysfs
+* libfmt
 * libboost (only needed for compiling)
 * libboost-program-options
 
@@ -40,15 +41,8 @@ You can also choose to install it with
 sudo make install
 ```
 
-Windows build uses MXE (mxe.cc) with these installed:
-```
-sdl2 sdl2_image sdl2_mixer sdl2_ttf physfs libtool gettext freetype zlib boost
-```
+Windows build uses MXE (mxe.cc) and Docker. See "Building with Docker".
 
-Compiled with:
-```
-i686-w64-mingw32.static-cmake -DCMAKE_BUILD_TYPE=Release . && make
-```
 
 ## Building using Docker
 
