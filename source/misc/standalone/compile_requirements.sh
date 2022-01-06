@@ -31,3 +31,7 @@ pushd boost_1_65_1
 ./bootstrap.sh --with-libraries=program_options
 ./b2 install -j 2 --prefix=/usr link=static
 popd
+curl https://files.poulsander.com/~poul19/public_files/fmt-8.1.0.tar.gz | tar -xz
+pushd fmt-8.1.0
+cmake . -DFMT_TEST=OFF -DFMT_INSTALL=ON -DFMT_MASTER_PROJECT=OFF && make && make install
+popd
