@@ -28,6 +28,7 @@ https://blockattack.net
 #include "os.hpp"
 
 #include <string.h>
+#include <fmt/core.h>
 
 #include "version.h"
 
@@ -862,10 +863,10 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 #ifdef REPLAY_IMPLEMENTED
 	("play-replay", boost::program_options::value<std::string>(), "Start a replay")
 #endif
-	("bind-text-domain", boost::program_options::value<std::string>(), SPrintStringF("Overwrites the bind text domain used for finding translations. "
-	        "Default: \"%s\"", LOCALEDIR).c_str())
-	("homepath", boost::program_options::value<std::string>(), SPrintStringF("Set the home folder where settings are saved. The directory will be created if it does not exist."
-	        " Default: \"%s\"", getPathToSaveFiles().c_str()).c_str())
+	("bind-text-domain", boost::program_options::value<std::string>(), fmt::format("Overwrites the bind text domain used for finding translations. "
+	        "Default: \"{}\"", LOCALEDIR).c_str())
+	("homepath", boost::program_options::value<std::string>(), fmt::format("Set the home folder where settings are saved. The directory will be created if it does not exist."
+	        " Default: \"{}\"", getPathToSaveFiles()).c_str())
 	("mod,m", boost::program_options::value<std::vector<std::string> >(), "Loads a mod. Later mods have preference")
 
 	;
@@ -897,9 +898,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 		conf.savepath = getPathToSaveFiles();
 	}
 	if (vm.count("help")) {
-		std::cout << SPrintStringF("Block Attack - Rise of the blocks %s\n\n"
+		std::cout << fmt::format("Block Attack - Rise of the blocks {}\n\n"
 		                           "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
-		                           "%s\n\n", VERSION_NUMBER, "www.blockattack.net");
+		                           "{}\n\n", VERSION_NUMBER, "www.blockattack.net");
 		std::cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
 		std::cout << desc << "\n";
 		std::cout << "Examples:" << "\n";
@@ -914,7 +915,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	if (vm.count("version")) {
 		std::cout << "blockattack " << VERSION_NUMBER << "\n";
 		std::cout << "\n";
-		std::cout << "Copyright (C) 2005-2016 Poul Sander" << "\n";
+		std::cout << "Copyright (C) 2005-2022 Poul Sander" << "\n";
 		std::cout << "License GPLv2+: GNU GPL version 2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html> or later <http://gnu.org/licenses/gpl.html>" << "\n";
 		std::cout << "This is free software: you are free to change and redistribute it." << "\n";
 		std::cout << "There is NO WARRANTY, to the extent permitted by law." << "\n";
@@ -1048,7 +1049,7 @@ int main(int argc, char* argv[]) {
 
 		if (globalData.verboseLevel) {
 			//Copyright notice:
-			std::cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2016 Poul Sander" << "\n" <<
+			std::cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2022 Poul Sander" << "\n" <<
 			          "A SDL2 based game (see www.libsdl.org)" << "\n" <<
 			          "The game is available under the GPL, see COPYING for details." << "\n";
 			std::cout << "-------------------------------------------" << "\n";
@@ -1271,7 +1272,7 @@ int main(int argc, char* argv[]) {
 		commonTime ct = TimeHandler::ms2ct(SDL_GetTicks());
 
 		if (globalData.verboseLevel) {
-			std::cout << SPrintStringF("Block Attack - Rise of the Blocks ran for: %i hours %i mins and %i secs", ct.hours, ct.minutes, ct.seconds) << "\n";
+			std::cout << fmt::format("Block Attack - Rise of the Blocks ran for: {} hours {:02} minutes and {:02} seconds", ct.hours, ct.minutes, ct.seconds) << "\n";
 		}
 
 		/*std::string modListString;
@@ -1283,7 +1284,7 @@ int main(int argc, char* argv[]) {
 		}*/
 		ct = TimeHandler::addTime("totalTime",ct);
 		if (globalData.verboseLevel) {
-			std::cout << "Total run time is now: " << ct.days << " days " << ct.hours << " hours " << ct.minutes << " mins and " << ct.seconds << " secs" << "\n";
+			std::cout << fmt::format("Total run time is now: {} days, {} hours, {:02} minutes and {:02} seconds\n", ct.days, ct.hours, ct.minutes, ct.seconds);
 			//std::cout << "Mods loaded: " << modListString << "\n";
 		}
 		//sago::WriteFileContent(MODLIST_TXT, modListString);

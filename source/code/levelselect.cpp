@@ -28,6 +28,7 @@ https://blockattack.net
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
 #include "MenuSystem.h"
+#include <fmt/core.h>
 
 
 static bool bMouseUp;              //true if the mouse(1) is unpressed
@@ -190,16 +191,16 @@ int PuzzleLevelSelect(int Type) {
 		}
 
 		if (Type == 1) {
-			std::string scoreString = SPrintStringF(_("Best score: %i"), GetStageScores(selected)) ;
-			std::string timeString = SPrintStringF(_("Time used: %s"),"-- : --");
+			std::string scoreString = fmt::format(_("Best score: {}"), GetStageScores(selected)) ;
+			std::string timeString = fmt::format(_("Time used: {}"),"-- : --");
 
 			if (GetStageTime(selected)>0) {
-				timeString = SPrintStringF(_("Time used: %d : %02d"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
+				timeString = fmt::format(_("Time used: {} : {:02}"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
 			}
 
 			Write(globalData.screen, 200,200,scoreString.c_str());
 			Write(globalData.screen, 200,250,timeString.c_str());
-			std::string totalString = SPrintStringF(_("Total score: %i in %i:%02i"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
+			std::string totalString = fmt::format(_("Total score: {} in {}:{:02}"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
 			Write(globalData.screen, 200,600,totalString.c_str());
 		}
 

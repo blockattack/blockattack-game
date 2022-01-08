@@ -49,16 +49,6 @@ double str2double(const std::string& str2parse) {
 	}
 }
 
-std::string SPrintStringF(const char* fmt, ...) {
-	std::string ret;
-	char buffer[1024];
-	va_list args;
-	va_start(args, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, args);
-	ret = buffer;
-	va_end(args);
-	return ret;
-}
 
 const char* SPrintCF(const char* fmt, ...) {
 	static char buffer[1024];
