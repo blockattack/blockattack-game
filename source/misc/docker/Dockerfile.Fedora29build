@@ -5,6 +5,7 @@ make \
 gcc-c++ \
 SDL2-devel \
 boost-devel \
+fmt-devel \
 physfs-devel \
 SDL2_image-devel SDL2_ttf-devel SDL2_mixer-devel \
 findutils \

@@ -30,6 +30,7 @@ http://blockattack.net
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
 #include "ModConfigMenuState.hpp"
+#include <fmt/core.h>
 
 
 #if 0
@@ -146,7 +147,7 @@ Button_confirmVolume::Button_confirmVolume(const char* cvar) : cvar{cvar} {
 
 const std::string& Button_confirmVolume::getLabel() const {
 	int volumePct = Config::getInstance()->getInt(cvar)*100.0/MIX_MAX_VOLUME;
-	this->volumeLabel = SPrintStringF(_("Volume: %d%%"), volumePct); //  std::string(_("Volume: "))+ std::to_string(volumePct)+"%" ;
+	this->volumeLabel = fmt::format(_("Volume: {}%"), volumePct); //  std::string(_("Volume: "))+ std::to_string(volumePct)+"%" ;
 	return volumeLabel;
 }
 
@@ -170,7 +171,7 @@ Button_increaseVolume::Button_increaseVolume(const char* cvar, int incrementValu
 			value = -incrementValue;
 		}
 		value = value*100.0/MIX_MAX_VOLUME;
-		setLabel(SPrintStringF("%c%.2f", prefix, value));
+		setLabel(fmt::format("{}{:.2f}", prefix, value));
 }
 
 void Button_increaseVolume::doAction() {

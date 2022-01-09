@@ -1,6 +1,11 @@
 # Changelog
 
 
+## Unreleased
+
+### Changed
+ - Now uses libfmt for internal formatting
+
 ## [2.7.0] - 2021-10-23
 
 ### Added

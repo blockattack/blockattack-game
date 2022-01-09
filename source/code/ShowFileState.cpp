@@ -23,6 +23,7 @@ https://blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "MenuSystem.h"
+#include <fmt/core.h>
 
 const int buttonOffset = 160;
 extern sago::SagoSprite bExit;
@@ -43,6 +44,12 @@ ShowFileState::ShowFileState() {
 }
 
 ShowFileState::~ShowFileState() {
+}
+
+void ShowFileState::SetData(const std::string& filename, const std::string& header) {
+	titleField.SetText(header);
+	infoBox.SetText(sago::GetFileContent(filename));
+	filenameField.SetText(fmt::format(_("Showing content of: {}"), filename));
 }
 
 bool ShowFileState::IsActive() {

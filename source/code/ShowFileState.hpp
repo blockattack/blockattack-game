@@ -33,18 +33,14 @@ public:
 	ShowFileState();
 	ShowFileState(const ShowFileState& orig) = delete;
 	virtual ~ShowFileState();
-	
+
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
 	void Update() override;
 
-	void SetData(const std::string& filename, const std::string& header) {
-		titleField.SetText(header);
-		infoBox.SetText(sago::GetFileContent(filename));
-		filenameField.SetText(SPrintStringF(_("Showing content of: %s"), filename.c_str()));
-	}
-	
+	void SetData(const std::string& filename, const std::string& header);
+
 private:
 	bool isActive = true;
 	bool bMouseUp = true;

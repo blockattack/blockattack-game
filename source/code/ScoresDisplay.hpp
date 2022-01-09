@@ -35,12 +35,12 @@ public:
 	ScoresDisplay();
 	ScoresDisplay(const ScoresDisplay& orig) = delete;
 	virtual ~ScoresDisplay();
-	
+
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
 	void Update() override;
-	
+
 	int page = 0;
 	//button coodinates:
 	int scoreX = 0;
@@ -58,6 +58,7 @@ private:
 	void DrawStats();
 	void DrawBackgroundAndCalcPlacements();
 	void Write(SDL_Renderer* target, int x, int y, const char* text);
+	void Write(SDL_Renderer* target, int x, int y, const std::string& text);
 	sago::SagoTextField* getCachedText(const std::string& text);
 	std::map<std::string, std::shared_ptr<sago::SagoTextField> > fieldCache;
 	bool isActive = true;

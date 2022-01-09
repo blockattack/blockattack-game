@@ -88,6 +88,7 @@ include_directories("source/code/Libs/include/cereal/external")  #Contains rapid
 #building/compiling/linking
 add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
 target_link_libraries( blockattack ${SDL2_LIBRARIES})
+target_link_libraries( blockattack fmt)
 target_link_libraries( blockattack physfs)
 target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
 target_link_libraries( blockattack ${Boost_LIBRARIES} )

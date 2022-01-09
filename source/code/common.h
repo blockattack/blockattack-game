@@ -66,24 +66,6 @@ void dieOnNullptr(bool, const char* msg);
  */
 double str2double(const std::string &str2parse) __attribute__((const));
 
-/**
- * Does the equivalent to snprintf but returns a C++ string
- * @param fmt The format string
- * @param ... Additional parameters for the place holders
- * @return A string with the result
- */
-std::string SPrintStringF(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
-
-/**
- * Prints to an internal C-buffer
- * Because it uses an internal buffer the returned buffer is only valid until the next call
- * The String is cut at 1024 chars (including the 0 terminator)
- * @param fmt The format string
- * @param ... Additional parameters for the place holders
- * @return Pointer to an internal buffer
- */
-const char* SPrintCF(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
-
 class TimeHandler
 {
 public:

@@ -28,6 +28,7 @@ http://www.blockattack.net
 #include "utf8.h"
 #include "MenuSystem.h"
 #include <unordered_map>
+#include <fmt/core.h>
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -54,7 +55,7 @@ static void draw_rect_cache_clear() {
 static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
 	const int size = 32;
 	SDL_Rect dstrect = { topx, topy, width, height };
-	std::string key_name = SPrintStringF("%s-%d-%d", name.c_str(),width, height);
+	std::string key_name = fmt::format("{}-{}-{}", name, width, height);
 	Uint64 new_version = globalData.spriteHolder->GetDataHolder().getVersion();
 	if (draw_rect_cache_version != new_version) {
 		draw_rect_cache_clear();
