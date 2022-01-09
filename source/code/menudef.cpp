@@ -132,10 +132,10 @@ void Button_changekey::doAction() {
 }
 
 class Button_confirmVolume : public Button {
-	private:
+private:
 	std::string cvar="";
 	mutable std::string volumeLabel; /*used for cache*/
-	public:
+public:
 	explicit Button_confirmVolume(const char* cvar);
 	virtual void doAction() override { /*Do nothing. Equal to choose "back". */ };
 	virtual const std::string& getLabel() const override;
@@ -152,26 +152,26 @@ const std::string& Button_confirmVolume::getLabel() const {
 }
 
 class Button_increaseVolume : public Button {
-	private:
+private:
 	std::string cvar="";
 	int incrementValue = 1;
 	int lowerLimit = 0;
 	int upperLimit = MIX_MAX_VOLUME;
-	public:
+public:
 	Button_increaseVolume(const char* cvar, int incrementValue);
 	virtual void doAction() override;
 };
 
 Button_increaseVolume::Button_increaseVolume(const char* cvar, int incrementValue)
 	: cvar{cvar},incrementValue{incrementValue} {
-		char prefix = '+';
-		double value = incrementValue;
-		if (incrementValue<0) {
-			prefix = '-';
-			value = -incrementValue;
-		}
-		value = value*100.0/MIX_MAX_VOLUME;
-		setLabel(fmt::format("{}{:.2f}", prefix, value));
+	char prefix = '+';
+	double value = incrementValue;
+	if (incrementValue<0) {
+		prefix = '-';
+		value = -incrementValue;
+	}
+	value = value*100.0/MIX_MAX_VOLUME;
+	setLabel(fmt::format("{}{:.2f}", prefix, value));
 }
 
 void Button_increaseVolume::doAction() {
@@ -186,7 +186,7 @@ void Button_increaseVolume::doAction() {
 }
 
 class Button_testSound : public Button {
-	public:
+public:
 	Button_testSound();
 	virtual void doAction() override;
 };
@@ -202,7 +202,7 @@ void Button_testSound::doAction() {
 }
 
 class Button_testMusic : public Button {
-	public:
+public:
 	Button_testMusic();
 	virtual void doAction() override;
 };

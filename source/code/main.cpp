@@ -351,7 +351,7 @@ void writeScreenShot() {
 	int rightNow = (int)time(nullptr);
 	int w, h;
 	SDL_GetRendererOutputSize(globalData.screen, &w, &h);
-	SDL_Surface *sreenshotSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_RenderReadPixels(globalData.screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
 	OsCreateFolder(pathToScreenShots());
 	std::string buf = pathToScreenShots() + "/screenshot"+std::to_string(rightNow)+".bmp";
@@ -899,8 +899,8 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("help")) {
 		std::cout << fmt::format("Block Attack - Rise of the blocks {}\n\n"
-		                           "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
-		                           "{}\n\n", VERSION_NUMBER, "www.blockattack.net");
+		                         "Block Attack - Rise of the Blocks is a puzzle/blockfall game inspired by Tetris Attack for the SNES.\n\n"
+		                         "{}\n\n", VERSION_NUMBER, "www.blockattack.net");
 		std::cout << "Usage: "<< commandname << " [OPTION]..." << "\n";
 		std::cout << desc << "\n";
 		std::cout << "Examples:" << "\n";
@@ -990,8 +990,8 @@ int main(int argc, char* argv[]) {
 		OsCreateSaveFolder();
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
 		/*if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
-			std::string modString = sago::GetFileContent(MODLIST_TXT);
-			boost::split(globalData.modList, modString, boost::is_any_of(","));
+		    std::string modString = sago::GetFileContent(MODLIST_TXT);
+		    boost::split(globalData.modList, modString, boost::is_any_of(","));
 		}*/
 		globalData.modinfo.InitModList(globalData.modList);
 		if (sago::FileExists(MODLIST_TXT)) {
@@ -1277,10 +1277,10 @@ int main(int argc, char* argv[]) {
 
 		/*std::string modListString;
 		if (globalData.modList.size()>0) {
-			modListString = globalData.modList.at(0);
-			for (size_t i = 1; i < globalData.modList.size(); ++i) {
-				modListString += std::string(",")+globalData.modList[i];
-			}
+		    modListString = globalData.modList.at(0);
+		    for (size_t i = 1; i < globalData.modList.size(); ++i) {
+		        modListString += std::string(",")+globalData.modList[i];
+		    }
 		}*/
 		ct = TimeHandler::addTime("totalTime",ct);
 		if (globalData.verboseLevel) {

@@ -103,7 +103,7 @@ static void drawToScreen(const Button& b) {
 	}
 
 	standardButton.getLabel(b.getLabel())->Draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2,
-	                                       sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
+	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
 }
 
 
