@@ -84,5 +84,4 @@ Please report bugs on github: <https://github.com/blockattack/blockattack-game/i
 If possible: Check if the bug is already fixed in master. But if you don't know how to check it then just report it.
 
 ## Contributions
-Contributions are welcome. Both the current graphics and the original sharedir support was provided by kind individuals.
-Patches can be attached to a github ticket or sent to poul@poulsander.com directly. You can also create pull requests on Github.
+Contributions are welcome. See CONTRIBUTING.md for details.

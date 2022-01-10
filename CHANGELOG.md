@@ -3,8 +3,11 @@
 
 ## Unreleased
 
+### Added
+ - CONTRIBUTING.md is now included
+
 ### Changed
- - Now uses libfmt for internal formatting
+ - Now uses {fmt} for internal formatting
 
 ## [2.7.0] - 2021-10-23
 
