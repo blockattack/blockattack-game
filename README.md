@@ -43,9 +43,7 @@ sudo make install
 
 Windows build uses MXE (mxe.cc) and Docker. See "Building with Docker".
 
-
 ## Building using Docker
-
 As getting a C++ project with many dependencies to compile can be a daunting task then I have provided a couple of Docker images that can perform a build. Both for Windows and Linux.
 
 The project should at all time be able to compile on the oldest and latest supported version of Ubuntu. This is tested with Docker.
@@ -79,7 +77,6 @@ This project is a bit unconventional because I didn't know any better at the tim
 * windows installer - Information needed to Windows installer. May be moved to source/misc at some point
 
 ## Reporting bugs
-
 Please report bugs on github: <https://github.com/blockattack/blockattack-game/issues>
 If possible: Check if the bug is already fixed in master. But if you don't know how to check it then just report it.
 

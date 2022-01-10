@@ -1,5 +1,4 @@
 # 1.3.0.bricks
-
 This is a sample mod for Block Attack - Rise of the Blocks.  
 It changes the bricks to use the graphic from 1.3.0. Not that way are good but it shows how it works.
 
@@ -15,10 +14,9 @@ At the moment it is possible to start mod in two ways. Command line argument or 
 Mods loaded from command line are loaded last. They take priority over the mod file.
 
 ### Mod file
-
 It is possible using a "mod_list.txt"-file in config directory.
-  * Windows: `%APPDATA%/blockattack/mod_list.txt`
-  * Linux: `$HOME/.local/share/blockattack/mod_list.txt`
+* Windows: `%APPDATA%/blockattack/mod_list.txt`
+* Linux: `$HOME/.local/share/blockattack/mod_list.txt`
 
 The file is a csv-file without header and a line for each mod.
 ```
@@ -31,7 +29,6 @@ Mods override files from blockattack.data, so any file in blockattack.data can b
 New sprite files can also be created. See "Modinfo file".
 
 ## Modinfo file
-
 The game contains a file modinfo/1.3.0.bricks.json which contains metadata about the mod.
 Note that the filename MUST be "MODNAME.json". The game will only search for the modinfo file if a given mod has been loaded.
 
