@@ -9,7 +9,7 @@
 ### Changed
  - Now uses {fmt} for internal formatting
  - Update library versions for the compiled version:
-   - SDL2: 2.0.16 to 2.0.18
+   - SDL2: 2.0.16 to 2.0.20
 
 ## [2.7.0] - 2021-10-23
 
