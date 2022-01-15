@@ -39,10 +39,6 @@ http://blockattack.net
 #define BOMBTIME 200
 #define CURSORTIME 200
 
-#ifndef SHAREDIR
-#define SHAREDIR "."
-#endif
-
 const char sharedir[] = SHAREDIR;
 
 //All graphic in the game:

@@ -52,21 +52,6 @@ https://blockattack.net
 #include <memory>
 #include "ScoresDisplay.hpp"
 
-//if SHAREDIR is not used we look in current directory
-#ifndef SHAREDIR
-#define SHAREDIR "."
-#endif
-
-#ifndef LOCALEDIR
-#define LOCALEDIR SHAREDIR"/locale"
-#endif
-
-#ifndef PACKAGE
-#define PACKAGE "blockattack_roftb"
-#endif
-
-#define MODLIST_TXT "mod_list.txt"
-
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "stats.h"          //Saves general stats

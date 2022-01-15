@@ -33,6 +33,21 @@ http://www.blockattack.net
 #include "sago/SagoTextField.hpp"
 #include "ModInfo.hpp"
 
+//if SHAREDIR is not used we look in current directory
+#ifndef SHAREDIR
+#define SHAREDIR "."
+#endif
+
+#ifndef LOCALEDIR
+#define LOCALEDIR SHAREDIR"/locale"
+#endif
+
+#ifndef PACKAGE
+#define PACKAGE "blockattack_roftb"
+#endif
+
+#define MODLIST_TXT "mod_list.txt"
+
 void MainMenu();
 void SafeModeMenu();
 void ResetFullscreen();
