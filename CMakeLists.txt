@@ -19,6 +19,8 @@ set(INSTALL_ICONS_DIR "share/icons/hicolor" CACHE STRING "Install the icon in a 
 set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install translation to this dir")
 set(INSTALL_METAINFO_DIR "share/metainfo" CACHE STRING "Install appstream matedata to this directory")
 
+option(BLOCKATTACK_USE_EMBEDDED_FMT "Use the embedded version of {fmt}" ON)
+
 # This sets up the exe icon for windows under mingw.
 # Taken from https://hansonry.wordpress.com/2010/12/15/windows-application-icon-using-mingw-and-cmake/
 set(RES_FILES "")
@@ -81,6 +83,12 @@ file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp" "source/code/Libs/*.
 #Some messages to figure out what cmake does
 message("${SOURCES}")
 message("${CMAKE_EXE_LINKER_FLAGS}")
+
+if (BLOCKATTACK_USE_EMBEDDED_FMT)
+	message("Using embedded {fmt}")
+	add_subdirectory("source/misc/embedded_libs/fmt-8.1.1" EXCLUDE_FROM_ALL)
+	message("Done processing {fmt}")
+endif()
 
 include_directories("source/code/Libs/include")
 include_directories("source/code/Libs/include/cereal/external")  #Contains rapidjson
