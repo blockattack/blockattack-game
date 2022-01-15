@@ -8,6 +8,7 @@
 
 ### Changed
  - Now uses {fmt} for internal formatting
+ - Install the sample mod "1.3.0.bricks"
  - Update library versions for the compiled version:
    - SDL2: 2.0.16 to 2.0.20
 

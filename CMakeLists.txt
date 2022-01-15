@@ -97,6 +97,7 @@ set_target_properties( blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
 #Installing
 install(TARGETS blockattack RUNTIME DESTINATION ${INSTALL_BIN_DIR} )
 install(FILES Game/blockattack.data DESTINATION ${INSTALL_DATA_DIR} )
+install(FILES Game/mods/1.3.0.bricks.data DESTINATION "${INSTALL_DATA_DIR}/mods" )
 install(FILES man/blockattack.6.gz DESTINATION ${INSTALL_MAN_DIR} )
 install(FILES source/misc/blockattack.desktop DESTINATION ${INSTALL_APPLICATIONS_DIR} )
 install(FILES source/misc/net.blockattack.game.metainfo.xml DESTINATION ${INSTALL_METAINFO_DIR} )
