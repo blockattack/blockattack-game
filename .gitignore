@@ -16,7 +16,7 @@ Game/blockattack*
 Game/mods/1.3.0.bricks.data
 cmake_install.cmake
 CMake*
--CMakeLists.txt
+!CMakeLists.txt
 CPack*
 Makefile
 source/manual/
