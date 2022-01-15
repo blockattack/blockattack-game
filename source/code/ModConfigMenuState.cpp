@@ -73,6 +73,9 @@ ModConfigMenuState::ModConfigMenuState() {
 	std::string baseMods = std::string(PHYSFS_getBaseDir())+ "/mods";
 	std::vector<std::string> baseModFiles = OsGetDirFileList(baseMods);
 	appendMods(baseModFiles, baseMods, mods_available);
+	std::string sharedMods = std::string(SHAREDIR)+ "/mods";
+	std::vector<std::string> sharedModFiles = OsGetDirFileList(sharedMods);
+	appendMods(sharedModFiles, sharedMods, mods_available);
 	std::string userMods = getPathToSaveFiles()+"/mods";
 	std::vector<std::string> userModFiles = OsGetDirFileList(userMods);
 	appendMods(userModFiles, userMods, mods_available);
