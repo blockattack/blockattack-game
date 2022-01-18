@@ -6,7 +6,7 @@ It changes the bricks to use the graphic from 1.3.0. Not that way are good but i
 At the moment it is possible to start mod in two ways. Command line argument or mod file.
 
 ### Command line
-```
+```bash
 ./blockattack --mod MODNAME
 # Example:
 ./blockattack --mod 1.3.0.bricks
@@ -19,7 +19,7 @@ It is possible using a "mod_list.txt"-file in config directory.
 * Linux: `$HOME/.local/share/blockattack/mod_list.txt`
 
 The file is a csv-file without header and a line for each mod.
-```
+```csv
 1.3.0.bricks,1
 ```
 The fist column is the modname, the second column is "1" if enabled. A 0 means disabled. It is possible preserve the order while remembering the mod order.

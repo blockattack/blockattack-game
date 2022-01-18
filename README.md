@@ -22,7 +22,7 @@ Source: <https://github.com/blockattack/blockattack-game>
 ## Building
 The only supported build method is using the CMake<br/>
 To build do:
-```
+```bash
 ./packdata.sh
 cmake .
 # or
@@ -32,12 +32,12 @@ cmake .
 make
 ```
 The result should be in the "Game"-folder. To run
-```
+```bash
 ./Game/blockattack
 ```
 
 You can also choose to install it with
-```
+```bash
 sudo make install
 ```
 
@@ -49,11 +49,11 @@ As getting a C++ project with many dependencies to compile can be a daunting tas
 The project should at all time be able to compile on the oldest and latest supported version of Ubuntu. This is tested with Docker.
 
 On a fresh checkout you can use:
-```
+```bash
 docker build -f source/misc/docker/Dockerfile.Ubuntu18.04build . -t blockattack_test
 ```
 and
-```
+```bash
 docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
 ```
 
