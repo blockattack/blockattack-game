@@ -68,12 +68,11 @@ This project is a bit unconventional because I didn't know any better at the tim
 * source/assets - Source for the assets if relevant. For instance svg source for the graphics.
 * source/misc - Misc stuff. Code related tool that are used for development but not part of the final product.
 * source/misc/astyle - Helper script that enforces code style using the "astyle"-program
-* source/misc/cmake - Files needed by CMake
 * source/misc/docker - Docker files used by Travis CI  (but can just as well be used for local testing and release builds)
+* source/misc/embedded_libs - Contains dependencies not present on all supported systems
 * source/misc/icons - Icons for the installer
 * source/misc/screenshots - Screen shots like the one in this README file.
 * source/misc/translation - Translations and related tools and scripts
-* source/misc/travis_help - Helper files for Travis CI
 * windows installer - Information needed to Windows installer. May be moved to source/misc at some point
 
 ## Reporting bugs
