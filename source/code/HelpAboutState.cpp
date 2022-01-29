@@ -31,10 +31,6 @@ https://blockattack.net
 #include "version.h"
 #include "sago/SagoMisc.hpp"
 
-const int buttonOffset = 160;
-extern sago::SagoSprite bExit;
-
-
 
 static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -44,10 +40,6 @@ static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTex
 	field.SetOutline(1, {128,128,128,255});
 	field.SetText(text);
 }
-
-
-
-
 
 
 HelpAboutState::HelpAboutState() {
@@ -81,19 +73,6 @@ HelpAboutState::HelpAboutState() {
 HelpAboutState::~HelpAboutState() {
 }
 
-bool HelpAboutState::IsActive() {
-	return isActive;
-}
-
-void HelpAboutState::ProcessInput(const SDL_Event& event, bool& processed) {
-
-	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-
-	if (isConfirmEvent(event) || isEscapeEvent(event)) {
-		isActive = false;
-		processed = true;
-	}
-}
 
 void HelpAboutState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
@@ -101,31 +80,5 @@ void HelpAboutState::Draw(SDL_Renderer* target) {
 	DrawRectYellow(target, 40, 90, 600, 900);
 	infoBox.SetMaxWidth(850);
 	infoBox.Draw(target, 50, 100);
-	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
-#if DEBUG
-	static sago::SagoTextField mousePos;
-	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	mousePos.SetFontSize(16);
-	mousePos.SetOutline(1, {128,128,128,255});
-	mousePos.SetText(std::string("Mouse position: ")+std::to_string(globalData.mousex)+std::string(", ")+std::to_string(globalData.mousey));
-	mousePos.Draw(target, 0,0);
-#endif
-}
-
-void HelpAboutState::Update() {
-	// If the mouse button is released, make bMouseUp equal true
-	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
-		bMouseUp=true;
-	}
-
-	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-		bMouseUp = false;
-
-		//The Score button:
-		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
-		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
-			isActive = false;
-		}
-
-	}
+	HelpCommonState::Draw(target);
 }

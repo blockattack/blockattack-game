@@ -24,21 +24,17 @@ https://blockattack.net
 #ifndef HELPGAMEPADSTATE_HPP
 #define HELPGAMEPADSTATE_HPP
 
-#include "sago/GameStateInterface.hpp"
+#include "HelpCommon.hpp"
 #include "sago/SagoTextField.hpp"
 #include "sago/SagoTextBox.hpp"
 
-class HelpGamepadState  : public sago::GameStateInterface {
+class HelpGamepadState  : public HelpCommonState {
 public:
 	HelpGamepadState();
 	HelpGamepadState(const HelpGamepadState& orig) = delete;
 	virtual ~HelpGamepadState();
-	
-	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
-	void Update() override;
-
 private:
 	bool isActive = true;
 	bool bMouseUp = true;

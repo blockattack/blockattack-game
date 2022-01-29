@@ -27,8 +27,6 @@ https://blockattack.net
 #include "MenuSystem.h"
 #include <cmath>
 
-const int buttonOffset = 160;
-extern sago::SagoSprite bExit;
 extern sago::SagoSprite bricks[7];
 
 /**
@@ -132,20 +130,6 @@ HelpHowtoState::HelpHowtoState() {
 HelpHowtoState::~HelpHowtoState() {
 }
 
-bool HelpHowtoState::IsActive() {
-	return isActive;
-}
-
-void HelpHowtoState::ProcessInput(const SDL_Event& event, bool& processed) {
-
-	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-
-	if (isConfirmEvent(event) || isEscapeEvent(event)) {
-		isActive = false;
-		processed = true;
-	}
-}
-
 const double PI  =3.141592653589793238463;
 
 static void DrawArrow(SDL_Renderer* target, int x1, int y1, int x2, int y2) {
@@ -199,32 +183,10 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawArrow(target, 600, 600, 650, 600);
 	DrawArrow(target, 525, 525, 525, 675);
 	chainField.Draw(target, 400, 710, sago::SagoTextField::Alignment::center);
-	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
-#if DEBUG
-	static sago::SagoTextField mousePos;
-	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	mousePos.SetFontSize(16);
-	mousePos.SetOutline(1, {128,128,128,255});
-	mousePos.SetText(std::string("Mouse position: ")+std::to_string(globalData.mousex)+std::string(", ")+std::to_string(globalData.mousey));
-	mousePos.Draw(target, 0,0);
-#endif
+	HelpCommonState::Draw(target);
 }
 
 void HelpHowtoState::Update() {
-	// If the mouse button is released, make bMouseUp equal true
-	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
-		bMouseUp=true;
-	}
-
-	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-		bMouseUp = false;
-
-		//The Score button:
-		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
-		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
-			isActive = false;
-		}
-
-	}
 	switchAnimation.Update(SDL_GetTicks());
+	HelpCommonState::Update();
 }

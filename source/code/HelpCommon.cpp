@@ -22,6 +22,8 @@ https://blockattack.net
 */
 
 #include "HelpCommon.hpp"
+#include "MenuSystem.h"
+#include "global.hpp"
 
 
 
@@ -50,4 +52,58 @@ void setHelpBoxFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field
 	field.SetFontSize(20);
 	field.SetOutline(0, {0,0,0,255});
 	field.SetText(text);
+}
+
+HelpCommonState::HelpCommonState() {
+}
+
+HelpCommonState::~HelpCommonState() {
+}
+
+bool HelpCommonState::IsActive() {
+	return isActive;
+}
+
+void HelpCommonState::ProcessInput(const SDL_Event& event, bool& processed) {
+
+	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
+
+	if (isConfirmEvent(event) || isEscapeEvent(event)) {
+		isActive = false;
+		processed = true;
+	}
+}
+
+extern sago::SagoSprite bExit;
+
+
+void HelpCommonState::Draw(SDL_Renderer* target) {
+	bExit.Draw(target, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
+#if DEBUG
+	static sago::SagoTextField mousePos;
+	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
+	mousePos.SetFontSize(16);
+	mousePos.SetOutline(1, {128,128,128,255});
+	mousePos.SetText(std::string("Mouse position: ")+std::to_string(globalData.mousex)+std::string(", ")+std::to_string(globalData.mousey));
+	mousePos.Draw(target, 0,0);
+#endif
+}
+
+
+void HelpCommonState::Update() {
+	// If the mouse button is released, make bMouseUp equal true
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+		bMouseUp=true;
+	}
+
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+		bMouseUp = false;
+
+		//The Score button:
+		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
+		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
+			isActive = false;
+		}
+
+	}
 }

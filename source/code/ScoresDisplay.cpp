@@ -28,9 +28,6 @@ http://www.blockattack.net
 #include "MenuSystem.h"
 #include <fmt/core.h>
 
-const int buttonOffsetX = 140;
-const int buttonOffsetY = 180;
-extern sago::SagoSprite bExit;
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -66,7 +63,7 @@ const int numberOfPages = 7;
 void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
 	DrawBackground(globalData.screen);
 	nextX = globalData.xsize-buttonXsize-20;
-	backY = globalData.ysize-buttonYsize-20;
+	backY = globalData.ysize-buttonYsize-18;
 	nextY = backY;
 }
 
@@ -195,11 +192,7 @@ ScoresDisplay::ScoresDisplay() {
 ScoresDisplay::~ScoresDisplay() {
 }
 
-bool ScoresDisplay::IsActive() {
-	return isActive;
-}
-
-void ScoresDisplay::Draw(SDL_Renderer*) {
+void ScoresDisplay::Draw(SDL_Renderer* target) {
 	switch (page) {
 	case 0:
 	case 1:
@@ -220,7 +213,6 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 
 	const sago::SagoDataHolder* holder = &globalData.spriteHolder->GetDataHolder();
 	//Draw buttons:
-	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffsetX, globalData.ysize-buttonOffsetY);
 	globalData.bBack.Draw(globalData.screen, 0, backX, backY);
 	static sago::SagoTextField backLabel;
 	setButtonFont(holder, backLabel, _("Back"));
@@ -233,6 +225,7 @@ void ScoresDisplay::Draw(SDL_Renderer*) {
 	//Draw page number
 	std::string pageXofY = fmt::format(_("Page {} of {}"), page+1, numberOfPages);
 	getCachedText(pageXofY)->Draw(globalData.screen,  globalData.xsize/2, globalData.ysize-60, sago::SagoTextField::Alignment::center);
+	HelpCommonState::Draw(target);
 }
 
 void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
@@ -254,11 +247,7 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 		}
 		processed = true;
 	}
-
-	if (isConfirmEvent(event) || isEscapeEvent(event)) {
-		isActive = false;
-		processed = true;
-	}
+	HelpCommonState::ProcessInput(event, processed);
 }
 
 void ScoresDisplay::Update() {
@@ -269,12 +258,6 @@ void ScoresDisplay::Update() {
 
 	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
-
-		//The Exit button:
-		if ((globalData.mousex>globalData.xsize-buttonOffsetX) && (globalData.mousex<globalData.xsize-buttonOffsetX+bExit.GetWidth())
-		        && (globalData.mousey>globalData.ysize-buttonOffsetY) && (globalData.mousey<globalData.ysize-buttonOffsetY+bExit.GetHeight())) {
-			isActive = false;
-		}
 
 		//The back button:
 		if ((globalData.mousex>backX) && (globalData.mousex<backX+buttonXsize) && (globalData.mousey>backY) && (globalData.mousey<backY+buttonYsize)) {
@@ -292,4 +275,5 @@ void ScoresDisplay::Update() {
 			}
 		}
 	}
+	HelpCommonState::Update();
 }

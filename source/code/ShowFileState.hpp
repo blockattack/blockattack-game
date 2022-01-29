@@ -21,23 +21,20 @@ https://blockattack.net
 #define SHOWFILESTATE_HPP
 
 
-#include "sago/GameStateInterface.hpp"
+#include "HelpCommon.hpp"
 #include "sago/SagoTextField.hpp"
 #include "sago/SagoTextBox.hpp"
 #include "sago/SagoMisc.hpp"
 #include <string>
 #include "common.h"
 
-class ShowFileState : public sago::GameStateInterface {
+class ShowFileState : public HelpCommonState {
 public:
 	ShowFileState();
 	ShowFileState(const ShowFileState& orig) = delete;
 	virtual ~ShowFileState();
 
-	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
-	void ProcessInput(const SDL_Event& event, bool &processed) override;
-	void Update() override;
 
 	void SetData(const std::string& filename, const std::string& header);
 

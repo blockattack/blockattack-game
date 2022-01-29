@@ -28,9 +28,6 @@ https://blockattack.net
 #include "MenuSystem.h"
 #include "gamecontroller.h"
 
-const int buttonOffset = 160;
-
-
 static std::string getLabelForSupportedControllerNames() {
 	std::string s = _("Only SDL2 compatible controllers are supported!\nSupported controllers: ");
 	for (size_t i = 0 ; i<GetSupportedControllerNames().size(); ++i ) {
@@ -57,13 +54,7 @@ HelpGamepadState::HelpGamepadState() {
 HelpGamepadState::~HelpGamepadState() {
 }
 
-bool HelpGamepadState::IsActive() {
-	return isActive;
-}
-
 void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
-	UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-
 	if (isGameControllerConnectionEvent(event)) {
 		UnInitGameControllers();
 		InitGameControllers();
@@ -71,14 +62,8 @@ void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 		setHelp30Font(&globalData.spriteHolder->GetDataHolder(), supportedControllers, s.c_str());
 		processed = true;
 	}
-
-	if (isConfirmEvent(event) || isEscapeEvent(event)) {
-		isActive = false;
-		processed = true;
-	}
+	HelpCommonState::ProcessInput(event, processed);
 }
-
-extern sago::SagoSprite bExit;
 
 #define OFFSETX (-512+globalData.xsize/2)
 
@@ -109,33 +94,7 @@ void HelpGamepadState::Draw(SDL_Renderer* target) {
 	SDL_RenderDrawLine(target, 900+OFFSETX, 241, 900+OFFSETX, 400);
 	switchLabel.Draw(target, 900+OFFSETX, 404, sago::SagoTextField::Alignment::center);
 	confirmLabel.Draw(target, 900+OFFSETX, 404+30, sago::SagoTextField::Alignment::center);
-	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
 	supportedControllers.Draw(target, 10, 600);
-
-#if DEBUG
-	static sago::SagoTextField mousePos;
-	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	mousePos.SetFontSize(16);
-	mousePos.SetOutline(1, {128,128,128,255});
-	mousePos.SetText(std::string("Mouse position: ")+std::to_string(globalData.mousex)+std::string(", ")+std::to_string(globalData.mousey));
-	mousePos.Draw(target, 0,0);
-#endif
+	HelpCommonState::Draw(target);
 }
 
-void HelpGamepadState::Update() {
-	// If the mouse button is released, make bMouseUp equal true
-	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
-		bMouseUp=true;
-	}
-
-	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-		bMouseUp = false;
-
-		//The Score button:
-		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
-		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
-			isActive = false;
-		}
-
-	}
-}

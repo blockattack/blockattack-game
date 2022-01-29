@@ -24,19 +24,18 @@ http://www.blockattack.net
 #ifndef SCORESDISPLAY_HPP
 #define SCORESDISPLAY_HPP
 
-#include "sago/GameStateInterface.hpp"
+#include "HelpCommon.hpp"
 #include "sago/SagoTextField.hpp"
 #include <map>
 #include <memory>
 #include "highscore.h"
 
-class ScoresDisplay : public sago::GameStateInterface {
+class ScoresDisplay : public HelpCommonState{
 public:
 	ScoresDisplay();
 	ScoresDisplay(const ScoresDisplay& orig) = delete;
 	virtual ~ScoresDisplay();
 
-	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
 	void Update() override;
@@ -61,7 +60,6 @@ private:
 	void Write(SDL_Renderer* target, int x, int y, const std::string& text);
 	sago::SagoTextField* getCachedText(const std::string& text);
 	std::map<std::string, std::shared_ptr<sago::SagoTextField> > fieldCache;
-	bool isActive = true;
 	bool bMouseUp = false;
 	int backX = 20;
 	int backY = 0;

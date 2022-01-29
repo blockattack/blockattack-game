@@ -25,6 +25,7 @@ https://blockattack.net
 #ifndef _HELP_COMMON_HPP
 #define _HELP_COMMON_HPP
 
+#include "sago/GameStateInterface.hpp"
 #include "sago/SagoTextBox.hpp"
 #include "sago/SagoTextField.hpp"
 
@@ -33,5 +34,22 @@ void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextField& fiel
 void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text);
 
 void setHelpBoxFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text);
+
+class HelpCommonState : public sago::GameStateInterface {
+public:
+	HelpCommonState();
+	HelpCommonState(const HelpCommonState& orig) = delete;
+	virtual ~HelpCommonState();
+
+	bool IsActive() override;
+	void ProcessInput(const SDL_Event& event, bool &processed) override;
+	void Draw(SDL_Renderer* target) override;
+	void Update() override;
+	const int buttonOffset = 160;
+
+private:
+	bool isActive = true;
+	bool bMouseUp = true;
+};
 
 #endif  //_HELP_COMMON_HPP
