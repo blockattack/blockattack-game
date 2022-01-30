@@ -54,6 +54,11 @@ void setHelpBoxFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field
 	field.SetText(text);
 }
 
+void setHelp30FontThinOutline(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
+	setHelp30Font(holder,field, text);
+	field.SetOutline(1, {128,128,128,255});
+}
+
 HelpCommonState::HelpCommonState() {
 }
 

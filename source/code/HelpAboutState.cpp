@@ -32,16 +32,6 @@ https://blockattack.net
 #include "sago/SagoMisc.hpp"
 
 
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
-	field.SetHolder(holder);
-	field.SetFont("freeserif");
-	field.SetColor({255,255,255,255});
-	field.SetFontSize(30);
-	field.SetOutline(1, {128,128,128,255});
-	field.SetText(text);
-}
-
-
 HelpAboutState::HelpAboutState() {
 	SDL_RendererInfo renderInfo;
 	SDL_version compiled;
@@ -65,7 +55,7 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("SDL linked version:") << " " << (int)linked.major << "." << (int)linked.minor << "." << (int)linked.patch << "\n";
 	infoStream << _("Save folder:") << " " << PHYSFS_getWriteDir() << "\n";
 	infoStream << _("Locale:") << " " << setlocale( LC_CTYPE, nullptr ) << "\n";
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
+	setHelp30FontThinOutline(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
 	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
 	sago::WriteFileContent("about.txt", infoStream.str());
 }

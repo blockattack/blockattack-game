@@ -32,6 +32,7 @@ https://blockattack.net
 
 void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text);
 void setHelp30Font(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text);
+void setHelp30FontThinOutline(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text);
 
 void setHelpBoxFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field, const char* text);
 

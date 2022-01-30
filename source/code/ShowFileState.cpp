@@ -25,17 +25,8 @@ https://blockattack.net
 #include "MenuSystem.h"
 #include <fmt/core.h>
 
-static void setHelpGamepadFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
-	field.SetHolder(holder);
-	field.SetFont("freeserif");
-	field.SetColor({255,255,255,255});
-	field.SetFontSize(30);
-	field.SetOutline(1, {128,128,128,255});
-	field.SetText(text);
-}
-
 ShowFileState::ShowFileState() {
-	setHelpGamepadFont(&globalData.spriteHolder->GetDataHolder(), titleField, "");
+	setHelp30FontThinOutline(&globalData.spriteHolder->GetDataHolder(), titleField, "");
 	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), infoBox, "");
 	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), filenameField, "");
 }
