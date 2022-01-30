@@ -30,6 +30,14 @@ https://blockattack.net
 #include "sstream"
 #include "version.h"
 #include "sago/SagoMisc.hpp"
+#include "fmt/core.h"
+
+
+template <class T>
+std::string sdl_verison_as_string(const T& version) {
+	std::string ret = fmt::format("{}.{}.{}", version.major, version.minor, version.patch);
+	return ret;
+}
 
 
 HelpAboutState::HelpAboutState() {
@@ -51,10 +59,21 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Github page:") << " " << "https://github.com/blockattack/blockattack-game\n";
 	infoStream << _("SDL render:") << " " << renderInfo.name << "\n";
 	infoStream << _("SDL audio driver:") << " " << audio_driver_name << "\n";
-	infoStream << _("SDL compiled version:") << " " << (int)compiled.major << "." << (int)compiled.minor << "." << (int)compiled.patch << "\n";
-	infoStream << _("SDL linked version:") << " " << (int)linked.major << "." << (int)linked.minor << "." << (int)linked.patch << "\n";
+	infoStream << _("SDL compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
+	infoStream << _("SDL linked version:") << " " << sdl_verison_as_string(linked) << "\n";
+	SDL_IMAGE_VERSION(&compiled);
+	const SDL_version *sld_image_link_version=IMG_Linked_Version();
+	infoStream << _("SDL_image compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
+	infoStream << _("SDL_image linked version:") << " " << sdl_verison_as_string(*sld_image_link_version) << "\n";
+	PHYSFS_Version physfs_compiled_version;
+	PHYSFS_Version physfs_linked_version;
+	PHYSFS_VERSION(&physfs_compiled_version);
+	PHYSFS_getLinkedVersion(&physfs_linked_version);
+	infoStream << _("PhysFS compiled version:") << " " << sdl_verison_as_string(physfs_compiled_version) << "\n";
+	infoStream << _("PhysFS linked version:") << " " << sdl_verison_as_string(physfs_linked_version) << "\n";
 	infoStream << _("Save folder:") << " " << PHYSFS_getWriteDir() << "\n";
 	infoStream << _("Locale:") << " " << setlocale( LC_CTYPE, nullptr ) << "\n";
+	infoStream << "SHAREDIR: " << SHAREDIR << "\n";
 	setHelp30FontThinOutline(&globalData.spriteHolder->GetDataHolder(), titleField, _("About"));
 	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
 	sago::WriteFileContent("about.txt", infoStream.str());
