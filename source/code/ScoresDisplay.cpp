@@ -88,7 +88,7 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless, int level = 0) {
 		default:
 			header = _("Endless:");
 		};
-		Write(globalData.screen, x+100,y+100, header.c_str() );
+		Write(globalData.screen, x+100,y+100, header );
 	}
 	else {
 		Write(globalData.screen, x+100,y+100, _("Time Trial:") );
@@ -134,19 +134,19 @@ void ScoresDisplay::DrawStats() {
 	Write(globalData.screen, 10,y,_("Chains") );
 	for (int i=2; i<13; i++) {
 		y+=y_spacing;
-		Write(globalData.screen, 10,y,(std::to_string(i)+"X").c_str());
+		Write(globalData.screen, 10,y,std::to_string(i)+"X");
 		std::string numberAsString = std::to_string(Stats::getInstance()->getNumberOf("chainX"+std::to_string(i)));
-		Write(globalData.screen, 300,y,numberAsString.c_str());
+		Write(globalData.screen, 300,y,numberAsString);
 	}
 	y+=y_spacing*2;
 	Write(globalData.screen, 10,y,_("Lines Pushed: ") );
 	std::string numberAsString = std::to_string(Stats::getInstance()->getNumberOf("linesPushed"));
-	Write(globalData.screen, 300,y,numberAsString.c_str());
+	Write(globalData.screen, 300,y,numberAsString);
 
 	y+=y_spacing;
 	Write(globalData.screen, 10,y, _("Puzzles solved: ") );
 	numberAsString = std::to_string(Stats::getInstance()->getNumberOf("puzzlesSolved"));
-	Write(globalData.screen, 300,y,numberAsString.c_str());
+	Write(globalData.screen, 300,y,numberAsString);
 
 	y+=y_spacing*2;
 	Write(globalData.screen, 10,y, _("Run time: ") );
@@ -178,11 +178,11 @@ void ScoresDisplay::DrawStats() {
 	Write(globalData.screen, x_offset,y, _("VS CPU (win/loss)") );
 	for (int i=0; i<7; i++) {
 		y += y_spacing;
-		Write(globalData.screen, x_offset,y,std::string("AI "+std::to_string(i+1)).c_str());
+		Write(globalData.screen, x_offset,y, fmt::format("AI {}",i+1) );
 		numberAsString = std::to_string(Stats::getInstance()->getNumberOf("defeatedAI"+std::to_string(i)));
 		std::string numberAsString2 = std::to_string(Stats::getInstance()->getNumberOf("defeatedByAI"+std::to_string(i)));
 		std::string toPrint = numberAsString + "/" + numberAsString2;
-		Write(globalData.screen, x_offset+230,y,toPrint.c_str());
+		Write(globalData.screen, x_offset+230,y,toPrint);
 	}
 }
 
