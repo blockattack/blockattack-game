@@ -103,8 +103,7 @@ std::string win32_utf16_to_utf8(const wchar_t* wstr) {
 	}
 	if (actualSize == 0) {
 		// WideCharToMultiByte return 0 for errors.
-		const std::string errorMsg = "UTF16 to UTF8 failed with error code: " + GetLastError();
-		throw std::runtime_error(errorMsg.c_str());
+		throw std::runtime_error("UTF16 to UTF8 failed with error code: " + std::to_string(GetLastError()));
 	}
 	return res;
 }
@@ -235,6 +234,16 @@ std::string getCacheDir() {
 	return getHome()+"/Library/Caches";
 #else
 	return getLinuxFolderDefault("XDG_CACHE_HOME", ".cache");
+#endif
+}
+
+std::string getStateDir() {
+#ifdef _WIN32
+	return GetAppDataLocal();
+#elif defined(__APPLE__)
+	return getHome()+"/Library/Application Support";
+#else
+	return getLinuxFolderDefault("XDG_STATE_HOME", ".local/state");
 #endif
 }
 
