@@ -17,7 +17,6 @@ https://blockattack.net
 ===========================================================================
 */
 
-#include "DialogBox.hpp"
 #include "HelpCommon.hpp"
 #include "ShowFileState.hpp"
 #include "global.hpp"
@@ -39,15 +38,3 @@ void ShowFileState::SetData(const std::string& filename, const std::string& head
 	infoBox.SetText(sago::GetFileContent(filename));
 	filenameField.SetText(fmt::format(_("Showing content of: {}"), filename));
 }
-
-void ShowFileState::Draw(SDL_Renderer* target) {
-	DrawBackground(target);
-	titleField.Draw(target, 50, 50);
-	DrawRectYellow(target, 40, 90, 600, 900);
-	infoBox.SetMaxWidth(850);
-	infoBox.Draw(target, 50, 100);
-	DrawRectYellow(target, 40, 700, 50, 900);
-	filenameField.Draw(target, 50, 715);
-	HelpCommonState::Draw(target);
-}
-

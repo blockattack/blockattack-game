@@ -89,13 +89,3 @@ HelpAboutState::HelpAboutState() {
 
 HelpAboutState::~HelpAboutState() {
 }
-
-
-void HelpAboutState::Draw(SDL_Renderer* target) {
-	DrawBackground(target);
-	titleField.Draw(target, 50, 50);
-	DrawRectYellow(target, 40, 90, 600, 900);
-	infoBox.SetMaxWidth(850);
-	infoBox.Draw(target, 50, 100);
-	HelpCommonState::Draw(target);
-}

@@ -28,22 +28,13 @@ https://blockattack.net
 #include <string>
 #include "common.h"
 
-class ShowFileState : public HelpCommonState {
+class ShowFileState : public HelpTextBoxState {
 public:
 	ShowFileState();
 	ShowFileState(const ShowFileState& orig) = delete;
 	virtual ~ShowFileState();
 
-	void Draw(SDL_Renderer* target) override;
-
 	void SetData(const std::string& filename, const std::string& header);
-
-private:
-	bool isActive = true;
-	bool bMouseUp = true;
-	sago::SagoTextField titleField;
-	sago::SagoTextBox filenameField;
-	sago::SagoTextBox infoBox;
 };
 
 #endif /* SHOWFILESTATE_HPP */

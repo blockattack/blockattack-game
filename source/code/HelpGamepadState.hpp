@@ -36,8 +36,6 @@ public:
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
 private:
-	bool isActive = true;
-	bool bMouseUp = true;
 	sago::SagoTextField moveLabel;
 	sago::SagoTextField pushLabel;
 	sago::SagoTextField backLabel;

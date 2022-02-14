@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 blockattack - Block Attack - Rise of the Blocks
-Copyright (C) 2005-2020 Poul Sander
+Copyright (C) 2005-2022 Poul Sander
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,41 +21,18 @@ https://blockattack.net
 ===========================================================================
 */
 
-#ifndef MODCONFIG_HPP
-#define MODCONFIG_HPP
+#ifndef HELPMODINFOSTATE_HPP
+#define HELPMODINFOSTATE_HPP
 
-#include "sago/GameStateInterface.hpp"
+#include "HelpCommon.hpp"
 #include "sago/SagoTextField.hpp"
 #include "sago/SagoTextBox.hpp"
-#include "global.hpp"
-#include "common.h"
 
-struct Mod {
-	std::string name;
-	std::string filename;
-	bool enabled = false;
-	int order = 0;
-};
-
-/**
- * This will one day be the menu to configure mods.
- * This will need to be able to scan the filesystem for mods
- */
-class ModConfigMenuState : public sago::GameStateInterface {
+class HelpModInfoState : public HelpTextBoxState {
 public:
-	ModConfigMenuState();
-	ModConfigMenuState(const ModConfigMenuState& orig) = delete;
-	virtual ~ModConfigMenuState();
-
-	bool IsActive() override;
-	void Draw(SDL_Renderer* target) override;
-	void ProcessInput(const SDL_Event& event, bool &processed) override;
-	void Update() override;
-
-private:
-	bool isActive = true;
-	bool bMouseUp = true;
-	std::vector<Mod> mods_available;
+	HelpModInfoState();
+	virtual ~HelpModInfoState();
 };
 
-#endif /* MODCONFIG_HPP */
+#endif /* HELPMODINFOSTATE_HPP */
+

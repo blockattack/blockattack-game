@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 blockattack - Block Attack - Rise of the Blocks
-Copyright (C) 2005-2020 Poul Sander
+Copyright (C) 2005-2022 Poul Sander
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,18 +21,23 @@ https://blockattack.net
 ===========================================================================
 */
 
-#include "ModConfigMenuState.hpp"
-#include "MenuSystem.h"
+#include "DialogBox.hpp"
+#include "HelpModInfoState.hpp"
 #include "global.hpp"
-#include "MenuSystem.h"
+#include "common.h"
 #include "sago/SagoMisc.hpp"
 #include "os.hpp"
 #include <boost/algorithm/string/predicate.hpp>
+#include <sstream>
 
-const int buttonOffset = 160;
-extern sago::SagoSprite bExit;
+struct Mod {
+	std::string name;
+	std::string filename;
+	bool enabled = false;
+	int order = 0;
+};
 
-bool sort_mods_enabled_order (const Mod& i,const Mod& j) {
+static bool sort_mods_enabled_order (const Mod& i,const Mod& j) {
 	if (i.enabled && !j.enabled) {
 		//Enabled mods always goes before disabled ones
 		return true;
@@ -67,9 +72,8 @@ static void appendMods(const std::vector<std::string>& mod_files, const std::str
 	}
 }
 
-
-ModConfigMenuState::ModConfigMenuState() {
-	mods_available.clear();
+static std::vector<Mod> get_mods() {
+	std::vector<Mod> mods_available;
 	std::string baseMods = std::string(PHYSFS_getBaseDir())+ "/mods";
 	std::vector<std::string> baseModFiles = OsGetDirFileList(baseMods);
 	appendMods(baseModFiles, baseMods, mods_available);
@@ -80,48 +84,26 @@ ModConfigMenuState::ModConfigMenuState() {
 	std::vector<std::string> userModFiles = OsGetDirFileList(userMods);
 	appendMods(userModFiles, userMods, mods_available);
 	initMods(mods_available);
+	return mods_available;
 }
 
-ModConfigMenuState::~ModConfigMenuState() {}
-
-bool ModConfigMenuState::IsActive() {
-	return isActive;
-}
-
-void ModConfigMenuState::Draw(SDL_Renderer* target) {
-	DrawBackground(target);
-	standardButton.getLabel(_("Mod config"))->Draw(target, 50, 50);
-	for (size_t i = 0; i < mods_available.size(); ++i) {
-		standardButton.getLabel(mods_available[i].name)->Draw(target, 60, 160+30*i);
-		standardButton.getLabel(mods_available[i].enabled ? _("Yes") : _("No"))->Draw(target, 600, 160+30*i);
-		if (mods_available[i].enabled) {
-			standardButton.getLabel(std::to_string(mods_available[i].order))->Draw(target, 700, 160+30*i);
+HelpModInfoState::HelpModInfoState() {
+	std::vector<Mod> mods_available = get_mods();
+	std::stringstream infoStream;
+	infoStream << _("Load order:") << "\n";
+	for (size_t i=0; i < mods_available.size(); ++i) {
+		const Mod& mod = mods_available[i];
+		if (mod.enabled) {
+			infoStream << mod.order << " : " << mod.name << " ";
 		}
-	}
-	bExit.Draw(globalData.screen, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
-}
-
-void ModConfigMenuState::ProcessInput(const SDL_Event& event, bool& processed) {
-	if (isEscapeEvent(event)) {
-		isActive = false;
-		processed = true;
-	}
-}
-
-void ModConfigMenuState::Update() {
-	// If the mouse button is released, make bMouseUp equal true
-	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
-		bMouseUp=true;
-	}
-
-	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
-		bMouseUp = false;
-
-		//The Score button:
-		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
-		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
-			isActive = false;
+		else {
+			infoStream << "- : " << mod.name << " " << _("(Disabled)");
 		}
-
+		infoStream << "\n";
 	}
+	setHelp30FontThinOutline(&globalData.spriteHolder->GetDataHolder(), titleField, _("Mod info"));
+	setHelpBoxFont(&globalData.spriteHolder->GetDataHolder(), infoBox, infoStream.str().c_str());
+}
+
+HelpModInfoState::~HelpModInfoState() {
 }

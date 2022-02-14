@@ -38,9 +38,9 @@ void setHelpBoxFont(const sago::SagoDataHolder* holder, sago::SagoTextBox& field
 
 class HelpCommonState : public sago::GameStateInterface {
 public:
-	HelpCommonState();
+	HelpCommonState() = default;
 	HelpCommonState(const HelpCommonState& orig) = delete;
-	virtual ~HelpCommonState();
+	virtual ~HelpCommonState() = default;
 
 	bool IsActive() override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
@@ -51,6 +51,18 @@ public:
 private:
 	bool isActive = true;
 	bool bMouseUp = true;
+};
+
+class HelpTextBoxState : public HelpCommonState {
+public:
+	HelpTextBoxState() = default;
+	HelpTextBoxState(const HelpTextBoxState& orig) = delete;
+	virtual ~HelpTextBoxState() = default;
+	void Draw(SDL_Renderer* target) override;
+protected:
+	sago::SagoTextField titleField;
+	sago::SagoTextBox infoBox;
+	sago::SagoTextBox filenameField;
 };
 
 #endif  //_HELP_COMMON_HPP

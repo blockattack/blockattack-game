@@ -28,18 +28,11 @@ https://blockattack.net
 #include "sago/SagoTextBox.hpp"
 #include "sago/SagoTextField.hpp"
 
-class HelpAboutState : public HelpCommonState {
+class HelpAboutState : public HelpTextBoxState {
 public:
 	HelpAboutState();
 	HelpAboutState(const HelpAboutState& orig) = delete;
 	virtual ~HelpAboutState();
-	
-	void Draw(SDL_Renderer* target) override;
-private:
-	bool isActive = true;
-	bool bMouseUp = true;
-	sago::SagoTextField titleField;
-	sago::SagoTextBox infoBox;
 };
 
 #endif /* HELPABOUT_HPP */

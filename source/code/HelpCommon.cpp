@@ -24,6 +24,7 @@ https://blockattack.net
 #include "HelpCommon.hpp"
 #include "MenuSystem.h"
 #include "global.hpp"
+#include "DialogBox.hpp"
 
 
 
@@ -59,12 +60,6 @@ void setHelp30FontThinOutline(const sago::SagoDataHolder* holder, sago::SagoText
 	field.SetOutline(1, {128,128,128,255});
 }
 
-HelpCommonState::HelpCommonState() {
-}
-
-HelpCommonState::~HelpCommonState() {
-}
-
 bool HelpCommonState::IsActive() {
 	return isActive;
 }
@@ -92,6 +87,19 @@ void HelpCommonState::Draw(SDL_Renderer* target) {
 	mousePos.SetText(std::string("Mouse position: ")+std::to_string(globalData.mousex)+std::string(", ")+std::to_string(globalData.mousey));
 	mousePos.Draw(target, 0,0);
 #endif
+}
+
+void HelpTextBoxState::Draw(SDL_Renderer* target) {
+	DrawBackground(target);
+	titleField.Draw(target, 50, 50);
+	DrawRectYellow(target, 40, 90, 600, 900);
+	infoBox.SetMaxWidth(850);
+	infoBox.Draw(target, 50, 100);
+	if (filenameField.GetText().length() > 0) {
+		DrawRectYellow(target, 40, 700, 50, 900);
+		filenameField.Draw(target, 50, 715);
+	}
+	HelpCommonState::Draw(target);
 }
 
 

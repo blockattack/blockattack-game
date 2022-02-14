@@ -35,10 +35,6 @@ public:
 	virtual ~HelpHowtoState();
 	void Draw(SDL_Renderer* target) override;
 	void Update() override;
-
-private:
-	bool isActive = true;
-	bool bMouseUp = true;
 };
 
 #endif /* HELPHOWTOSTATE_HPP */

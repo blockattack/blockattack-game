@@ -26,10 +26,10 @@ http://blockattack.net
 #include "MenuSystem.h"
 #include "common.h"
 #include "HelpHowtoState.hpp"
+#include "HelpModInfoState.hpp"
 #include "HelpGamepadState.hpp"
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
-#include "ModConfigMenuState.hpp"
 #include <fmt/core.h>
 
 
@@ -435,11 +435,6 @@ static void PlayerConfigMenu() {
 	RunGameState(pcm);
 }
 
-static void runModConfigMenu() {
-	ModConfigMenuState modmenu;
-	RunGameState(modmenu);
-}
-
 static void ConfigureMenu() {
 	Menu cm(globalData.screen,_("Configuration"),true);
 	AlwaysSoftwareRenderButton bSoftware;
@@ -447,11 +442,8 @@ static void ConfigureMenu() {
 	SoundButton bSound;
 	FullscreenButton buttonFullscreen;
 	Button bPlayerConfig;
-	Button bModConfig;
 	bPlayerConfig.setLabel(_("Player configuration") );
 	bPlayerConfig.setAction(PlayerConfigMenu);
-	bModConfig.setLabel(_("Configure mods"));
-	bModConfig.setAction(&runModConfigMenu);
 	SetAlwaysSoftwareLabel(&bSoftware);
 	SetMusicLabel(&bMusic);
 	SetSoundLabel(&bSound);
@@ -461,7 +453,6 @@ static void ConfigureMenu() {
 	cm.addButton(&bSoftware);
 	cm.addButton(&buttonFullscreen);
 	cm.addButton(&bPlayerConfig);
-	cm.addButton(&bModConfig);
 	RunGameState(cm);
 }
 
@@ -516,6 +507,11 @@ static void runHowto() {
 	RunGameState(howto);
 }
 
+static void runHelpModInfo() {
+	HelpModInfoState modInfo;
+	RunGameState(modInfo);
+}
+
 static void runHelpGamepad() {
 	HelpGamepadState helpGamepad;
 	RunGameState(helpGamepad);
@@ -542,6 +538,10 @@ static void HelpMenu() {
 	bGamepad.setLabel(_("Gamepad"));
 	bGamepad.setAction(runHelpGamepad);
 	m.addButton(&bGamepad);
+	Button bModInfo;
+	bModInfo.setLabel(_("Mod info"));
+	bModInfo.setAction(runHelpModInfo);
+	m.addButton(&bModInfo);
 	Button bCredits;
 	bCredits.setLabel(_("Credits"));
 	bCredits.setAction(runCredits);
