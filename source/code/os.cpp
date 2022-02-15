@@ -122,7 +122,7 @@ void OsCreateFolder(const std::string& path) {
 #if defined(_WIN32)
 	//Now for Windows Vista+
 	int retcode = SHCreateDirectoryExW(NULL, win32_utf8_to_utf16(path.c_str()).c_str(), NULL);
-	if (retcode != ERROR_SUCCESS) {
+	if (retcode != ERROR_SUCCESS && retcode != ERROR_FILE_EXISTS && retcode != ERROR_ALREADY_EXISTS) {
 		std::cerr << "Failed to create: " << path+"/" << "\n";
 	}
 #else
