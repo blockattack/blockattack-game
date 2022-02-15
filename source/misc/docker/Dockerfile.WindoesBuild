@@ -28,4 +28,6 @@ echo "[InternetShortcut]" > "Block Attack - Rise Of the Blocks.url" && \
 echo "URL=https://blockattack.net" >> "Block Attack - Rise Of the Blocks.url" && \
 cd /staging/package/ && \
 zip -r /output/blockattack-${BLOCKATTACK_VERSION}-windows-no-installer.zip "blockattack-${BLOCKATTACK_VERSION}" && \
+mv blockattack-${BLOCKATTACK_VERSION} blockattack-itch && \
+zip -r /output/blockattack-itch-${BLOCKATTACK_VERSION}.zip "blockattack-itch" && \
 cd /output && chown nobody * && chmod 666 * && ls -lh
