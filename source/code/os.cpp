@@ -52,6 +52,10 @@ std::string getPathToSaveFiles() {
 	return pf.getSaveGamesFolder1()+"/"+GAMENAME;
 }
 
+std::string getPathToStateFiles() {
+	return sago::getStateDir()+"/"+GAMENAME+"/state";
+}
+
 void setPathToSaveFiles(const std::string& path) {
 	overrideSavePath = path;
 }
@@ -114,19 +118,19 @@ bool OsPathIsRelative(const std::string& path) {
 }
 
 void OsCreateFolder(const std::string& path) {
-#if defined(__unix__)
+	//Once all supported systems works with C++17 then we can use "std::filesystem::create_directories" instead
+#if defined(_WIN32)
+	//Now for Windows Vista+
+	int retcode = SHCreateDirectoryExW(NULL, win32_utf8_to_utf16(path.c_str()).c_str(), NULL);
+	if (retcode != ERROR_SUCCESS) {
+		std::cerr << "Failed to create: " << path+"/" << "\n";
+	}
+#else
 	std::string cmd = "mkdir -p '"+path+"/'";
 	int retcode = system(cmd.c_str());
 	if (retcode != 0) {
 		std::cerr << "Failed to create: " << path+"/" << "\n";
 	}
-#elif defined(_WIN32)
-	//Now for Windows NT/2k/xp/2k3 etc.
-	CreateDirectoryW(win32_utf8_to_utf16(pf.getSaveGamesFolder1().c_str()).c_str(), nullptr);
-	std::string tempA = path;
-	CreateDirectoryW(win32_utf8_to_utf16(tempA.c_str()).c_str(), nullptr);
-#else
-	std::cerr << "Failed to create: \"" << path << "\"\n";
 #endif
 }
 

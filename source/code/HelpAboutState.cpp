@@ -62,7 +62,7 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("SDL compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
 	infoStream << _("SDL linked version:") << " " << sdl_verison_as_string(linked) << "\n";
 	SDL_IMAGE_VERSION(&compiled);
-	const SDL_version *sdl_link_version=IMG_Linked_Version();
+	const SDL_version* sdl_link_version=IMG_Linked_Version();
 	infoStream << _("SDL_image compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
 	infoStream << _("SDL_image linked version:") << " " << sdl_verison_as_string(*sdl_link_version) << "\n";
 	SDL_MIXER_VERSION(&compiled);

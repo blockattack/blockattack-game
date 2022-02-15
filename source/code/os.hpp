@@ -33,6 +33,8 @@ https://blockattack.net
 
 std::string getPathToSaveFiles();
 
+std::string getPathToStateFiles();
+
 std::string defaultPlayerName();
 
 void setPathToSaveFiles(const std::string& path);

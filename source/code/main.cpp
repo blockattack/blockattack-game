@@ -955,6 +955,18 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 #define PHYSFS_unmount PHYSFS_removeFromSearchPath
 #endif
 
+static void writeStateFile(const char* executable, const char* basedir) {
+	std::string path = getPathToStateFiles();
+	OsCreateFolder(path);
+	std::ofstream stateFile;
+	stateFile.open (path+"/game.txt");
+	if (executable) {
+		stateFile << "executable " << executable << "\n";
+	}
+	stateFile << "basedir " << basedir << "\n";
+	stateFile << "SHAREDIR " << SHAREDIR << "\n";
+}
+
 //Warning: the arguments to main must be "int argc, char* argv[]" NO CONST! or SDL_main will fail to find it
 int main(int argc, char* argv[]) {
 	try {
@@ -973,6 +985,7 @@ int main(int argc, char* argv[]) {
 		textdomain (PACKAGE);
 		ParseArguments(argc, argv, config);
 		OsCreateSaveFolder();
+		writeStateFile(argv[0], PHYSFS_getBaseDir());
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
 		/*if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
 		    std::string modString = sago::GetFileContent(MODLIST_TXT);
