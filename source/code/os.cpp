@@ -32,7 +32,7 @@ https://blockattack.net
 #include <pwd.h>
 #include <unistd.h>
 #endif
-
+#include <boost/algorithm/string.hpp>
 #include <dirent.h>
 
 static sago::PlatformFolders pf;
@@ -121,10 +121,16 @@ void OsCreateFolder(const std::string& path) {
 	//Once all supported systems works with C++17 then we can use "std::filesystem::create_directories" instead
 #if defined(_WIN32)
 	//Now for Windows Vista+
-	int retcode = SHCreateDirectoryExW(NULL, win32_utf8_to_utf16(path.c_str()).c_str(), NULL);
-	if (retcode != ERROR_SUCCESS && retcode != ERROR_FILE_EXISTS && retcode != ERROR_ALREADY_EXISTS) {
-		std::cerr << "Failed to create: " << path+"/" << "\n";
+	std::vector<std::string> element_vector;
+	std::string new_path = path;
+	boost::replace_all(new_path, "/", "\\");
+	size_t pos = new_path.find("\\");
+	while( pos != std::string::npos) {
+		std::string part_of_path = new_path.substr(0, pos);
+		CreateDirectoryW(win32_utf8_to_utf16(part_of_path.c_str()).c_str(), NULL);
+		pos = new_path.find("\\",pos+1);
 	}
+	CreateDirectoryW(win32_utf8_to_utf16(path.c_str()).c_str(), NULL);
 #else
 	std::string cmd = "mkdir -p '"+path+"/'";
 	int retcode = system(cmd.c_str());
