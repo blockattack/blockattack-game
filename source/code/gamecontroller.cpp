@@ -23,7 +23,7 @@ http://www.blockattack.net
 
 #include "gamecontroller.h"
 #include "SDL_gamecontroller.h"
-#include "sago/platform_folders.h"
+#include "platform_folders.h"
 #include "common.h"
 #include <iostream>
 #include <map>

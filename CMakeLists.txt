@@ -20,6 +20,7 @@ set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install trans
 set(INSTALL_METAINFO_DIR "share/metainfo" CACHE STRING "Install appstream matedata to this directory")
 
 option(BLOCKATTACK_USE_EMBEDDED_FMT "Use the embedded version of {fmt}" ON)
+option(BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS "Use the embedded version of PlatformFolders" ON)
 
 # This sets up the exe icon for windows under mingw.
 # Taken from https://hansonry.wordpress.com/2010/12/15/windows-application-icon-using-mingw-and-cmake/
@@ -90,6 +91,12 @@ if (BLOCKATTACK_USE_EMBEDDED_FMT)
 	message("Done processing {fmt}")
 endif()
 
+if (BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS)
+	message("Using embedded PlatformFolders")
+	add_subdirectory("source/misc/embedded_libs/PlatformFolders-4.2.0" EXCLUDE_FROM_ALL)
+	message("Done processing PlatformFolders")
+endif()
+
 include_directories("source/code/Libs/include")
 include_directories("source/code/Libs/include/cereal/external")  #Contains rapidjson
 
@@ -97,6 +104,7 @@ include_directories("source/code/Libs/include/cereal/external")  #Contains rapid
 add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
 target_link_libraries( blockattack ${SDL2_LIBRARIES})
 target_link_libraries( blockattack fmt)
+target_link_libraries( blockattack platform_folders)
 target_link_libraries( blockattack physfs)
 target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
 target_link_libraries( blockattack ${Boost_LIBRARIES} )

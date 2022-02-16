@@ -317,7 +317,7 @@ static ExplosionManager theExplosionManager;
 #include "BlockGameSdl.inc"
 #include "sago/SagoMisc.hpp"
 #include "ReplayPlayer.hpp"
-#include "sago/platform_folders.h"
+#include "platform_folders.h"
 
 std::string pathToScreenShots() {
 	Config::getInstance()->setDefault("screenshot_dir", _("Block Attack - Rise of the Blocks"));

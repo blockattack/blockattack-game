@@ -24,7 +24,7 @@ https://blockattack.net
 #include "os.hpp"
 #include <iostream>
 #include <physfs.h>
-#include "sago/platform_folders.h"
+#include "platform_folders.h"
 #include "version.h"
 #include "common.h"
 
