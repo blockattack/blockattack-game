@@ -58,6 +58,15 @@ static void initMods(std::vector<Mod>& mod_list) {
 		}
 	}
 	std::sort(mod_list.begin(), mod_list.end(), sort_mods_enabled_order);
+	std::vector<Mod> mod_list_no_duplicates;
+	std::string last_mod = "";
+	for (const Mod& m : mod_list) {
+		if (m.name != last_mod) {
+			mod_list_no_duplicates.push_back(m);
+		}
+		last_mod = m.name;
+	}
+	std::swap(mod_list, mod_list_no_duplicates);
 }
 
 static void appendMods(const std::vector<std::string>& mod_files, const std::string& dir, std::vector<Mod>& mods_available) {
