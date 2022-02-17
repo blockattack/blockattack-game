@@ -53,7 +53,7 @@ std::string getPathToSaveFiles() {
 }
 
 std::string getPathToStateFiles() {
-	return sago::getStateDir()+"/"+GAMENAME+"/state";
+	return getPathToSaveFiles()+"/state";
 }
 
 void setPathToSaveFiles(const std::string& path) {
@@ -142,7 +142,7 @@ void OsCreateFolder(const std::string& path) {
 
 void OsCreateSaveFolder() {
 	std::string path = getPathToSaveFiles();
-	OsCreateFolder(path);
+	OsCreateFolder(path+"/mods");
 }
 
 std::vector<std::string> OsGetDirFileList(const std::string& path) {
