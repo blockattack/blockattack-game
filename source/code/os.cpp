@@ -125,7 +125,7 @@ void OsCreateFolder(const std::string& path) {
 	std::string new_path = path;
 	boost::replace_all(new_path, "/", "\\");
 	size_t pos = new_path.find("\\");
-	while( pos != std::string::npos) {
+	while ( pos != std::string::npos) {
 		std::string part_of_path = new_path.substr(0, pos);
 		CreateDirectoryW(win32_utf8_to_utf16(part_of_path.c_str()).c_str(), NULL);
 		pos = new_path.find("\\",pos+1);
