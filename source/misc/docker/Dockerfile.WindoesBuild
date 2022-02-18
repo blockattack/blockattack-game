@@ -8,7 +8,7 @@ RUN mkdir -p /output
 
 COPY . /staging/blockattack-game
 
-ENV BLOCKATTACK_VERSION 2.8.0-SNAPSHOT
+ENV BLOCKATTACK_VERSION 2.9.0-SNAPSHOT
 
 RUN cd /staging/blockattack-game && \
 ./packdata.sh && \
