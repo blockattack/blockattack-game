@@ -1,7 +1,6 @@
 # Changelog
 
-
-## Unreleased
+## [2.8.0] - 2022-02-18
 
 ### Added
  - CONTRIBUTING.md is now included
