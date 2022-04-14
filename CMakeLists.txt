@@ -55,6 +55,10 @@ if (NOT WIN32 AND NOT STANDALONE)
 	endif()
 endif()
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(MACOSX TRUE)
+endif()
+
 #Compiler options
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g -DDEBUG")
@@ -73,6 +77,9 @@ pkg_search_module(SDL2TTF REQUIRED SDL2_ttf)
 include_directories(${SDL2MIXER_INCLUDE_DIRS})
 include_directories(${SDL2IMAGE_INCLUDE_DIRS})
 include_directories(${SDL2TTF_INCLUDE_DIRS})
+
+find_package(Intl REQUIRED)
+include_directories(${Intl_INCLUDE_DIRS})
 
 find_package(Boost COMPONENTS program_options REQUIRED)
 
@@ -106,6 +113,9 @@ target_link_libraries( blockattack ${SDL2_LIBRARIES})
 target_link_libraries( blockattack fmt)
 target_link_libraries( blockattack platform_folders)
 target_link_libraries( blockattack physfs)
+if (MACOSX)
+	target_link_libraries( blockattack intl)
+endif()
 target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
 target_link_libraries( blockattack ${Boost_LIBRARIES} )
 set_target_properties( blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
