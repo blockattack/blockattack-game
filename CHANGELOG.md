@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+ - Added Swedish translation by sanchez-gayatri
+
 ## [2.8.0] - 2022-02-18
 
 ### Added
