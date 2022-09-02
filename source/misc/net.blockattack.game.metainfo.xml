@@ -43,4 +43,39 @@
 	<url type="faq">https://blockattack.net/instructions/</url>
 	<update_contact>blockattack_AT_poulsander.com</update_contact>
 	<translation type="gettext">blockattack_roftb</translation>
+	<releases>
+		<release version="v2.8.0" date="2022-02-18" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.8.0</url>
+		</release>
+		<release version="v2.7.0" date="2021-10-23" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.7.0</url>
+		</release>
+		<release version="v2.6.0" date="2020-09-26" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.6.0</url>
+		</release>
+		<release version="v2.5.0" date="2019-05-25" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.5.0</url>
+		</release>
+		<release version="v2.4.0" date="2019-03-10" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.4.0</url>
+		</release>
+		<release version="v2.3.0" date="2018-07-01" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.3.0</url>
+		</release>
+		<release version="v2.2.0" date="2018-05-20" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.2.0</url>
+		</release>
+		<release version="v2.1.2" date="2018-01-12" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.1.2</url>
+		</release>
+		<release version="v2.1.1" date="2017-04-01" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.1.1</url>
+		</release>
+		<release version="v2.0.1" date="2016-10-01" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.0.1</url>
+		</release>
+		<release version="v2.0.0" date="2016-05-01" type="stable">
+			<url>https://github.com/blockattack/blockattack-game/releases/tag/v2.0.0</url>
+		</release>
+	</releases>
 </component>
