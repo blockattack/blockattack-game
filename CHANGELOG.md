@@ -5,6 +5,11 @@
 ### Added
  - Added Swedish translation by sanchez-gayatri
 
+### Changed
+ - Update library versions for the compiled version:
+   - SDL2: 2.0.20 to 2.24.1
+   - SDL2_ttf: 2.0.15 to 2.0.18
+
 ## [2.8.0] - 2022-02-18
 
 ### Added
