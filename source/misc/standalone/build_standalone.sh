@@ -18,7 +18,7 @@ chmod +x staging/$ARCHIVENAME/blockattack
 
 cd ../../..
 
-docker build -f source/misc/docker/Dockerfile.Ubuntu16.04build_Standalone . -t blockattack_test
+docker build -f source/misc/docker/Dockerfile.Ubuntu18.04build_Standalone . -t blockattack_test
 
 echo Copying to: $(pwd)/source/misc/standalone/staging/$ARCHIVENAME
 
@@ -28,7 +28,6 @@ cp /usr/local/lib/libphysfs.so.1  /output/x86_64/ && \
 cp /usr/local/lib/libSDL2_mixer-2.0.so.0  /output/x86_64/ && \
 cp /usr/local/lib/libSDL2_ttf-2.0.so.0  /output/x86_64/ && \
 cp /usr/lib/x86_64-linux-gnu/libfreetype.so.6  /output/x86_64/ && \
-cp /lib/x86_64-linux-gnu/libpng12.so.0  /output/x86_64/ && \
 cp /usr/local/lib/libSDL2_image-2.0.so.0  /output/x86_64/"
 
 docker run -it --rm -v $(pwd)/source/misc/standalone/staging/$ARCHIVENAME/:/output blockattack_test /bin/bash -c "cp -r /staging/blockattack-game/source/misc/translation/locale /output/ && \
