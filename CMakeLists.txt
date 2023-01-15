@@ -66,7 +66,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
 #Setup SDL2
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+
 
 #Setup things that use pkg-config
 find_package(PkgConfig REQUIRED)
@@ -74,12 +74,8 @@ pkg_search_module(SDL2MIXER REQUIRED SDL2_mixer)
 pkg_search_module(SDL2IMAGE REQUIRED SDL2_image)
 pkg_search_module(SDL2TTF REQUIRED SDL2_ttf)
 
-include_directories(${SDL2MIXER_INCLUDE_DIRS})
-include_directories(${SDL2IMAGE_INCLUDE_DIRS})
-include_directories(${SDL2TTF_INCLUDE_DIRS})
 
 find_package(Intl REQUIRED)
-include_directories(${Intl_INCLUDE_DIRS})
 
 find_package(Boost COMPONENTS program_options REQUIRED)
 
@@ -104,21 +100,28 @@ if (BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS)
 	message("Done processing PlatformFolders")
 endif()
 
-include_directories("source/code/Libs/include")
-include_directories("source/code/Libs/include/cereal/external")  #Contains rapidjson
 
 #building/compiling/linking
 add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
-target_link_libraries( blockattack ${SDL2_LIBRARIES})
-target_link_libraries( blockattack fmt)
-target_link_libraries( blockattack platform_folders)
-target_link_libraries( blockattack physfs)
+
+target_include_directories(blockattack PRIVATE "source/code/Libs/include")
+target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
+target_include_directories(blockattack PRIVATE ${SDL2_INCLUDE_DIRS})
+target_include_directories(blockattack PRIVATE ${SDL2MIXER_INCLUDE_DIRS})
+target_include_directories(blockattack PRIVATE ${SDL2IMAGE_INCLUDE_DIRS})
+target_include_directories(blockattack PRIVATE ${SDL2TTF_INCLUDE_DIRS})
+target_include_directories(blockattack PRIVATE ${Intl_INCLUDE_DIRS})
+
+target_link_libraries(blockattack PRIVATE ${SDL2_LIBRARIES})
+target_link_libraries(blockattack PRIVATE fmt)
+target_link_libraries(blockattack PRIVATE platform_folders)
+target_link_libraries(blockattack PRIVATE physfs)
 if (MACOSX)
-	target_link_libraries( blockattack intl)
+	target_link_libraries(blockattack PRIVATE intl)
 endif()
-target_link_libraries( blockattack ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
-target_link_libraries( blockattack ${Boost_LIBRARIES} )
-set_target_properties( blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
+target_link_libraries(blockattack PRIVATE ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
+target_link_libraries(blockattack PRIVATE ${Boost_LIBRARIES} )
+set_target_properties(blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
 
 #Installing
 install(TARGETS blockattack RUNTIME DESTINATION ${INSTALL_BIN_DIR} )
