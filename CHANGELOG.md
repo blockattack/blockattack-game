@@ -4,11 +4,17 @@
 
 ### Added
  - Added Swedish translation by sanchez-gayatri
+ - Can now compile on Mac OS X. However: No prebuilds will be provided.
 
 ### Changed
  - Update library versions for the compiled version:
-   - SDL2: 2.0.20 to 2.24.1
-   - SDL2_ttf: 2.0.15 to 2.0.18
+   - SDL2: 2.0.20 to 2.26.2
+   - SDL2_Image: 2.0.5 to 2.6.2
+   - SDL2_Mixer: 2.0.4 to 2.6.2
+   - SDL2_ttf: 2.0.15 to 2.20.1
+ - Added Releases and OARS to AppStream file
+ - Removed the executable bit from a lot of files that data files that should not have it
+ - The CMake file now uses more target based rules
 
 ## [2.8.0] - 2022-02-18
 
