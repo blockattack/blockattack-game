@@ -22,6 +22,7 @@ set(INSTALL_METAINFO_DIR "share/metainfo" CACHE STRING "Install appstream mateda
 option(BLOCKATTACK_USE_EMBEDDED_CEREAL "Use the embedded version of cereal" ON)
 option(BLOCKATTACK_USE_EMBEDDED_FMT "Use the embedded version of {fmt}" ON)
 option(BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS "Use the embedded version of PlatformFolders" ON)
+option(BLOCKATTACK_USE_EMBEDDED_UTFCPP "Use the embedded version of utfcpp" ON)
 
 # This sets up the exe icon for windows under mingw.
 # Taken from https://hansonry.wordpress.com/2010/12/15/windows-application-icon-using-mingw-and-cmake/
@@ -117,8 +118,13 @@ else()
 	target_link_libraries(blockattack PRIVATE sago::platform_folders)
 endif()
 
+if (BLOCKATTACK_USE_EMBEDDED_UTFCPP)
+	target_include_directories(blockattack PRIVATE "source/code/Libs/include/")
+else()
+	find_package(utf8cpp REQUIRED)
+	target_include_directories(blockattack PRIVATE "/usr/include/utf8cpp/")
+endif()
 
-target_include_directories(blockattack PRIVATE "source/code/Libs/include")
 target_include_directories(blockattack PRIVATE ${SDL2_INCLUDE_DIRS})
 target_include_directories(blockattack PRIVATE ${SDL2MIXER_INCLUDE_DIRS})
 target_include_directories(blockattack PRIVATE ${SDL2IMAGE_INCLUDE_DIRS})
