@@ -109,8 +109,13 @@ if (BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS)
 	message("Using embedded PlatformFolders")
 	add_subdirectory("source/misc/embedded_libs/PlatformFolders-4.2.0" EXCLUDE_FROM_ALL)
 	message("Done processing PlatformFolders")
-endif()
 
+	target_link_libraries(blockattack PRIVATE platform_folders)
+else()
+	find_package(platform_folders 4.1.0 REQUIRED)
+	target_include_directories(blockattack PRIVATE "/usr/include/sago/")
+	target_link_libraries(blockattack PRIVATE sago::platform_folders)
+endif()
 
 
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
@@ -122,7 +127,6 @@ target_include_directories(blockattack PRIVATE ${Intl_INCLUDE_DIRS})
 
 target_link_libraries(blockattack PRIVATE ${SDL2_LIBRARIES})
 target_link_libraries(blockattack PRIVATE fmt)
-target_link_libraries(blockattack PRIVATE platform_folders)
 target_link_libraries(blockattack PRIVATE physfs)
 if (MACOSX)
 	target_link_libraries(blockattack PRIVATE intl)
