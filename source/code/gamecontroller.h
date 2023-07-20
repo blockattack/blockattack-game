@@ -22,7 +22,7 @@ http://www.blockattack.net
 */
 
 #ifndef GAMECONTROLLER_H
-#define GAMECONTROLLER_HPP
+#define GAMECONTROLLER_H
 
 #include "SDL.h"
 #include <vector>
