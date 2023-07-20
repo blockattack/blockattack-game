@@ -19,6 +19,7 @@ set(INSTALL_ICONS_DIR "share/icons/hicolor" CACHE STRING "Install the icon in a 
 set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install translation to this dir")
 set(INSTALL_METAINFO_DIR "share/metainfo" CACHE STRING "Install appstream matedata to this directory")
 
+option(BLOCKATTACK_USE_EMBEDDED_CEREAL "Use the embedded version of cereal" ON)
 option(BLOCKATTACK_USE_EMBEDDED_FMT "Use the embedded version of {fmt}" ON)
 option(BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS "Use the embedded version of PlatformFolders" ON)
 
@@ -88,6 +89,16 @@ file(GLOB SOURCES "source/code/*.cpp" "source/code/*/*.cpp" "source/code/Libs/*.
 message("${SOURCES}")
 message("${CMAKE_EXE_LINKER_FLAGS}")
 
+#building/compiling/linking
+add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
+
+if (BLOCKATTACK_USE_EMBEDDED_CEREAL)
+	target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
+else()
+	find_package(cereal 1.2.0 REQUIRED)
+	target_include_directories(blockattack PRIVATE ${CEREAL_INCLUDE_DIRS})
+endif()
+
 if (BLOCKATTACK_USE_EMBEDDED_FMT)
 	message("Using embedded {fmt}")
 	add_subdirectory("source/misc/embedded_libs/fmt-8.1.1" EXCLUDE_FROM_ALL)
@@ -101,11 +112,8 @@ if (BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS)
 endif()
 
 
-#building/compiling/linking
-add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
 
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
-target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
 target_include_directories(blockattack PRIVATE ${SDL2_INCLUDE_DIRS})
 target_include_directories(blockattack PRIVATE ${SDL2MIXER_INCLUDE_DIRS})
 target_include_directories(blockattack PRIVATE ${SDL2IMAGE_INCLUDE_DIRS})
