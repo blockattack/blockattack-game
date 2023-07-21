@@ -114,7 +114,12 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 		printFileWeLoad(path);
 	}
 	if (!PHYSFS_exists(path.c_str())) {
-		sago::SagoFatalErrorF("getTextureFailed - Texture does not exist: %s", path.c_str());
+		// We did not find the png file. Try to see if there are a jpg file.
+		std::string jpg_path = "textures/"+textureName+".jpg";
+		if (!PHYSFS_exists(jpg_path.c_str())) {
+			sago::SagoFatalErrorF("getTextureFailed - Texture does not exist: %s", path.c_str());
+		}
+		path = jpg_path;
 	}
 	unsigned int m_size = 0;
 	std::unique_ptr<char[]> m_data;

@@ -69,6 +69,9 @@ const int SIXTEEN_NINE_WIDTH = 1364;
 const int FOUR_THREE_WIDTH = 1024;
 const int SCREEN_HIGHT = 768;
 
+const int BOARD_WIDTH = 300;
+const int BOARD_HEIGHT = 600;
+
 struct GlobalData {
 	sago::SagoSprite bHighScore;
 	sago::SagoSprite bBack;

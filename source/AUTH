@@ -15,6 +15,7 @@ freeserif.ttf           Free Software Foundation
 penguinattack.ttf       Dustin Norlander - GPLv2
 
 /textures/
+alt_gfx/back_board_sample_snow.jpg  Poul Sander
 back_board.png          qubodup
 background.png          qubodup
 background_sixteen_nine.png  Poul Sander (based of qubodup's background.png)

@@ -26,6 +26,7 @@ https://blockattack.net
 #include "sago/SagoTextField.hpp"
 #include "mainVars.inc"
 
+
 static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
 	field.SetHolder(holder);
 	field.SetFont("penguinattack");
@@ -64,7 +65,7 @@ public:
 	}
 
 	void DrawImgBoardBounded(const sago::SagoSprite& img, int x, int y) const {
-		DrawIMG_Bounded(img, globalData.screen, x+topx, y+topy, topx, topy, topx + backBoard.GetWidth(), topy + backBoard.GetHeight());
+		DrawIMG_Bounded(img, globalData.screen, x+topx, y+topy, topx, topy, topx + BOARD_WIDTH, topy + BOARD_HEIGHT);
 	}
 
 	void PrintTextCenteredBoard(int x, int y, sago::SagoTextField& field) {
@@ -221,7 +222,7 @@ private:
 	SDL_Texture* CreateGarbageTexture(int x, int y, int size_x, int size_y, SDL_Rect& dstrect, SDL_Rect& srcrect) const {
 		dstrect = { x, y, size_x*bsize, size_y*bsize };
 		srcrect = { 0, 0, size_x*bsize, size_y*bsize };
-		SDL_Rect bound = {topx, topy, backBoard.GetWidth(), backBoard.GetHeight()};
+		SDL_Rect bound = {topx, topy, BOARD_WIDTH, BOARD_HEIGHT};
 		CropTexture (dstrect, srcrect, bound);
 		SDL_Texture* mTexture = SDL_CreateTexture( globalData.screen, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size_x*bsize, size_y*bsize );
 		SDL_SetRenderTarget( globalData.screen, mTexture );
@@ -409,7 +410,7 @@ public:
 		this->timeLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197);
 		this->chainLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+246);
 		this->speedLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+295);
-		DrawImgBoard(backBoard,  0, 0);
+		backBoard.DrawScaled(globalData.screen, SDL_GetTicks(), this->GetTopX(),this->GetTopY(), BOARD_WIDTH, BOARD_HEIGHT);
 
 		PaintBricks();
 		if (stageClear) {

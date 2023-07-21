@@ -184,9 +184,19 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	this->y = globalData.ysize/2-100;
 	DrawRectYellow(target, x, y, 200, 600);
 	headerLabel.Draw(target, x+300, y+20, sago::SagoTextField::Alignment::center);
-	DrawRectYellow(target, x+25, y+128, 50, 250);
+	if (insideRect(x+25, y+128, 50, 250)) {
+		DrawRectYellow(target, x+24, y+127, 52, 252);
+	}
+	else {
+		DrawRectYellow(target, x+25, y+128, 50, 250);
+	}
 	enterLabel.Draw(target, x+150, y+140, sago::SagoTextField::Alignment::center);
-	DrawRectYellow(target, x+325, y+128, 50, 250);
+	if (insideRect(x+325, y+128, 50, 250)) {
+		DrawRectYellow(target, x+324, y+127, 52, 252);
+	}
+	else {
+		DrawRectYellow(target, x+325, y+128, 50, 250);
+	}
 	cancelLabel.Draw(target, x+450, y+140, sago::SagoTextField::Alignment::center);
 	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
 	textField.SetText(rk->GetString());
