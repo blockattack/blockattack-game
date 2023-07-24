@@ -45,7 +45,6 @@ const char sharedir[] = SHAREDIR;
 sago::SagoSprite backgroundImage; //Stores the background image
 sago::SagoSprite backgroundSixteenNineImage; // For 16:9 format
 sago::SagoSprite bExit;
-static sago::SagoSprite backBoard;     //Stores the background to the board
 static sago::SagoSprite bForward;      //The "forward" button
 #if NETWORK
 //static sago::SagoSprite bNetwork;

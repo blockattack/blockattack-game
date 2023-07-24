@@ -181,7 +181,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.bNext = holder.GetSprite("b_blank");
 	bRetry = holder.GetSprite("b_blank");
 	globalData.mouse = holder.GetSprite("mouse");
-	backBoard = holder.GetSprite("back_board");  // Can also be "back_board_sample_snow"
 
 	sagoTextSetBlueFont(player1name);
 	sagoTextSetBlueFont(player2name);
@@ -546,7 +545,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		 */
 		if (!twoPlayers && !theGame->isGameOver()) {
 			//Blank player2's board:
-			backBoard.DrawScaled(globalData.screen, SDL_GetTicks(), theGame2->GetTopX(),theGame2->GetTopY(), BOARD_WIDTH, BOARD_HEIGHT);
+			globalData.spriteHolder->GetSprite(globalData.theme.back_board).DrawScaled(globalData.screen, SDL_GetTicks(), theGame2->GetTopX(),theGame2->GetTopY(), BOARD_WIDTH, BOARD_HEIGHT);
 			//Write a description:
 			std::string gametypeName;
 			std::string infostring;

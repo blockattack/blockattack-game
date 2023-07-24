@@ -72,6 +72,10 @@ const int SCREEN_HIGHT = 768;
 const int BOARD_WIDTH = 300;
 const int BOARD_HEIGHT = 600;
 
+struct Theme {
+	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
+};
+
 struct GlobalData {
 	sago::SagoSprite bHighScore;
 	sago::SagoSprite bBack;
@@ -96,6 +100,7 @@ struct GlobalData {
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 	std::vector<std::string> modList;
 	ModInfo modinfo;
+	Theme theme;
 
 	TextManager theTextManager;
 
