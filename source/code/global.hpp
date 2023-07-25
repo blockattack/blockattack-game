@@ -32,6 +32,7 @@ http://www.blockattack.net
 #include "ExplosionManager.hpp"
 #include "sago/SagoTextField.hpp"
 #include "ModInfo.hpp"
+#include "themes.hpp"
 
 //if SHAREDIR is not used we look in current directory
 #ifndef SHAREDIR
@@ -72,9 +73,6 @@ const int SCREEN_HIGHT = 768;
 const int BOARD_WIDTH = 300;
 const int BOARD_HEIGHT = 600;
 
-struct Theme {
-	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
-};
 
 struct GlobalData {
 	sago::SagoSprite bHighScore;

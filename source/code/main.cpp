@@ -1529,6 +1529,7 @@ int runGame(Gametype gametype, int level) {
 						if ( event.key.keysym.sym == SDLK_F5 ) {
 						}
 						if ( event.key.keysym.sym == SDLK_F11 ) {
+							globalData.theme = getNextTheme();
 						} //F11
 					}
 					if ( event.key.keysym.sym == SDLK_F12 ) {
