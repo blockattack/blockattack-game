@@ -44,19 +44,32 @@ void ButtonGfx::setSurfaces() {
 	}
 }
 
-sago::SagoTextField* ButtonGfx::getLabel(const std::string& text) {
-	const auto& theLabel = labels.find(text);
-	if (theLabel != labels.end()) {
-		return labels[text].get();
+sago::SagoTextField* ButtonGfx::getLabel(const std::string& text, bool marked) {
+	if (!marked) {
+		const auto& theLabel = labels.find(text);
+		if (theLabel != labels.end()) {
+			return labels[text].get();
+		}
+	}
+	const auto& theLabel = labels_marked.find(text);
+	if (theLabel != labels_marked.end()) {
+		return labels_marked[text].get();
 	}
 	std::shared_ptr<sago::SagoTextField> newField = std::make_shared<sago::SagoTextField>();
 	newField->SetHolder(&globalData.spriteHolder->GetDataHolder());
 	newField->SetFont("freeserif");
 	newField->SetFontSize(30);
 	newField->SetOutline(1, {64,64,64,255});
+	if (marked) {
+		newField->SetOutline(3, {32,32,32,255});
+	}
 	newField->SetText(text);
-	labels[text] = newField;
-	return labels[text].get();
+	if (!marked) {
+		labels[text] = newField;
+		return labels[text].get();
+	}
+	labels_marked[text] = newField;
+	return labels_marked[text].get();
 }
 
 Button::Button(const Button& b) : action{b.action}, popOnRun{b.popOnRun}, label{b.label}, marked{b.marked} {
@@ -102,7 +115,7 @@ static void drawToScreen(const Button& b) {
 		globalData.spriteHolder->GetSprite(menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 
-	standardButton.getLabel(b.getLabel())->Draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2,
+	standardButton.getLabel(b.getLabel(), b.marked)->Draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2,
 	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
 }
 
@@ -120,7 +133,7 @@ void Menu::drawSelf(SDL_Renderer* target) {
 		drawToScreen(*b);
 	}
 	drawToScreen(exit);
-	standardButton.getLabel(title)->Draw(target, 50, 50);
+	standardButton.getLabel(title, false)->Draw(target, 50, 50);
 }
 
 
