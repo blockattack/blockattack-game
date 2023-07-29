@@ -123,8 +123,8 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	bricks[5] = holder.GetSprite("block_yellow");
 	bricks[6] = holder.GetSprite("block_grey");
 	bomb = holder.GetSprite("block_bomb");
-	backgroundImage = holder.GetSprite("background");
-	backgroundSixteenNineImage = holder.GetSprite("background_sixteen_nine");
+	//backgroundImage = holder.GetSprite("background");
+	//backgroundSixteenNineImage = holder.GetSprite("background_sixteen_nine");
 	globalData.bHighScore = holder.GetSprite("b_highscore");
 	globalData.bBack = holder.GetSprite("b_blank");
 	bForward = holder.GetSprite("b_forward");
@@ -271,12 +271,23 @@ static bool logicalRenderer = false;
 
 void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
-	if ( (double)globalData.xsize/globalData.ysize > 1.5) {
-		backgroundSixteenNineImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
+	sago::SagoSprite background = globalData.spriteHolder->GetSprite(globalData.theme.background.background_sprite);
+	if ( (double)globalData.xsize/globalData.ysize > 1.5 && globalData.theme.background.background_sprite_16x9.length()) {
+		background = globalData.spriteHolder->GetSprite(globalData.theme.background.background_sprite_16x9);
 	}
-	else {
-		backgroundImage.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
+	if (globalData.theme.background.background_scale == ImgScale::Tile) {
+		int nextX = 0;
+		while (nextX < globalData.xsize) {
+			int nextY = 0;
+			while (nextY < globalData.ysize) {
+				background.Draw(target, SDL_GetTicks(), nextX, nextY);
+				nextY += background.GetHeight();
+			}
+			nextX += background.GetWidth();
+		}
+		return;
 	}
+	background.DrawScaled(target, SDL_GetTicks(), 0, 0, globalData.xsize, globalData.ysize);
 }
 
 /**
@@ -1182,6 +1193,7 @@ int main(int argc, char* argv[]) {
 			std::cout << "Renderer: " << info.name << "\n";
 		}
 		globalData.screen = renderer;
+		globalData.theme = getTheme(0);
 		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
 

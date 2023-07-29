@@ -10,5 +10,14 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 }
+,"background_sample" :  {
+        "texture" : "alt_gfx/background",
+        "topx" : 0,
+        "topy" : 0,
+        "height" : 150,
+        "width" : 150,
+        "number_of_frames" : 1,
+        "frame_time" : 1
+}
 
 }

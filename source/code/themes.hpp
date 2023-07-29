@@ -25,9 +25,22 @@ https://www.blockattack.net
 
 #include <string>
 
+enum class ImgScale { Stretch,
+	                   Tile,
+	                   Resize,
+	                   Cut };
+
+struct BackGroundData {
+	std::string background_name = "";
+	std::string background_sprite = "";
+	std::string background_sprite_16x9 = "";
+	ImgScale background_scale = ImgScale::Stretch;
+};
+
 struct Theme {
 	std::string theme_name = "standard";
 	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
+	BackGroundData background;
 };
 
 /**
@@ -35,3 +48,10 @@ struct Theme {
  * @return A copy of a theme
  */
 Theme getNextTheme();
+
+/**
+ * @brief getTheme returns a specific theme
+ * @param theme_number
+ * @return
+ */
+Theme getTheme(size_t theme_number);
