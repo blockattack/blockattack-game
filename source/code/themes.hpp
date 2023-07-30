@@ -34,6 +34,8 @@ struct BackGroundData {
 	std::string background_name = "";
 	std::string background_sprite = "";
 	std::string background_sprite_16x9 = "";
+	int tileMoveSpeedX = 0; //Move the tiled background every X milliseconds. 0 disables it.
+	int tileMoveSpeedY = 0; //Move the tiled background every X milliseconds. 0 disables it.
 	ImgScale background_scale = ImgScale::Stretch;
 };
 

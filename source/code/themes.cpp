@@ -44,6 +44,8 @@ static void InitBackGroundData() {
 	alt_background.background_sprite = "background_sample";
 	alt_background.background_sprite_16x9 = "";
 	alt_background.background_scale = ImgScale::Tile;
+	alt_background.tileMoveSpeedX = 50;
+	alt_background.tileMoveSpeedY = 100;
 	background_data["alt_background"] = alt_background;
 }
 
