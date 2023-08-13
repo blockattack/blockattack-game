@@ -82,7 +82,6 @@ static sago::SagoSprite garbageFill;
 static sago::SagoSprite garbageM;
 static sago::SagoSprite garbageML;
 static sago::SagoSprite garbageMR;
-static sago::SagoSprite smiley[4];
 static sago::SagoSprite garbageGM;
 static sago::SagoSprite garbageGML;
 static sago::SagoSprite garbageGMR;

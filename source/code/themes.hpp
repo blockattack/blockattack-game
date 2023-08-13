@@ -24,6 +24,7 @@ https://www.blockattack.net
 #pragma once
 
 #include <string>
+#include <vector>
 
 enum class ImgScale { Stretch,
 	                   Tile,
@@ -39,10 +40,16 @@ struct BackGroundData {
 	ImgScale background_scale = ImgScale::Stretch;
 };
 
+struct DecorationData {
+	std::string name = "smilies";
+	std::vector<std::string> decoration_sprites = {"smileys0", "smileys1", "smileys2", "smileys3"};
+};
+
 struct Theme {
 	std::string theme_name = "standard";
 	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
 	BackGroundData background;
+	DecorationData decoration;
 };
 
 /**

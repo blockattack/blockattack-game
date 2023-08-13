@@ -169,10 +169,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	garbageGM = holder.GetSprite("garbage_gm");
 	garbageGML = holder.GetSprite("garbage_gml");
 	garbageGMR = holder.GetSprite("garbage_gmr");
-	smiley[0] = holder.GetSprite("smileys0");
-	smiley[1] = holder.GetSprite("smileys1");
-	smiley[2] = holder.GetSprite("smileys2");
-	smiley[3] = holder.GetSprite("smileys3");
 	transCover = holder.GetSprite("trans_cover");
 	bExit = holder.GetSprite("b_exit");
 	bSkip = holder.GetSprite("b_blank");

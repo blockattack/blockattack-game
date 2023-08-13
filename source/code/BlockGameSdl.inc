@@ -383,7 +383,10 @@ private:
 					under = board[j][i-1];
 				}
 				if (((left != number)&&(right == number)&&(over != number)&&(under == number))&&(garbageSize>0)) {
-					DrawImgBoardBounded(smiley[board[j][i]%4],  2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
+					if (globalData.theme.decoration.decoration_sprites.size()) {
+						const sago::SagoSprite& sprite = globalData.spriteHolder->GetSprite(globalData.theme.decoration.decoration_sprites[board[j][i]%globalData.theme.decoration.decoration_sprites.size()]);
+						DrawImgBoardBounded(sprite,  2*bsize, 12*bsize-i*bsize-pixels+(bsize/2)*garbageSize);
+					}
 				}
 				if (!((left != number)&&(right == number)&&(over == number)&&(under == number))) { //not in garbage
 					garbageSize=0;
