@@ -23,14 +23,34 @@ https://www.blockattack.net
 
 
 #include "themes.hpp"
-
+#include "sago/SagoMisc.hpp"
 #include <vector>
 #include <unordered_map>
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
+
+void to_json(json& j, const BackGroundData& p) {
+	j = json{ {"background_name", p.background_name}, {"background_sprite", p.background_sprite} };
+}
+
+void to_json(json& j, const Theme& p) {
+	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background_name}, {"decoration_name", p.decoration_name} };
+}
+
+void to_json(json& j, const ThemeFileData& p) {
+	j = json{ {"background_data", p.background_data}, {"themes", p.themes} };
+}
+
+
+
 
 static std::vector<Theme> themes(1);
 static std::unordered_map<std::string, BackGroundData> background_data;
 static bool initialized = false;
 static size_t current_theme = 0;
+
 
 static void InitBackGroundData() {
 	BackGroundData standard;
@@ -50,10 +70,23 @@ static void InitBackGroundData() {
 }
 
 static void FillMissingFields(Theme &theme) {
-	if (theme.background.background_name.empty()) {
+	if (theme.background_name.empty()) {
 		//If the theme does not define a background then use the standard.
-		theme.background = background_data["standard"];
+		theme.background_name = "standard";
 	}
+	theme.background = background_data[theme.background_name];
+}
+
+
+void DumpThemeData() {
+	ThemeFileData tfd;
+	tfd.themes = themes;
+	for (auto &pair : background_data) {
+		tfd.background_data.push_back(pair.second);
+	}
+	json j = tfd;
+	std::string s = j.dump(4);
+	sago::WriteFileContent("themes_dump.json", s);
 }
 
 void InitThemes() {
@@ -66,9 +99,10 @@ void InitThemes() {
 	Theme snow;
 	snow.theme_name = "snow";
 	snow.back_board = "back_board_sample_snow";
-	snow.background = background_data["alt_background"];
+	snow.background_name = "alt_background";
 	FillMissingFields(snow);
 	themes.push_back(snow);
+	DumpThemeData();
 }
 
 Theme getNextTheme() {

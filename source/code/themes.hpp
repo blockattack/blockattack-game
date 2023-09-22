@@ -27,9 +27,9 @@ https://www.blockattack.net
 #include <vector>
 
 enum class ImgScale { Stretch,
-	                   Tile,
-	                   Resize,
-	                   Cut };
+                      Tile,
+                      Resize,
+                      Cut };
 
 struct BackGroundData {
 	std::string background_name = "";
@@ -40,6 +40,7 @@ struct BackGroundData {
 	ImgScale background_scale = ImgScale::Stretch;
 };
 
+
 struct DecorationData {
 	std::string name = "smilies";
 	std::vector<std::string> decoration_sprites = {"smileys0", "smileys1", "smileys2", "smileys3"};
@@ -48,8 +49,15 @@ struct DecorationData {
 struct Theme {
 	std::string theme_name = "standard";
 	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
-	BackGroundData background;
+	std::string background_name = "standard";
+	BackGroundData background;  //Should not be serialized. Extract form background_name
+	std::string decoration_name = "smilies";
 	DecorationData decoration;
+};
+
+struct ThemeFileData {
+	std::vector<BackGroundData> background_data;
+	std::vector<Theme> themes;
 };
 
 /**
