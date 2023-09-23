@@ -32,7 +32,7 @@ enum class ImgScale { Stretch,
 					Cut };
 
 struct BackGroundData {
-	std::string background_name = "";
+	std::string name = "standard";
 	std::string background_sprite = "";
 	std::string background_sprite_16x9 = "";
 	int tileMoveSpeedX = 0; //Move the tiled background every X milliseconds. 0 disables it.
@@ -49,9 +49,7 @@ struct DecorationData {
 struct Theme {
 	std::string theme_name = "standard";
 	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
-	std::string background_name = "standard";
-	BackGroundData background;  //Should not be serialized. Extract form background_name
-	std::string decoration_name = "smilies";
+	BackGroundData background;  //Serialized as background.background_name
 	DecorationData decoration;
 };
 

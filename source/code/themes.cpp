@@ -32,11 +32,11 @@ using json = nlohmann::json;
 
 
 void to_json(json& j, const BackGroundData& p) {
-	j = json{ {"background_name", p.background_name}, {"background_sprite", p.background_sprite} };
+	j = json{ {"background_name", p.name}, {"background_sprite", p.background_sprite} };
 }
 
 void to_json(json& j, const Theme& p) {
-	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background_name}, {"decoration_name", p.decoration_name} };
+	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background.name}, {"decoration_name", p.decoration.name} };
 }
 
 void to_json(json& j, const ThemeFileData& p) {
@@ -54,13 +54,13 @@ static size_t current_theme = 0;
 
 static void InitBackGroundData() {
 	BackGroundData standard;
-	standard.background_name = "standard";
+	standard.name = "standard";
 	standard.background_sprite = "background";
 	standard.background_sprite_16x9 = "background_sixteen_nine";
 	standard.background_scale = ImgScale::Stretch;
 	background_data["standard"] = standard;
 	BackGroundData alt_background;
-	alt_background.background_name = "alt_background";
+	alt_background.name = "alt_background";
 	alt_background.background_sprite = "background_sample";
 	alt_background.background_sprite_16x9 = "";
 	alt_background.background_scale = ImgScale::Tile;
@@ -70,11 +70,11 @@ static void InitBackGroundData() {
 }
 
 static void FillMissingFields(Theme& theme) {
-	if (theme.background_name.empty()) {
+	if (theme.background.name.empty()) {
 		//If the theme does not define a background then use the standard.
-		theme.background_name = "standard";
+		theme.background.name = "standard";
 	}
-	theme.background = background_data[theme.background_name];
+	theme.background = background_data[theme.background.name];
 }
 
 
@@ -99,7 +99,7 @@ void InitThemes() {
 	Theme snow;
 	snow.theme_name = "snow";
 	snow.back_board = "back_board_sample_snow";
-	snow.background_name = "alt_background";
+	snow.background.name = "alt_background";
 	FillMissingFields(snow);
 	themes.push_back(snow);
 	DumpThemeData();
