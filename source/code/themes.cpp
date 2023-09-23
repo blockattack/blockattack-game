@@ -69,7 +69,7 @@ static void InitBackGroundData() {
 	background_data["alt_background"] = alt_background;
 }
 
-static void FillMissingFields(Theme &theme) {
+static void FillMissingFields(Theme& theme) {
 	if (theme.background_name.empty()) {
 		//If the theme does not define a background then use the standard.
 		theme.background_name = "standard";
@@ -81,7 +81,7 @@ static void FillMissingFields(Theme &theme) {
 void DumpThemeData() {
 	ThemeFileData tfd;
 	tfd.themes = themes;
-	for (auto &pair : background_data) {
+	for (auto& pair : background_data) {
 		tfd.background_data.push_back(pair.second);
 	}
 	json j = tfd;
