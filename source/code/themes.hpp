@@ -27,9 +27,9 @@ https://www.blockattack.net
 #include <vector>
 
 enum class ImgScale { Stretch,
-                      Tile,
-                      Resize,
-                      Cut };
+					Tile,
+					Resize,
+					Cut };
 
 struct BackGroundData {
 	std::string background_name = "";
