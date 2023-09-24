@@ -55,6 +55,7 @@ struct Theme {
 
 struct ThemeFileData {
 	std::vector<BackGroundData> background_data;
+	std::vector<DecorationData> decoration_data;
 	std::vector<Theme> themes;
 };
 
