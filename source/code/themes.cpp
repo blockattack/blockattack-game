@@ -29,6 +29,7 @@ https://www.blockattack.net
 #include "nlohmann/json.hpp"
 #include <iostream>
 #include "global.hpp"
+#include <boost/algorithm/string/predicate.hpp>
 
 using json = nlohmann::json;
 
@@ -138,7 +139,7 @@ static void FillMissingFields(Theme& theme) {
 	theme.background = background_data[theme.background.name];
 }
 
-static void ReadThemeDataFromFile(const char* filename) {
+static void ReadThemeDataFromFile(const std::string& filename) {
 	if (globalData.verboseLevel) {
 		std::cout << "Reading theme data from " << filename << "\n";
 	}
@@ -196,7 +197,12 @@ void InitThemes() {
 	InitBackGroundData();
 	themes.resize(1);  //Add the default theme
 	FillMissingFields(themes[0]);
-	ReadThemeDataFromFile("themes/alt_theme.json");
+	const std::vector<std::string>& theme_files = sago::GetFileList("themes");
+	for (const std::string& filename : theme_files) {
+		if (boost::algorithm::ends_with(filename,".json")) {
+			ReadThemeDataFromFile("themes/"+filename);
+		}
+	}
 	DumpThemeData();
 }
 
