@@ -435,6 +435,30 @@ static void PlayerConfigMenu() {
 	RunGameState(pcm);
 }
 
+static void switchTheme() {
+	globalData.theme = getNextTheme();
+}
+
+class ThemesMenu : public Menu {
+public:
+	ThemesMenu(SDL_Renderer* screen, const std::string& title, bool submenu) : Menu(screen, title, submenu) {
+
+	}
+
+	void Draw(SDL_Renderer* target) override {
+		Menu::Draw(target);
+	}
+};
+
+static void OpenThemesMenu() {
+	ThemesMenu tm(globalData.screen, _("Themes"), true);
+	Button bSwitchTheme;
+	bSwitchTheme.setLabel(_("Switch theme"));
+	bSwitchTheme.setAction(&switchTheme);
+	tm.addButton(&bSwitchTheme);
+	RunGameState(tm);
+}
+
 static void ConfigureMenu() {
 	Menu cm(globalData.screen,_("Configuration"),true);
 	AlwaysSoftwareRenderButton bSoftware;
@@ -444,6 +468,9 @@ static void ConfigureMenu() {
 	Button bPlayerConfig;
 	bPlayerConfig.setLabel(_("Player configuration") );
 	bPlayerConfig.setAction(PlayerConfigMenu);
+	Button bThemes;
+	bThemes.setLabel(_("Themes"));
+	bThemes.setAction(OpenThemesMenu);
 	SetAlwaysSoftwareLabel(&bSoftware);
 	SetMusicLabel(&bMusic);
 	SetSoundLabel(&bSound);
@@ -453,6 +480,7 @@ static void ConfigureMenu() {
 	cm.addButton(&bSoftware);
 	cm.addButton(&buttonFullscreen);
 	cm.addButton(&bPlayerConfig);
+	cm.addButton(&bThemes);
 	RunGameState(cm);
 }
 
