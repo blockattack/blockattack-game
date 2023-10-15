@@ -24,7 +24,12 @@ https://blockattack.net
 #include "BlockGame.hpp"
 #include "global.hpp"
 #include "sago/SagoTextField.hpp"
-#include "mainVars.inc"
+#include "BallManager.hpp"
+#include "puzzlehandler.hpp"
+
+extern BallManager theBallManager;
+
+extern ExplosionManager theExplosionManager;
 
 
 static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
@@ -133,7 +138,7 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, applause.get(), 0);
+		Mix_PlayChannel(1, globalData.applause.get(), 0);
 	}
 
 	void DrawEvent() const override {
@@ -144,19 +149,19 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(0, boing.get(), 0);
+		Mix_PlayChannel(0, globalData.boing.get(), 0);
 	}
 
 	void LongChainDoneEvent() const  override {
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, applause.get(), 0);
+		Mix_PlayChannel(1, globalData.applause.get(), 0);
 	}
 
 	void TimeTrialEndEvent() const  override {
 		if (!globalData.NoSound && globalData.SoundEnabled) {
-			Mix_PlayChannel(1,counterFinalChunk.get(),0);
+			Mix_PlayChannel(1,globalData.counterFinalChunk.get(),0);
 		}
 	}
 
@@ -164,7 +169,7 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, applause.get(), 0);
+		Mix_PlayChannel(1, globalData.applause.get(), 0);
 	}
 private:
 
@@ -248,33 +253,33 @@ private:
 
 		if (size_y == 1) {
 			//single line
-			garbageML.Draw(globalData.screen, draw_time, 0, 0);
+			globalData.garbageML.Draw(globalData.screen, draw_time, 0, 0);
 			for (int i = 1; i < size_x-1; ++i) {
-				garbageM.Draw(globalData.screen, draw_time, i*bsize, 0);
+				globalData.garbageM.Draw(globalData.screen, draw_time, i*bsize, 0);
 			}
-			garbageMR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
+			globalData.garbageMR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
 		}
 		if (size_y > 1) {
 			// Top line
-			garbageTL.Draw(globalData.screen, draw_time, 0, 0);
+			globalData.garbageTL.Draw(globalData.screen, draw_time, 0, 0);
 			for (int i = 1; i < size_x-1; ++i) {
-				garbageT.Draw(globalData.screen, draw_time, i*bsize, 0);
+				globalData.garbageT.Draw(globalData.screen, draw_time, i*bsize, 0);
 			}
-			garbageTR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
+			globalData.garbageTR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, 0);
 			// Middle lines (if any)
 			for (int j=1; j < size_y-1; ++j) {
-				garbageL.Draw(globalData.screen, draw_time, 0, j*bsize);
+				globalData.garbageL.Draw(globalData.screen, draw_time, 0, j*bsize);
 				for (int i = 1; i < size_x-1; ++i) {
-					garbageFill.Draw(globalData.screen, draw_time, i*bsize, j*bsize);
+					globalData.garbageFill.Draw(globalData.screen, draw_time, i*bsize, j*bsize);
 				}
-				garbageR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, j*bsize);
+				globalData.garbageR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, j*bsize);
 			}
 			//Buttom line
-			garbageBL.Draw(globalData.screen, draw_time, 0, (size_y-1)*bsize);
+			globalData.garbageBL.Draw(globalData.screen, draw_time, 0, (size_y-1)*bsize);
 			for (int i = 1; i < size_x-1; ++i) {
-				garbageB.Draw(globalData.screen, draw_time, i*bsize, (size_y-1)*bsize);
+				globalData.garbageB.Draw(globalData.screen, draw_time, i*bsize, (size_y-1)*bsize);
 			}
-			garbageBR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, (size_y-1)*bsize);
+			globalData.garbageBR.Draw(globalData.screen, draw_time, (size_x-1)*bsize, (size_y-1)*bsize);
 		}
 
 		SDL_SetRenderTarget( globalData.screen, nullptr );
@@ -295,13 +300,13 @@ private:
 
 		for (int j=0; j < size_y; ++j) {
 			if (j==0) {
-				garbageGML.Draw(globalData.screen, draw_time, j*bsize, 0);
+				globalData.garbageGML.Draw(globalData.screen, draw_time, j*bsize, 0);
 			}
 			else if (j==5) {
-				garbageGMR.Draw(globalData.screen, draw_time, j*bsize, 0);
+				globalData.garbageGMR.Draw(globalData.screen, draw_time, j*bsize, 0);
 			}
 			else {
-				garbageGM.Draw(globalData.screen, draw_time, j*bsize, 0);
+				globalData.garbageGM.Draw(globalData.screen, draw_time, j*bsize, 0);
 			}
 		}
 
@@ -334,12 +339,12 @@ private:
 			for (int j=0; j<6; ++j) {
 				int basicBrick = board[j][i]%10; //The basic brick, stored on the least significant digit
 				if ((basicBrick > -1) && (basicBrick < 7) && ((board[j][i]/1000000)%10==0)) {
-					DrawImgBoardBounded(bricks[basicBrick],  j*bsize, bsize*12-i*bsize-pixels);
+					DrawImgBoardBounded(globalData.bricks[basicBrick],  j*bsize, bsize*12-i*bsize-pixels);
 					if ((board[j][i]/BLOCKWAIT)%10==1) {
-						DrawImgBoard(bomb,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoard(globalData.bomb,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((board[j][i]/BLOCKHANG)%10==1) {
-						DrawImgBoardBounded(ready,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(globalData.ready,  j*bsize, bsize*12-i*bsize-pixels);
 					}
 
 				}
@@ -399,7 +404,7 @@ private:
 		}
 		for (int i=0; i<6; i++) {
 			if (board[i][0]!=-1) {
-				DrawImgBoardBounded(transCover,  i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
+				DrawImgBoardBounded(globalData.transCover,  i*bsize, 12*bsize-pixels);    //Make the appering blocks transperant
 			}
 		}
 
@@ -407,7 +412,7 @@ private:
 public:
 	//Draws everything
 	void DoPaintJob() {
-		DrawIMG(boardBackBack,globalData.screen,this->GetTopX()-60,this->GetTopY()-68);
+		DrawIMG(globalData.boardBackBack,globalData.screen,this->GetTopX()-60,this->GetTopY()-68);
 
 		this->scoreLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+148);
 		this->timeLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197);
@@ -417,7 +422,7 @@ public:
 
 		PaintBricks();
 		if (stageClear) {
-			DrawImgBoard(blackLine,  0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
+			DrawImgBoard(globalData.blackLine,  0, bsize*(12+2)+bsize*(stageClearLimit-linesCleared)-pixels-1);
 		}
 		if (puzzleMode&&(!bGameOver)) {
 			//We need to write nr. of moves left!
@@ -429,16 +434,16 @@ public:
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
-			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
-			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, buttonRetry);
+			DrawImgBoard(globalData.bRetry, globalData.cordRetryButton.x, globalData.cordRetryButton.y);
+			PrintTextCenteredBoard(globalData.cordRetryButton.x, globalData.cordRetryButton.y, buttonRetry);
 			if (getLevel()<PuzzleGetNumberOfPuzzles()-1) {
 				if (hasWonTheGame) {
-					DrawImgBoard(globalData.bNext, cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonNext);
+					DrawImgBoard(globalData.bNext, globalData.cordNextButton.x, globalData.cordNextButton.y);
+					PrintTextCenteredBoard(globalData.cordNextButton.x, globalData.cordNextButton.y, buttonNext);
 				}
 				else {
-					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonSkip);
+					DrawImgBoard(globalData.bSkip, globalData.cordNextButton.x, globalData.cordNextButton.y);
+					PrintTextCenteredBoard(globalData.cordNextButton.x, globalData.cordNextButton.y, buttonSkip);
 				}
 			}
 			else {
@@ -449,16 +454,16 @@ public:
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
-			DrawImgBoard(bRetry, cordRetryButton.x, cordRetryButton.y);
-			PrintTextCenteredBoard(cordRetryButton.x, cordRetryButton.y, buttonRetry);
+			DrawImgBoard(globalData.bRetry, globalData.cordRetryButton.x, globalData.cordRetryButton.y);
+			PrintTextCenteredBoard(globalData.cordRetryButton.x, globalData.cordRetryButton.y, buttonRetry);
 			if (getLevel()<50-1) {
 				if (hasWonTheGame) {
-					DrawImgBoard(globalData.bNext, cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonNext);
+					DrawImgBoard(globalData.bNext, globalData.cordNextButton.x, globalData.cordNextButton.y);
+					PrintTextCenteredBoard(globalData.cordNextButton.x, globalData.cordNextButton.y, buttonNext);
 				}
 				else {
-					DrawImgBoard(bSkip,cordNextButton.x, cordNextButton.y);
-					PrintTextCenteredBoard(cordNextButton.x, cordNextButton.y, buttonSkip);
+					DrawImgBoard(globalData.bSkip, globalData.cordNextButton.x, globalData.cordNextButton.y);
+					PrintTextCenteredBoard(globalData.cordNextButton.x, globalData.cordNextButton.y, buttonSkip);
 				}
 			}
 			else {
@@ -490,24 +495,24 @@ public:
 				DrawImgBoard(globalData.spriteHolder->GetSprite("touchcursor"),mx*bsize, 11*bsize-my*bsize-pixels);
 			}
 			else {
-				DrawImgBoard(cursor,cursorx*bsize,11*bsize-cursory*bsize-pixels);
+				DrawImgBoard(globalData.cursor,cursorx*bsize,11*bsize-cursory*bsize-pixels);
 			}
 		}
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
 			if ( (currentCounter!=lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
-				Mix_PlayChannel(1, counterChunk.get(), 0);
+				Mix_PlayChannel(1, globalData.counterChunk.get(), 0);
 			}
 			lastCounter = currentCounter;
 			switch (currentCounter) {
 			case 2:
-				DrawImgBoard(counter[2],  2*bsize, 5*bsize);
+				DrawImgBoard(globalData.counter[2],  2*bsize, 5*bsize);
 				break;
 			case 1:
-				DrawImgBoard(counter[1],  2*bsize, 5*bsize);
+				DrawImgBoard(globalData.counter[1],  2*bsize, 5*bsize);
 				break;
 			case 0:
-				DrawImgBoard(counter[0],  2*bsize, 5*bsize);
+				DrawImgBoard(globalData.counter[0],  2*bsize, 5*bsize);
 				break;
 			default:
 				break;
@@ -518,14 +523,14 @@ public:
 				int currentCounter = (ticks-(int)gameStartedAt)/1000;
 				if (currentCounter!=lastCounter) {
 					if (currentCounter>115 && currentCounter<120) {
-						Mix_PlayChannel(1, counterChunk.get(), 0);
+						Mix_PlayChannel(1, globalData.counterChunk.get(), 0);
 					}
 				}
 				lastCounter = currentCounter;
 			}
 			else {
 				if ( (0==lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
-					Mix_PlayChannel(1, counterFinalChunk.get(), 0);
+					Mix_PlayChannel(1, globalData.counterFinalChunk.get(), 0);
 				}
 				lastCounter = -1;
 			}
@@ -533,14 +538,14 @@ public:
 
 		if (bGameOver) {
 			if (hasWonTheGame) {
-				tbWinner.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+				globalData.tbWinner.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 			}
 			else {
 				if (bDraw) {
-					tbDraw.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+					globalData.tbDraw.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 				}
 				else {
-					tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+					globalData.tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 				}
 			}
 		}

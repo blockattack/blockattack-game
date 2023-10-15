@@ -27,7 +27,6 @@ https://blockattack.net
 #include "MenuSystem.h"
 #include <cmath>
 
-extern sago::SagoSprite bricks[7];
 
 /**
  * Draws bricks with a string like:
@@ -49,7 +48,7 @@ static void RenderRowOfBricks(SDL_Renderer* target, const std::string& brickStr,
 			brickChar = brickChar + 'a' - 'A';
 		}
 		if (brickChar >= 'a' &&  brickChar <= 'g') {
-			bricks[brickChar - 'a'].Draw(target, tick, x+i*50, y);
+			globalData.bricks[brickChar - 'a'].Draw(target, tick, x+i*50, y);
 			if (bomb) {
 				globalData.spriteHolder->GetSprite("block_bomb").Draw(target, tick, x+i*50, y);
 			}

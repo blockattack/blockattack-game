@@ -31,6 +31,7 @@ http://blockattack.net
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
 #include <fmt/core.h>
+#include "BlockGameSdl.inc"
 
 
 #if 0
@@ -440,13 +441,16 @@ static void switchTheme() {
 }
 
 class ThemesMenu : public Menu {
+private:
+	std::shared_ptr<BlockGameSdl> game;
 public:
 	ThemesMenu(SDL_Renderer* screen, const std::string& title, bool submenu) : Menu(screen, title, submenu) {
-
+		game = std::make_shared<BlockGameSdl>(1024-500,100,&globalData.spriteHolder->GetDataHolder());
 	}
 
 	void Draw(SDL_Renderer* target) override {
 		Menu::Draw(target);
+		game->DoPaintJob();
 	}
 };
 

@@ -31,6 +31,7 @@ http://www.blockattack.net
 #include "TextManager.hpp"
 #include "ExplosionManager.hpp"
 #include "sago/SagoTextField.hpp"
+#include "sago/SagoTextBox.hpp"
 #include "ModInfo.hpp"
 #include "themes.hpp"
 
@@ -73,6 +74,15 @@ const int SCREEN_HIGHT = 768;
 const int BOARD_WIDTH = 300;
 const int BOARD_HEIGHT = 600;
 
+struct ButtonCords
+{
+	int x;
+	int y;
+	int xsize;
+	int ysize;
+};
+
+
 
 struct GlobalData {
 	sago::SagoSprite bHighScore;
@@ -106,6 +116,53 @@ struct GlobalData {
 	int ysize = SCREEN_HIGHT;
 	int mousex = 0;
 	int mousey = 0;
+
+	sago::SoundHandler applause;        //Applause, then the player is good
+	sago::SoundHandler boing;           //boing sound when clearing
+	sago::SoundHandler photoClick;      //clickSound
+	sago::SoundHandler counterChunk;         //When counting down
+	sago::SoundHandler counterFinalChunk;
+
+	sago::SagoSprite garbageTL;			//the Garbage Blocks
+	sago::SagoSprite garbageT;
+	sago::SagoSprite garbageTR;
+	sago::SagoSprite garbageR;
+	sago::SagoSprite garbageBR;
+	sago::SagoSprite garbageB;
+	sago::SagoSprite garbageBL;
+	sago::SagoSprite garbageL;
+	sago::SagoSprite garbageFill;
+	sago::SagoSprite garbageM;
+	sago::SagoSprite garbageML;
+	sago::SagoSprite garbageMR;
+	sago::SagoSprite garbageGM;
+	sago::SagoSprite garbageGML;
+	sago::SagoSprite garbageGMR;
+	sago::SagoSprite transCover;        //The transperant block, covers the upcomming
+	sago::SagoSprite bSkip;
+	sago::SagoSprite bRetry;
+
+	sago::SagoSprite blackLine;		//The seperator in stage clear
+	sago::SagoSprite stageBobble;	//The bobble instage clear
+	sago::SagoTextBox tbGameOver;
+	sago::SagoTextBox tbWinner;
+	sago::SagoTextBox tbDraw;
+	sago::SagoSprite iChainFrame;
+	//Animations:
+	sago::SagoSprite cursor;    //The animated cursor
+	sago::SagoSprite bomb;
+	sago::SagoSprite ready;      //Before the blocks fall
+	sago::SagoSprite explosion[4];   //Then a block explodes
+	//Animations end
+	sago::SagoSprite counter[3];    //Counts down from 3
+	sago::SagoSprite bricks[7];     //The bricks, saved in an array of pointers
+	sago::SagoSprite crossover;     //Cross the bricks that will be cleared soon
+	sago::SagoSprite balls[7];      //The balls (the small ones that jump around)
+
+	sago::SagoSprite boardBackBack;
+
+	ButtonCords cordNextButton;
+	ButtonCords cordRetryButton;
 };
 
 #include "BallManager.hpp"

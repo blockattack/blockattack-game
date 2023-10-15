@@ -51,53 +51,14 @@ static sago::SagoSprite bForward;      //The "forward" button
 //static sago::SagoSprite bConnect;
 //static sago::SagoSprite bHost;
 #endif
-static sago::SagoSprite blackLine;		//The seperator in stage clear
-static sago::SagoSprite stageBobble;	//The bobble instage clear
-SDL_Renderer *screen;        //The whole screen;
-static sago::SagoTextBox tbGameOver;
-static sago::SagoTextBox tbWinner;
-static sago::SagoTextBox tbDraw;
-static sago::SagoSprite iChainFrame;
-//Animations:
-static sago::SagoSprite cursor;    //The animated cursor
-static sago::SagoSprite bomb;
-static sago::SagoSprite ready;      //Before the blocks fall
-static sago::SagoSprite explosion[4];   //Then a block explodes
-//Animations end
-static sago::SagoSprite counter[3];    //Counts down from 3
-sago::SagoSprite bricks[7];     //The bricks, saved in an array of pointers
-static sago::SagoSprite crossover;     //Cross the bricks that will be cleared soon
-static sago::SagoSprite balls[7];      //The balls (the small ones that jump around)
 
-static sago::SagoSprite boardBackBack;
-static sago::SagoSprite garbageTL;			//the Garbage Blocks
-static sago::SagoSprite garbageT;
-static sago::SagoSprite garbageTR;
-static sago::SagoSprite garbageR;
-static sago::SagoSprite garbageBR;
-static sago::SagoSprite garbageB;
-static sago::SagoSprite garbageBL;
-static sago::SagoSprite garbageL;
-static sago::SagoSprite garbageFill;
-static sago::SagoSprite garbageM;
-static sago::SagoSprite garbageML;
-static sago::SagoSprite garbageMR;
-static sago::SagoSprite garbageGM;
-static sago::SagoSprite garbageGML;
-static sago::SagoSprite garbageGMR;
-static sago::SagoSprite transCover;        //The transperant block, covers the upcomming
-static sago::SagoSprite bSkip;
-static sago::SagoSprite bRetry;
+SDL_Renderer *screen;        //The whole screen;
+
 const int bExitSize = 100;  //height and width of the exit button
 const int bExitOffset = 140; //pixels from the buttom right corner to the top left of the exit button
 
 static sago::MusicHandler bgMusic;         //backgroundMusic
 static sago::MusicHandler highbeatMusic;   //Background music with higher beat
-static sago::SoundHandler boing;           //boing sound when clearing
-static sago::SoundHandler applause;        //Applause, then the player is good
-static sago::SoundHandler photoClick;      //clickSound
-static sago::SoundHandler counterChunk;         //When counting down
-static sago::SoundHandler counterFinalChunk;
 
 static bool bMouseUp;              //true if the mouse(1) is unpressed
 static bool bMouseUp2;             //true if the mouse(2) is unpressed
@@ -164,29 +125,6 @@ control keySettings[3];	//array to hold the controls (default and two custom)
 static const int buttonXsize = 120;
 static const int buttonYsize = 40;
 
-struct ButtonCords
-{
-	int x;
-	int y;
-	int xsize;
-	int ysize;
-};
-
-ButtonCords cordNextButton =
-{
-	cordNextButton.x = 3*bsize+(3*bsize-buttonXsize)/2,
-	cordNextButton.y = 10*bsize,
-	cordNextButton.xsize = buttonXsize,
-	cordNextButton.ysize = buttonYsize
-};
-
-ButtonCords cordRetryButton =
-{
-	cordRetryButton.x = (3*bsize-buttonXsize)/2,
-	cordRetryButton.y = 10*bsize,
-	cordRetryButton.xsize = buttonXsize,
-	cordRetryButton.ysize = buttonYsize
-};
 
 static sago::SagoTextField player1name;
 static sago::SagoTextField player2name;

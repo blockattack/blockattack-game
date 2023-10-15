@@ -115,65 +115,65 @@ static void setGameOverFont(const sago::SagoDataHolder* holder, sago::SagoTextBo
 
 //Load all image files to memory
 static int InitImages(sago::SagoSpriteHolder& holder) {
-	bricks[0] = holder.GetSprite("block_blue");
-	bricks[1] = holder.GetSprite("block_green");
-	bricks[2] = holder.GetSprite("block_purple");
-	bricks[3] = holder.GetSprite("block_red");
-	bricks[4] = holder.GetSprite("block_turkish");
-	bricks[5] = holder.GetSprite("block_yellow");
-	bricks[6] = holder.GetSprite("block_grey");
-	bomb = holder.GetSprite("block_bomb");
+	globalData.bricks[0] = holder.GetSprite("block_blue");
+	globalData.bricks[1] = holder.GetSprite("block_green");
+	globalData.bricks[2] = holder.GetSprite("block_purple");
+	globalData.bricks[3] = holder.GetSprite("block_red");
+	globalData.bricks[4] = holder.GetSprite("block_turkish");
+	globalData.bricks[5] = holder.GetSprite("block_yellow");
+	globalData.bricks[6] = holder.GetSprite("block_grey");
+	globalData.bomb = holder.GetSprite("block_bomb");
 	globalData.bHighScore = holder.GetSprite("b_highscore");
 	globalData.bBack = holder.GetSprite("b_blank");
 	bForward = holder.GetSprite("b_forward");
-	blackLine = holder.GetSprite("black_line");
-	stageBobble = holder.GetSprite("i_stage_clear_limit");
-	crossover = holder.GetSprite("crossover");
-	balls[0] = holder.GetSprite("ball_blue");
-	balls[1] = holder.GetSprite("ball_green");
-	balls[2] = holder.GetSprite("ball_purple");
-	balls[3] = holder.GetSprite("ball_red");
-	balls[4] = holder.GetSprite("ball_turkish");
-	balls[5] = holder.GetSprite("ball_yellow");
-	balls[6] = holder.GetSprite("ball_gray");
-	cursor = holder.GetSprite("cursor");
-	ready = holder.GetSprite("block_ready");
-	explosion[0] = holder.GetSprite("explosion0");
-	explosion[1] = holder.GetSprite("explosion1");
-	explosion[2] = holder.GetSprite("explosion2");
-	explosion[3] = holder.GetSprite("explosion3");
-	counter[0] = holder.GetSprite("counter_1");
-	counter[1] = holder.GetSprite("counter_2");
-	counter[2] = holder.GetSprite("counter_3");
-	setGameOverFont(&holder.GetDataHolder(),tbGameOver, _("GAME OVER"));
-	setGameOverFont(&holder.GetDataHolder(),tbWinner, _("WINNER"));
-	setGameOverFont(&holder.GetDataHolder(),tbDraw, _("DRAW"));
-	iChainFrame = holder.GetSprite("chain_frame");
+	globalData.blackLine = holder.GetSprite("black_line");
+	globalData.stageBobble = holder.GetSprite("i_stage_clear_limit");
+	globalData.crossover = holder.GetSprite("crossover");
+	globalData.balls[0] = holder.GetSprite("ball_blue");
+	globalData.balls[1] = holder.GetSprite("ball_green");
+	globalData.balls[2] = holder.GetSprite("ball_purple");
+	globalData.balls[3] = holder.GetSprite("ball_red");
+	globalData.balls[4] = holder.GetSprite("ball_turkish");
+	globalData.balls[5] = holder.GetSprite("ball_yellow");
+	globalData.balls[6] = holder.GetSprite("ball_gray");
+	globalData.cursor = holder.GetSprite("cursor");
+	globalData.ready = holder.GetSprite("block_ready");
+	globalData.explosion[0] = holder.GetSprite("explosion0");
+	globalData.explosion[1] = holder.GetSprite("explosion1");
+	globalData.explosion[2] = holder.GetSprite("explosion2");
+	globalData.explosion[3] = holder.GetSprite("explosion3");
+	globalData.counter[0] = holder.GetSprite("counter_1");
+	globalData.counter[1] = holder.GetSprite("counter_2");
+	globalData.counter[2] = holder.GetSprite("counter_3");
+	setGameOverFont(&holder.GetDataHolder(),globalData.tbGameOver, _("GAME OVER"));
+	setGameOverFont(&holder.GetDataHolder(),globalData.tbWinner, _("WINNER"));
+	setGameOverFont(&holder.GetDataHolder(),globalData.tbDraw, _("DRAW"));
+	globalData.iChainFrame = holder.GetSprite("chain_frame");
 	globalData.iLevelCheck = holder.GetSprite("i_level_check");
 	globalData.iLevelCheckBox = holder.GetSprite("i_level_check_box");
 	globalData.iLevelCheckBoxMarked = holder.GetSprite("i_level_check_box_marked");
 	globalData.iCheckBoxArea = holder.GetSprite("i_check_box_area");
-	boardBackBack = holder.GetSprite("board_back_back");
-	garbageTL = holder.GetSprite("garbage_tl");
-	garbageT = holder.GetSprite("garbage_t");
-	garbageTR = holder.GetSprite("garbage_tr");
-	garbageR = holder.GetSprite("garbage_r");
-	garbageBR = holder.GetSprite("garbage_br");
-	garbageB = holder.GetSprite("garbage_b");
-	garbageBL = holder.GetSprite("garbage_bl");
-	garbageL = holder.GetSprite("garbage_l");
-	garbageFill = holder.GetSprite("garbage_fill");
-	garbageML = holder.GetSprite("garbage_ml");
-	garbageM = holder.GetSprite("garbage_m");
-	garbageMR = holder.GetSprite("garbage_mr");
-	garbageGM = holder.GetSprite("garbage_gm");
-	garbageGML = holder.GetSprite("garbage_gml");
-	garbageGMR = holder.GetSprite("garbage_gmr");
-	transCover = holder.GetSprite("trans_cover");
+	globalData.boardBackBack = holder.GetSprite("board_back_back");
+	globalData.garbageTL = holder.GetSprite("garbage_tl");
+	globalData.garbageT = holder.GetSprite("garbage_t");
+	globalData.garbageTR = holder.GetSprite("garbage_tr");
+	globalData.garbageR = holder.GetSprite("garbage_r");
+	globalData.garbageBR = holder.GetSprite("garbage_br");
+	globalData.garbageB = holder.GetSprite("garbage_b");
+	globalData.garbageBL = holder.GetSprite("garbage_bl");
+	globalData.garbageL = holder.GetSprite("garbage_l");
+	globalData.garbageFill = holder.GetSprite("garbage_fill");
+	globalData.garbageML = holder.GetSprite("garbage_ml");
+	globalData.garbageM = holder.GetSprite("garbage_m");
+	globalData.garbageMR = holder.GetSprite("garbage_mr");
+	globalData.garbageGM = holder.GetSprite("garbage_gm");
+	globalData.garbageGML = holder.GetSprite("garbage_gml");
+	globalData.garbageGMR = holder.GetSprite("garbage_gmr");
+	globalData.transCover = holder.GetSprite("trans_cover");
 	bExit = holder.GetSprite("b_exit");
-	bSkip = holder.GetSprite("b_blank");
+	globalData.bSkip = holder.GetSprite("b_blank");
 	globalData.bNext = holder.GetSprite("b_blank");
-	bRetry = holder.GetSprite("b_blank");
+	globalData.bRetry = holder.GetSprite("b_blank");
 	globalData.mouse = holder.GetSprite("mouse");
 
 	sagoTextSetBlueFont(player1name);
@@ -187,6 +187,17 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	sagoTextSetBlueFont(player1speed);
 	sagoTextSetBlueFont(player2speed);
 
+	globalData.cordNextButton.x = 3*bsize+(3*bsize-buttonXsize)/2;
+	globalData.cordNextButton.y = 10*bsize;
+	globalData.cordNextButton.xsize = buttonXsize;
+	globalData.cordNextButton.ysize = buttonYsize;
+
+
+	globalData.cordRetryButton.x = (3*bsize-buttonXsize)/2;
+	globalData.cordRetryButton.y = 10*bsize;
+	globalData.cordRetryButton.xsize = buttonXsize;
+	globalData.cordRetryButton.ysize = buttonYsize;
+
 
 //Loads the sound if sound present
 	if (!globalData.NoSound) {
@@ -195,20 +206,20 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 		highbeatMusic = holder.GetDataHolder().getMusicHandler("highbeat");
 		//the music... we just hope it exists, else the user won't hear anything
 		//Same goes for the sounds
-		boing = holder.GetDataHolder().getSoundHandler("pop");
-		applause = holder.GetDataHolder().getSoundHandler("applause");
-		photoClick = holder.GetDataHolder().getSoundHandler("cameraclick");
+		globalData.boing = holder.GetDataHolder().getSoundHandler("pop");
+		globalData.applause = holder.GetDataHolder().getSoundHandler("applause");
+		globalData.photoClick = holder.GetDataHolder().getSoundHandler("cameraclick");
 		globalData.typingChunk = holder.GetDataHolder().getSoundHandler("typing");
-		counterChunk = holder.GetDataHolder().getSoundHandler("counter");
-		counterFinalChunk = holder.GetDataHolder().getSoundHandler("counter_final");
+		globalData.counterChunk = holder.GetDataHolder().getSoundHandler("counter");
+		globalData.counterFinalChunk = holder.GetDataHolder().getSoundHandler("counter_final");
 		Config::getInstance()->setDefault("volume_sound", "24"); //0-128
 		int soundVolume = Config::getInstance()->getInt("volume_sound");
-		Mix_VolumeChunk(boing.get(), soundVolume);
-		Mix_VolumeChunk(applause.get(), soundVolume);
-		Mix_VolumeChunk(photoClick.get(), soundVolume);
+		Mix_VolumeChunk(globalData.boing.get(), soundVolume);
+		Mix_VolumeChunk(globalData.applause.get(), soundVolume);
+		Mix_VolumeChunk(globalData.photoClick.get(), soundVolume);
 		Mix_VolumeChunk(globalData.typingChunk.get(), soundVolume);
-		Mix_VolumeChunk(counterChunk.get(), soundVolume);
-		Mix_VolumeChunk(counterFinalChunk.get(), soundVolume);
+		Mix_VolumeChunk(globalData.counterChunk.get(), soundVolume);
+		Mix_VolumeChunk(globalData.counterFinalChunk.get(), soundVolume);
 	} //All sound has been loaded or not
 	return 0;
 } //InitImages()
@@ -314,9 +325,9 @@ void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey) {
 	}
 }
 
-static BallManager theBallManager;
+BallManager theBallManager;
 
-static ExplosionManager theExplosionManager;
+ExplosionManager theExplosionManager;
 
 
 //Here comes the Block Game object
@@ -355,7 +366,7 @@ void writeScreenShot() {
 	SDL_FreeSurface(sreenshotSurface);
 	if (!globalData.NoSound) {
 		if (globalData.SoundEnabled) {
-			Mix_PlayChannel(1, photoClick.get(), 0);
+			Mix_PlayChannel(1, globalData.photoClick.get(), 0);
 		}
 	}
 }
@@ -435,19 +446,19 @@ static sago::SagoTextField* getSmallInt(size_t number) {
 static void DrawBalls() {
 	for (size_t i = 0; i< theBallManager.ballArray.size(); i++) {
 		if (theBallManager.ballArray[i].inUse) {
-			DrawIMG(balls[theBallManager.ballArray[i].getColor()],globalData.screen,theBallManager.ballArray[i].getX(),theBallManager.ballArray[i].getY());
+			DrawIMG(globalData.balls[theBallManager.ballArray[i].getColor()], globalData.screen, theBallManager.ballArray[i].getX(), theBallManager.ballArray[i].getY());
 		} //if used
 	}
 	for (size_t i = 0; i< theExplosionManager.explosionArray.size(); i++) {
 		if (theExplosionManager.explosionArray[i].inUse) {
-			DrawIMG(explosion[theExplosionManager.explosionArray[i].getFrame()],globalData.screen,theExplosionManager.explosionArray[i].getX(),theExplosionManager.explosionArray[i].getY());
+			DrawIMG(globalData.explosion[theExplosionManager.explosionArray[i].getFrame()], globalData.screen, theExplosionManager.explosionArray[i].getX(), theExplosionManager.explosionArray[i].getY());
 		}
 	} //for
 	for (size_t i = 0; i < globalData.theTextManager.textArray.size(); ++i) {
 		if (globalData.theTextManager.textArray[i].inUse) {
 			int x = globalData.theTextManager.textArray[i].getX()-12;
 			int y = globalData.theTextManager.textArray[i].getY()-12;
-			DrawIMG(iChainFrame,globalData.screen,x,y);
+			DrawIMG(globalData.iChainFrame, globalData.screen, x, y);
 
 			getSmallInt(globalData.theTextManager.textArray[i].getText())->Draw(globalData.screen, x+12, y+7,
 			        sago::SagoTextField::Alignment::center);
@@ -548,7 +559,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY())) {
 		oldBubleX = theGame->GetTopX()+280;
 		oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
-		DrawIMG(stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
+		DrawIMG(globalData.stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
 	}
 	//player1 finnish, player2 start
 	if (true ) {
@@ -1715,18 +1726,18 @@ int runGame(Gametype gametype, int level) {
 					bMouseUp = false;
 					DrawBackground(globalData.screen);
 
-					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+cordNextButton.x)
-					        && (globalData.mousex < theGame.GetTopX()+cordNextButton.x+cordNextButton.xsize)
-					        && (globalData.mousey > theGame.GetTopY()+cordNextButton.y)
-					        && (globalData.mousey < theGame.GetTopY()+cordNextButton.y+cordNextButton.ysize)) {
+					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+globalData.cordNextButton.x)
+					        && (globalData.mousex < theGame.GetTopX()+globalData.cordNextButton.x+globalData.cordNextButton.xsize)
+					        && (globalData.mousey > theGame.GetTopY()+globalData.cordNextButton.y)
+					        && (globalData.mousey < theGame.GetTopY()+globalData.cordNextButton.y+globalData.cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
 						nextLevel(theGame, SDL_GetTicks());
 					}
 
-					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+cordRetryButton .x)
-					        &&(globalData.mousex < theGame.GetTopX()+cordRetryButton.x+cordRetryButton.xsize)
-					        &&(globalData.mousey > theGame.GetTopY()+cordRetryButton.y)
-					        &&(globalData.mousey < theGame.GetTopY()+cordRetryButton.y+cordRetryButton.ysize)) {
+					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+globalData.cordRetryButton .x)
+					        &&(globalData.mousex < theGame.GetTopX()+globalData.cordRetryButton.x+globalData.cordRetryButton.xsize)
+					        &&(globalData.mousey > theGame.GetTopY()+globalData.cordRetryButton.y)
+					        &&(globalData.mousey < theGame.GetTopY()+globalData.cordRetryButton.y+globalData.cordRetryButton.ysize)) {
 						//Clicked the retry button
 						retryLevel(theGame, SDL_GetTicks());
 					}
