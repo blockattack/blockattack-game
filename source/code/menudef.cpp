@@ -31,7 +31,7 @@ http://blockattack.net
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
 #include <fmt/core.h>
-#include "BlockGameSdl.inc"
+#include "BlockGameSdl.hpp"
 
 
 #if 0

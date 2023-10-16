@@ -336,7 +336,7 @@ ExplosionManager theExplosionManager;
 #include "sago/SagoMiscSdl2.hpp"
 #include "ScoresDisplay.hpp"
 
-#include "BlockGameSdl.inc"
+#include "BlockGameSdl.hpp"
 #include "sago/SagoMisc.hpp"
 #include "ReplayPlayer.hpp"
 #include "platform_folders.h"
