@@ -92,15 +92,11 @@ public:
 class Menu : public sago::GameStateInterface
 {
 private:
-	std::vector<Button*> buttons; //Vector holder the buttons
-	Button exit; //The exit button is special since it does not have a callback function
 	bool isSubmenu = false; //True if the menu is a submenu
 	int marked = 0; //The index of the marked button (for keyboard up/down)
 	bool running = true; //The menu is running. The menu will terminate then this is false
 	SDL_Renderer *screen = nullptr; //Pointer to the screen to draw to
 	std::string title;
-	void drawSelf(SDL_Renderer* target);        //Private function to draw the screen
-	void placeButtons(); //Rearanges the buttons to the correct place.
 	bool bMouseUp = false;
 public:
 	//numberOfItems is the expected numberOfItems for vector initialization
@@ -117,6 +113,11 @@ public:
 	void Draw(SDL_Renderer* target) override;
 	void ProcessInput(const SDL_Event& event, bool &processed) override;
 	void Update() override;
+	void drawSelf(SDL_Renderer* target);        //Private function to draw the screen
+	virtual void placeButtons(); //Rearanges the buttons to the correct place.
+
+	std::vector<Button*> buttons; //Vector holder the buttons
+	Button exit; //The exit button is special since it does not have a callback function
 };
 
 class FileMenu

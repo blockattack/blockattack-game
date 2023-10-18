@@ -448,6 +448,18 @@ public:
 		game = std::make_shared<BlockGameSdl>(1024-500,100,&globalData.spriteHolder->GetDataHolder());
 	}
 
+	void placeButtons() {
+		int nextY = 100;
+		int X = 50;
+		for (Button* it : buttons) {
+			it->x = X;
+			it->y = nextY;
+			nextY += standardButton.ysize+10;
+		}
+		exit.x = X;
+		exit.y = nextY;
+	}
+
 	void Draw(SDL_Renderer* target) override {
 		Menu::Draw(target);
 		game->DoPaintJob();
