@@ -455,17 +455,6 @@ static void DrawBalls() {
 	}
 }    //DrawBalls
 
-template <class T> void sagoTextSetHelpFont(T& field) {
-	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
-	field.SetFont("freeserif");
-	field.SetFontSize(30);
-	field.SetOutline(1, {128,128,128,255});
-}
-
-void sagoTextSetHelpFont(sago::SagoTextField& gametypeNameField) {
-	sagoTextSetHelpFont<sago::SagoTextField>(gametypeNameField);
-}
-
 void sagoTextSetBlueFont(sago::SagoTextField& field) {
 	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
 	field.SetFont("freeserif");
@@ -1217,7 +1206,7 @@ int main(int argc, char* argv[]) {
 
 		//Takes names from file instead
 		theGame.name = globalData.player1name;
-		theGame2.name = globalData.player2name;
+        theGame2.name = globalData.player2name;
 
 		if (singlePuzzle) {
 			LoadPuzzleStages();
@@ -1412,7 +1401,41 @@ int runGame(Gametype gametype, int level) {
 			case Gametype::SinglePlayerEndless:
 			default:
 				StartSinglePlayerEndless(level);
-			};
+            };
+            if (!twoPlayers) {
+                std::string gametypeName;
+                std::string infostring;
+                if (theGame.isTimeTrial()) {
+                    gametypeName = _("Time Trial");
+                    infostring = _("Score as much as possible in 2 minutes");
+
+                }
+                else if (theGame.isStageClear()) {
+                    gametypeName = _("Stage Clear");
+                    infostring = _("You must clear a number of lines. Speed is rapidly increased.");
+                }
+                else if (theGame.isPuzzleMode()) {
+                    gametypeName = _("Puzzle");
+                    infostring = _("Clear the entire board with a limited number of moves.");
+                }
+                else {
+                    gametypeName = _("Endless");
+                    infostring = _("Score as much as possible. No time limit.");
+                }
+                theGame2.infostring = infostring;
+                theGame2.infostringName = gametypeName;
+
+                std::string controldBoxText = std::string(_("Movement keys:"))+"\n"+getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+",\n"
+                                              + getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)+"\n"
+                                              + _("Switch: ") + getKeyName(keySettings[0].change);
+                if (theGame.isPuzzleMode()) {
+                    controldBoxText += std::string("\n") + _("Restart: ")+getKeyName(keySettings[0].push);
+                }
+                else {
+                    controldBoxText += std::string("\n") + _("Push line: ")+getKeyName(keySettings[0].push);
+                }
+                theGame2.controldBoxText = controldBoxText;
+            }
 			mustsetupgame = false;
 			DrawBackground(globalData.screen);
 			MoveBlockGameSdls(theGame, theGame2);

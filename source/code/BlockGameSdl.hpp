@@ -49,6 +49,13 @@ static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextFiel
 	field.SetText(text);
 }
 
+template <class T> void sagoTextSetHelpFont(T& field) {
+    field.SetHolder(&globalData.spriteHolder->GetDataHolder());
+    field.SetFont("freeserif");
+    field.SetFontSize(30);
+    field.SetOutline(1, {128,128,128,255});
+}
+
 class BlockGameSdl : public BlockGame {
 public:
 	BlockGameSdl(int tx, int ty, const sago::SagoDataHolder* holder) {
@@ -551,7 +558,9 @@ public:
 					globalData.tbDraw.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 				}
 				else {
-					globalData.tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+                    if (this->infostring.empty()) {
+                        globalData.tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+                    }
 				}
 			}
 		}
@@ -623,6 +632,30 @@ public:
             oldBubleY = this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1;
             DrawIMG(globalData.stageBobble,globalData.screen,this->GetTopX()+280,this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1);
         }
+
+        if (infostring.length() > 0) {
+            static sago::SagoTextBox infoBox;
+            static sago::SagoTextField objectiveField;
+            static sago::SagoTextField gametypeNameField;
+            sagoTextSetHelpFont(infoBox);
+            infoBox.SetMaxWidth(290);
+            infoBox.SetText(infostring);
+            sagoTextSetHelpFont(objectiveField);
+            objectiveField.SetText(_("Objective:"));
+            sagoTextSetHelpFont(gametypeNameField);
+            gametypeNameField.SetText(infostringName);
+            gametypeNameField.Draw(globalData.screen, this->GetTopX()+7,this->GetTopY()+10);
+            objectiveField.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160);
+            infoBox.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160+32);
+
+            int y = this->GetTopY()+400;
+            static sago::SagoTextBox controldBox;
+            controldBox.SetHolder(&globalData.spriteHolder->GetDataHolder());
+            sagoTextSetHelpFont(controldBox);
+            controldBox.SetMaxWidth(290);
+            controldBox.SetText(controldBoxText);
+            controldBox.Draw(globalData.screen, this->GetTopX()+7,y);
+        }
 	}
 
     sago::SagoTextField player_name;
@@ -634,6 +667,10 @@ public:
     //Old Stage Clear Buble
     int oldBubleX;
     int oldBubleY;
+
+    std::string infostring;
+    std::string infostringName;
+    std::string controldBoxText;
 
 
 private:
