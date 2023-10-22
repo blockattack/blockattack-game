@@ -86,8 +86,7 @@ unsigned long int currentTime;      //contains the current time, so we don't cal
 
 bool twoPlayers;    //True if two players are playing
 
-//Old Stage Clear Buble
-static int oldBubleX, oldBubleY;
+
 
 //Allows starting the game with just a single puzzle. Mainly to be able to open a puzzle directly from the level editor
 static bool singlePuzzle = false; 
@@ -124,18 +123,6 @@ control keySettings[3];	//array to hold the controls (default and two custom)
 
 static const int buttonXsize = 120;
 static const int buttonYsize = 40;
-
-
-static sago::SagoTextField player1name;
-static sago::SagoTextField player2name;
-static sago::SagoTextField player1time;
-static sago::SagoTextField player2time;
-static sago::SagoTextField player1score;
-static sago::SagoTextField player2score;
-static sago::SagoTextField player1chain;
-static sago::SagoTextField player2chain;
-static sago::SagoTextField player1speed;
-static sago::SagoTextField player2speed;
 
 
 #endif

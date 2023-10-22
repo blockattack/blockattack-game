@@ -176,17 +176,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.bRetry = holder.GetSprite("b_blank");
 	globalData.mouse = holder.GetSprite("mouse");
 
-	sagoTextSetBlueFont(player1name);
-	sagoTextSetBlueFont(player2name);
-	sagoTextSetBlueFont(player1time);
-	sagoTextSetBlueFont(player2time);
-	sagoTextSetBlueFont(player1score);
-	sagoTextSetBlueFont(player2score);
-	sagoTextSetBlueFont(player1chain);
-	sagoTextSetBlueFont(player2chain);
-	sagoTextSetBlueFont(player1speed);
-	sagoTextSetBlueFont(player2speed);
-
 	globalData.cordNextButton.x = 3*bsize+(3*bsize-buttonXsize)/2;
 	globalData.cordNextButton.y = 10*bsize;
 	globalData.cordNextButton.xsize = buttonXsize;
@@ -493,7 +482,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	theGame2->DoPaintJob();
 	std::string strHolder;
 	strHolder = std::to_string(theGame->GetScore()+theGame->GetHandicap());
-	player1score.SetText(strHolder);
+    /*player1score.SetText(strHolder);
 	player1score.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+100);
 	if (theGame->GetAIenabled()) {
 		player1name.SetText(_("AI"));
@@ -560,8 +549,9 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		oldBubleX = theGame->GetTopX()+280;
 		oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
 		DrawIMG(globalData.stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
-	}
-	//player1 finnish, player2 start
+    }*/
+    //player1 finnish, player2 start
+#if 0
 	if (true ) {
 		/*
 		 *If single player mode (and not VS)
@@ -684,6 +674,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		player2speed.Draw(globalData.screen, theGame2->GetTopX()+310,theGame2->GetTopY()+250);
 	}
 	//player2 finnish
+#endif
 
 
 	//draw exit
@@ -1481,12 +1472,12 @@ int runGame(Gametype gametype, int level) {
 							a.way = 'S';
 							theGame.DoAction(a);
 						}
-						if ( (event.key.keysym.sym == keySettings[player1keys].left) ) {
+                        if ( event.key.keysym.sym == keySettings[player1keys].left ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'W';
 							theGame.DoAction(a);
 						}
-						if ( (event.key.keysym.sym == keySettings[player1keys].right) ) {
+                        if ( event.key.keysym.sym == keySettings[player1keys].right ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'E';
 							theGame.DoAction(a);
@@ -1512,12 +1503,12 @@ int runGame(Gametype gametype, int level) {
 							a.way = 'S';
 							theGame2.DoAction(a);
 						}
-						if ( (event.key.keysym.sym == keySettings[player2keys].left) ) {
+                        if ( event.key.keysym.sym == keySettings[player2keys].left ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'W';
 							theGame2.DoAction(a);
 						}
-						if ( (event.key.keysym.sym == keySettings[player2keys].right) ) {
+                        if ( event.key.keysym.sym == keySettings[player2keys].right ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'E';
 							theGame2.DoAction(a);

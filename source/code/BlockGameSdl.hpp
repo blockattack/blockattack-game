@@ -62,6 +62,12 @@ public:
 		setButtonFont(holder, buttonRetry, _("Retry"));
 		setButtonFont(holder, buttonSkip, _("Skip"));
 		setButtonFont(holder, stopIntField, "");
+
+        sagoTextSetBlueFont(player_name);
+        sagoTextSetBlueFont(player_time);
+        sagoTextSetBlueFont(player_score);
+        sagoTextSetBlueFont(player_chain);
+        sagoTextSetBlueFont(player_speed);
 	}
 	
 
@@ -549,7 +555,86 @@ public:
 				}
 			}
 		}
+
+        std::string strHolder;
+        strHolder = std::to_string(this->GetScore()+this->GetHandicap());
+        player_score.SetText(strHolder);
+        player_score.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+100);
+        if (this->GetAIenabled()) {
+            player_name.SetText(_("AI"));
+        }
+        else {
+            player_name.SetText(name);
+        }
+        player_name.Draw(globalData.screen, this->GetTopX()+10,this->GetTopY()-34);
+        if (this->isTimeTrial()) {
+            int tid = (int)SDL_GetTicks()-this->GetGameStartedAt();
+            int minutes;
+            int seconds;
+            if (tid>=0) {
+                minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
+                seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
+            }
+            else {
+                minutes = ((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
+                seconds = (((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
+            }
+            if (this->isGameOver()) {
+                minutes=0;
+            }
+            if (this->isGameOver()) {
+                seconds=0;
+            }
+            if (seconds>9) {
+                strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
+            }
+            else {
+                strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
+            }
+            player_time.SetText(strHolder);
+        }
+        else {
+            int minutes = ((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
+            int seconds = (((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
+            if (this->isGameOver()) {
+                minutes=(this->GetGameEndedAt()/1000/60)%100;
+            }
+            if (this->isGameOver()) {
+                seconds=(this->GetGameEndedAt()/1000)%60;
+            }
+            if (seconds>9) {
+                strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
+            }
+            else {
+                strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
+            }
+            player_time.SetText(strHolder);
+        }
+        player_time.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+150);
+        strHolder = std::to_string(this->GetChains());
+        player_chain.SetText(strHolder);
+        player_chain.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+200);
+        //drawspeedLevel:
+        strHolder = std::to_string(this->GetSpeedLevel());
+        player_speed.SetText(strHolder);
+        player_speed.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+250);
+        if ((this->isStageClear()) &&(this->GetTopY()+700+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1<600+this->GetTopY())) {
+            oldBubleX = this->GetTopX()+280;
+            oldBubleY = this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1;
+            DrawIMG(globalData.stageBobble,globalData.screen,this->GetTopX()+280,this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1);
+        }
 	}
+
+    sago::SagoTextField player_name;
+    sago::SagoTextField player_time;
+    sago::SagoTextField player_score;
+    sago::SagoTextField player_chain;
+    sago::SagoTextField player_speed;
+
+    //Old Stage Clear Buble
+    int oldBubleX;
+    int oldBubleY;
+
 
 private:
 	int topx, topy;
