@@ -471,60 +471,60 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	theGame2->DoPaintJob();
 	std::string strHolder;
 	strHolder = std::to_string(theGame->GetScore()+theGame->GetHandicap());
-    /*player1score.SetText(strHolder);
+	/*player1score.SetText(strHolder);
 	player1score.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+100);
 	if (theGame->GetAIenabled()) {
-		player1name.SetText(_("AI"));
+	    player1name.SetText(_("AI"));
 	}
 	else if (singlePuzzle) {
-		player1name.SetText(_("Playing field"));
+	    player1name.SetText(_("Playing field"));
 	}
 	else {
-		player1name.SetText(globalData.player1name);
+	    player1name.SetText(globalData.player1name);
 	}
 	player1name.Draw(globalData.screen, theGame->GetTopX()+10,theGame->GetTopY()-34);
 	if (theGame->isTimeTrial()) {
-		int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
-		int minutes;
-		int seconds;
-		if (tid>=0) {
-			minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
-			seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
-		}
-		else {
-			minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
-			seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
-		}
-		if (theGame->isGameOver()) {
-			minutes=0;
-		}
-		if (theGame->isGameOver()) {
-			seconds=0;
-		}
-		if (seconds>9) {
-			strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
-		}
-		else {
-			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
-		}
-		player1time.SetText(strHolder);
+	    int tid = (int)SDL_GetTicks()-theGame->GetGameStartedAt();
+	    int minutes;
+	    int seconds;
+	    if (tid>=0) {
+	        minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
+	        seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
+	    }
+	    else {
+	        minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
+	        seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
+	    }
+	    if (theGame->isGameOver()) {
+	        minutes=0;
+	    }
+	    if (theGame->isGameOver()) {
+	        seconds=0;
+	    }
+	    if (seconds>9) {
+	        strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
+	    }
+	    else {
+	        strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
+	    }
+	    player1time.SetText(strHolder);
 	}
 	else {
-		int minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
-		int seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
-		if (theGame->isGameOver()) {
-			minutes=(theGame->GetGameEndedAt()/1000/60)%100;
-		}
-		if (theGame->isGameOver()) {
-			seconds=(theGame->GetGameEndedAt()/1000)%60;
-		}
-		if (seconds>9) {
-			strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
-		}
-		else {
-			strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
-		}
-		player1time.SetText(strHolder);
+	    int minutes = ((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))/60/1000;
+	    int seconds = (((abs((int)SDL_GetTicks()-(int)theGame->GetGameStartedAt())))%(60*1000))/1000;
+	    if (theGame->isGameOver()) {
+	        minutes=(theGame->GetGameEndedAt()/1000/60)%100;
+	    }
+	    if (theGame->isGameOver()) {
+	        seconds=(theGame->GetGameEndedAt()/1000)%60;
+	    }
+	    if (seconds>9) {
+	        strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
+	    }
+	    else {
+	        strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
+	    }
+	    player1time.SetText(strHolder);
 	}
 	player1time.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+150);
 	strHolder = std::to_string(theGame->GetChains());
@@ -535,11 +535,11 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 	player1speed.SetText(strHolder);
 	player1speed.Draw(globalData.screen, theGame->GetTopX()+310,theGame->GetTopY()+250);
 	if ((theGame->isStageClear()) &&(theGame->GetTopY()+700+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1<600+theGame->GetTopY())) {
-		oldBubleX = theGame->GetTopX()+280;
-		oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
-		DrawIMG(globalData.stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
-    }*/
-    //player1 finnish, player2 start
+	    oldBubleX = theGame->GetTopX()+280;
+	    oldBubleY = theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1;
+	    DrawIMG(globalData.stageBobble,globalData.screen,theGame->GetTopX()+280,theGame->GetTopY()+650+50*(theGame->GetStageClearLimit()-theGame->GetLinesCleared())-theGame->GetPixels()-1);
+	}*/
+	//player1 finnish, player2 start
 #if 0
 	if (true ) {
 		/*
@@ -1206,7 +1206,7 @@ int main(int argc, char* argv[]) {
 
 		//Takes names from file instead
 		theGame.name = globalData.player1name;
-        theGame2.name = globalData.player2name;
+		theGame2.name = globalData.player2name;
 
 		if (singlePuzzle) {
 			LoadPuzzleStages();
@@ -1401,41 +1401,41 @@ int runGame(Gametype gametype, int level) {
 			case Gametype::SinglePlayerEndless:
 			default:
 				StartSinglePlayerEndless(level);
-            };
-            if (!twoPlayers) {
-                std::string gametypeName;
-                std::string infostring;
-                if (theGame.isTimeTrial()) {
-                    gametypeName = _("Time Trial");
-                    infostring = _("Score as much as possible in 2 minutes");
+			};
+			if (!twoPlayers) {
+				std::string gametypeName;
+				std::string infostring;
+				if (theGame.isTimeTrial()) {
+					gametypeName = _("Time Trial");
+					infostring = _("Score as much as possible in 2 minutes");
 
-                }
-                else if (theGame.isStageClear()) {
-                    gametypeName = _("Stage Clear");
-                    infostring = _("You must clear a number of lines. Speed is rapidly increased.");
-                }
-                else if (theGame.isPuzzleMode()) {
-                    gametypeName = _("Puzzle");
-                    infostring = _("Clear the entire board with a limited number of moves.");
-                }
-                else {
-                    gametypeName = _("Endless");
-                    infostring = _("Score as much as possible. No time limit.");
-                }
-                theGame2.infostring = infostring;
-                theGame2.infostringName = gametypeName;
+				}
+				else if (theGame.isStageClear()) {
+					gametypeName = _("Stage Clear");
+					infostring = _("You must clear a number of lines. Speed is rapidly increased.");
+				}
+				else if (theGame.isPuzzleMode()) {
+					gametypeName = _("Puzzle");
+					infostring = _("Clear the entire board with a limited number of moves.");
+				}
+				else {
+					gametypeName = _("Endless");
+					infostring = _("Score as much as possible. No time limit.");
+				}
+				theGame2.infostring = infostring;
+				theGame2.infostringName = gametypeName;
 
-                std::string controldBoxText = std::string(_("Movement keys:"))+"\n"+getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+",\n"
-                                              + getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)+"\n"
-                                              + _("Switch: ") + getKeyName(keySettings[0].change);
-                if (theGame.isPuzzleMode()) {
-                    controldBoxText += std::string("\n") + _("Restart: ")+getKeyName(keySettings[0].push);
-                }
-                else {
-                    controldBoxText += std::string("\n") + _("Push line: ")+getKeyName(keySettings[0].push);
-                }
-                theGame2.controldBoxText = controldBoxText;
-            }
+				std::string controldBoxText = std::string(_("Movement keys:"))+"\n"+getKeyName(keySettings[0].left)+", "+getKeyName(keySettings[0].right)+",\n"
+				                              + getKeyName(keySettings[0].up)+", "+getKeyName(keySettings[0].down)+"\n"
+				                              + _("Switch: ") + getKeyName(keySettings[0].change);
+				if (theGame.isPuzzleMode()) {
+					controldBoxText += std::string("\n") + _("Restart: ")+getKeyName(keySettings[0].push);
+				}
+				else {
+					controldBoxText += std::string("\n") + _("Push line: ")+getKeyName(keySettings[0].push);
+				}
+				theGame2.controldBoxText = controldBoxText;
+			}
 			mustsetupgame = false;
 			DrawBackground(globalData.screen);
 			MoveBlockGameSdls(theGame, theGame2);
@@ -1495,12 +1495,12 @@ int runGame(Gametype gametype, int level) {
 							a.way = 'S';
 							theGame.DoAction(a);
 						}
-                        if ( event.key.keysym.sym == keySettings[player1keys].left ) {
+						if ( event.key.keysym.sym == keySettings[player1keys].left ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'W';
 							theGame.DoAction(a);
 						}
-                        if ( event.key.keysym.sym == keySettings[player1keys].right ) {
+						if ( event.key.keysym.sym == keySettings[player1keys].right ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'E';
 							theGame.DoAction(a);
@@ -1526,12 +1526,12 @@ int runGame(Gametype gametype, int level) {
 							a.way = 'S';
 							theGame2.DoAction(a);
 						}
-                        if ( event.key.keysym.sym == keySettings[player2keys].left ) {
+						if ( event.key.keysym.sym == keySettings[player2keys].left ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'W';
 							theGame2.DoAction(a);
 						}
-                        if ( event.key.keysym.sym == keySettings[player2keys].right ) {
+						if ( event.key.keysym.sym == keySettings[player2keys].right ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'E';
 							theGame2.DoAction(a);
