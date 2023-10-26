@@ -22,7 +22,7 @@ http://blockattack.net
 */
 
 
-/* 
+/*
  * File:   stageclearhandler.hpp
  * Author: poul
  *
@@ -43,7 +43,7 @@ bool IsStageCleared(int level);
 int GetStageScores(int level);
 int GetStageTime(int level);
 
-const int nrOfStageLevels = 50;		//number of stages in stage Clear
+const int nrOfStageLevels = 50;     //number of stages in stage Clear
 
 #endif /* STAGECLEARHANDLER_HPP */
 

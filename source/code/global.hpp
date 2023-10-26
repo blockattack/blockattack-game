@@ -22,7 +22,7 @@ http://www.blockattack.net
 */
 
 #ifndef _GLOBAL_HPP
-#define	_GLOBAL_HPP
+#define _GLOBAL_HPP
 
 #include <memory>
 #include "sago/SagoSpriteHolder.hpp"
@@ -74,8 +74,7 @@ const int SCREEN_HIGHT = 768;
 const int BOARD_WIDTH = 300;
 const int BOARD_HEIGHT = 600;
 
-struct ButtonCords
-{
+struct ButtonCords {
 	int x;
 	int y;
 	int xsize;
@@ -98,7 +97,7 @@ struct GlobalData {
 	std::string replayArgument;  //Name of the replay to play (if given as a commandline argument)
 	std::string player1name;
 	std::string player2name;
-	SDL_Renderer *screen = nullptr;  //The whole screen;
+	SDL_Renderer* screen = nullptr;  //The whole screen;
 	sago::SoundHandler typingChunk;
 	sago::SagoSprite mouse;
 	bool highPriority = false;
@@ -123,7 +122,7 @@ struct GlobalData {
 	sago::SoundHandler counterChunk;         //When counting down
 	sago::SoundHandler counterFinalChunk;
 
-	sago::SagoSprite garbageTL;			//the Garbage Blocks
+	sago::SagoSprite garbageTL;         //the Garbage Blocks
 	sago::SagoSprite garbageT;
 	sago::SagoSprite garbageTR;
 	sago::SagoSprite garbageR;
@@ -142,8 +141,8 @@ struct GlobalData {
 	sago::SagoSprite bSkip;
 	sago::SagoSprite bRetry;
 
-	sago::SagoSprite blackLine;		//The seperator in stage clear
-	sago::SagoSprite stageBobble;	//The bobble instage clear
+	sago::SagoSprite blackLine;     //The seperator in stage clear
+	sago::SagoSprite stageBobble;   //The bobble instage clear
 	sago::SagoTextBox tbGameOver;
 	sago::SagoTextBox tbWinner;
 	sago::SagoTextBox tbDraw;
@@ -169,5 +168,5 @@ struct GlobalData {
 
 extern GlobalData globalData;
 
-#endif	/* _GLOBAL_HPP */
+#endif  /* _GLOBAL_HPP */
 

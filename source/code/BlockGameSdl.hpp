@@ -32,7 +32,7 @@ extern BallManager theBallManager;
 extern ExplosionManager theExplosionManager;
 
 
-static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("penguinattack");
 	field.SetColor({255,255,255,255});
@@ -40,7 +40,7 @@ static void setScoreboardFont(const sago::SagoDataHolder* holder, sago::SagoText
 	field.SetText(text);
 }
 
-static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text){
+static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
 	field.SetFont("freeserif");
 	field.SetColor({255,255,255,255});
@@ -50,10 +50,10 @@ static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextFiel
 }
 
 template <class T> void sagoTextSetHelpFont(T& field) {
-    field.SetHolder(&globalData.spriteHolder->GetDataHolder());
-    field.SetFont("freeserif");
-    field.SetFontSize(30);
-    field.SetOutline(1, {128,128,128,255});
+	field.SetHolder(&globalData.spriteHolder->GetDataHolder());
+	field.SetFont("freeserif");
+	field.SetFontSize(30);
+	field.SetOutline(1, {128,128,128,255});
 }
 
 class BlockGameSdl : public BlockGame {
@@ -70,13 +70,13 @@ public:
 		setButtonFont(holder, buttonSkip, _("Skip"));
 		setButtonFont(holder, stopIntField, "");
 
-        sagoTextSetBlueFont(player_name);
-        sagoTextSetBlueFont(player_time);
-        sagoTextSetBlueFont(player_score);
-        sagoTextSetBlueFont(player_chain);
-        sagoTextSetBlueFont(player_speed);
+		sagoTextSetBlueFont(player_name);
+		sagoTextSetBlueFont(player_time);
+		sagoTextSetBlueFont(player_score);
+		sagoTextSetBlueFont(player_chain);
+		sagoTextSetBlueFont(player_speed);
 	}
-	
+
 
 	void DrawImgBoard(const sago::SagoSprite& img, int x, int y) const {
 		DrawIMG(img, globalData.screen, x+topx, y+topy);
@@ -87,10 +87,10 @@ public:
 	}
 
 	void PrintTextCenteredBoard(int x, int y, sago::SagoTextField& field) {
-		field.Draw(globalData.screen, x+topx+60, y+topy+20, 
-				sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
+		field.Draw(globalData.screen, x+topx+60, y+topy+20,
+		           sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
 	}
-	
+
 	void SetTopXY(int tx, int ty) {
 		topx = tx;
 		topy = ty;
@@ -102,7 +102,7 @@ public:
 	int GetTopY() const {
 		return topy;
 	}
-	
+
 	/**
 	 * Retrives the coordinate to a given brick based on mouse input.
 	 * @param match true if the coordinate are within borders
@@ -120,14 +120,14 @@ public:
 		x = (mousex-topx) / bsize;
 		y = (bsize*12+topy-mousey-pixels) / bsize;
 	}
-	
+
 	bool IsInTheBoard(int mousex, int mousey) const {
 		if (mousex < topx || mousex > topx+bsize*6 || mousey < topy || mousey > topy+bsize*12) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	bool IsUnderTheBoard(int mousex, int mousey) const {
 		if (mousex < topx || mousex > topx+bsize*6 || mousey < topy+bsize*12) {
 			return false;
@@ -333,12 +333,12 @@ private:
 		int size_y = 0;
 		int number = board[topx][topy];
 		for (int i=topy; i < 30 ; ++i) {
-			if(number == board[topx][i]) {
+			if (number == board[topx][i]) {
 				++size_y;
 			}
 		}
 		for (int i=topx; i < 7 ; ++i) {
-			if(number == board[i][topy]) {
+			if (number == board[i][topy]) {
 				++size_x;
 			}
 		}
@@ -558,119 +558,119 @@ public:
 					globalData.tbDraw.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
 				}
 				else {
-                    if (this->infostring.empty()) {
-                        globalData.tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
-                    }
+					if (this->infostring.empty()) {
+						globalData.tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+					}
 				}
 			}
 		}
 
-        std::string strHolder;
-        strHolder = std::to_string(this->GetScore()+this->GetHandicap());
-        player_score.SetText(strHolder);
-        player_score.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+100);
-        if (this->GetAIenabled()) {
-            player_name.SetText(_("AI"));
-        }
-        else {
-            player_name.SetText(name);
-        }
-        player_name.Draw(globalData.screen, this->GetTopX()+10,this->GetTopY()-34);
-        if (this->isTimeTrial()) {
-            int tid = (int)SDL_GetTicks()-this->GetGameStartedAt();
-            int minutes;
-            int seconds;
-            if (tid>=0) {
-                minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
-                seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
-            }
-            else {
-                minutes = ((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
-                seconds = (((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
-            }
-            if (this->isGameOver()) {
-                minutes=0;
-            }
-            if (this->isGameOver()) {
-                seconds=0;
-            }
-            if (seconds>9) {
-                strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
-            }
-            else {
-                strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
-            }
-            player_time.SetText(strHolder);
-        }
-        else {
-            int minutes = ((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
-            int seconds = (((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
-            if (this->isGameOver()) {
-                minutes=(this->GetGameEndedAt()/1000/60)%100;
-            }
-            if (this->isGameOver()) {
-                seconds=(this->GetGameEndedAt()/1000)%60;
-            }
-            if (seconds>9) {
-                strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
-            }
-            else {
-                strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
-            }
-            player_time.SetText(strHolder);
-        }
-        player_time.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+150);
-        strHolder = std::to_string(this->GetChains());
-        player_chain.SetText(strHolder);
-        player_chain.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+200);
-        //drawspeedLevel:
-        strHolder = std::to_string(this->GetSpeedLevel());
-        player_speed.SetText(strHolder);
-        player_speed.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+250);
-        if ((this->isStageClear()) &&(this->GetTopY()+700+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1<600+this->GetTopY())) {
-            oldBubleX = this->GetTopX()+280;
-            oldBubleY = this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1;
-            DrawIMG(globalData.stageBobble,globalData.screen,this->GetTopX()+280,this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1);
-        }
+		std::string strHolder;
+		strHolder = std::to_string(this->GetScore()+this->GetHandicap());
+		player_score.SetText(strHolder);
+		player_score.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+100);
+		if (this->GetAIenabled()) {
+			player_name.SetText(_("AI"));
+		}
+		else {
+			player_name.SetText(name);
+		}
+		player_name.Draw(globalData.screen, this->GetTopX()+10,this->GetTopY()-34);
+		if (this->isTimeTrial()) {
+			int tid = (int)SDL_GetTicks()-this->GetGameStartedAt();
+			int minutes;
+			int seconds;
+			if (tid>=0) {
+				minutes = (2*60*1000-(abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
+				seconds = ((2*60*1000-(abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
+			}
+			else {
+				minutes = ((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
+				seconds = (((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
+			}
+			if (this->isGameOver()) {
+				minutes=0;
+			}
+			if (this->isGameOver()) {
+				seconds=0;
+			}
+			if (seconds>9) {
+				strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
+			}
+			else {
+				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
+			}
+			player_time.SetText(strHolder);
+		}
+		else {
+			int minutes = ((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))/60/1000;
+			int seconds = (((abs((int)SDL_GetTicks()-(int)this->GetGameStartedAt())))%(60*1000))/1000;
+			if (this->isGameOver()) {
+				minutes=(this->GetGameEndedAt()/1000/60)%100;
+			}
+			if (this->isGameOver()) {
+				seconds=(this->GetGameEndedAt()/1000)%60;
+			}
+			if (seconds>9) {
+				strHolder = std::to_string(minutes)+":"+std::to_string(seconds);
+			}
+			else {
+				strHolder = std::to_string(minutes)+":0"+std::to_string(seconds);
+			}
+			player_time.SetText(strHolder);
+		}
+		player_time.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+150);
+		strHolder = std::to_string(this->GetChains());
+		player_chain.SetText(strHolder);
+		player_chain.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+200);
+		//drawspeedLevel:
+		strHolder = std::to_string(this->GetSpeedLevel());
+		player_speed.SetText(strHolder);
+		player_speed.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+250);
+		if ((this->isStageClear()) &&(this->GetTopY()+700+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1<600+this->GetTopY())) {
+			oldBubleX = this->GetTopX()+280;
+			oldBubleY = this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1;
+			DrawIMG(globalData.stageBobble,globalData.screen,this->GetTopX()+280,this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1);
+		}
 
-        if (infostring.length() > 0) {
-            static sago::SagoTextBox infoBox;
-            static sago::SagoTextField objectiveField;
-            static sago::SagoTextField gametypeNameField;
-            sagoTextSetHelpFont(infoBox);
-            infoBox.SetMaxWidth(290);
-            infoBox.SetText(infostring);
-            sagoTextSetHelpFont(objectiveField);
-            objectiveField.SetText(_("Objective:"));
-            sagoTextSetHelpFont(gametypeNameField);
-            gametypeNameField.SetText(infostringName);
-            gametypeNameField.Draw(globalData.screen, this->GetTopX()+7,this->GetTopY()+10);
-            objectiveField.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160);
-            infoBox.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160+32);
+		if (infostring.length() > 0) {
+			static sago::SagoTextBox infoBox;
+			static sago::SagoTextField objectiveField;
+			static sago::SagoTextField gametypeNameField;
+			sagoTextSetHelpFont(infoBox);
+			infoBox.SetMaxWidth(290);
+			infoBox.SetText(infostring);
+			sagoTextSetHelpFont(objectiveField);
+			objectiveField.SetText(_("Objective:"));
+			sagoTextSetHelpFont(gametypeNameField);
+			gametypeNameField.SetText(infostringName);
+			gametypeNameField.Draw(globalData.screen, this->GetTopX()+7,this->GetTopY()+10);
+			objectiveField.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160);
+			infoBox.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160+32);
 
-            int y = this->GetTopY()+400;
-            static sago::SagoTextBox controldBox;
-            controldBox.SetHolder(&globalData.spriteHolder->GetDataHolder());
-            sagoTextSetHelpFont(controldBox);
-            controldBox.SetMaxWidth(290);
-            controldBox.SetText(controldBoxText);
-            controldBox.Draw(globalData.screen, this->GetTopX()+7,y);
-        }
+			int y = this->GetTopY()+400;
+			static sago::SagoTextBox controldBox;
+			controldBox.SetHolder(&globalData.spriteHolder->GetDataHolder());
+			sagoTextSetHelpFont(controldBox);
+			controldBox.SetMaxWidth(290);
+			controldBox.SetText(controldBoxText);
+			controldBox.Draw(globalData.screen, this->GetTopX()+7,y);
+		}
 	}
 
-    sago::SagoTextField player_name;
-    sago::SagoTextField player_time;
-    sago::SagoTextField player_score;
-    sago::SagoTextField player_chain;
-    sago::SagoTextField player_speed;
+	sago::SagoTextField player_name;
+	sago::SagoTextField player_time;
+	sago::SagoTextField player_score;
+	sago::SagoTextField player_chain;
+	sago::SagoTextField player_speed;
 
-    //Old Stage Clear Buble
-    int oldBubleX;
-    int oldBubleY;
+	//Old Stage Clear Buble
+	int oldBubleX;
+	int oldBubleY;
 
-    std::string infostring;
-    std::string infostringName;
-    std::string controldBoxText;
+	std::string infostring;
+	std::string infostringName;
+	std::string controldBoxText;
 
 
 private:

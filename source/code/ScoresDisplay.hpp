@@ -30,14 +30,14 @@ http://www.blockattack.net
 #include <memory>
 #include "highscore.h"
 
-class ScoresDisplay : public HelpCommonState{
+class ScoresDisplay : public HelpCommonState {
 public:
 	ScoresDisplay();
 	ScoresDisplay(const ScoresDisplay& orig) = delete;
 	virtual ~ScoresDisplay();
 
 	void Draw(SDL_Renderer* target) override;
-	void ProcessInput(const SDL_Event& event, bool &processed) override;
+	void ProcessInput(const SDL_Event& event, bool& processed) override;
 	void Update() override;
 
 	int page = 0;

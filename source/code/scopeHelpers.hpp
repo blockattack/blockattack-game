@@ -22,7 +22,7 @@ https://blockattack.net
 */
 
 #ifndef SCOPEHELPERS_HPP
-#define	SCOPEHELPERS_HPP
+#define SCOPEHELPERS_HPP
 
 #include "common.h"
 
@@ -34,7 +34,7 @@ public:
 		dieOnNullptr(input, "Failed to get render");
 		ptr = input;
 	}
-	
+
 	~SDL_RendererHolder() {
 		SDL_DestroyRenderer(ptr);
 	}
@@ -45,11 +45,11 @@ public:
 	SDL_TextInput() {
 		SDL_StartTextInput();
 	}
-	
+
 	~SDL_TextInput() {
 		SDL_StopTextInput();
 	}
 };
 
-#endif	/* SCOPEHELPERS_HPP */
+#endif  /* SCOPEHELPERS_HPP */
 

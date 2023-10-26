@@ -36,7 +36,7 @@ private:
 	unsigned long int placeTime = 0; //Then the text was placed
 public:
 	bool inUse = false;
-	
+
 	TextMessage() {
 	}
 

@@ -70,11 +70,10 @@ struct BlockGameStartInfo {
 	int handicap = 0;
 	int gameSpeed = 0;
 	template <class Archive>
-	void serialize( Archive & ar )
-	{
+	void serialize( Archive& ar ) {
 		ar( CEREAL_NVP(ticks), CEREAL_NVP(timeTrial), CEREAL_NVP(stageClear), CEREAL_NVP(puzzleMode), CEREAL_NVP(singlePuzzle),
-			CEREAL_NVP(level), CEREAL_NVP(AI), CEREAL_NVP(recordStats), CEREAL_NVP(vsMode), CEREAL_NVP(vsAI),
-			CEREAL_NVP(startBlocks), CEREAL_NVP(handicap), CEREAL_NVP(gameSpeed) );
+		    CEREAL_NVP(level), CEREAL_NVP(AI), CEREAL_NVP(recordStats), CEREAL_NVP(vsMode), CEREAL_NVP(vsAI),
+		    CEREAL_NVP(startBlocks), CEREAL_NVP(handicap), CEREAL_NVP(gameSpeed) );
 	}
 };
 
@@ -88,8 +87,7 @@ struct GarbageStruct {
 		height = h;
 	}
 	template <class Archive>
-	void serialize( Archive & ar )
-	{
+	void serialize( Archive& ar ) {
 		ar( CEREAL_NVP(greyGarbage), CEREAL_NVP(width), CEREAL_NVP(height) );
 	}
 };
@@ -103,8 +101,7 @@ struct BlockGameAction {
 	int y = 0;
 	std::vector<GarbageStruct> garbage;
 	template <class Archive>
-	void serialize( Archive & ar )
-	{
+	void serialize( Archive& ar ) {
 		ar( CEREAL_NVP(action), CEREAL_NVP(tick), CEREAL_NVP(way), CEREAL_NVP(x), CEREAL_NVP(y), CEREAL_NVP(garbage) );
 	}
 };
@@ -114,8 +111,7 @@ struct BlockGameInfoExtra {
 	int score = 0;
 	int seconds = 0;
 	template <class Archive>
-	void serialize( Archive & ar )
-	{
+	void serialize( Archive& ar ) {
 		ar( CEREAL_NVP(name), CEREAL_NVP(score), CEREAL_NVP(seconds) );
 	}
 };
@@ -125,8 +121,7 @@ struct BlockGameInfo {
 	std::deque<BlockGameAction> actions;
 	BlockGameInfoExtra extra;
 	template <class Archive>
-	void serialize( Archive & ar )
-	{
+	void serialize( Archive& ar ) {
 		ar( CEREAL_NVP(startInfo), CEREAL_NVP(actions), CEREAL_NVP(extra) );
 	}
 };
@@ -134,8 +129,7 @@ struct BlockGameInfo {
 ////////////////////////////////////////////////////////////////////////////////
 //The BloackGame class represents a board, score, time etc. for a single player/
 ////////////////////////////////////////////////////////////////////////////////
-class BlockGame
-{
+class BlockGame {
 private:
 	int prevTowerHeight = 0;
 	bool bGarbageFallLeft = false;
@@ -152,8 +146,8 @@ private:
 	int AI_LineOffset = 0; //how many lines have changed since command
 	int hangTicks = 0;    //How many times have hang been decreased?
 	//int the two following index 0 may NOT be used (what the fuck did I meen?)
-	int chainSize[NUMBEROFCHAINS]{}; //Contains the chains
-	bool chainUsed[NUMBEROFCHAINS]{};   //True if the chain is used
+	int chainSize[NUMBEROFCHAINS] {}; //Contains the chains
+	bool chainUsed[NUMBEROFCHAINS] {};  //True if the chain is used
 
 	unsigned int nextRandomNumber = 0;
 	int Level = 0; //Only used in stageClear and puzzle (not implemented)
@@ -169,7 +163,7 @@ protected:
 	bool bDraw = false;
 	unsigned int ticks = 0;
 	unsigned int gameStartedAt = 0;
-	unsigned int gameEndedAfter = 0;		//How long did the game last?
+	unsigned int gameEndedAfter = 0;        //How long did the game last?
 	int linesCleared = 0;
 	int TowerHeight = 0;
 	int board[7][30];
@@ -228,7 +222,7 @@ public:
 	virtual void TimeTrialEndEvent() const  {}
 	virtual void EndlessHighscoreEvent() const  {}
 
-	void NewGame(const BlockGameStartInfo &s);
+	void NewGame(const BlockGameStartInfo& s);
 	void DoAction (const BlockGameAction& action);
 	/**
 	 * This function returns all the garbage.
@@ -255,13 +249,15 @@ public:
 	int GetTowerHeight() const;
 	int GetCursorX() const;
 	int GetCursorY() const;
-	void GetMouseCursor(bool& pressed, int& x, int&y) const;
+	void GetMouseCursor(bool& pressed, int& x, int& y) const;
 	bool GetIsWinner() const;
 	bool isSinglePuzzle() const;
 	int getLevel() const;
 	bool GetAIenabled() const;
 	bool IsNearDeath() const;
-	double GetBaseSpeed() const { return baseSpeed; }
+	double GetBaseSpeed() const {
+		return baseSpeed;
+	}
 	const BlockGameInfo& GetBlockGameInfo() {
 		return replayInfo;
 	}

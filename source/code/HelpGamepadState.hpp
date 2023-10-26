@@ -34,7 +34,7 @@ public:
 	HelpGamepadState(const HelpGamepadState& orig) = delete;
 	virtual ~HelpGamepadState();
 	void Draw(SDL_Renderer* target) override;
-	void ProcessInput(const SDL_Event& event, bool &processed) override;
+	void ProcessInput(const SDL_Event& event, bool& processed) override;
 private:
 	sago::SagoTextField moveLabel;
 	sago::SagoTextField pushLabel;

@@ -22,7 +22,7 @@ http://www.blockattack.net
 */
 
 #ifndef PUZZLEHANDLER_HPP
-#define	PUZZLEHANDLER_HPP
+#define PUZZLEHANDLER_HPP
 
 
 #include <string>
@@ -36,5 +36,5 @@ void PuzzleSetClear(int level);
 const std::string& PuzzleGetName();
 void PuzzleSetName(const std::string& name);
 
-#endif	/* PUZZLEHANDLER_HPP */
+#endif  /* PUZZLEHANDLER_HPP */
 

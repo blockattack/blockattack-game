@@ -28,8 +28,7 @@ struct SavedReplayStruct {
 	int numberOfPlayers = 0;
 	std::vector<BlockGameInfo> playerInfo;
 	template <class Archive>
-	void serialize( Archive & ar )
-	{
+	void serialize( Archive& ar ) {
 		ar( CEREAL_NVP(numberOfPlayers), CEREAL_NVP(playerInfo) );
 	}
 };

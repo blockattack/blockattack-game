@@ -36,8 +36,8 @@ struct VirtualKeyboard {
 	const std::string rightChar = "›";
 	const std::string backspace = "«";
 	std::string alphabet = std::string(_("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	                       "abcdefghijklmnopqrstuvwxyz"
-	                       ".,:!?+_^@#%&=*")) + leftChar + rightChar + backspace;
+	                                     "abcdefghijklmnopqrstuvwxyz"
+	                                     ".,:!?+_^@#%&=*")) + leftChar + rightChar + backspace;
 	std::vector<std::string> gamePadChars;
 	std::vector<sago::SagoTextField> gamePadCharFields;
 	int selectedChar = 0;
@@ -52,12 +52,12 @@ public:
 
 	bool IsActive() override;
 	void Draw(SDL_Renderer* target) override;
-	void ProcessInput(const SDL_Event& event, bool &processed) override;
+	void ProcessInput(const SDL_Event& event, bool& processed) override;
 	void SetName(const std::string& name);
 	std::string GetName() const;
 	bool IsUpdated() const;
 private:
-	void virtualKeyboardWriteSelectedChar(ReadKeyboard *rk, const std::string& insertChar) const;
+	void virtualKeyboardWriteSelectedChar(ReadKeyboard* rk, const std::string& insertChar) const;
 	bool isActive = true;
 	bool bMouseUp = false;
 	std::shared_ptr<ReadKeyboard> rk;
