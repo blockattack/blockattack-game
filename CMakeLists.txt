@@ -19,8 +19,10 @@ set(INSTALL_ICONS_DIR "share/icons/hicolor" CACHE STRING "Install the icon in a 
 set(INSTALL_LOCALE_DIR "${INSTALL_DATA_DIR}/locale/" CACHE STRING "Install translation to this dir")
 set(INSTALL_METAINFO_DIR "share/metainfo" CACHE STRING "Install appstream matedata to this directory")
 
+option(BLOCKATTACK_USE_EMBEDDED_CEREAL "Use the embedded version of cereal" ON)
 option(BLOCKATTACK_USE_EMBEDDED_FMT "Use the embedded version of {fmt}" ON)
 option(BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS "Use the embedded version of PlatformFolders" ON)
+option(BLOCKATTACK_USE_EMBEDDED_UTFCPP "Use the embedded version of utfcpp" ON)
 
 # This sets up the exe icon for windows under mingw.
 # Taken from https://hansonry.wordpress.com/2010/12/15/windows-application-icon-using-mingw-and-cmake/
@@ -88,6 +90,16 @@ file(GLOB SOURCES "source/code/*.cpp" "source/code/*.inc" "source/code/*.h*" "so
 message("${SOURCES}")
 message("${CMAKE_EXE_LINKER_FLAGS}")
 
+#building/compiling/linking
+add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
+
+if (BLOCKATTACK_USE_EMBEDDED_CEREAL)
+	target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
+else()
+	find_package(cereal 1.2.0 REQUIRED)
+	target_include_directories(blockattack PRIVATE ${CEREAL_INCLUDE_DIRS})
+endif()
+
 if (BLOCKATTACK_USE_EMBEDDED_FMT)
 	message("Using embedded {fmt}")
 	add_subdirectory("source/misc/embedded_libs/fmt-8.1.1" EXCLUDE_FROM_ALL)
@@ -98,14 +110,21 @@ if (BLOCKATTACK_USE_EMBEDDED_PLATFORM_FOLDERS)
 	message("Using embedded PlatformFolders")
 	add_subdirectory("source/misc/embedded_libs/PlatformFolders-4.2.0" EXCLUDE_FROM_ALL)
 	message("Done processing PlatformFolders")
+
+	target_link_libraries(blockattack PRIVATE platform_folders)
+else()
+	find_package(platform_folders 4.1.0 REQUIRED)
+	target_include_directories(blockattack PRIVATE "/usr/include/sago/")
+	target_link_libraries(blockattack PRIVATE sago::platform_folders)
 endif()
 
+if (BLOCKATTACK_USE_EMBEDDED_UTFCPP)
+	target_include_directories(blockattack PRIVATE "source/code/Libs/include/")
+else()
+	find_package(utf8cpp REQUIRED)
+	target_include_directories(blockattack PRIVATE "/usr/include/utf8cpp/")
+endif()
 
-#building/compiling/linking
-add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
-
-target_include_directories(blockattack PRIVATE "source/code/Libs/include")
-target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
 target_include_directories(blockattack PRIVATE ${SDL2_INCLUDE_DIRS})
 target_include_directories(blockattack PRIVATE ${SDL2MIXER_INCLUDE_DIRS})
 target_include_directories(blockattack PRIVATE ${SDL2IMAGE_INCLUDE_DIRS})
@@ -114,7 +133,6 @@ target_include_directories(blockattack PRIVATE ${Intl_INCLUDE_DIRS})
 
 target_link_libraries(blockattack PRIVATE ${SDL2_LIBRARIES})
 target_link_libraries(blockattack PRIVATE fmt)
-target_link_libraries(blockattack PRIVATE platform_folders)
 target_link_libraries(blockattack PRIVATE physfs)
 if (MACOSX)
 	target_link_libraries(blockattack PRIVATE intl)
