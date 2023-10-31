@@ -458,6 +458,38 @@ bool BlockGame::hasStaticContent() const {
 	return false;                   //Return false if no static object found
 }
 
+void BlockGame::putSampleBlocks() {
+	//row 0 (hidden):
+	board[0][0]=0;
+	board[1][0]=1;
+	board[2][0]=2;
+	board[3][0]=3;
+	board[4][0]=4;
+	board[5][0]=5;
+	//row 1:
+	board[0][1]=0;
+	board[1][1]=1;
+	board[2][1]=2;
+	board[3][1]=3;
+	board[4][1]=4;
+	board[5][1]=5;
+	//row 2+:
+	board[0][2]=6;
+	board[0][3]=1;
+	board[0][4]=2;
+	for ( size_t i = 0; i < 4; i++) {
+		board[i][5]=GARBAGE;
+	}
+	for (size_t i = 0; i < 6; i++) {
+		for (size_t j = 6; j < 9; j++) {
+			board[i][j] = GARBAGE+1;
+		}
+		for (size_t j = 9; j < 12; j++) {
+			board[i][j] = GARBAGE+2;
+		}
+	}
+}
+
 void BlockGame::putStartBlocks() {
 	putStartBlocks(time(0));
 }

@@ -261,6 +261,7 @@ public:
 	const BlockGameInfo& GetBlockGameInfo() {
 		return replayInfo;
 	}
+	void putSampleBlocks();
 private:
 	void NewGameInternal(unsigned int ticks);
 	//Test if LineNr is an empty line, returns false otherwise.
