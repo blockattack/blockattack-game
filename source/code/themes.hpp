@@ -26,11 +26,12 @@ https://www.blockattack.net
 #include <string>
 #include <vector>
 
-enum class ImgScale { Stretch,
-                      Tile,
-                      Resize,
-                      Cut
-                    };
+enum class ImgScale {
+	Stretch,
+	Tile,
+	Resize,
+	Cut
+};
 
 struct BackGroundData {
 	std::string name = "standard";
