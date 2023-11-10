@@ -218,9 +218,6 @@ void Button_testMusic::doAction() {
 	Mix_PlayMusic(bgMusic.get(), -1);
 }
 
-void InitMenues() {
-	standardButton.setSurfaces();
-}
 
 static void runSinglePlayerEndless0() {
 	runGame(Gametype::SinglePlayerEndless, 0);
@@ -449,13 +446,13 @@ public:
 		game->putSampleBlocks();
 	}
 
-	void placeButtons() {
+	void placeButtons() override {
 		int nextY = 100;
 		int X = 50;
 		for (Button* it : buttons) {
 			it->x = X;
 			it->y = nextY;
-			nextY += standardButton.ysize+10;
+			nextY += it->standardButton.ysize+10;
 		}
 		exit.x = X;
 		exit.y = nextY;
@@ -623,7 +620,6 @@ void SafeModeMenu() {
 	if (Config::getInstance()->getInt("always-software")) {
 		return;
 	}
-	InitMenues();
 	Menu safeMode(globalData.screen, _("Game did not shutdown as it should"), true);
 	Button bOnce;
 	Button bAlways;
@@ -640,7 +636,6 @@ void SafeModeMenu() {
 }
 
 void MainMenu() {
-	InitMenues();
 	Menu m(globalData.screen,_("Block Attack - Rise of the blocks"),false);
 	Button bHi, bMulti, bConfigure, bHighscore, bHelp;
 	bHi.setLabel(_("Single player") );

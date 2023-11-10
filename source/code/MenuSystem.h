@@ -40,14 +40,14 @@ struct ButtonGfx
 	//The size of the buttons, so we don't have to ask w and h from the SDL Surfaces each time
 	int xsize = 0;
 	int ysize = 0;
-	sago::SagoTextField* getLabel(const std::string& text, bool marked);
+	sago::SagoTextField* getLabel(const std::string& text, bool marked) const;
 	void setSurfaces();
+	std::string menu_marked = "menu_marked";
+	std::string menu_unmarked = "menu_unmarked";
 private:
-	std::map<std::string, std::shared_ptr<sago::SagoTextField> > labels;
-	std::map<std::string, std::shared_ptr<sago::SagoTextField> > labels_marked;
+	mutable std::map<std::string, std::shared_ptr<sago::SagoTextField> > labels;
+	mutable std::map<std::string, std::shared_ptr<sago::SagoTextField> > labels_marked;
 };
-
-extern ButtonGfx standardButton;
 
 //A button
 class Button
@@ -67,6 +67,7 @@ public:
 	//Where is the button on the screen
 	int x = 0;
 	int y = 0;
+	ButtonGfx standardButton;
 
 	Button() = default;
 	Button(const Button& b);

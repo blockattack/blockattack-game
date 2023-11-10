@@ -31,11 +31,6 @@ https://blockattack.net
 static int oldmousex = 0;
 static int oldmousey = 0;
 
-const char* const menu_marked = "menu_marked";
-const char* const menu_unmarked = "menu_unmarked";
-
-ButtonGfx standardButton;
-
 void ButtonGfx::setSurfaces() {
 	this->xsize = globalData.spriteHolder->GetSprite(menu_marked).GetWidth();
 	this->ysize = globalData.spriteHolder->GetSprite(menu_marked).GetHeight();
@@ -44,7 +39,7 @@ void ButtonGfx::setSurfaces() {
 	}
 }
 
-sago::SagoTextField* ButtonGfx::getLabel(const std::string& text, bool marked) {
+sago::SagoTextField* ButtonGfx::getLabel(const std::string& text, bool marked) const {
 	if (!marked) {
 		const auto& theLabel = labels.find(text);
 		if (theLabel != labels.end()) {
@@ -85,6 +80,7 @@ Button& Button::operator=(const Button& other) {
 
 void Button::setLabel(const std::string& text) {
 	label = text;
+	standardButton.setSurfaces();
 }
 
 void Button::setAction(void (*action2run)(void)) {
@@ -109,19 +105,19 @@ bool Button::isPopOnRun() const {
 
 static void drawToScreen(const Button& b) {
 	if (b.marked) {
-		globalData.spriteHolder->GetSprite(menu_marked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
+		globalData.spriteHolder->GetSprite(b.standardButton.menu_marked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 	else {
-		globalData.spriteHolder->GetSprite(menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
+		globalData.spriteHolder->GetSprite(b.standardButton.menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
 	}
 
-	standardButton.getLabel(b.getLabel(), b.marked)->Draw(globalData.screen, b.x+standardButton.xsize/2,b.y+standardButton.ysize/2,
+	b.standardButton.getLabel(b.getLabel(), b.marked)->Draw(globalData.screen, b.x+b.standardButton.xsize/2,b.y+b.standardButton.ysize/2,
 	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
 }
 
 
 static bool isClicked(const Button& b, int x,int y) {
-	if ( x >= b.x && y >= b.y && x<= b.x+standardButton.xsize && y <= b.y + standardButton.ysize) {
+	if ( x >= b.x && y >= b.y && x<= b.x+b.standardButton.xsize && y <= b.y + b.standardButton.ysize) {
 		return true;
 	}
 	return false;
@@ -133,7 +129,7 @@ void Menu::drawSelf(SDL_Renderer* target) {
 		drawToScreen(*b);
 	}
 	drawToScreen(exit);
-	standardButton.getLabel(title, false)->Draw(target, 50, 50);
+	exit.standardButton.getLabel(title, false)->Draw(target, 50, 50);
 }
 
 
@@ -141,10 +137,10 @@ void Menu::placeButtons() {
 	int nextY = 100;
 	int X = 50;
 	for (Button* it : buttons) {
-		X = (globalData.xsize - standardButton.xsize)/2;
+		X = (globalData.xsize - it->standardButton.xsize)/2;
 		it->x = X;
 		it->y = nextY;
-		nextY += standardButton.ysize+10;
+		nextY += it->standardButton.ysize+10;
 	}
 	exit.x = X;
 	exit.y = nextY;
