@@ -683,7 +683,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 		Ticks = SDL_GetTicks();
 	}
 	fpsField.SetText(FPS);
-	fpsField.Draw(globalData.screen, 800, 4);
+	fpsField.Draw(globalData.screen, globalData.xsize - 4, 4, sago::SagoTextField::Alignment::right, sago::SagoTextField::VerticalAlignment::top);
 #endif
 }
 
