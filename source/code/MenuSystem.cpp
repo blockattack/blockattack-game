@@ -46,9 +46,11 @@ sago::SagoTextField* ButtonGfx::getLabel(const std::string& text, bool marked) c
 			return labels[text].get();
 		}
 	}
-	const auto& theLabel = labels_marked.find(text);
-	if (theLabel != labels_marked.end()) {
-		return labels_marked[text].get();
+	else {
+		const auto& theLabel = labels_marked.find(text);
+		if (theLabel != labels_marked.end()) {
+			return labels_marked[text].get();
+		}
 	}
 	std::shared_ptr<sago::SagoTextField> newField = std::make_shared<sago::SagoTextField>();
 	newField->SetHolder(&globalData.spriteHolder->GetDataHolder());
