@@ -453,10 +453,12 @@ static void testMusic() {
 class ThemesMenu : public Menu {
 private:
 	std::shared_ptr<BlockGameSdl> game;
+	sago::SagoTextField themeTitle;
 public:
 	ThemesMenu(SDL_Renderer* screen, const std::string& title, bool submenu) : Menu(screen, title, submenu) {
 		game = std::make_shared<BlockGameSdl>(globalData.xsize-450,100,&globalData.spriteHolder->GetDataHolder());
 		game->putSampleBlocks();
+		sagoTextSetBlueFont(themeTitle);
 	}
 
 	void placeButtons() override {
@@ -474,6 +476,8 @@ public:
 	void Draw(SDL_Renderer* target) override {
 		Menu::Draw(target);
 		game->DoPaintJob();
+		themeTitle.SetText(fmt::format(_("Theme: {}"), globalData.theme.theme_name));
+		themeTitle.Draw(target, 10, globalData.ysize-50,sago::SagoTextField::Alignment::left);
 	}
 };
 
