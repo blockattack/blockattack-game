@@ -437,6 +437,19 @@ static void switchTheme() {
 	globalData.theme = getNextTheme();
 }
 
+
+static void testMusic() {
+	static bool highbeatNext = false;
+	int musicVolume = Config::getInstance()->getInt("volume_music");
+	std::string music_name = "bgmusic";
+	if (highbeatNext) {
+		music_name = "highbeat";
+	}
+	Mix_PlayMusic(globalData.spriteHolder->GetDataHolder().getMusicHandler(music_name.c_str()).get(), 1);
+	Mix_VolumeMusic(musicVolume);
+	highbeatNext = !highbeatNext; //Toggle between standard and highbeat
+}
+
 class ThemesMenu : public Menu {
 private:
 	std::shared_ptr<BlockGameSdl> game;
@@ -470,6 +483,12 @@ static void OpenThemesMenu() {
 	bSwitchTheme.setLabel(_("Switch theme"));
 	bSwitchTheme.setAction(&switchTheme);
 	tm.addButton(&bSwitchTheme);
+	if (!globalData.NoSound) {
+		Button bTestMusic;
+		bTestMusic.setLabel(_("Test music"));
+		bTestMusic.setAction(&testMusic);
+		tm.addButton(&bTestMusic);
+	}
 	RunGameState(tm);
 }
 
