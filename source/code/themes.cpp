@@ -30,6 +30,7 @@ https://www.blockattack.net
 #include <iostream>
 #include "global.hpp"
 #include <boost/algorithm/string/predicate.hpp>
+#include <fmt/core.h>
 
 using json = nlohmann::json;
 
@@ -144,6 +145,10 @@ static void ReadThemeDataFromFile(const std::string& filename) {
 		std::cout << "Reading theme data from " << filename << "\n";
 	}
 	std::string s = sago::GetFileContent(filename);
+	if (s.empty()) {
+		std::cout << "File \"" << filename << "\" does not exit!\n";
+		return;
+	}
 	json j = json::parse(s);
 	ThemeFileData tfd = j;
 	for (auto& bg : tfd.background_data) {
@@ -173,7 +178,9 @@ static void InitBackGroundData() {
 	decoration_data[smileys.name] = smileys;
 }
 
-
+static bool str_startswith(const std::string& s, const char* prefix) {
+	return (s.rfind(prefix, 0) == 0);
+}
 
 void DumpThemeData() {
 	ThemeFileData tfd;
@@ -189,6 +196,32 @@ void DumpThemeData() {
 	sago::WriteFileContent("themes_dump.json", s);
 }
 
+void ThemesSaveCustomSlots() {
+	ThemeFileData tfd;
+	for (const Theme& theme : themes) {
+		if ( str_startswith(theme.theme_name,"custom_slot_")) {
+			tfd.themes.push_back(theme);
+		}
+	}
+	json j = tfd;
+	std::string s = j.dump(4);
+	sago::WriteFileContent("custom_themes.json", s);
+}
+
+static void ThemesAddCustomSlot(std::vector<Theme>& themes, int slot_number) {
+	std::string slot_name = fmt::format("custom_slot_{}", slot_number);
+	for (const Theme& theme : themes) {
+		if (theme.theme_name == slot_name) {
+			//Custom slot already exists
+			return;
+		}
+	}
+	Theme new_theme;
+	new_theme.theme_name = slot_name;
+	themes.push_back(new_theme);
+	FillMissingFields(themes.back());
+}
+
 void InitThemes() {
 	if (initialized) {
 		return;
@@ -202,6 +235,10 @@ void InitThemes() {
 		if (boost::algorithm::ends_with(filename,".json")) {
 			ReadThemeDataFromFile("themes/"+filename);
 		}
+	}
+	ReadThemeDataFromFile("custom_themes.json");
+	for (int i=0; i < 4; ++i) {
+		ThemesAddCustomSlot(themes, i);
 	}
 	DumpThemeData();
 }

@@ -73,3 +73,9 @@ Theme getNextTheme();
  * @return
  */
 Theme getTheme(size_t theme_number);
+
+/**
+ * @brief Saves the themes starting with "custom_slot_" to "custom_themes.json"
+ *
+ */
+void ThemesSaveCustomSlots();
