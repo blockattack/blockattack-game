@@ -55,7 +55,7 @@ HelpGamepadState::~HelpGamepadState() {
 }
 
 void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
-	if (isGameControllerConnectionEvent(event)) {
+	if (GameControllerIsConnectionEvent(event)) {
 		UnInitGameControllers();
 		InitGameControllers();
 		std::string s = getLabelForSupportedControllerNames();

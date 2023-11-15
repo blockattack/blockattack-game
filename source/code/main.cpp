@@ -1575,59 +1575,59 @@ int runGame(Gametype gametype, int level) {
 					}
 				}
 
-				if (isPlayerUpEvent(1, event)) {
+				if (GameControllerExtIsPlayerUpEvent(1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'N';
 					theGame.DoAction(a);
 				}
-				if (isPlayerDownEvent(1, event)) {
+				if (GameControllerExtIsPlayerDownEvent(1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'S';
 					theGame.DoAction(a);
 				}
-				if (isPlayerLeftEvent(1, event)) {
+				if (GameControllerExtIsPlayerLeftEvent(1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'W';
 					theGame.DoAction(a);
 				}
-				if (isPlayerRightEvent (1, event)) {
+				if (GameControllerExtIsPlayerRightEvent (1, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'E';
 					theGame.DoAction(a);
 				}
-				if (isPlayerSwitchEvent(1, event)) {
+				if (GameControllerExtIsPlayerSwitchEvent(1, event)) {
 					a.action = BlockGameAction::Action::SWITCH;
 					theGame.DoAction(a);
 				}
-				if (isPlayerPushEvent(1, event)) {
+				if (GameControllerExtIsPlayerPushEvent(1, event)) {
 					a.action = BlockGameAction::Action::PUSH;
 					theGame.DoAction(a);
 				}
-				if (isPlayerUpEvent(2, event)) {
+				if (GameControllerExtIsPlayerUpEvent(2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'N';
 					theGame2.DoAction(a);
 				}
-				if (isPlayerDownEvent(2, event)) {
+				if (GameControllerExtIsPlayerDownEvent(2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'S';
 					theGame2.DoAction(a);
 				}
-				if (isPlayerLeftEvent(2, event)) {
+				if (GameControllerExtIsPlayerLeftEvent(2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'W';
 					theGame2.DoAction(a);
 				}
-				if (isPlayerRightEvent (2, event)) {
+				if (GameControllerExtIsPlayerRightEvent (2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
 					a.way = 'E';
 					theGame2.DoAction(a);
 				}
-				if (isPlayerSwitchEvent(2, event)) {
+				if (GameControllerExtIsPlayerSwitchEvent(2, event)) {
 					a.action = BlockGameAction::Action::SWITCH;
 					theGame2.DoAction(a);
 				}
-				if (isPlayerPushEvent(2, event)) {
+				if (GameControllerExtIsPlayerPushEvent(2, event)) {
 					a.action = BlockGameAction::Action::PUSH;
 					theGame2.DoAction(a);
 				}

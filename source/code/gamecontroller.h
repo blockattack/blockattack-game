@@ -33,18 +33,18 @@ const int deadZoneLimit = 20000;
 void InitGameControllers();
 void UnInitGameControllers();
 
-bool isControllerDownEvent(const SDL_Event& event);
-bool isControllerUpEvent(const SDL_Event& event);
-bool isControllerLeftEvent(const SDL_Event& event);
-bool isControllerRightEvent(const SDL_Event& event);
+bool GameControllerIsDownEvent(const SDL_Event& event);
+bool GameControllerIsUpEvent(const SDL_Event& event);
+bool GameControllerIsLeftEvent(const SDL_Event& event);
+bool GameControllerIsRightEvent(const SDL_Event& event);
 
-bool isPlayerDownEvent(int playerNumber, const SDL_Event& event);
-bool isPlayerUpEvent(int playerNumber, const SDL_Event& event);
-bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event);
-bool isPlayerRightEvent(int playerNumber, const SDL_Event& event);
-bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event);
-bool isPlayerPushEvent(int playerNumber, const SDL_Event& event);
-bool isGameControllerConnectionEvent(const SDL_Event& event);
+bool GameControllerExtIsPlayerDownEvent(int playerNumber, const SDL_Event& event);
+bool GameControllerExtIsPlayerUpEvent(int playerNumber, const SDL_Event& event);
+bool GameControllerExtIsPlayerLeftEvent(int playerNumber, const SDL_Event& event);
+bool GameControllerExtIsPlayerRightEvent(int playerNumber, const SDL_Event& event);
+bool GameControllerExtIsPlayerSwitchEvent(int playerNumber, const SDL_Event& event);
+bool GameControllerExtIsPlayerPushEvent(int playerNumber, const SDL_Event& event);
+bool GameControllerIsConnectionEvent(const SDL_Event& event);
 void GameControllerSetVerbose(bool value);
 const std::vector<std::string>& GetSupportedControllerNames();
 
@@ -54,7 +54,7 @@ const std::vector<std::string>& GetSupportedControllerNames();
  * Otherwise nothing is done
  * @param event An SDL
  */
-void checkDeadZone(const SDL_Event& event);
+void GameControllerCheckDeadZone(const SDL_Event& event);
 
 /**
  * Checks that the given axis on a given gamepad was in a dead zone last time checked.
@@ -62,7 +62,7 @@ void checkDeadZone(const SDL_Event& event);
  * @param axis The axis on the gamepad
  * @return true if the axis has been in the dead zone
  */
-bool getDeadZone(SDL_JoystickID id, int axis);
+bool GameControllerIsInDeadZone(SDL_JoystickID id, int axis);
 
 /**
  * Sets dead zone status on a given axis on a given gamepad
@@ -70,6 +70,6 @@ bool getDeadZone(SDL_JoystickID id, int axis);
  * @param axis The axis on the gamepad
  * @param value Value to set. Should normally be false as true will be set by checkDeadZone
  */
-void setDeadZone(SDL_JoystickID id, int axis, bool value);
+void GameControllerSetIsInDeadZone(SDL_JoystickID id, int axis, bool value);
 
 #endif  //GAMECONTROLLER

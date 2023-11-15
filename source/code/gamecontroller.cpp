@@ -57,7 +57,7 @@ static const char* GameControllerGetName(SDL_GameController* gamecontroller) {
 static std::string GetGuidAsHex(const SDL_JoystickGUID& guid) {
 	std::string ret;
 	char buffer[3];
-	for (size_t j = 0; j < 16; j++) {
+	for (size_t j = 0; j < sizeof(guid.data); j++) {
 		snprintf(buffer, sizeof(buffer), "%02X", guid.data[j]);
 		ret += buffer;
 	}
@@ -128,7 +128,7 @@ const std::vector<std::string>& GetSupportedControllerNames() {
 	return supportedControllers;
 }
 
-void checkDeadZone(const SDL_Event& event) {
+void GameControllerCheckDeadZone(const SDL_Event& event) {
 	if (event.type != SDL_CONTROLLERAXISMOTION) {
 		return;  //assert?
 	}
@@ -138,15 +138,15 @@ void checkDeadZone(const SDL_Event& event) {
 	}
 }
 
-bool getDeadZone(SDL_JoystickID id, int axis) {
+bool GameControllerIsInDeadZone(SDL_JoystickID id, int axis) {
 	return controllerStatusMap[id].AxisInDeadZone[axis];
 }
 
-void setDeadZone(SDL_JoystickID id, int axis, bool value) {
+void GameControllerSetIsInDeadZone(SDL_JoystickID id, int axis, bool value) {
 	controllerStatusMap[id].AxisInDeadZone[axis] = value;
 }
 
-static bool skipThisPlayer(int playerNumber, const SDL_Event& event) {
+static bool GameControllerExtSkipThisPlayer(int playerNumber, const SDL_Event& event) {
 
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		ControllerStatus& cs = controllerStatusMap[event.cbutton.which];
@@ -164,7 +164,7 @@ static bool skipThisPlayer(int playerNumber, const SDL_Event& event) {
 }
 
 
-bool isGameControllerConnectionEvent(const SDL_Event& event) {
+bool GameControllerIsConnectionEvent(const SDL_Event& event) {
 	if ( event.type == SDL_CONTROLLERDEVICEADDED
 	        || event.type == SDL_CONTROLLERDEVICEREMOVED
 	        || event.type == SDL_CONTROLLERDEVICEREMAPPED ) {
@@ -175,14 +175,14 @@ bool isGameControllerConnectionEvent(const SDL_Event& event) {
 
 
 
-bool isPlayerDownEvent(int playerNumber, const SDL_Event& event) {
-	if (skipThisPlayer(playerNumber, event)) {
+bool GameControllerExtIsPlayerDownEvent(int playerNumber, const SDL_Event& event) {
+	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
-	return isControllerDownEvent(event);
+	return GameControllerIsDownEvent(event);
 }
 
-bool isControllerDirectionEvent(const SDL_Event& event, SDL_GameControllerButton dpad_direction, SDL_GameControllerAxis axis, float axis_mod = 1.0f) {
+bool GameControllerIsControllerDirectionEvent(const SDL_Event& event, SDL_GameControllerButton dpad_direction, SDL_GameControllerAxis axis, float axis_mod = 1.0f) {
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 		if (event.cbutton.button == dpad_direction ) {
 			return true;
@@ -190,10 +190,10 @@ bool isControllerDirectionEvent(const SDL_Event& event, SDL_GameControllerButton
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == axis ) {
 		const SDL_ControllerAxisEvent& a = event.caxis;
-		checkDeadZone(event);
-		if (getDeadZone(a.which, a.axis)) {
+		GameControllerCheckDeadZone(event);
+		if (GameControllerIsInDeadZone(a.which, a.axis)) {
 			if (event.caxis.value * axis_mod > deadZoneLimit) {
-				setDeadZone(a.which,a.axis,false);
+				GameControllerSetIsInDeadZone(a.which,a.axis,false);
 				return true;
 			}
 		}
@@ -201,45 +201,45 @@ bool isControllerDirectionEvent(const SDL_Event& event, SDL_GameControllerButton
 	return false;
 }
 
-bool isControllerDownEvent(const SDL_Event& event) {
-	return isControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_DOWN, SDL_CONTROLLER_AXIS_LEFTY);
+bool GameControllerIsDownEvent(const SDL_Event& event) {
+	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_DOWN, SDL_CONTROLLER_AXIS_LEFTY);
 }
 
-bool isControllerUpEvent(const SDL_Event& event) {
-	return isControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_UP, SDL_CONTROLLER_AXIS_LEFTY, -1.0f);
+bool GameControllerIsUpEvent(const SDL_Event& event) {
+	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_UP, SDL_CONTROLLER_AXIS_LEFTY, -1.0f);
 }
 
-bool isControllerLeftEvent(const SDL_Event& event) {
-	return isControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_CONTROLLER_AXIS_LEFTX, -1.0f);
+bool GameControllerIsLeftEvent(const SDL_Event& event) {
+	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_CONTROLLER_AXIS_LEFTX, -1.0f);
 }
 
-bool isControllerRightEvent(const SDL_Event& event) {
-	return isControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_CONTROLLER_AXIS_LEFTX);
+bool GameControllerIsRightEvent(const SDL_Event& event) {
+	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_CONTROLLER_AXIS_LEFTX);
 }
 
-bool isPlayerUpEvent(int playerNumber, const SDL_Event& event) {
-	if (skipThisPlayer(playerNumber, event)) {
+bool GameControllerExtIsPlayerUpEvent(int playerNumber, const SDL_Event& event) {
+	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
-	return isControllerUpEvent(event);
+	return GameControllerIsUpEvent(event);
 }
 
-bool isPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
-	if (skipThisPlayer(playerNumber, event)) {
+bool GameControllerExtIsPlayerLeftEvent(int playerNumber, const SDL_Event& event) {
+	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
-	return isControllerLeftEvent(event);
+	return GameControllerIsLeftEvent(event);
 }
 
-bool isPlayerRightEvent(int playerNumber, const SDL_Event& event) {
-	if (skipThisPlayer(playerNumber, event)) {
+bool GameControllerExtIsPlayerRightEvent(int playerNumber, const SDL_Event& event) {
+	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
-	return isControllerRightEvent(event);
+	return GameControllerIsRightEvent(event);
 }
 
-bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event) {
-	if (skipThisPlayer(playerNumber, event)) {
+bool GameControllerExtIsPlayerSwitchEvent(int playerNumber, const SDL_Event& event) {
+	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
@@ -250,8 +250,8 @@ bool isPlayerSwitchEvent(int playerNumber, const SDL_Event& event) {
 	return false;
 }
 
-bool isPlayerPushEvent(int playerNumber, const SDL_Event& event) {
-	if (skipThisPlayer(playerNumber, event)) {
+bool GameControllerExtIsPlayerPushEvent(int playerNumber, const SDL_Event& event) {
+	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
 	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
@@ -260,11 +260,11 @@ bool isPlayerPushEvent(int playerNumber, const SDL_Event& event) {
 		}
 	}
 	if (event.type == SDL_CONTROLLERAXISMOTION  && (event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT || event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT ) ) {
-		checkDeadZone(event);
+		GameControllerCheckDeadZone(event);
 		const SDL_ControllerAxisEvent& a = event.caxis;
-		if (getDeadZone(a.which, a.axis)) {
+		if (GameControllerIsInDeadZone(a.which, a.axis)) {
 			if (event.caxis.value > deadZoneLimit) {
-				setDeadZone(a.which,a.axis,false);
+				GameControllerSetIsInDeadZone(a.which,a.axis,false);
 				return true;
 			}
 		}

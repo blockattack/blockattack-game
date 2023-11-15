@@ -192,7 +192,7 @@ bool isUpEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	return isControllerUpEvent(event);
+	return GameControllerIsUpEvent(event);
 }
 
 bool isDownEvent(const SDL_Event& event) {
@@ -201,7 +201,7 @@ bool isDownEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	return isControllerDownEvent(event);
+	return GameControllerIsDownEvent(event);
 }
 
 bool isLeftEvent(const SDL_Event& event) {
@@ -210,7 +210,7 @@ bool isLeftEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	return isControllerLeftEvent(event);
+	return GameControllerIsLeftEvent(event);
 }
 
 bool isRightEvent(const SDL_Event& event) {
@@ -219,7 +219,7 @@ bool isRightEvent(const SDL_Event& event) {
 			return true;
 		}
 	}
-	return isControllerRightEvent(event);
+	return GameControllerIsRightEvent(event);
 }
 
 bool isEscapeEvent(const SDL_Event& event) {
@@ -277,7 +277,7 @@ void Menu::Draw(SDL_Renderer* target) {
 #endif
 }
 void Menu::ProcessInput(const SDL_Event& event, bool& processed) {
-	if (isGameControllerConnectionEvent(event)) {
+	if (GameControllerIsConnectionEvent(event)) {
 		UnInitGameControllers();
 		InitGameControllers();
 		processed = true;
