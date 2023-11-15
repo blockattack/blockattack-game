@@ -65,14 +65,14 @@ struct ThemeFileData {
  * @brief returns a theme from a list
  * @return A copy of a theme
  */
-Theme getNextTheme();
+Theme ThemesGetNext();
 
 /**
  * @brief getTheme returns a specific theme
  * @param theme_number
  * @return
  */
-Theme getTheme(size_t theme_number);
+Theme ThemesGet(size_t theme_number);
 
 /**
  * @brief Saves the themes starting with "custom_slot_" to "custom_themes.json"

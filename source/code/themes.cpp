@@ -132,7 +132,7 @@ static bool initialized = false;
 static size_t current_theme = 0;
 
 
-static void FillMissingFields(Theme& theme) {
+static void ThemesFillMissingFields(Theme& theme) {
 	if (theme.background.name.empty()) {
 		//If the theme does not define a background then use the standard.
 		theme.background.name = "standard";
@@ -140,7 +140,7 @@ static void FillMissingFields(Theme& theme) {
 	theme.background = background_data[theme.background.name];
 }
 
-static void ReadThemeDataFromFile(const std::string& filename) {
+static void ThemesReadDataFromFile(const std::string& filename) {
 	if (globalData.verboseLevel) {
 		std::cout << "Reading theme data from " << filename << "\n";
 	}
@@ -162,12 +162,12 @@ static void ReadThemeDataFromFile(const std::string& filename) {
 			std::cout << "Adding theme " << theme.theme_name << "\n";
 		}
 		themes.push_back(theme);
-		FillMissingFields(themes.back());
+		ThemesFillMissingFields(themes.back());
 	}
 }
 
 
-static void InitBackGroundData() {
+static void ThemesInitBackGroundData() {
 	BackGroundData standard;
 	standard.name = "standard";
 	standard.background_sprite = "background";
@@ -182,7 +182,7 @@ static bool str_startswith(const std::string& s, const char* prefix) {
 	return (s.rfind(prefix, 0) == 0);
 }
 
-void DumpThemeData() {
+static void ThemesDumpData() {
 	ThemeFileData tfd;
 	tfd.themes = themes;
 	for (auto& pair : background_data) {
@@ -219,38 +219,38 @@ static void ThemesAddCustomSlot(std::vector<Theme>& themes, int slot_number) {
 	Theme new_theme;
 	new_theme.theme_name = slot_name;
 	themes.push_back(new_theme);
-	FillMissingFields(themes.back());
+	ThemesFillMissingFields(themes.back());
 }
 
-void InitThemes() {
+void ThemesInit() {
 	if (initialized) {
 		return;
 	}
 	initialized = true;
-	InitBackGroundData();
+	ThemesInitBackGroundData();
 	themes.resize(1);  //Add the default theme
-	FillMissingFields(themes[0]);
+	ThemesFillMissingFields(themes[0]);
 	const std::vector<std::string>& theme_files = sago::GetFileList("themes");
 	for (const std::string& filename : theme_files) {
 		if (boost::algorithm::ends_with(filename,".json")) {
-			ReadThemeDataFromFile("themes/"+filename);
+			ThemesReadDataFromFile("themes/"+filename);
 		}
 	}
-	ReadThemeDataFromFile("custom_themes.json");
+	ThemesReadDataFromFile("custom_themes.json");
 	for (int i=1; i <= 4; ++i) {
 		ThemesAddCustomSlot(themes, i);
 	}
-	DumpThemeData();
+	ThemesDumpData();
 }
 
-Theme getNextTheme() {
-	InitThemes();
+Theme ThemesGetNext() {
+	ThemesInit();
 	current_theme++;
 	current_theme = current_theme % themes.size();
 	return themes.at(current_theme);
 }
 
-Theme getTheme(size_t theme_number) {
-	InitThemes();
+Theme ThemesGet(size_t theme_number) {
+	ThemesInit();
 	return themes.at(theme_number % themes.size());
 }

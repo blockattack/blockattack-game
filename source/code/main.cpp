@@ -1185,7 +1185,7 @@ int main(int argc, char* argv[]) {
 			std::cout << "Renderer: " << info.name << "\n";
 		}
 		globalData.screen = renderer;
-		globalData.theme = getTheme(0);
+		globalData.theme = ThemesGet(0);
 		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
 
@@ -1567,7 +1567,7 @@ int runGame(Gametype gametype, int level) {
 						if ( event.key.keysym.sym == SDLK_F5 ) {
 						}
 						if ( event.key.keysym.sym == SDLK_F11 ) {
-							globalData.theme = getNextTheme();
+							globalData.theme = ThemesGetNext();
 						} //F11
 					}
 					if ( event.key.keysym.sym == SDLK_F12 ) {

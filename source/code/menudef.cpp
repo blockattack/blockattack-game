@@ -434,7 +434,7 @@ static void PlayerConfigMenu() {
 }
 
 static void switchTheme() {
-	globalData.theme = getNextTheme();
+	globalData.theme = ThemesGetNext();
 }
 
 
