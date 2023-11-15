@@ -237,7 +237,7 @@ void InitThemes() {
 		}
 	}
 	ReadThemeDataFromFile("custom_themes.json");
-	for (int i=0; i < 4; ++i) {
+	for (int i=1; i <= 4; ++i) {
 		ThemesAddCustomSlot(themes, i);
 	}
 	DumpThemeData();
