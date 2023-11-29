@@ -25,6 +25,7 @@ https://blockattack.net
 #include "global.hpp"
 #include "sago/SagoTextField.hpp"
 #include "BallManager.hpp"
+#include "ExplosionManager.hpp"
 #include "puzzlehandler.hpp"
 
 extern BallManager theBallManager;

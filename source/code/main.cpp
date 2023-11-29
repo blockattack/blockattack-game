@@ -64,6 +64,8 @@ https://blockattack.net
 #include <fstream>
 #include "levelselect.hpp"
 
+#include "ExplosionManager.hpp"
+
 /*******************************************************************************
 * All variables and constant has been moved to mainVars.inc for the overview.  *
 *******************************************************************************/
