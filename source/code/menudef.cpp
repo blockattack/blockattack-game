@@ -31,7 +31,7 @@ http://blockattack.net
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
 #include <fmt/core.h>
-#include "BlockGameSdl.hpp"
+#include "menudef_themes.hpp"
 
 
 #if 0
@@ -433,68 +433,6 @@ static void PlayerConfigMenu() {
 	RunGameState(pcm);
 }
 
-static void switchTheme() {
-	globalData.theme = ThemesGetNext();
-}
-
-
-static void testMusic() {
-	static bool highbeatNext = false;
-	int musicVolume = Config::getInstance()->getInt("volume_music");
-	std::string music_name = "bgmusic";
-	if (highbeatNext) {
-		music_name = "highbeat";
-	}
-	Mix_PlayMusic(globalData.spriteHolder->GetDataHolder().getMusicHandler(music_name.c_str()).get(), 1);
-	Mix_VolumeMusic(musicVolume);
-	highbeatNext = !highbeatNext; //Toggle between standard and highbeat
-}
-
-class ThemesMenu : public Menu {
-private:
-	std::shared_ptr<BlockGameSdl> game;
-	sago::SagoTextField themeTitle;
-public:
-	ThemesMenu(SDL_Renderer* screen, const std::string& title, bool submenu) : Menu(screen, title, submenu) {
-		game = std::make_shared<BlockGameSdl>(globalData.xsize-450,100,&globalData.spriteHolder->GetDataHolder());
-		game->putSampleBlocks();
-		sagoTextSetBlueFont(themeTitle);
-	}
-
-	void placeButtons() override {
-		int nextY = 100;
-		int X = 10;
-		for (Button* it : buttons) {
-			it->x = X;
-			it->y = nextY;
-			nextY += it->standardButton.ysize+10;
-		}
-		exit.x = X;
-		exit.y = nextY;
-	}
-
-	void Draw(SDL_Renderer* target) override {
-		Menu::Draw(target);
-		game->DoPaintJob();
-		themeTitle.SetText(fmt::format(_("Theme: {}"), globalData.theme.theme_name));
-		themeTitle.Draw(target, 10, globalData.ysize-50,sago::SagoTextField::Alignment::left);
-	}
-};
-
-static void OpenThemesMenu() {
-	ThemesMenu tm(globalData.screen, _("Themes"), true);
-	Button bSwitchTheme;
-	bSwitchTheme.setLabel(_("Switch theme"));
-	bSwitchTheme.setAction(&switchTheme);
-	tm.addButton(&bSwitchTheme);
-	if (!globalData.NoSound) {
-		Button bTestMusic;
-		bTestMusic.setLabel(_("Test music"));
-		bTestMusic.setAction(&testMusic);
-		tm.addButton(&bTestMusic);
-	}
-	RunGameState(tm);
-}
 
 static void ConfigureMenu() {
 	Menu cm(globalData.screen,_("Configuration"),true);
