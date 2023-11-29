@@ -102,7 +102,9 @@ endif()
 
 
 #building/compiling/linking
-add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES})
+add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES}
+    source/code/menudef_themes.cpp
+    source/code/menudef_themes.hpp)
 
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson

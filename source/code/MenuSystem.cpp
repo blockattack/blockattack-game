@@ -27,6 +27,7 @@ https://blockattack.net
 #include "global.hpp"
 #include "gamecontroller.h"
 #include "BlockGame.hpp"
+#include "menudef_themes.hpp"
 
 static int oldmousex = 0;
 static int oldmousey = 0;
