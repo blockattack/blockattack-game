@@ -70,12 +70,18 @@ Theme ThemesGetNext();
 /**
  * @brief getTheme returns a specific theme
  * @param theme_number
- * @return
+ * @return A reference to the theme. The referance is valid until the next call to a "Themes*" function
  */
-Theme ThemesGet(size_t theme_number);
+Theme& ThemesGet(size_t theme_number);
 
 /**
  * @brief Saves the themes starting with "custom_slot_" to "custom_themes.json"
  *
  */
 void ThemesSaveCustomSlots();
+
+/**
+ * Returns the index of a given file.
+ * Returns 0 if it does not exist or is the standard theme.
+*/
+size_t ThemeGetNumber(const std::string& name);

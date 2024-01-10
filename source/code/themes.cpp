@@ -35,6 +35,9 @@ https://www.blockattack.net
 using json = nlohmann::json;
 
 
+const int NUMBER_OF_CUSTOM_SLOTS = 2;
+
+
 void to_json(json& j, const ImgScale& p) {
 	switch (p) {
 	case ImgScale::Stretch:
@@ -237,7 +240,7 @@ void ThemesInit() {
 		}
 	}
 	ThemesReadDataFromFile("custom_themes.json");
-	for (int i=1; i <= 4; ++i) {
+	for (int i=1; i <= NUMBER_OF_CUSTOM_SLOTS; ++i) {
 		ThemesAddCustomSlot(themes, i);
 	}
 	ThemesDumpData();
@@ -250,7 +253,18 @@ Theme ThemesGetNext() {
 	return themes.at(current_theme);
 }
 
-Theme ThemesGet(size_t theme_number) {
+Theme& ThemesGet(size_t theme_number) {
 	ThemesInit();
 	return themes.at(theme_number % themes.size());
+}
+
+size_t ThemeGetNumber(const std::string& name) {
+	size_t ret = 0;  // Default to 0
+	ThemesInit();
+	for (size_t i = 0; i < themes.size(); ++i) {
+		if (themes[i].theme_name == name) {
+			ret = i;
+		}
+	}
+	return ret;
 }

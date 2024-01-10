@@ -43,11 +43,13 @@ static void testMusic() {
 	highbeatNext = !highbeatNext; //Toggle between standard and highbeat
 }
 
+
+
 class ThemesMenu : public Menu {
-private:
+public:
 	std::shared_ptr<BlockGameSdl> game;
 	sago::SagoTextField themeTitle;
-public:
+
 	ThemesMenu(SDL_Renderer* screen, const std::string& title, bool submenu) : Menu(screen, title, submenu) {
 		game = std::make_shared<BlockGameSdl>(globalData.xsize-450,100,&globalData.spriteHolder->GetDataHolder());
 		game->putSampleBlocks();
@@ -74,12 +76,31 @@ public:
 	}
 };
 
+static int theme2edit = 0;
+
+static void themesEditSlot1() {
+	ThemesMenu tem(globalData.screen, _("Edit custom theme 1"), true);
+	size_t theme_index = ThemeGetNumber("custom_slot_1");
+	if (theme_index == 0) {
+		// Theme not found
+		return;
+	}
+	theme2edit = theme_index;
+	globalData.theme = ThemesGet(theme2edit);
+	RunGameState(tem);
+}
+
+
 void OpenThemesMenu() {
 	ThemesMenu tm(globalData.screen, _("Themes"), true);
 	Button bSwitchTheme;
 	bSwitchTheme.setLabel(_("Switch theme"));
 	bSwitchTheme.setAction(&switchTheme);
 	tm.addButton(&bSwitchTheme);
+	Button bEditTheme1;
+	bEditTheme1.setLabel(_("Edit custom theme 1"));
+	bEditTheme1.setAction(&themesEditSlot1);
+	tm.addButton(&bEditTheme1);
 	if (!globalData.NoSound) {
 		Button bTestMusic;
 		bTestMusic.setLabel(_("Test music"));
