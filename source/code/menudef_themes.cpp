@@ -76,7 +76,13 @@ public:
 	}
 };
 
-static int theme2edit = 0;
+static Theme themeBackup;
+static Theme themeToEdit;
+
+static void themesEditSwitchBackground() {
+	themeToEdit.background = ThemesGetNextBackground(themeToEdit.background.name);
+	globalData.theme = themeToEdit;
+}
 
 static void themesEditSlot1() {
 	ThemesMenu tem(globalData.screen, _("Edit custom theme 1"), true);
@@ -85,9 +91,16 @@ static void themesEditSlot1() {
 		// Theme not found
 		return;
 	}
-	theme2edit = theme_index;
-	globalData.theme = ThemesGet(theme2edit);
+	Button bSwitchBackground;
+	bSwitchBackground.setLabel(_("Switch background"));
+	bSwitchBackground.setAction(&themesEditSwitchBackground);
+	tem.addButton(&bSwitchBackground);
+	themeBackup = globalData.theme;
+	themeToEdit = ThemesGet(theme_index);
+	globalData.theme = themeToEdit;
 	RunGameState(tem);
+	ThemesAddOrReplace(themeToEdit);
+	globalData.theme = themeBackup;
 }
 
 

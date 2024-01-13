@@ -135,7 +135,7 @@ static bool initialized = false;
 static size_t current_theme = 0;
 
 
-static void ThemesFillMissingFields(Theme& theme) {
+void ThemesFillMissingFields(Theme& theme) {
 	if (theme.background.name.empty()) {
 		//If the theme does not define a background then use the standard.
 		theme.background.name = "standard";
@@ -264,6 +264,34 @@ size_t ThemeGetNumber(const std::string& name) {
 	for (size_t i = 0; i < themes.size(); ++i) {
 		if (themes[i].theme_name == name) {
 			ret = i;
+		}
+	}
+	return ret;
+}
+
+void ThemesAddOrReplace(const Theme& theme) {
+	ThemesInit();
+	for (size_t i = 0; i < themes.size(); ++i) {
+		if (themes[i].theme_name == theme.theme_name) {
+			themes[i] = theme;
+			return;
+		}
+	}
+	themes.push_back(theme);
+}
+
+BackGroundData ThemesGetNextBackground(const std::string& current) {
+	ThemesInit();
+	BackGroundData ret = background_data["standard"];
+	for (auto& pair : background_data) {
+		if (pair.first == current) {
+			auto it = background_data.find(current);
+			++it;
+			if (it == background_data.end()) {
+				it = background_data.begin();
+			}
+			ret = it->second;
+			break;
 		}
 	}
 	return ret;
