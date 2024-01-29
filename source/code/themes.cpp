@@ -296,3 +296,16 @@ BackGroundData ThemesGetNextBackground(const std::string& current) {
 	}
 	return ret;
 }
+
+std::string ThemesGetNextBoardBackground(const std::string& current) {
+	ThemesInit();
+	std::vector<std::string> back_boards = {"back_board", "back_board_sample_snow", "trans_cover"};
+	std::string ret = "back_board";
+	for (size_t i = 0; i < back_boards.size(); ++i) {
+		if (back_boards[i] == current) {
+			ret = back_boards[(i + 1) % back_boards.size()];
+			break;
+		}
+	}
+	return ret;
+}

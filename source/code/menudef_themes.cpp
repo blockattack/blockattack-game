@@ -84,6 +84,11 @@ static void themesEditSwitchBackground() {
 	globalData.theme = themeToEdit;
 }
 
+static void themesEditSwitchBoardBackground() {
+	themeToEdit.back_board = ThemesGetNextBoardBackground(themeToEdit.back_board);
+	globalData.theme = themeToEdit;
+}
+
 static void themesEditSlot1() {
 	ThemesMenu tem(globalData.screen, _("Edit custom theme 1"), true);
 	size_t theme_index = ThemeGetNumber("custom_slot_1");
@@ -95,6 +100,10 @@ static void themesEditSlot1() {
 	bSwitchBackground.setLabel(_("Switch background"));
 	bSwitchBackground.setAction(&themesEditSwitchBackground);
 	tem.addButton(&bSwitchBackground);
+	Button bSwitchBoardBackground;
+	bSwitchBoardBackground.setLabel(_("Switch board background"));
+	bSwitchBoardBackground.setAction(&themesEditSwitchBoardBackground);
+	tem.addButton(&bSwitchBoardBackground);
 	themeBackup = globalData.theme;
 	themeToEdit = ThemesGet(theme_index);
 	globalData.theme = themeToEdit;
