@@ -89,9 +89,9 @@ static void themesEditSwitchBoardBackground() {
 	globalData.theme = themeToEdit;
 }
 
-static void themesEditSlot1() {
-	ThemesMenu tem(globalData.screen, _("Edit custom theme 1"), true);
-	size_t theme_index = ThemeGetNumber("custom_slot_1");
+static void themesEditSlot(int slot) {
+	ThemesMenu tem(globalData.screen, fmt::format(_("Edit custom theme {}"), slot), true);
+	size_t theme_index = ThemeGetNumber(fmt::format("custom_slot_{}", slot));
 	if (theme_index == 0) {
 		// Theme not found
 		return;
@@ -110,6 +110,15 @@ static void themesEditSlot1() {
 	RunGameState(tem);
 	ThemesAddOrReplace(themeToEdit);
 	globalData.theme = themeBackup;
+	ThemesSaveCustomSlots();
+}
+
+static void themesEditSlot1() {
+	themesEditSlot(1);
+}
+
+static void themesEditSlot2() {
+	themesEditSlot(2);
 }
 
 
@@ -120,9 +129,13 @@ void OpenThemesMenu() {
 	bSwitchTheme.setAction(&switchTheme);
 	tm.addButton(&bSwitchTheme);
 	Button bEditTheme1;
-	bEditTheme1.setLabel(_("Edit custom theme 1"));
+	bEditTheme1.setLabel(fmt::format(_("Edit custom theme {}"), 1));
 	bEditTheme1.setAction(&themesEditSlot1);
 	tm.addButton(&bEditTheme1);
+	Button bEditTheme2;
+	bEditTheme2.setLabel(fmt::format(_("Edit custom theme {}"), 2));
+	bEditTheme2.setAction(&themesEditSlot2);
+	tm.addButton(&bEditTheme2);
 	if (!globalData.NoSound) {
 		Button bTestMusic;
 		bTestMusic.setLabel(_("Test music"));

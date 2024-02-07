@@ -65,6 +65,7 @@ void ThemesFillMissingFields(Theme& theme);
 
 void ThemesAddOrReplace(const Theme& theme);
 
+
 /**
  * @brief returns a theme from a list
  * @return A copy of a theme
