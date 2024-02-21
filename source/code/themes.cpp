@@ -25,6 +25,7 @@ https://www.blockattack.net
 #include "themes.hpp"
 #include "sago/SagoMisc.hpp"
 #include <vector>
+#include <sstream>
 #include <map>
 #include "nlohmann/json.hpp"
 #include <iostream>
@@ -231,6 +232,7 @@ void ThemesInit() {
 	}
 	initialized = true;
 	ThemesInitBackGroundData();
+	ThemesInitCustomBackgrounds();
 	themes.resize(1);  //Add the default theme
 	ThemesFillMissingFields(themes[0]);
 	const std::vector<std::string>& theme_files = sago::GetFileList("themes");
@@ -308,4 +310,39 @@ std::string ThemesGetNextBoardBackground(const std::string& current) {
 		}
 	}
 	return ret;
+}
+
+void ThemesInitCustomBackgrounds() {
+	std::vector<std::string> custom_backgrounds = sago::GetFileList("textures/backgrounds");
+	std::stringstream sprite_stream;
+	sprite_stream << "{\n";
+	bool first = true;
+	for (const std::string& filename : custom_backgrounds) {
+		std::cout << "Found custom background " << filename << "\n";
+		if (boost::algorithm::ends_with(filename, ".png") || boost::algorithm::ends_with(filename, ".jpg")) {
+			BackGroundData bg;
+			bg.name = filename;
+			std::string texture_name = fmt::format("custom_background_{}",filename);;
+			bg.background_sprite = texture_name;
+			bg.background_sprite_16x9 = texture_name;
+			bg.background_scale = ImgScale::Resize;
+			background_data[bg.name] = bg;
+			if (!first) {
+				sprite_stream << ",\n";
+			}
+			sprite_stream << "\"" << texture_name << "\": {\n";
+			sprite_stream << "  \"texture\": \"" << "backgrounds/" << filename.substr(0, filename.size()-4) << "\",\n";
+			sprite_stream << "  \"topx\": 0,\n";
+			sprite_stream << "  \"topy\": 0,\n";
+			sprite_stream << "  \"height\": 7680,\n";
+			sprite_stream << "  \"width\": 10240,\n";
+			sprite_stream << "  \"number_of_frames\": 1,\n";
+			sprite_stream << "  \"frame_time\": 1\n";
+			sprite_stream << "}\n";
+			first = false;
+
+		}
+	}
+	sprite_stream << "}\n";
+	sago::WriteFileContent("sprites/custom_backgrounds.sprite", sprite_stream.str());
 }

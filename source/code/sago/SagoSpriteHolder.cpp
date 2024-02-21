@@ -148,6 +148,7 @@ const sago::SagoSprite& SagoSpriteHolder::GetSprite(const std::string& spritenam
 	}
 }
 
+
 const SagoDataHolder& SagoSpriteHolder::GetDataHolder() const {
 	return *data->tex;
 }

@@ -36,6 +36,7 @@ https://blockattack.net
 
 #include "sago/SagoSpriteHolder.hpp"
 #include "sago/SagoTextBox.hpp"
+#include "sago/SagoMisc.hpp"
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>           //Used for srand()
@@ -259,6 +260,10 @@ void ResetFullscreen() {
 	dataHolder.invalidateAll(globalData.screen);
 	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
 	globalData.spriteHolder->ReadSprites(globalData.modinfo.getModSpriteFiles());
+	if (sago::FileExists("sprites/custom_backgrounds.sprite")) {
+		std::vector<std::string> custom_backgrounds = { "custom_backgrounds" };
+		globalData.spriteHolder->ReadSprites(custom_backgrounds);
+	}
 	InitImages(*(globalData.spriteHolder.get()) );
 	SDL_ShowCursor(SDL_DISABLE);
 }

@@ -94,3 +94,5 @@ size_t ThemeGetNumber(const std::string& name);
 BackGroundData ThemesGetNextBackground(const std::string& current);
 
 std::string ThemesGetNextBoardBackground(const std::string& current);
+
+void ThemesInitCustomBackgrounds();
