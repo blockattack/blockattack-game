@@ -52,6 +52,7 @@ public:
 
 	ThemesMenu(SDL_Renderer* screen, const std::string& title, bool submenu) : Menu(screen, title, submenu) {
 		game = std::make_shared<BlockGameSdl>(globalData.xsize-450,100,&globalData.spriteHolder->GetDataHolder());
+		game->name = "Player 1";
 		game->putSampleBlocks();
 		sagoTextSetBlueFont(themeTitle);
 	}
