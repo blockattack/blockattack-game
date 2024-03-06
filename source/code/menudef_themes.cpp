@@ -90,6 +90,11 @@ static void themesEditSwitchBoardBackground() {
 	globalData.theme = themeToEdit;
 }
 
+static void themesEditSwitchBorder() {
+	themeToEdit.border = ThemesGetNextBorder(themeToEdit.border.name);
+	globalData.theme = themeToEdit;
+}
+
 static void themesEditSlot(int slot) {
 	ThemesMenu tem(globalData.screen, fmt::format(_("Edit custom theme {}"), slot), true);
 	size_t theme_index = ThemeGetNumber(fmt::format("custom_slot_{}", slot));
@@ -105,6 +110,10 @@ static void themesEditSlot(int slot) {
 	bSwitchBoardBackground.setLabel(_("Switch board background"));
 	bSwitchBoardBackground.setAction(&themesEditSwitchBoardBackground);
 	tem.addButton(&bSwitchBoardBackground);
+	Button bSwitchBorder;
+	bSwitchBorder.setLabel(_("Switch border"));
+	bSwitchBorder.setAction(&themesEditSwitchBorder);
+	tem.addButton(&bSwitchBorder);
 	themeBackup = globalData.theme;
 	themeToEdit = ThemesGet(theme_index);
 	globalData.theme = themeToEdit;

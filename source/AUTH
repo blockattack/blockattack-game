@@ -16,6 +16,8 @@ penguinattack.ttf       Dustin Norlander - GPLv2
 
 /textures/
 alt_gfx/back_board_sample_snow.jpg  Poul Sander
+alt_gfx/background.png  Poul Sander
+alt_gfx/board_back_back_mirror.png  qubodup (mirror of board_back_back.pn)
 back_board.png          qubodup
 background.png          qubodup
 background_sixteen_nine.png  Poul Sander (based of qubodup's background.png)

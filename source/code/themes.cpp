@@ -132,6 +132,7 @@ void from_json(const json& j, ThemeFileData& p) {
 static std::vector<Theme> themes(1);
 static std::map<std::string, BackGroundData> background_data;
 static std::map<std::string, DecorationData> decoration_data;
+static std::map<std::string, ThemeBorderData> border_data;
 static bool initialized = false;
 static size_t current_theme = 0;
 
@@ -180,6 +181,23 @@ static void ThemesInitBackGroundData() {
 	background_data[standard.name] = standard;
 	DecorationData smileys;
 	decoration_data[smileys.name] = smileys;
+}
+
+static void ThemesInitBorderData() {
+	ThemeBorderData standard;
+	standard.name = "standard";
+	standard.border_sprite = "board_back_back";
+	standard.border_sprite_offset = {-60, -68};
+	border_data[standard.name] = standard;
+	ThemeBorderData mirror = standard;
+	mirror.name = "mirror";
+	mirror.border_sprite = "board_back_back_mirror";
+	mirror.border_sprite_offset = {-116, -68};
+	mirror.score_label_offset = {-100, 80};
+	mirror.time_label_offset = {-100,129};
+	mirror.chain_label_offset = {-100, 178};
+	mirror.speed_label_offset = {-100, 227};
+	border_data[mirror.name] = mirror;
 }
 
 static bool str_startswith(const std::string& s, const char* prefix) {
@@ -233,6 +251,7 @@ void ThemesInit() {
 	initialized = true;
 	ThemesInitBackGroundData();
 	ThemesInitCustomBackgrounds();
+	ThemesInitBorderData();
 	themes.resize(1);  //Add the default theme
 	ThemesFillMissingFields(themes[0]);
 	const std::vector<std::string>& theme_files = sago::GetFileList("themes");
@@ -311,6 +330,33 @@ std::string ThemesGetNextBoardBackground(const std::string& current) {
 	}
 	return ret;
 }
+
+ThemeBorderData ThemesGetBorder(const std::string& name) {
+	ThemesInit();
+	auto it = border_data.find(name);
+	if (it == border_data.end()) {
+		return border_data["standard"];
+	}
+	return it->second;
+}
+
+ThemeBorderData ThemesGetNextBorder(const std::string& current) {
+	ThemesInit();
+	ThemeBorderData ret = border_data["standard"];
+	for (auto& pair : border_data) {
+		if (pair.first == current) {
+			auto it = border_data.find(current);
+			++it;
+			if (it == border_data.end()) {
+				it = border_data.begin();
+			}
+			ret = it->second;
+			break;
+		}
+	}
+	return ret;
+}
+
 
 void ThemesInitCustomBackgrounds() {
 	std::vector<std::string> custom_backgrounds = sago::GetFileList("textures/backgrounds");

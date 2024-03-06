@@ -19,5 +19,14 @@
         "number_of_frames" : 1,
         "frame_time" : 1
 }
+,"board_back_back_mirror" : {
+	"texture" : "alt_gfx/board_back_back_mirror",
+	"topx" : 0,
+	"topy" : 0,
+	"height" : 699,
+	"width" : 476,
+	"number_of_frames" : 1,
+	"frame_time" : 1
+}
 
 }

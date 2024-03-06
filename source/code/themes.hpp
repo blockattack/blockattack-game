@@ -43,6 +43,17 @@ struct BackGroundData {
 };
 
 
+struct ThemeBorderData {
+	std::string name = "standard";
+	std::string border_sprite = "board_back_back";
+	std::pair<int, int> border_sprite_offset = {-60, -68};
+	std::pair<int, int> score_label_offset = {310, 80};
+	std::pair<int, int> time_label_offset = {310,129};
+	std::pair<int, int> chain_label_offset = {310, 178};
+	std::pair<int, int> speed_label_offset = {310, 227};
+};
+
+
 struct DecorationData {
 	std::string name = "smilies";
 	std::vector<std::string> decoration_sprites = {"smileys0", "smileys1", "smileys2", "smileys3"};
@@ -53,6 +64,7 @@ struct Theme {
 	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
 	BackGroundData background;  //Serialized as background.background_name
 	DecorationData decoration;
+	ThemeBorderData border;
 };
 
 struct ThemeFileData {
@@ -94,5 +106,9 @@ size_t ThemeGetNumber(const std::string& name);
 BackGroundData ThemesGetNextBackground(const std::string& current);
 
 std::string ThemesGetNextBoardBackground(const std::string& current);
+
+ThemeBorderData ThemesGetBorder(const std::string& name);
+
+ThemeBorderData ThemesGetNextBorder(const std::string& current);
 
 void ThemesInitCustomBackgrounds();

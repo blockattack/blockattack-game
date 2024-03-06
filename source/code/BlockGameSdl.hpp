@@ -426,12 +426,14 @@ private:
 public:
 	//Draws everything
 	void DoPaintJob() {
-		DrawIMG(globalData.boardBackBack,globalData.screen,this->GetTopX()-60,this->GetTopY()-68);
+		const ThemeBorderData& border = globalData.theme.border;
+		sago::SagoSprite backback = globalData.spriteHolder->GetSprite(border.border_sprite);
+		DrawIMG(backback, globalData.screen, this->GetTopX()+border.border_sprite_offset.first, this->GetTopY()+border.border_sprite_offset.second);
 
-		this->scoreLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+148);
-		this->timeLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+197);
-		this->chainLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+246);
-		this->speedLabel.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()-68+295);
+		this->scoreLabel.Draw(globalData.screen, this->GetTopX()+border.score_label_offset.first,this->GetTopY()+border.score_label_offset.second);
+		this->timeLabel.Draw(globalData.screen, this->GetTopX()+border.time_label_offset.first,this->GetTopY()+border.time_label_offset.second);
+		this->chainLabel.Draw(globalData.screen, this->GetTopX()+border.chain_label_offset.first,this->GetTopY()+border.chain_label_offset.second);
+		this->speedLabel.Draw(globalData.screen, this->GetTopX()+border.speed_label_offset.first,this->GetTopY()+border.speed_label_offset.second);
 		globalData.spriteHolder->GetSprite(globalData.theme.back_board).DrawScaled(globalData.screen, SDL_GetTicks(), this->GetTopX(),this->GetTopY(), BOARD_WIDTH, BOARD_HEIGHT);
 
 		PaintBricks();
@@ -569,7 +571,7 @@ public:
 		std::string strHolder;
 		strHolder = std::to_string(this->GetScore()+this->GetHandicap());
 		player_score.SetText(strHolder);
-		player_score.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+100);
+		player_score.Draw(globalData.screen, this->GetTopX()+border.score_label_offset.first,this->GetTopY()+border.score_label_offset.second+22);
 		if (this->GetAIenabled()) {
 			player_name.SetText(_("AI"));
 		}
@@ -620,14 +622,14 @@ public:
 			}
 			player_time.SetText(strHolder);
 		}
-		player_time.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+150);
+		player_time.Draw(globalData.screen, this->GetTopX()+border.time_label_offset.first,this->GetTopY()+border.time_label_offset.second+22);
 		strHolder = std::to_string(this->GetChains());
 		player_chain.SetText(strHolder);
-		player_chain.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+200);
+		player_chain.Draw(globalData.screen, this->GetTopX()+border.chain_label_offset.first,this->GetTopY()+border.chain_label_offset.second+22);
 		//drawspeedLevel:
 		strHolder = std::to_string(this->GetSpeedLevel());
 		player_speed.SetText(strHolder);
-		player_speed.Draw(globalData.screen, this->GetTopX()+310,this->GetTopY()+250);
+		player_speed.Draw(globalData.screen, this->GetTopX()+border.speed_label_offset.first,this->GetTopY()+border.speed_label_offset.second+22);
 		if ((this->isStageClear()) &&(this->GetTopY()+700+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1<600+this->GetTopY())) {
 			oldBubleX = this->GetTopX()+280;
 			oldBubleY = this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1;
