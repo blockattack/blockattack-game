@@ -510,14 +510,14 @@ void BlockGame::putStartBlocks(int n) {
 		board[2][0]=4;
 		board[3][0]=3;
 		board[4][0]=3;
-		board[5][0]=5;
+		board[5][0]=4;
 		//row 1:
 		board[0][1]=1;
 		board[1][1]=4;
 		board[2][1]=2;
 		board[3][1]=0;
 		board[4][1]=4;
-		board[5][1]=5;
+		board[5][1]=4;
 		//row 2:
 		board[0][2]=2;
 		board[1][2]=3;
@@ -541,8 +541,8 @@ void BlockGame::putStartBlocks(int n) {
 		board[5][4]=0;
 		//row 5:
 		board[0][5]=-1;
-		board[1][5]=5;
-		board[2][5]=5;
+		board[1][5]=4;
+		board[2][5]=4;
 		board[3][5]=-1;
 		board[4][5]=1;
 		board[5][5]=-1;
@@ -550,16 +550,16 @@ void BlockGame::putStartBlocks(int n) {
 	case 1:
 		//row 0:
 		board[0][0]=3;
-		board[1][0]=5;
+		board[1][0]=1;
 		board[2][0]=0;
 		board[3][0]=0;
 		board[4][0]=4;
 		board[5][0]=2;
 		//row 1:
 		board[0][1]=3;
-		board[1][1]=5;
+		board[1][1]=1;
 		board[2][1]=-1;
-		board[3][1]=5;
+		board[3][1]=1;
 		board[4][1]=4;
 		board[5][1]=2;
 		//row 2:
@@ -580,10 +580,10 @@ void BlockGame::putStartBlocks(int n) {
 		board[2][0]=2;
 		board[3][0]=0;
 		board[4][0]=1;
-		board[5][0]=5;
+		board[5][0]=3;
 		//row 1:
 		board[0][1]=4;
-		board[1][1]=5;
+		board[1][1]=3;
 		board[2][1]=2;
 		board[3][1]=1;
 		board[4][1]=0;
@@ -594,7 +594,7 @@ void BlockGame::putStartBlocks(int n) {
 		board[2][2]=-1;
 		board[3][2]=0;
 		board[4][2]=1;
-		board[5][2]=5;
+		board[5][2]=3;
 		//row 3:
 		board[0][3]=4;
 		board[1][3]=2;
