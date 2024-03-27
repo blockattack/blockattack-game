@@ -1309,7 +1309,6 @@ int main(int argc, char* argv[]) {
 }
 
 int runGame(Gametype gametype, int level) {
-	Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);
 	drawBalls = true;
 	puzzleLoaded = false;
 	bool bNearDeath = false;  //Play music faster or louder while tru
@@ -1863,16 +1862,31 @@ int runGame(Gametype gametype, int level) {
 				}
 			}
 
-		if (theGame.isGameOver() && registerTTHighscorePlayer1) {
-			registerTTHighscorePlayer1 = false;
-			theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
-		}
-		if (theGame2.isGameOver() && registerTTHighscorePlayer2) {
-			registerTTHighscorePlayer2 = false;
-			theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
+		if (theGame.isGameOver() && (registerTTHighscorePlayer1 || registerTTHighscorePlayer2)) {
+			std::string highscore_name = "timetrial";
+			int block_variants = theGame.GetBasicBlockVariants();
+			// If the block variants are not the default 6, add the number of block variants to the highscore name
+			if (block_variants != 6) {
+				highscore_name += "_block" + std::to_string(block_variants);
+			}
+			Highscore theTopScoresTimeTrial = Highscore(highscore_name, 0.5);
+			if (registerTTHighscorePlayer1) {
+				registerTTHighscorePlayer1 = false;
+				theTopScoresTimeTrial.addScore(theGame.name, theGame.GetScore());
+			}
+			if (theGame2.isGameOver() && registerTTHighscorePlayer2) {
+				registerTTHighscorePlayer2 = false;
+				theTopScoresTimeTrial.addScore(theGame2.name, theGame2.GetScore());
+			}
 		}
 		if (theGame.isGameOver() && registerEndlessHighscore) {
-			Highscore theTopScoresEndless = Highscore("endless", theGame.GetBaseSpeed());
+			std::string highscore_name = "endless";
+			int block_variants = theGame.GetBasicBlockVariants();
+			// If the block variants are not the default 6, add the number of block variants to the highscore name
+			if (block_variants != 6) {
+				highscore_name += "_block" + std::to_string(block_variants);
+			}
+			Highscore theTopScoresEndless = Highscore(highscore_name.c_str(), theGame.GetBaseSpeed());
 			registerEndlessHighscore = false;
 			theTopScoresEndless.addScore(theGame.name, theGame.GetScore());
 			theGame.EndlessHighscoreEvent();

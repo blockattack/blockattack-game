@@ -134,6 +134,7 @@ BlockGame::BlockGame() {
 	gameEndedAfter = 0;
 	pushedPixelAt = gameStartedAt;
 	nextGarbageNumber = 10;
+	basicBlockVariants = 6;
 	handicap=0;
 	for (int i=0; i<7; i++) {
 		for (int j=0; j<30; j++) {
@@ -266,6 +267,7 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 		recordStats = false;
 	}
 	NewGameInternal(s.ticks);
+	basicBlockVariants = 6;
 	if (s.timeTrial) {
 		timetrial = true;
 		putStartBlocks();
@@ -720,7 +722,7 @@ int BlockGame::GarbageClearer(int x, int y, int number, bool aLineToClear, int c
 		return -1;
 	}
 	if (aLineToClear) {
-		board[x][y] = this->rand2() % 6;
+		board[x][y] = this->rand2() % basicBlockVariants;
 		board[x][y] += 10*HANGTIME+BLOCKHANG+CHAINPLACE*chain;
 	}
 	garbageToBeCleared[x][y] = false;
@@ -1230,17 +1232,17 @@ void BlockGame::PushLineInternal() {
 			board[j][0] = rand2() % 4;
 			if (j > 0) {
 				if (board[j][0] == board[j-1][0]) {
-					board[j][0] = rand2() % 6;
+					board[j][0] = rand2() % basicBlockVariants;
 				}
 			}
 			if (board[j][0] == board[j][1]) {
-				board[j][0] = rand2() % 6;
+				board[j][0] = rand2() % basicBlockVariants;
 			}
 			if (board[j][0] == board[j][1]) {
-				board[j][0] = rand2() % 6;
+				board[j][0] = rand2() % basicBlockVariants;
 			}
 			while ((j>0)&&(board[j][0]==board[j-1][0])) {
-				board[j][0] = rand2() % 6;
+				board[j][0] = rand2() % basicBlockVariants;
 			}
 		}
 		score+=1;

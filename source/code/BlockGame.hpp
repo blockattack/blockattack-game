@@ -194,6 +194,9 @@ protected:
 
 	int handicap = 0;
 
+	// Number of different basic blocks. Default is 6. Easy mde is limited t 5.
+	int basicBlockVariants = 6;
+
 	std::vector<GarbageStruct> garbageSendQueue;
 
 	int AIlineToClear = 0;
@@ -257,6 +260,9 @@ public:
 	bool IsNearDeath() const;
 	double GetBaseSpeed() const {
 		return baseSpeed;
+	}
+	int GetBasicBlockVariants() const {
+		return basicBlockVariants;
 	}
 	const BlockGameInfo& GetBlockGameInfo() {
 		return replayInfo;
