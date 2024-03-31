@@ -122,8 +122,8 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.bricks[1] = holder.GetSprite("block_green");
 	globalData.bricks[2] = holder.GetSprite("block_purple");
 	globalData.bricks[3] = holder.GetSprite("block_red");
-	globalData.bricks[4] = holder.GetSprite("block_turkish");
-	globalData.bricks[5] = holder.GetSprite("block_yellow");
+	globalData.bricks[4] = holder.GetSprite("block_yellow");
+	globalData.bricks[5] = holder.GetSprite("block_turkish");
 	globalData.bricks[6] = holder.GetSprite("block_grey");
 	globalData.bomb = holder.GetSprite("block_bomb");
 	globalData.bHighScore = holder.GetSprite("b_highscore");
@@ -136,8 +136,8 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.balls[1] = holder.GetSprite("ball_green");
 	globalData.balls[2] = holder.GetSprite("ball_purple");
 	globalData.balls[3] = holder.GetSprite("ball_red");
-	globalData.balls[4] = holder.GetSprite("ball_turkish");
-	globalData.balls[5] = holder.GetSprite("ball_yellow");
+	globalData.balls[4] = holder.GetSprite("ball_yellow");
+	globalData.balls[5] = holder.GetSprite("ball_turkish");
 	globalData.balls[6] = holder.GetSprite("ball_gray");
 	globalData.cursor = holder.GetSprite("cursor");
 	globalData.ready = holder.GetSprite("block_ready");

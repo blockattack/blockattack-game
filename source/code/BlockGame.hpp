@@ -69,11 +69,12 @@ struct BlockGameStartInfo {
 	int startBlocks = -1;
 	int handicap = 0;
 	int gameSpeed = 0;
+	int basicBlockVariants = 6;
 	template <class Archive>
 	void serialize( Archive& ar ) {
 		ar( CEREAL_NVP(ticks), CEREAL_NVP(timeTrial), CEREAL_NVP(stageClear), CEREAL_NVP(puzzleMode), CEREAL_NVP(singlePuzzle),
 		    CEREAL_NVP(level), CEREAL_NVP(AI), CEREAL_NVP(recordStats), CEREAL_NVP(vsMode), CEREAL_NVP(vsAI),
-		    CEREAL_NVP(startBlocks), CEREAL_NVP(handicap), CEREAL_NVP(gameSpeed) );
+		    CEREAL_NVP(startBlocks), CEREAL_NVP(handicap), CEREAL_NVP(gameSpeed), CEREAL_NVP(basicBlockVariants) );
 	}
 };
 

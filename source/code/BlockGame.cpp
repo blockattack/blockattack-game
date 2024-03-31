@@ -267,7 +267,7 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 		recordStats = false;
 	}
 	NewGameInternal(s.ticks);
-	basicBlockVariants = 6;
+	basicBlockVariants = s.basicBlockVariants;
 	if (s.timeTrial) {
 		timetrial = true;
 		putStartBlocks();
