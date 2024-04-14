@@ -1196,7 +1196,8 @@ int main(int argc, char* argv[]) {
 			std::cout << "Renderer: " << info.name << "\n";
 		}
 		globalData.screen = renderer;
-		globalData.theme = ThemesGet(0);
+		globalData.theme=  ThemesGet(ThemesGetNumber(Config::getInstance()->getString("theme")));
+
 		ResetFullscreen();
 		SetSDLIcon(sdlWindow);
 

@@ -77,6 +77,8 @@ void ThemesFillMissingFields(Theme& theme);
 
 void ThemesAddOrReplace(const Theme& theme);
 
+void ThemesValidateAndFix(Theme& theme);
+
 
 /**
  * @brief returns a theme from a list
@@ -101,7 +103,7 @@ void ThemesSaveCustomSlots();
  * Returns the index of a given file.
  * Returns 0 if it does not exist or is the standard theme.
 */
-size_t ThemeGetNumber(const std::string& name);
+size_t ThemesGetNumber(const std::string& name);
 
 BackGroundData ThemesGetNextBackground(const std::string& current);
 

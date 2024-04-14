@@ -28,6 +28,7 @@ http://blockattack.net
 
 static void switchTheme() {
 	globalData.theme = ThemesGetNext();
+	Config::getInstance()->setString("theme", globalData.theme.theme_name);
 }
 
 
@@ -97,7 +98,7 @@ static void themesEditSwitchBorder() {
 
 static void themesEditSlot(int slot) {
 	ThemesMenu tem(globalData.screen, fmt::format(_("Edit custom theme {}"), slot), true);
-	size_t theme_index = ThemeGetNumber(fmt::format("custom_slot_{}", slot));
+	size_t theme_index = ThemesGetNumber(fmt::format("custom_slot_{}", slot));
 	if (theme_index == 0) {
 		// Theme not found
 		return;

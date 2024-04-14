@@ -279,7 +279,7 @@ Theme& ThemesGet(size_t theme_number) {
 	return themes.at(theme_number % themes.size());
 }
 
-size_t ThemeGetNumber(const std::string& name) {
+size_t ThemesGetNumber(const std::string& name) {
 	size_t ret = 0;  // Default to 0
 	ThemesInit();
 	for (size_t i = 0; i < themes.size(); ++i) {
@@ -357,6 +357,13 @@ ThemeBorderData ThemesGetNextBorder(const std::string& current) {
 	return ret;
 }
 
+void ThemesValidateAndFix(Theme& theme) {
+	ThemesInit();
+	if (!sago::FileExists(fmt::format("textures/backgrounds/{}.jpg", theme.background.name).c_str()) && !sago::FileExists(fmt::format("textures/backgrounds/{}.png", theme.background.name).c_str())) {
+		theme.background.name = "standard";
+	}
+	ThemesFillMissingFields(theme);
+}
 
 void ThemesInitCustomBackgrounds() {
 	std::vector<std::string> custom_backgrounds = sago::GetFileList("textures/backgrounds");
