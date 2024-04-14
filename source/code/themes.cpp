@@ -138,7 +138,7 @@ static size_t current_theme = 0;
 
 
 void ThemesFillMissingFields(Theme& theme) {
-	if (theme.background.name.empty()) {
+	if (theme.background.name.empty() || !ThemesBackgroundExists(theme.background.name) ){
 		//If the theme does not define a background then use the standard.
 		theme.background.name = "standard";
 	}
@@ -156,10 +156,10 @@ static void ThemesReadDataFromFile(const std::string& filename) {
 	}
 	json j = json::parse(s);
 	ThemeFileData tfd = j;
-	for (auto& bg : tfd.background_data) {
+	for (const auto& bg : tfd.background_data) {
 		background_data[bg.name] = bg;
 	}
-	for (auto& dec : tfd.decoration_data) {
+	for (const auto& dec : tfd.decoration_data) {
 		decoration_data[dec.name] = dec;
 	}
 	for (const Theme& theme : tfd.themes) {
@@ -301,6 +301,11 @@ void ThemesAddOrReplace(const Theme& theme) {
 	themes.push_back(theme);
 }
 
+bool ThemesBackgroundExists(const std::string& name) {
+	ThemesInit();
+	return background_data.find(name) != background_data.end();
+}
+
 BackGroundData ThemesGetNextBackground(const std::string& current) {
 	ThemesInit();
 	BackGroundData ret = background_data["standard"];
@@ -355,14 +360,6 @@ ThemeBorderData ThemesGetNextBorder(const std::string& current) {
 		}
 	}
 	return ret;
-}
-
-void ThemesValidateAndFix(Theme& theme) {
-	ThemesInit();
-	if (!sago::FileExists(fmt::format("textures/backgrounds/{}.jpg", theme.background.name).c_str()) && !sago::FileExists(fmt::format("textures/backgrounds/{}.png", theme.background.name).c_str())) {
-		theme.background.name = "standard";
-	}
-	ThemesFillMissingFields(theme);
 }
 
 void ThemesInitCustomBackgrounds() {
