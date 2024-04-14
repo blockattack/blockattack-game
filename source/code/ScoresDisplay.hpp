@@ -52,6 +52,13 @@ public:
 	Highscore theTopScoresEndless3 = Highscore("endless", 0.04);      //Stores highscores for endless
 	Highscore theTopScoresEndless4 = Highscore("endless", 0.015);      //Stores highscores for endless
 	Highscore theTopScoresTimeTrial = Highscore("timetrial", 0.5);    //Stores highscores for timetrial
+	// 5 variant
+	Highscore theTopScoresEndless0_5 = Highscore("endless_block5", 0.5);      //Stores highscores for endless
+	Highscore theTopScoresEndless1_5 = Highscore("endless_block5", 0.1);      //Stores highscores for endless
+	Highscore theTopScoresEndless2_5 = Highscore("endless_block5", 0.07);      //Stores highscores for endless
+	Highscore theTopScoresEndless3_5 = Highscore("endless_block5", 0.04);      //Stores highscores for endless
+	Highscore theTopScoresEndless4_5 = Highscore("endless_block5", 0.015);      //Stores highscores for endless
+	Highscore theTopScoresTimeTrial_5 = Highscore("timetrial_block5", 0.5);    //Stores highscores for timetrial
 private:
 	void DrawHighscores(int x, int y, bool endless, int speedLevel);
 	void DrawStats();

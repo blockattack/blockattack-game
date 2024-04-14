@@ -58,7 +58,7 @@ void ScoresDisplay::Write(SDL_Renderer* target, int x, int y, const std::string&
 	Write(target, x, y, text.c_str());
 }
 
-const int numberOfPages = 7;
+const int numberOfPages = 13;
 
 void ScoresDisplay::DrawBackgroundAndCalcPlacements() {
 	DrawBackground(globalData.screen);
@@ -85,13 +85,32 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless, int level = 0) {
 		case 4:
 			header = _("Endless (Fastest):");
 			break;
+		case 5:
+			header = _("Endless (5 blocks):");
+			break;
+		case 6:
+			header = _("Endless (5 blocks, Fast):");
+			break;
+		case 7:
+			header = _("Endless (5 blocks, Faster):");
+			break;
+		case 8:
+			header = _("Endless (5 blocks, Even faster):");
+			break;
+		case 9:
+			header = _("Endless (5 blocks, Fastest):");
+			break;
 		default:
 			header = _("Endless:");
 		};
 		Write(globalData.screen, x+100,y+100, header );
 	}
 	else {
-		Write(globalData.screen, x+100,y+100, _("Time Trial:") );
+		std::string header = _("Time Trial:");
+		if (level == 1) {
+			header = _("Time Trial (5 blocks):");
+		}
+		Write(globalData.screen, x+100,y+100, header );
 	}
 	for (int i =0; i<10; i++) {
 		record r;
@@ -109,12 +128,32 @@ void ScoresDisplay::DrawHighscores(int x, int y, bool endless, int level = 0) {
 			case 4:
 				r = theTopScoresEndless4.getScoreNumber(i);
 				break;
+			case 5:
+				r = theTopScoresEndless0_5.getScoreNumber(i);
+				break;
+			case 6:
+				r = theTopScoresEndless1_5.getScoreNumber(i);
+				break;
+			case 7:
+				r = theTopScoresEndless2_5.getScoreNumber(i);
+				break;
+			case 8:
+				r = theTopScoresEndless3_5.getScoreNumber(i);
+				break;
+			case 9:
+				r = theTopScoresEndless4_5.getScoreNumber(i);
+				break;
 			default:
 				r = theTopScoresEndless0.getScoreNumber(i);
 			}
 		}
 		else {
-			r = theTopScoresTimeTrial.getScoreNumber(i);
+			if (level == 1) {
+				r = theTopScoresTimeTrial_5.getScoreNumber(i);
+			}
+			else {
+				r = theTopScoresTimeTrial.getScoreNumber(i);
+			}
 		}
 		char playerScore[32];
 		char playerName[32];
@@ -207,6 +246,18 @@ void ScoresDisplay::Draw(SDL_Renderer* target) {
 		DrawHighscores(100,100,false);
 		break;
 	case 6:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+		//Highscores, endless 5 blocks
+		DrawHighscores(100,100,true, page-1);
+		break;
+	case 11:
+		//Highscores, Time Trial 5 blocks
+		DrawHighscores(100,100,false, 1);
+		break;
+	case 12:
 	default:
 		DrawStats();
 	};

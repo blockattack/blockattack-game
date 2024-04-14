@@ -711,6 +711,7 @@ static void StartSinglePlayerEndless(int startSpeed) {
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.startBlocks = startInfo.ticks;
 	startInfo.gameSpeed = startSpeed;
+	startInfo.basicBlockVariants = Config::getInstance()->getInt("basic_block_variants", 6);
 	player1->NewGame(startInfo);
 	twoPlayers =false;
 	BlockGameAction a;
@@ -726,6 +727,7 @@ static void StartSinglePlayerTimeTrial() {
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.timeTrial = true;
+	startInfo.basicBlockVariants = Config::getInstance()->getInt("basic_block_variants", 6);
 	player1->NewGame(startInfo);
 	twoPlayers =false;
 	BlockGameAction a;
@@ -764,6 +766,7 @@ static void StarTwoPlayerTimeTrial() {
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.timeTrial = true;
+	startInfo.basicBlockVariants = Config::getInstance()->getInt("basic_block_variants", 6);
 	BlockGameStartInfo startInfo2 = startInfo;
 	registerTTHighscorePlayer1 = true;
 	registerTTHighscorePlayer2 = true;
@@ -794,6 +797,7 @@ static void StartTwoPlayerVs() {
 	startInfo.ticks = SDL_GetTicks();
 	startInfo.vsMode = true;
 	startInfo.startBlocks = startInfo.ticks;
+	startInfo.basicBlockVariants = Config::getInstance()->getInt("basic_block_variants", 6);
 	BlockGameStartInfo startInfo2 = startInfo;
 	if (player1AI) {
 		startInfo.AI = true;
@@ -1389,6 +1393,7 @@ int runGame(Gametype gametype, int level) {
 				startInfo.vsMode = true;
 				startInfo.vsAI = true;
 				startInfo.level = theAIlevel;
+				startInfo.basicBlockVariants = Config::getInstance()->getInt("basic_block_variants", 6);
 				theGame.NewGame(startInfo);
 				startInfo.AI = true;
 				theGame2.NewGame(startInfo);

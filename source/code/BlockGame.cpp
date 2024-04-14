@@ -578,7 +578,7 @@ void BlockGame::putStartBlocks(int n) {
 	default:
 		//row 0:
 		board[0][0]=4;
-		board[1][0]=5;
+		board[1][0]=1;
 		board[2][0]=2;
 		board[3][0]=0;
 		board[4][0]=1;

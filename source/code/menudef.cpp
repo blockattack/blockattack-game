@@ -342,6 +342,10 @@ static void SetFullscreenLabel (Button* b) {
 	b->setLabel(globalData.bFullscreen? _("Fullscreen: On") : _("Fullscreen: Off") );
 }
 
+static void SetBlockVariationLabel (Button* b) {
+	b->setLabel(_("Block variants: ")+std::to_string(Config::getInstance()->getInt("basic_block_variants", 6)) );
+}
+
 class AlwaysSoftwareRenderButton : public Button {
 	virtual void doAction() override {
 		Config::getInstance()->setInt("always-software", !Config::getInstance()->getInt("always-software"));
@@ -370,6 +374,18 @@ class FullscreenButton : public Button {
 		globalData.bFullscreen = !globalData.bFullscreen;
 		SetFullscreenLabel(this);
 		ResetFullscreen();
+	}
+};
+
+class BlockVariantButton : public Button {
+	virtual void doAction() override {
+		int blockVariation = Config::getInstance()->getInt("basic_block_variants", 6);
+		blockVariation++;
+		if (blockVariation>6) {
+			blockVariation = 5;
+		}
+		Config::getInstance()->setInt("basic_block_variants", blockVariation);
+		SetBlockVariationLabel(this);
 	}
 };
 
@@ -440,6 +456,7 @@ static void ConfigureMenu() {
 	MusicButton bMusic;
 	SoundButton bSound;
 	FullscreenButton buttonFullscreen;
+	BlockVariantButton bBlockVariant;
 	Button bPlayerConfig;
 	bPlayerConfig.setLabel(_("Player configuration") );
 	bPlayerConfig.setAction(PlayerConfigMenu);
@@ -450,10 +467,12 @@ static void ConfigureMenu() {
 	SetMusicLabel(&bMusic);
 	SetSoundLabel(&bSound);
 	SetFullscreenLabel(&buttonFullscreen);
+	SetBlockVariationLabel(&bBlockVariant);
 	cm.addButton(&bMusic);
 	cm.addButton(&bSound);
 	cm.addButton(&bSoftware);
 	cm.addButton(&buttonFullscreen);
+	cm.addButton(&bBlockVariant);
 	cm.addButton(&bPlayerConfig);
 	cm.addButton(&bThemes);
 	RunGameState(cm);

@@ -220,6 +220,16 @@ int Config::getInt(const std::string& varName) {
 	}
 }
 
+int Config::getInt(const std::string& varName, int defaultValue) {
+	if (exists(varName)) {
+		return str2int(configMap[varName]);
+	}
+	else {
+		setInt(varName, defaultValue);
+		return defaultValue;
+	}
+}
+
 double Config::getValue(const std::string& varName) {
 	if (exists(varName)) {
 		return str2double(configMap[varName]);
