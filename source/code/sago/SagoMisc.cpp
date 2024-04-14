@@ -80,7 +80,8 @@ std::string GetFileContent(const char* filename) {
 	std::unique_ptr<char[]> m_data;
 	ReadBytesFromFile(filename, m_data, m_size);
 	//Now create a std::string
-	ret = std::string(m_data.get(), m_data.get()+m_size);
+	char* inbuf = m_data.get();
+	ret = std::string(inbuf, inbuf+m_size);
 	return ret;
 }
 
