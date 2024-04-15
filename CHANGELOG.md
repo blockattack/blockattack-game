@@ -3,8 +3,10 @@
 ## Unreleased
 
 ### Added
+ - Option to use 5 different basic blocks instead of 6
  - Added Swedish translation by sanchez-gayatri
  - Can now compile on Mac OS X. However: No prebuilds will be provided.
+ - Themes menu allowing some additional customization.
 
 ### Changed
  - Update library versions for the compiled version:
