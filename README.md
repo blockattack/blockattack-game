@@ -8,6 +8,14 @@ Source: <https://github.com/blockattack/blockattack-game>
 ## Screen shot
 ![Block Attack - Rise of the Blocks](https://blockattack.github.io/images/screenshots/blockattack-2.3.0-3.png "Screen shot")
 
+## Supported OS
+
+### Linux
+Recent Linux version. Target is all current Ubuntu Desktop LTS versions (up to 5 years).
+
+### Windoes
+Target is all official supported versions of windows for x86-64 that allows manually installed software. Currently Windows 10+.
+
 ## Dependencies
 * A version of g++ with C++11 support. Tested on g++-4.9
 * libSDL2
