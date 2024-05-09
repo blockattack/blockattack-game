@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.1...3.22.1)
+cmake_minimum_required(VERSION 3.5.1...3.27.4)
 project (blockattack)
 set(BIN_DIR ${blockattack_SOURCE_DIR}/Game)
 
