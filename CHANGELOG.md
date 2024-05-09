@@ -3,6 +3,14 @@
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.9.0] - 2024-05-09
+
+### Added
  - Option to use 5 different basic blocks instead of 6
  - Added Swedish translation by sanchez-gayatri
  - Can now compile on Mac OS X. However: No prebuilds will be provided.
