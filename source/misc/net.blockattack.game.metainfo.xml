@@ -3,6 +3,7 @@
 	<id>net.blockattack.game</id>
 	<metadata_license>MIT</metadata_license>
 	<project_license>GPL-2.0+</project_license>
+	<developer_name>Poul Sander</developer_name>
 	<name>Block Attack - Rise of the Blocks</name>
 	<summary>A fast paced match-3/blockfall game</summary>
 	<description>
