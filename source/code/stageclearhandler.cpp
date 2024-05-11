@@ -26,10 +26,10 @@ http://www.blockattack.net
 #include <vector>
 #include <iostream>
 #include <sstream>
-#include "cereal/cereal.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 //paths
 const char* const stageClearSaveName = "stageClear.json.SCsave";
@@ -38,12 +38,17 @@ struct StageClearElement {
 	bool cleared = false;
 	int time = 0;
 	int score = 0;
-
-	template<class Archive>
-	void serialize(Archive& archive) {
-		archive( cereal::make_nvp("cleared", cleared), cereal::make_nvp("time", time), cereal::make_nvp("score", score) );
-	}
 };
+
+void to_json(json& j, const StageClearElement& p) {
+	j = json{ {"cleared", p.cleared}, {"time", p.time}, {"score", p.score}};
+}
+
+void from_json(const json& j, StageClearElement& p) {
+	p.cleared = j.at("cleared").get<bool>();
+	p.time = j.at("time").get<int>();
+	p.score = j.at("score").get<int>();
+}
 
 std::vector<StageClearElement> stages(nrOfStageLevels);
 
@@ -55,12 +60,9 @@ Sint32 totalTime = 0;
 
 
 static void SaveStageClearStages() {
-	std::stringstream ss;
-	{
-		cereal::JSONOutputArchive archive(ss);
-		archive(cereal::make_nvp("stages", stages));
-	}
-	sago::WriteFileContent(stageClearSaveName, ss.str());
+	json j = json{ {"stages", stages} };
+	std::string s = j.dump(4);
+	sago::WriteFileContent(stageClearSaveName, s);
 }
 
 void StageClearSetClear(int Level, int score, int time) {
@@ -79,16 +81,13 @@ void StageClearSetClear(int Level, int score, int time) {
 void LoadStageClearStages() {
 	std::string readFileContent = sago::GetFileContent(stageClearSaveName);
 	if (readFileContent.length() > 0) {
-		std::stringstream ss(readFileContent);
-		{
-			try {
-				cereal::JSONInputArchive archive(ss);
-				archive(cereal::make_nvp("stages", stages));
-			}
-			catch (cereal::Exception& e) {
-				std::cerr << "Failed to load file \"" << stageClearSaveName << "\". Reason: " << e.what() << "\n";
-				stages.clear();
-			}
+		json j = json::parse(readFileContent);
+		try {
+			j.at("stages").get_to(stages);
+		} catch (json::exception& e) {
+			std::cerr << "Failed to read highscore " << stageClearSaveName << " due to formatting errors. Resetting the file. Reason: " <<
+			          e.what() << "\n";
+			stages.clear();
 		}
 	}
 	else {
