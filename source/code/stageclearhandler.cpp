@@ -21,13 +21,13 @@ http://www.blockattack.net
 ===========================================================================
 */
 
+#include "nlohmann/json.hpp"
 #include "stageclearhandler.hpp"
 #include "SDL.h"
 #include <vector>
 #include <iostream>
 #include <sstream>
 #include "sago/SagoMisc.hpp"
-#include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
 

@@ -21,13 +21,14 @@ https://blockattack.net
 ===========================================================================
 */
 
+
+#include "nlohmann/json.hpp"
 #include "highscore.h"
 #include "os.hpp"
 #include "sago/SagoMisc.hpp"
 #include <algorithm>
 #include "common.h"
 #include <fmt/core.h>
-#include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
 
