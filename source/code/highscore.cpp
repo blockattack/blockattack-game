@@ -23,26 +23,21 @@ https://blockattack.net
 
 #include "highscore.h"
 #include "os.hpp"
-#include "cereal/cereal.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
 #include <algorithm>
 #include "common.h"
 #include <fmt/core.h>
+#include "nlohmann/json.hpp"
 
-namespace cereal {
+using json = nlohmann::json;
 
-template<class Archive>
-void save(Archive& archive, record const& m) {
-	archive( cereal::make_nvp("Name", m.name), cereal::make_nvp("Score", m.score) );
+void to_json(json& j, const record& p) {
+	j = json{ {"Name", p.name}, {"Score", p.score}};
 }
 
-template<class Archive>
-void load(Archive& archive, record& m) {
-	archive( cereal::make_nvp("Name", m.name), cereal::make_nvp("Score", m.score) );
-}
-
+void from_json(const json& j, record& p) {
+	p.name = j.at("Name").get<std::string>();
+	p.score = j.at("Score").get<int>();
 }
 
 /*
@@ -59,21 +54,17 @@ Highscore::Highscore(const std::string& type, double speed) : filename(type+".js
 	}
 	std::string readFileContent = sago::GetFileContent(filename.c_str());
 	if (readFileContent.length() > 0) {
+		json j = json::parse(readFileContent);
 		try {
-			std::stringstream ss(readFileContent);
-			{
-				cereal::JSONInputArchive archive(ss);
-				archive(cereal::make_nvp("highscore", table));
-			}
-		}
-		catch (cereal::Exception& e) {
+			j.at("highscore").get_to(table);
+		} catch (json::exception& e) {
 			std::cerr << "Failed to read highscore " << filename << " due to formatting errors. Resetting the file. Reason: " <<
 			          e.what() << "\n";
 			table.clear();
 		}
 	}
 	if (table.size() < top) {
-		for (int i = 0; i<top; i++) {
+		for (size_t i = table.size(); i<top; i++) {
 			record r;
 			r.name = "Poul Sander";
 			r.score = 2000 - i*100;
@@ -87,12 +78,9 @@ Highscore::Highscore(const std::string& type, double speed) : filename(type+".js
 
 
 void Highscore::writeFile() {
-	std::stringstream ss;
-	{
-		cereal::JSONOutputArchive archive(ss);
-		archive(cereal::make_nvp("highscore", table));
-	}
-	sago::WriteFileContent(filename.c_str(), ss.str());
+	json j = json{ { "highscore", table } };
+	std::string s = j.dump(4);
+	sago::WriteFileContent(filename.c_str(), s);
 }
 
 bool Highscore::isHighScore(int newScore) {
