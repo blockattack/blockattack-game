@@ -22,14 +22,15 @@ http://blockattack.net
 */
 
 #include "puzzlehandler.hpp"
+#include "nlohmann/json.hpp"
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include "stats.h"
 #include <physfs.h>         //Abstract file system. To use containers
-#include "cereal/cereal.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
+
+using json = nlohmann::json;
 
 const int maxNrOfPuzzleStages = 50; //Maximum number of puzzle stages
 
@@ -68,16 +69,12 @@ void PuzzleSetName(const std::string& name) {
 void LoadClearData() {
 	std::string readFileContent = sago::GetFileContent(puzzleSavePath.c_str());
 	if (readFileContent.length() > 0) {
-		std::stringstream ss(readFileContent);
-		{
-			try {
-				cereal::JSONInputArchive archive(ss);
-				archive(cereal::make_nvp("cleared", puzzleCleared));
-			}
-			catch (cereal::Exception& e) {
-				std::cerr << "Failed to read \"" << puzzleSavePath << "\". File will be regenerated. Reason: " << e.what() << "\n";
-				puzzleCleared.clear();
-			}
+		json j = json::parse(readFileContent);
+		try {
+			j.at("cleared").get_to(puzzleCleared);
+		} catch (json::exception& e) {
+			std::cerr << "Failed to read \"" << puzzleSavePath << "\". File will be regenerated. Reason: " << e.what() << "\n";
+			puzzleCleared.clear();
 		}
 	}
 	else {
@@ -87,12 +84,9 @@ void LoadClearData() {
 }
 
 void SaveClearData() {
-	std::stringstream ss;
-	{
-		cereal::JSONOutputArchive archive(ss);
-		archive(cereal::make_nvp("cleared", puzzleCleared));
-	}
-	sago::WriteFileContent(puzzleSavePath.c_str(), ss.str());
+	json j = json{ { "cleared", puzzleCleared } };
+	std::string s = j.dump(4);
+	sago::WriteFileContent(puzzleSavePath.c_str(), s);
 }
 
 void PuzzleSetClear(int Level) {
