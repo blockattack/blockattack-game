@@ -22,9 +22,11 @@ http://www.blockattack.net
 */
 
 #include "replayhandler.hpp"
+#include "nlohmann/json.hpp"
 #include <sstream>
-#include "cereal/archives/json.hpp"
 #include "sago/SagoMisc.hpp"
+
+using json = nlohmann::json;
 
 static std::tm GetLocalTime() {
 	std::time_t t = std::time(nullptr);
@@ -40,21 +42,17 @@ static std::string CreateFileName(const std::tm& t ) {
 }
 
 static void SaveReplayToFile(const SavedReplayStruct& sr, const std::string& filename) {
-	std::stringstream ss;
-	{
-		cereal::JSONOutputArchive archive(ss,cereal::JSONOutputArchive::Options::NoIndent());
-		archive(cereal::make_nvp("savedReplay", sr));
-	}
-	sago::WriteFileContent(filename.c_str(), ss.str());
+	json j = json{
+		{"savedReplay", sr}
+	};
+	std::string s = j.dump(4);
+	sago::WriteFileContent(filename.c_str(), s);
 }
 
 static void LoadReplayFromPhysFile(SavedReplayStruct& sr, const std::string& filename) {
 	std::string filecontent = sago::GetFileContent(filename.c_str());
-	std::stringstream ss(filecontent);
-	{
-		cereal::JSONInputArchive archive(ss);
-		archive(cereal::make_nvp("savedReplay", sr));
-	}
+	json j = json::parse(filecontent);
+	j.at("savedReplay").get_to(sr);
 }
 
 void LoadReplay(const std::string& filename, BlockGameInfo& game1, BlockGameInfo& game2) {

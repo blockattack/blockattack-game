@@ -27,9 +27,7 @@ http://www.blockattack.net
 #include "stats.h"
 #include "common.h"
 #include <deque>
-#include "cereal/cereal.hpp"
-#include "cereal/types/deque.hpp"
-#include "cereal/types/string.hpp"
+#include "nlohmann/json.hpp"
 
 #define NUMBEROFCHAINS 100
 #define BLOCKWAIT 100000
@@ -70,12 +68,7 @@ struct BlockGameStartInfo {
 	int handicap = 0;
 	int gameSpeed = 0;
 	int basicBlockVariants = 6;
-	template <class Archive>
-	void serialize( Archive& ar ) {
-		ar( CEREAL_NVP(ticks), CEREAL_NVP(timeTrial), CEREAL_NVP(stageClear), CEREAL_NVP(puzzleMode), CEREAL_NVP(singlePuzzle),
-		    CEREAL_NVP(level), CEREAL_NVP(AI), CEREAL_NVP(recordStats), CEREAL_NVP(vsMode), CEREAL_NVP(vsAI),
-		    CEREAL_NVP(startBlocks), CEREAL_NVP(handicap), CEREAL_NVP(gameSpeed), CEREAL_NVP(basicBlockVariants) );
-	}
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(BlockGameStartInfo, ticks, timeTrial, stageClear, puzzleMode, singlePuzzle, level, AI, recordStats, vsMode, vsAI, startBlocks, handicap, gameSpeed, basicBlockVariants);
 };
 
 struct GarbageStruct {
@@ -87,10 +80,7 @@ struct GarbageStruct {
 		width = w;
 		height = h;
 	}
-	template <class Archive>
-	void serialize( Archive& ar ) {
-		ar( CEREAL_NVP(greyGarbage), CEREAL_NVP(width), CEREAL_NVP(height) );
-	}
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(GarbageStruct, greyGarbage, width, height);
 };
 
 struct BlockGameAction {
@@ -101,30 +91,34 @@ struct BlockGameAction {
 	int x = 0;
 	int y = 0;
 	std::vector<GarbageStruct> garbage;
-	template <class Archive>
-	void serialize( Archive& ar ) {
-		ar( CEREAL_NVP(action), CEREAL_NVP(tick), CEREAL_NVP(way), CEREAL_NVP(x), CEREAL_NVP(y), CEREAL_NVP(garbage) );
-	}
 };
+
+static void to_json(nlohmann::json& j, const BlockGameAction& p) {
+	j = nlohmann::json{ {"action", p.action}, {"tick", p.tick}, {"way", p.way}, {"x", p.x}, {"y", p.y}, {"garbage", p.garbage} };
+}
+
+static void from_json(const nlohmann::json& j, BlockGameAction& p) {
+	j.at("action").get_to(p.action);
+	j.at("tick").get_to(p.tick);
+	j.at("way").get_to(p.way);
+	j.at("x").get_to(p.x);
+	j.at("y").get_to(p.y);
+	j.at("garbage").get_to(p.garbage);
+}
+
 
 struct BlockGameInfoExtra {
 	std::string name;
 	int score = 0;
 	int seconds = 0;
-	template <class Archive>
-	void serialize( Archive& ar ) {
-		ar( CEREAL_NVP(name), CEREAL_NVP(score), CEREAL_NVP(seconds) );
-	}
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(BlockGameInfoExtra, name, score, seconds);
 };
 
 struct BlockGameInfo {
 	BlockGameStartInfo startInfo;
 	std::deque<BlockGameAction> actions;
 	BlockGameInfoExtra extra;
-	template <class Archive>
-	void serialize( Archive& ar ) {
-		ar( CEREAL_NVP(startInfo), CEREAL_NVP(actions), CEREAL_NVP(extra) );
-	}
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(BlockGameInfo, startInfo, actions, extra);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

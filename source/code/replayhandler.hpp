@@ -22,15 +22,12 @@ http://www.blockattack.net
 */
 
 #include "BlockGame.hpp"
-#include "cereal/types/vector.hpp"
+#include "nlohmann/json.hpp"
 
 struct SavedReplayStruct {
 	int numberOfPlayers = 0;
 	std::vector<BlockGameInfo> playerInfo;
-	template <class Archive>
-	void serialize( Archive& ar ) {
-		ar( CEREAL_NVP(numberOfPlayers), CEREAL_NVP(playerInfo) );
-	}
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(SavedReplayStruct, numberOfPlayers, playerInfo);
 };
 
 void SaveReplay(const BlockGameInfo& game1);
