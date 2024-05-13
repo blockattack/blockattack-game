@@ -24,10 +24,10 @@ http://www.blockattack.net
 #ifndef BLOCKGAME_HPP
 #define BLOCKGAME_HPP 1
 
+#include "nlohmann/json.hpp"
 #include "stats.h"
 #include "common.h"
 #include <deque>
-#include "nlohmann/json.hpp"
 
 #define NUMBEROFCHAINS 100
 #define BLOCKWAIT 100000

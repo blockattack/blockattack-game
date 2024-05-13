@@ -21,6 +21,8 @@ https://blockattack.net
 ===========================================================================
 */
 
+#include "MenuSystem.h"
+#include "replayhandler.hpp"
 #include "common.h"
 #include "global.hpp"
 #include "scopeHelpers.hpp"
@@ -47,7 +49,6 @@ https://blockattack.net
 #include <SDL_image.h>      //To load PNG images!
 #include <physfs.h>         //Abstract file system. To use containers
 #include <vector>
-#include "MenuSystem.h"
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
 #include <memory>
@@ -56,7 +57,7 @@ https://blockattack.net
 #include "highscore.h"      //Stores highscores
 #include "ReadKeyboard.h"   //Reads text from keyboard
 #include "stats.h"          //Saves general stats
-#include "replayhandler.hpp"
+
 
 #include "common.h"
 #include "gamecontroller.h"

@@ -22,11 +22,11 @@ https://blockattack.net
 */
 
 
+#include "BlockGame.hpp"
 #include "MenuSystem.h"
 #include "common.h"
 #include "global.hpp"
 #include "gamecontroller.h"
-#include "BlockGame.hpp"
 #include "menudef_themes.hpp"
 
 static int oldmousex = 0;
