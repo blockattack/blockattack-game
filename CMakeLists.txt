@@ -90,7 +90,7 @@ message("${CMAKE_EXE_LINKER_FLAGS}")
 
 if (BLOCKATTACK_USE_EMBEDDED_FMT)
 	message("Using embedded {fmt}")
-	add_subdirectory("source/misc/embedded_libs/fmt-8.1.1" EXCLUDE_FROM_ALL)
+	add_subdirectory("source/misc/embedded_libs/fmt-11.0.2" EXCLUDE_FROM_ALL)
 	message("Done processing {fmt}")
 endif()
 
