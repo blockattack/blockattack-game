@@ -668,8 +668,8 @@ public:
 	sago::SagoTextField player_speed;
 
 	//Old Stage Clear Buble
-	int oldBubleX;
-	int oldBubleY;
+	int oldBubleX = 0;
+	int oldBubleY = 0;
 
 	std::string infostring;
 	std::string infostringName;
@@ -677,7 +677,8 @@ public:
 
 
 private:
-	int topx, topy;
+	int topx = 0;
+	int topy = 0;
 	sago::SagoTextField scoreLabel;
 	sago::SagoTextField timeLabel;
 	sago::SagoTextField chainLabel;
