@@ -11,9 +11,9 @@ COPY . /staging/blockattack-game
 ENV BLOCKATTACK_VERSION 2.10.0-SNAPSHOT
 
 RUN cd /staging/blockattack-game && \
-./packdata.sh && \
-i686-w64-mingw32.static-cmake . && \
-make && \
+./packdata.sh && ls -lrt source/misc/embedded_libs/fmt-11.0.2 && \
+x86_64-w64-mingw32.static-cmake . && \
+make clean && make && \
 cd windows\ installer/ && \
 makensis install_script.nsi && \
 mv Setup.exe /output/blockattack-installer-${BLOCKATTACK_VERSION}.exe && \

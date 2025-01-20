@@ -214,7 +214,7 @@ bool GameControllerIsLeftEvent(const SDL_Event& event) {
 }
 
 bool GameControllerIsRightEvent(const SDL_Event& event) {
-	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_CONTROLLER_AXIS_LEFTX);
+	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, SDL_CONTROLLER_AXIS_LEFTX);
 }
 
 bool GameControllerExtIsPlayerUpEvent(int playerNumber, const SDL_Event& event) {
