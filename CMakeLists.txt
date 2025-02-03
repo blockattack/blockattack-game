@@ -79,8 +79,10 @@ find_package(Intl REQUIRED)
 
 find_package(Boost COMPONENTS program_options REQUIRED)
 
+include_directories(SYSTEM "source/code/Libs/imgui")
+
 #Find all sources but one
-file(GLOB SOURCES "source/code/*.cpp" "source/code/*.inc" "source/code/*.h*" "source/code/*/*.cpp" "source/code/*/*.h*" "source/code/Libs/*.c" "source/code/Libs/*.h*")
+file(GLOB SOURCES "source/code/*.cpp" "source/code/*.inc" "source/code/*.h*" "source/code/*/*.cpp" "source/code/*/*.h*" "source/code/Libs/*.c" "source/code/Libs/*.h*" "source/code/Libs/*/*.cpp" "source/code/Libs/*/*/*.cpp")
 #I am still trying to get BlockGame to compile as a source file
 #list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
 
