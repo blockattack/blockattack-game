@@ -260,7 +260,9 @@ void ResetFullscreen() {
 	if (globalData.xsize < FOUR_THREE_WIDTH) {
 		globalData.xsize = FOUR_THREE_WIDTH;
 	}
-	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
+	if (!puzzleEditor) {
+		SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
+	}
 	dataHolder.invalidateAll(globalData.screen);
 	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
 	globalData.spriteHolder->ReadSprites(globalData.modinfo.getModSpriteFiles());
@@ -1253,7 +1255,7 @@ int main(int argc, char* argv[]) {
 		}
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, rendererFlags);
 		dieOnNullptr(renderer, "Unable to create render");
-		if (config.autoScale) {
+		if (config.autoScale && !puzzleEditor) {
 			SDL_RenderSetLogicalSize(renderer, globalData.xsize, globalData.ysize);
 			logicalRenderer = true;
 		}
