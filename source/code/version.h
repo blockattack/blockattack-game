@@ -30,5 +30,5 @@ https://blockattack.net
 #define GAMENAME "blockattack"
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "2.9.0"
+#define VERSION_NUMBER "2.9.1"
 #endif
