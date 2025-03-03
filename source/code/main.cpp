@@ -257,7 +257,8 @@ void ResetFullscreen() {
 	if (globalData.xsize < FOUR_THREE_WIDTH) {
 		globalData.xsize = FOUR_THREE_WIDTH;
 	}
-	SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
+	//SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
+	globalData.logicalResize = sago::SagoLogicalResize(globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
 	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
 	globalData.spriteHolder->ReadSprites(globalData.modinfo.getModSpriteFiles());
@@ -269,10 +270,12 @@ void ResetFullscreen() {
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
-static bool logicalRenderer = false;
-
 void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
+	int w=1;
+	int h=1;
+	SDL_GetRendererOutputSize(target, &w, &h);
+	globalData.logicalResize.SetPhysicalSize(w, h);
 	sago::SagoSprite background = globalData.spriteHolder->GetSprite(globalData.theme.background.background_sprite);
 	if ( (double)globalData.xsize/globalData.ysize > 1.5 && globalData.theme.background.background_sprite_16x9.length()) {
 		background = globalData.spriteHolder->GetSprite(globalData.theme.background.background_sprite_16x9);
@@ -296,7 +299,9 @@ void DrawBackground(SDL_Renderer* target) {
 		}
 		return;
 	}
-	background.DrawScaled(target, ticks, 0, 0, globalData.xsize, globalData.ysize);
+	SDL_Rect r = {0,0,globalData.xsize,globalData.ysize};
+	globalData.logicalResize.LogicalToPhysical(r);
+	background.DrawScaled(target, ticks, r.x, r.y, r.w, r.h);
 }
 
 /**
@@ -1175,6 +1180,7 @@ int main(int argc, char* argv[]) {
 			globalData.xsize = SIXTEEN_NINE_WIDTH;
 		}
 		globalData.ysize = SCREEN_HIGHT;
+		globalData.logicalResize = sago::SagoLogicalResize(globalData.xsize, globalData.ysize);
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
 		                             SDL_WINDOWPOS_UNDEFINED,
 		                             SDL_WINDOWPOS_UNDEFINED,
@@ -1187,10 +1193,9 @@ int main(int argc, char* argv[]) {
 		}
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, rendererFlags);
 		dieOnNullptr(renderer, "Unable to create render");
-		if (config.autoScale) {
+		/*if (config.autoScale) {
 			SDL_RenderSetLogicalSize(renderer, globalData.xsize, globalData.ysize);
-			logicalRenderer = true;
-		}
+		}*/
 		if (globalData.verboseLevel) {
 			SDL_RendererInfo info;
 			SDL_GetRendererInfo(renderer, &info);
