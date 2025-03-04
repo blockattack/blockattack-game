@@ -26,6 +26,7 @@ SOFTWARE.
 #define SAGOTEXTFIELD_HPP
 
 #include "SagoDataHolder.hpp"
+#include "SagoLogicalResize.hpp"
 
 namespace sago {
 
@@ -109,7 +110,7 @@ public:
 
 	enum class Alignment { left = 0, right=1, center = 2 };
 	enum class VerticalAlignment { top = 0, center = 1, bottom = 2};
-	void Draw(SDL_Renderer* target, int x, int y, Alignment alignment = Alignment::left, VerticalAlignment verticalAlignment = VerticalAlignment::top);
+	void Draw(SDL_Renderer* target, int x, int y, Alignment alignment = Alignment::left, VerticalAlignment verticalAlignment = VerticalAlignment::top, SagoLogicalResize* resize = nullptr);
 
 	/**
 	 * Updates the cache.

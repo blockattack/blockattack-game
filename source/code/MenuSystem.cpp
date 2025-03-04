@@ -108,14 +108,14 @@ bool Button::isPopOnRun() const {
 
 static void drawToScreen(const Button& b) {
 	if (b.marked) {
-		globalData.spriteHolder->GetSprite(b.standardButton.menu_marked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
+		globalData.spriteHolder->GetSprite(b.standardButton.menu_marked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y, &globalData.logicalResize);
 	}
 	else {
-		globalData.spriteHolder->GetSprite(b.standardButton.menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y);
+		globalData.spriteHolder->GetSprite(b.standardButton.menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), b.x, b.y, &globalData.logicalResize);
 	}
 
 	b.standardButton.getLabel(b.getLabel(), b.marked)->Draw(globalData.screen, b.x+b.standardButton.xsize/2,b.y+b.standardButton.ysize/2,
-	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
+	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
 }
 
 
@@ -132,7 +132,7 @@ void Menu::drawSelf(SDL_Renderer* target) {
 		drawToScreen(*b);
 	}
 	drawToScreen(exit);
-	exit.standardButton.getLabel(title, false)->Draw(target, 50, 50);
+	exit.standardButton.getLabel(title, false)->Draw(target, 50, 50, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 }
 
 
@@ -330,25 +330,28 @@ void Menu::Update() {
 	if ( (buttonState&SDL_BUTTON(1))==0) {
 		bMouseUp=true;
 	}
+	int mousex = globalData.mousex;
+	int mousey = globalData.mousey;
+	globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
 
-	if (abs(globalData.mousex-oldmousex)>5 || abs(globalData.mousey-oldmousey)>5) {
+	if (abs(mousex-oldmousex)>5 || abs(mousey-oldmousey)>5) {
 		for (int i=0; i< (int)buttons.size(); ++i) {
-			if (isClicked(*buttons.at(i), globalData.mousex, globalData.mousey)) {
+			if (isClicked(*buttons.at(i), mousex, mousey)) {
 				marked = i;
 			}
 		}
-		if (isClicked(exit, globalData.mousex, globalData.mousey)) {
+		if (isClicked(exit, mousex, mousey)) {
 			marked = buttons.size();
 		}
-		oldmousex = globalData.mousex;
-		oldmousey = globalData.mousey;
+		oldmousex = mousex;
+		oldmousey = mousey;
 	}
 
 	//mouse clicked
 	if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
 		for (int i=0; i< (int)buttons.size(); ++i) {
-			if (isClicked(*buttons.at(i), globalData.mousex, globalData.mousey)) {
+			if (isClicked(*buttons.at(i), mousex, mousey)) {
 				buttons.at(i)->doAction();
 				if (buttons.at(i)->isPopOnRun()) {
 					running = false;
@@ -357,7 +360,7 @@ void Menu::Update() {
 				return;
 			}
 		}
-		if (isClicked(exit,  globalData.mousex, globalData.mousey)) {
+		if (isClicked(exit,  mousex, mousey)) {
 			running = false;
 		}
 	}

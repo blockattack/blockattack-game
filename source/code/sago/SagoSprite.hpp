@@ -26,6 +26,7 @@ SOFTWARE.
 #define SAGOSPRITE_HPP
 
 #include "SagoDataHolder.hpp"
+#include "SagoLogicalResize.hpp"
 
 namespace sago {
 
@@ -41,7 +42,7 @@ public:
 	 * @param x Place to draw the sprite
 	 * @param y Place to draw the sprite
 	 */
-	void Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) const;
+	void Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, SagoLogicalResize* resize = nullptr) const;
 
 	/**
 	 * Draws the sprite to a given render window
@@ -51,7 +52,7 @@ public:
 	 * @param y Place to draw the sprite
 	 * @param angleRadian Angle to rotate the sprite around origin before drawing
 	 */
-	void DrawRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, const double angleRadian) const;
+	void DrawRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, const double angleRadian, SagoLogicalResize* resize = nullptr) const;
 
 	/**
 	 * Draws part of the sprite to a given render window
@@ -61,7 +62,7 @@ public:
 	 * @param y Place to draw the sprite
 	 * @param part the part of the sprite that should be drawn.
 	 */
-	void Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part) const;
+	void Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part, SagoLogicalResize* resize = nullptr) const;
 
 	/**
 	 * Draws the wprite to the given renderer but makes sure to not draw outside th bounds given
@@ -71,7 +72,7 @@ public:
 	 * @param y Place to draw the sprite
 	 * @param bounds A recagular area that we must not draw outside.
 	 */
-	void DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const;
+	void DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds, SagoLogicalResize* resize = nullptr) const;
 
 	/**
 	 * Draws the sprite to a given render window
@@ -80,11 +81,11 @@ public:
 	 * @param x Place to draw the sprite
 	 * @param y Place to draw the sprite
 	 */
-	void DrawProgressive(SDL_Renderer* target, float progress, int x, int y) const;
+	void DrawProgressive(SDL_Renderer* target, float progress, int x, int y, SagoLogicalResize* resize = nullptr) const;
 
-	void DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h) const;
+	void DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, SagoLogicalResize* resize = nullptr) const;
 	void DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h,
-	                          const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip) const;
+	                          const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip, SagoLogicalResize* resize = nullptr) const;
 
 	/**
 	 * Set a different origin. Normally it is the top left cornor. But in some cases you might want to center the origin or tranform it for other reasons
