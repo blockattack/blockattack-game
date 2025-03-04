@@ -78,7 +78,7 @@ extern sago::SagoSprite bExit;
 
 
 void HelpCommonState::Draw(SDL_Renderer* target) {
-	bExit.Draw(target, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset);
+	bExit.Draw(target, SDL_GetTicks(), globalData.xsize-buttonOffset, globalData.ysize-buttonOffset, &globalData.logicalResize);
 #if DEBUG
 	static sago::SagoTextField mousePos;
 	mousePos.SetHolder(&globalData.spriteHolder->GetDataHolder());
@@ -112,9 +112,13 @@ void HelpCommonState::Update() {
 	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
 
+		int mousex;
+		int mousey;
+		globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
+
 		//The Score button:
-		if ((globalData.mousex>globalData.xsize-buttonOffset) && (globalData.mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
-		        && (globalData.mousey>globalData.ysize-buttonOffset) && (globalData.mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
+		if ((mousex>globalData.xsize-buttonOffset) && (mousex<globalData.xsize-buttonOffset+bExit.GetWidth())
+		        && (mousey>globalData.ysize-buttonOffset) && (mousey<globalData.ysize-buttonOffset+bExit.GetHeight())) {
 			isActive = false;
 		}
 
