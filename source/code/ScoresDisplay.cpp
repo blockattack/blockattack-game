@@ -50,7 +50,7 @@ sago::SagoTextField* ScoresDisplay::getCachedText(const std::string& text) {
 }
 
 void ScoresDisplay::Write(SDL_Renderer* target, int x, int y, const char* text) {
-	getCachedText(text)->Draw(target, x, y);
+	getCachedText(text)->Draw(target, x, y, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 }
 
 
@@ -264,18 +264,18 @@ void ScoresDisplay::Draw(SDL_Renderer* target) {
 
 	const sago::SagoDataHolder* holder = &globalData.spriteHolder->GetDataHolder();
 	//Draw buttons:
-	globalData.bBack.Draw(globalData.screen, 0, backX, backY);
+	globalData.bBack.Draw(globalData.screen, 0, backX, backY, &globalData.logicalResize);
 	static sago::SagoTextField backLabel;
 	setButtonFont(holder, backLabel, _("Back"));
-	backLabel.Draw(globalData.screen, backX+60,backY+10, sago::SagoTextField::Alignment::center);
-	globalData.bNext.Draw(globalData.screen, 0, nextX, nextY);
+	backLabel.Draw(globalData.screen, backX+60,backY+10, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+	globalData.bNext.Draw(globalData.screen, 0, nextX, nextY, &globalData.logicalResize);
 	static sago::SagoTextField nextLabel;
 	setButtonFont(holder, nextLabel, _("Next"));
-	nextLabel.Draw(globalData.screen, nextX+60, nextY+10, sago::SagoTextField::Alignment::center);
+	nextLabel.Draw(globalData.screen, nextX+60, nextY+10, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 
 	//Draw page number
 	std::string pageXofY = fmt::format(_("Page {} of {}"), page+1, numberOfPages);
-	getCachedText(pageXofY)->Draw(globalData.screen,  globalData.xsize/2, globalData.ysize-60, sago::SagoTextField::Alignment::center);
+	getCachedText(pageXofY)->Draw(globalData.screen,  globalData.xsize/2, globalData.ysize-60, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	HelpCommonState::Draw(target);
 }
 
@@ -309,9 +309,12 @@ void ScoresDisplay::Update() {
 
 	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
+		int mousex;
+		int mousey;
+		globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
 
 		//The back button:
-		if ((globalData.mousex>backX) && (globalData.mousex<backX+buttonXsize) && (globalData.mousey>backY) && (globalData.mousey<backY+buttonYsize)) {
+		if ((mousex>backX) && (mousex<backX+buttonXsize) && (mousey>backY) && (mousey<backY+buttonYsize)) {
 			page--;
 			if (page<0) {
 				page = numberOfPages-1;
@@ -319,7 +322,7 @@ void ScoresDisplay::Update() {
 		}
 
 		//The next button:
-		if ((globalData.mousex>nextX) && (globalData.mousex<nextX+buttonXsize) && (globalData.mousey>nextY) && (globalData.mousey<nextY+buttonYsize)) {
+		if ((mousex>nextX) && (mousex<nextX+buttonXsize) && (mousey>nextY) && (mousey<nextY+buttonYsize)) {
 			page++;
 			if (page>=numberOfPages) {
 				page = 0;

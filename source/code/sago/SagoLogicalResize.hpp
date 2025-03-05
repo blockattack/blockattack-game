@@ -72,8 +72,8 @@ public:
 
 	void PhysicalToLogical(int physical_x, int physical_y, int &logical_x, int &logical_y) const
 	{
-		logical_x = physical_x * logical_width_ / physical_width_ + left_margin_;
-		logical_y = physical_y * logical_height_ / physical_height_ + top_margin_;
+		logical_x = (physical_x - left_margin_) / scale_factor_;
+		logical_y = (physical_y - top_margin_) / scale_factor_;
 	}
 
 	int GetTopMargin() const
