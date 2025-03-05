@@ -48,9 +48,9 @@ static void RenderRowOfBricks(SDL_Renderer* target, const std::string& brickStr,
 			brickChar = brickChar + 'a' - 'A';
 		}
 		if (brickChar >= 'a' &&  brickChar <= 'g') {
-			globalData.bricks[brickChar - 'a'].Draw(target, tick, x+i*50, y);
+			globalData.bricks[brickChar - 'a'].Draw(target, tick, x+i*50, y, &globalData.logicalResize);
 			if (bomb) {
-				globalData.spriteHolder->GetSprite("block_bomb").Draw(target, tick, x+i*50, y);
+				globalData.spriteHolder->GetSprite("block_bomb").Draw(target, tick, x+i*50, y, &globalData.logicalResize);
 			}
 		}
 	}
@@ -131,6 +131,12 @@ HelpHowtoState::~HelpHowtoState() {
 
 const double PI  =3.141592653589793238463;
 
+static void RenderDrawLine(SDL_Renderer * renderer, int x1, int y1, int x2, int y2) {
+	globalData.logicalResize.LogicalToPhysical(&x1, &y1);
+	globalData.logicalResize.LogicalToPhysical(&x2, &y2);
+	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
 static void DrawArrow(SDL_Renderer* target, int x1, int y1, int x2, int y2) {
 	double dx = x1-x2;
 	double dy = y1-y2;
@@ -140,33 +146,33 @@ static void DrawArrow(SDL_Renderer* target, int x1, int y1, int x2, int y2) {
 	double angle= PI/4.0;
 	double nx1 = dx * std::cos(angle) - dy * std::sin(angle) + x2;
 	double ny1 = dx * std::sin(angle) + dy * std::cos(angle) + y2;
-	SDL_RenderDrawLine(target, x1, y1, x2, y2);
-	SDL_RenderDrawLine(target, nx1, ny1, x2, y2);
+	RenderDrawLine(target, x1, y1, x2, y2);
+	RenderDrawLine(target, nx1, ny1, x2, y2);
 	nx1 = dx * std::cos(-angle) - dy * std::sin(-angle) + x2;
 	ny1 = dx * std::sin(-angle) + dy * std::cos(-angle) + y2;
-	SDL_RenderDrawLine(target, nx1, ny1, x2, y2);
+	RenderDrawLine(target, nx1, ny1, x2, y2);
 }
 
 void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	SDL_SetRenderDrawColor(target, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	RenderRowOfBricks(target, switchAnimation.brickStr, 50, 50);
-	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+switchAnimation.cursorPos*50, 50);
-	switchAnimationField.Draw(target, 50 +150+30, 50+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center);
+	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+switchAnimation.cursorPos*50, 50, &globalData.logicalResize);
+	switchAnimationField.Draw(target, 50 +150+30, 50+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
 	RenderRowOfBricks(target, "adaa", 50, 150);
-	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 150);
+	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 150, &globalData.logicalResize);
 	RenderRowOfBricks(target, "dAAA", 50+300, 150);
 	DrawArrow(target, 50+200+25, 150+25, 50+300-25, 150+25);
-	clearRowfield.Draw(target, 600, 150+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center);
-	comboField.Draw(target, 50+175, 410, sago::SagoTextField::Alignment::center);
+	clearRowfield.Draw(target, 600, 150+25, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
+	comboField.Draw(target, 50+175, 410, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	MultiLineBlocks().addLine("ab").addLine("ba").addLine("ab").Render(target, 50, 250);
-	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 250+50);
+	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 250+50, &globalData.logicalResize);
 	MultiLineBlocks().addLine("AB").addLine("AB").addLine("AB").Render(target, 50+200, 250);
 	DrawArrow(target, 175, 325, 225, 325);
 	MultiLineBlocks().addLine("a").addLine("b").addLine("e").Render(target, 50+400, 250);
 	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+400, 250);
 	MultiLineBlocks().addLine(" ").addLine("b").addLine("ea").Render(target, 50+400+200, 250);
-	dropField.Draw(target, 50+400+150, 410, sago::SagoTextField::Alignment::center);
+	dropField.Draw(target, 50+400+150, 410, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	DrawArrow(target, 575, 325, 625, 325);
 	DrawArrow(target, 475, 275, 525, 275);
 	DrawArrow(target, 525, 275, 525, 375);
@@ -181,7 +187,7 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	DrawArrow(target, 400, 600, 450, 600);
 	DrawArrow(target, 600, 600, 650, 600);
 	DrawArrow(target, 525, 525, 525, 675);
-	chainField.Draw(target, 400, 710, sago::SagoTextField::Alignment::center);
+	chainField.Draw(target, 400, 710, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	HelpCommonState::Draw(target);
 }
 
