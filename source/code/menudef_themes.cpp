@@ -74,7 +74,7 @@ public:
 		Menu::Draw(target);
 		game->DoPaintJob();
 		themeTitle.SetText(fmt::format(_("Theme: {}"), globalData.theme.theme_name));
-		themeTitle.Draw(target, 10, globalData.ysize-50,sago::SagoTextField::Alignment::left);
+		themeTitle.Draw(target, 10, globalData.ysize-50,sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	}
 };
 
