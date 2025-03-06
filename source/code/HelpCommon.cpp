@@ -91,13 +91,13 @@ void HelpCommonState::Draw(SDL_Renderer* target) {
 
 void HelpTextBoxState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
-	titleField.Draw(target, 50, 50);
-	DrawRectYellow(target, 40, 90, 600, 900);
+	titleField.Draw(target, 50, 50, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+	DrawRectYellow(target, 40, 90, 600, 900, &globalData.logicalResize);
 	infoBox.SetMaxWidth(850);
-	infoBox.Draw(target, 50, 100);
+	infoBox.Draw(target, 50, 100, sago::SagoTextField::Alignment::left, &globalData.logicalResize);
 	if (filenameField.GetText().length() > 0) {
-		DrawRectYellow(target, 40, 700, 50, 900);
-		filenameField.Draw(target, 50, 715);
+		DrawRectYellow(target, 40, 700, 50, 900, &globalData.logicalResize);
+		filenameField.Draw(target, 50, 715, sago::SagoTextField::Alignment::left, &globalData.logicalResize);
 	}
 	HelpCommonState::Draw(target);
 }

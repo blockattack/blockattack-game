@@ -77,7 +77,7 @@ private:
 	int oldmousey = 0;
 };
 
-void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width);
+void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width, sago::SagoLogicalResize* resize = nullptr);
 
 #endif /* DIALOGBOX_HPP */
 
