@@ -170,7 +170,7 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	MultiLineBlocks().addLine("AB").addLine("AB").addLine("AB").Render(target, 50+200, 250);
 	DrawArrow(target, 175, 325, 225, 325);
 	MultiLineBlocks().addLine("a").addLine("b").addLine("e").Render(target, 50+400, 250);
-	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+400, 250);
+	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50+400, 250, &globalData.logicalResize);
 	MultiLineBlocks().addLine(" ").addLine("b").addLine("ea").Render(target, 50+400+200, 250);
 	dropField.Draw(target, 50+400+150, 410, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	DrawArrow(target, 575, 325, 625, 325);
@@ -182,7 +182,7 @@ void HelpHowtoState::Draw(SDL_Renderer* target) {
 	MultiLineBlocks().addLine(" d").addLine(" F").addLine(" F").addLine("dFd").Render(target, 50+200, 500);
 	MultiLineBlocks().addLine(" d").addLine("  ").addLine("  ").addLine("d d").Render(target, 50+200*2, 500);
 	MultiLineBlocks().addLine("  ").addLine("  ").addLine("  ").addLine("DDD").Render(target, 50+200*3, 500);
-	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 650);
+	globalData.spriteHolder->GetSprite("cursor").Draw(target, SDL_GetTicks(), 50, 650, &globalData.logicalResize);
 	DrawArrow(target, 200, 600, 250, 600);
 	DrawArrow(target, 400, 600, 450, 600);
 	DrawArrow(target, 600, 600, 650, 600);
