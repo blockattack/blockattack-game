@@ -219,7 +219,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 
 /*Draws a image from on a given Surface. Takes source image, destination surface and coordinates*/
 void DrawIMG(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y) {
-	sprite.Draw(target, SDL_GetTicks(),x,y);
+	sprite.Draw(target, SDL_GetTicks(),x,y, &globalData.logicalResize);
 }
 
 void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x, int y, int minx, int miny, int maxx, int maxy) {
@@ -228,7 +228,7 @@ void DrawIMG_Bounded(const sago::SagoSprite& sprite, SDL_Renderer* target, int x
 	bounds.y = miny;
 	bounds.w = maxx-minx;
 	bounds.h = maxy-miny;
-	sprite.DrawBounded(target, SDL_GetTicks(),x,y,bounds);
+	sprite.DrawBounded(target, SDL_GetTicks(),x,y,bounds, &globalData.logicalResize);
 }
 
 SDL_Window* sdlWindow;
@@ -463,7 +463,7 @@ static void DrawBalls() {
 			DrawIMG(globalData.iChainFrame, globalData.screen, x, y);
 
 			getSmallInt(globalData.theTextManager.textArray[i].getText())->Draw(globalData.screen, x+12, y+7,
-			        sago::SagoTextField::Alignment::center);
+			        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		}
 	}
 }    //DrawBalls
@@ -680,7 +680,7 @@ void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* th
 
 
 	//draw exit
-	bExit.Draw(globalData.screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset);
+	bExit.Draw(globalData.screen,SDL_GetTicks(), xsize-bExitOffset, ysize-bExitOffset, &globalData.logicalResize);
 	DrawBalls();
 
 #if DEBUG
@@ -1472,6 +1472,9 @@ int runGame(Gametype gametype, int level) {
 		globalData.theTextManager.update();
 
 		bool mustWriteScreenshot = false;
+		int mousex;
+		int mousey;
+		globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
 
 		BlockGameAction a;
 		a.tick = SDL_GetTicks();
@@ -1480,6 +1483,9 @@ int runGame(Gametype gametype, int level) {
 
 			while ( SDL_PollEvent(&event) ) {
 				UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
+				int mousex;
+				int mousey;
+				globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
 				if ( event.type == SDL_QUIT ) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
@@ -1656,33 +1662,34 @@ int runGame(Gametype gametype, int level) {
 						bool pressed = false;
 						int x = 0;
 						int y = 0;
-						theGame.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						
+						theGame.GetBrickCoordinateFromMouse(pressed, mousex, mousey, x, y);
 						if (pressed) {
 							a.action = BlockGameAction::Action::MOUSE_DOWN;
 							a.x = x;
 							a.y = y;
 							theGame.DoAction(a);
 						}
-						theGame2.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						theGame2.GetBrickCoordinateFromMouse(pressed, mousex, mousey, x, y);
 						if (pressed) {
 							a.action = BlockGameAction::Action::MOUSE_DOWN;
 							a.x = x;
 							a.y = y;
 							theGame2.DoAction(a);
 						}
-						mouseDownX = event.button.x;
-						mouseDownY = event.button.y;
+						mouseDownX = mousex;
+						mouseDownY = mousey;
 					}
 					if (event.button.button == SDL_BUTTON_RIGHT) {
 						bool pressed = false;
 						int x = 0;
 						int y = 0;
-						theGame.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						theGame.GetBrickCoordinateFromMouse(pressed, mousex, mousey, x, y);
 						if (pressed) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame.DoAction(a);
 						}
-						theGame2.GetBrickCoordinateFromMouse(pressed, event.button.x, event.button.y, x, y);
+						theGame2.GetBrickCoordinateFromMouse(pressed, mousex, mousey, x, y);
 						if (pressed) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame2.DoAction(a);
@@ -1691,8 +1698,8 @@ int runGame(Gametype gametype, int level) {
 				}
 				if (event.type == SDL_MOUSEBUTTONUP) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
-						int x = event.button.x;
-						int y = event.button.y;
+						int x = mousex;
+						int y = mousey;
 						a.action = BlockGameAction::Action::MOUSE_UP;
 						theGame.DoAction(a);
 						theGame2.DoAction(a);
@@ -1715,7 +1722,7 @@ int runGame(Gametype gametype, int level) {
 					if (pressed) {
 						int mx = 0;
 						int my = 0;
-						theGame.GetBrickCoordinateFromMouse(pressed, event.motion.x, event.motion.y, mx, my);
+						theGame.GetBrickCoordinateFromMouse(pressed, mousex, mousey, mx, my);
 						if (pressed) {
 							if (mx != x) {
 								a.action = BlockGameAction::Action::MOUSE_MOVE;
@@ -1728,7 +1735,7 @@ int runGame(Gametype gametype, int level) {
 					if (pressed) {
 						int mx = 0;
 						int my = 0;
-						theGame2.GetBrickCoordinateFromMouse(pressed, event.motion.x, event.motion.y, mx, my);
+						theGame2.GetBrickCoordinateFromMouse(pressed, mousex, mousey, mx, my);
 						if (pressed) {
 							if (mx != x) {
 								a.action = BlockGameAction::Action::MOUSE_MOVE;
@@ -1758,24 +1765,24 @@ int runGame(Gametype gametype, int level) {
 					bMouseUp = false;
 					DrawBackground(globalData.screen);
 
-					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+globalData.cordNextButton.x)
-					        && (globalData.mousex < theGame.GetTopX()+globalData.cordNextButton.x+globalData.cordNextButton.xsize)
-					        && (globalData.mousey > theGame.GetTopY()+globalData.cordNextButton.y)
-					        && (globalData.mousey < theGame.GetTopY()+globalData.cordNextButton.y+globalData.cordNextButton.ysize)) {
+					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+globalData.cordNextButton.x)
+					        && (mousex < theGame.GetTopX()+globalData.cordNextButton.x+globalData.cordNextButton.xsize)
+					        && (mousey > theGame.GetTopY()+globalData.cordNextButton.y)
+					        && (mousey < theGame.GetTopY()+globalData.cordNextButton.y+globalData.cordNextButton.ysize)) {
 						//Clicked the next button after a stage clear or puzzle
 						nextLevel(theGame, SDL_GetTicks());
 					}
 
-					if (stageButtonStatus != SBdontShow && (globalData.mousex > theGame.GetTopX()+globalData.cordRetryButton .x)
-					        &&(globalData.mousex < theGame.GetTopX()+globalData.cordRetryButton.x+globalData.cordRetryButton.xsize)
-					        &&(globalData.mousey > theGame.GetTopY()+globalData.cordRetryButton.y)
-					        &&(globalData.mousey < theGame.GetTopY()+globalData.cordRetryButton.y+globalData.cordRetryButton.ysize)) {
+					if (stageButtonStatus != SBdontShow && (mousex > theGame.GetTopX()+globalData.cordRetryButton .x)
+					        &&(mousex < theGame.GetTopX()+globalData.cordRetryButton.x+globalData.cordRetryButton.xsize)
+					        &&(mousey > theGame.GetTopY()+globalData.cordRetryButton.y)
+					        &&(mousey < theGame.GetTopY()+globalData.cordRetryButton.y+globalData.cordRetryButton.ysize)) {
 						//Clicked the retry button
 						retryLevel(theGame, SDL_GetTicks());
 					}
 
-					if (globalData.mousex > globalData.xsize-bExitOffset && globalData.mousex < globalData.xsize-bExitOffset+bExitSize &&
-					        globalData.mousey > globalData.ysize-bExitOffset && globalData.mousey < globalData.ysize-bExitOffset+bExitSize) {
+					if (mousex > globalData.xsize-bExitOffset && mousex < globalData.xsize-bExitOffset+bExitSize &&
+					        mousey > globalData.ysize-bExitOffset && mousey < globalData.ysize-bExitOffset+bExitSize) {
 						done = 1;
 					}
 				}

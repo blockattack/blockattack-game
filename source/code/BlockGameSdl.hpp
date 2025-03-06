@@ -89,7 +89,7 @@ public:
 
 	void PrintTextCenteredBoard(int x, int y, sago::SagoTextField& field) {
 		field.Draw(globalData.screen, x+topx+60, y+topy+20,
-		           sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center);
+		           sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
 	}
 
 	void SetTopXY(int tx, int ty) {
@@ -376,11 +376,11 @@ public:
 		sago::SagoSprite backback = globalData.spriteHolder->GetSprite(border.border_sprite);
 		DrawIMG(backback, globalData.screen, this->GetTopX()+border.border_sprite_offset.first, this->GetTopY()+border.border_sprite_offset.second);
 
-		this->scoreLabel.Draw(globalData.screen, this->GetTopX()+border.score_label_offset.first,this->GetTopY()+border.score_label_offset.second);
-		this->timeLabel.Draw(globalData.screen, this->GetTopX()+border.time_label_offset.first,this->GetTopY()+border.time_label_offset.second);
-		this->chainLabel.Draw(globalData.screen, this->GetTopX()+border.chain_label_offset.first,this->GetTopY()+border.chain_label_offset.second);
-		this->speedLabel.Draw(globalData.screen, this->GetTopX()+border.speed_label_offset.first,this->GetTopY()+border.speed_label_offset.second);
-		globalData.spriteHolder->GetSprite(globalData.theme.back_board).DrawScaled(globalData.screen, SDL_GetTicks(), this->GetTopX(),this->GetTopY(), BOARD_WIDTH, BOARD_HEIGHT);
+		this->scoreLabel.Draw(globalData.screen, this->GetTopX()+border.score_label_offset.first,this->GetTopY()+border.score_label_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		this->timeLabel.Draw(globalData.screen, this->GetTopX()+border.time_label_offset.first,this->GetTopY()+border.time_label_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		this->chainLabel.Draw(globalData.screen, this->GetTopX()+border.chain_label_offset.first,this->GetTopY()+border.chain_label_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		this->speedLabel.Draw(globalData.screen, this->GetTopX()+border.speed_label_offset.first,this->GetTopY()+border.speed_label_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		globalData.spriteHolder->GetSprite(globalData.theme.back_board).DrawScaled(globalData.screen, SDL_GetTicks(), this->GetTopX(),this->GetTopY(), BOARD_WIDTH, BOARD_HEIGHT, &globalData.logicalResize);
 
 		PaintBricks();
 		if (stageClear) {
@@ -392,7 +392,7 @@ public:
 			static sago::SagoTextField movesPuzzleLabel;
 			sagoTextSetHelpFont(movesPuzzleLabel);
 			movesPuzzleLabel.SetText(strHolder);
-			movesPuzzleLabel.Draw(globalData.screen, topx+5, topy+5);
+			movesPuzzleLabel.Draw(globalData.screen, topx+5, topy+5, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 
 		}
 		if (puzzleMode && stageButtonStatus == SBpuzzleMode) {
@@ -412,7 +412,7 @@ public:
 				static sago::SagoTextField lastPuzzleLabel;
 				sagoTextSetHelpFont(lastPuzzleLabel);
 				lastPuzzleLabel.SetText(_("Last puzzle"));
-				lastPuzzleLabel.Draw(globalData.screen, topx+5, topy+5);
+				lastPuzzleLabel.Draw(globalData.screen, topx+5, topy+5, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 			}
 		}
 		if (stageClear && stageButtonStatus == SBstageClear) {
@@ -432,12 +432,12 @@ public:
 				static sago::SagoTextField lastStageLabel;
 				sagoTextSetHelpFont(lastStageLabel);
 				lastStageLabel.SetText(_("Last stage"));
-				lastStageLabel.Draw(globalData.screen, topx+5, topy+5);
+				lastStageLabel.Draw(globalData.screen, topx+5, topy+5, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 			}
 		}
 		if (!bGameOver && stop > 20) {
 			stopIntField.SetText(std::to_string(stop/10));
-			stopIntField.Draw(globalData.screen, 240+topx, -40+topy);
+			stopIntField.Draw(globalData.screen, 240+topx, -40+topy, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		}
 
 #if DEBUG
@@ -445,7 +445,7 @@ public:
 			sagoTextSetBlueFont(aiStatusField);
 			strHolder = "AI_status: " + std::to_string(AIstatus)+ ", "+ std::to_string(AIlineToClear);
 			aiStatusField.SetText(strHolder);
-			aiStatusField.Draw(globalData.screen, topx+5, topy+5);
+			aiStatusField.Draw(globalData.screen, topx+5, topy+5, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		}
 #endif
 		if (!bGameOver) {
@@ -500,15 +500,15 @@ public:
 
 		if (bGameOver) {
 			if (hasWonTheGame) {
-				globalData.tbWinner.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+				globalData.tbWinner.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center, &globalData.logicalResize);
 			}
 			else {
 				if (bDraw) {
-					globalData.tbDraw.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+					globalData.tbDraw.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center, &globalData.logicalResize);
 				}
 				else {
 					if (this->infostring.empty()) {
-						globalData.tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center);
+						globalData.tbGameOver.Draw(globalData.screen, topx+150, topy+200, sago::SagoTextField::Alignment::center, &globalData.logicalResize);
 					}
 				}
 			}
@@ -517,14 +517,14 @@ public:
 		std::string strHolder;
 		strHolder = std::to_string(this->GetScore()+this->GetHandicap());
 		player_score.SetText(strHolder);
-		player_score.Draw(globalData.screen, this->GetTopX()+border.score_label_offset.first,this->GetTopY()+border.score_label_offset.second+22);
+		player_score.Draw(globalData.screen, this->GetTopX()+border.score_label_offset.first,this->GetTopY()+border.score_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		if (this->GetAIenabled()) {
 			player_name.SetText(_("AI"));
 		}
 		else {
 			player_name.SetText(name);
 		}
-		player_name.Draw(globalData.screen, this->GetTopX()+10,this->GetTopY()-34);
+		player_name.Draw(globalData.screen, this->GetTopX()+10,this->GetTopY()-34, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		if (this->isTimeTrial()) {
 			int tid = (int)SDL_GetTicks()-this->GetGameStartedAt();
 			int minutes;
@@ -568,14 +568,14 @@ public:
 			}
 			player_time.SetText(strHolder);
 		}
-		player_time.Draw(globalData.screen, this->GetTopX()+border.time_label_offset.first,this->GetTopY()+border.time_label_offset.second+22);
+		player_time.Draw(globalData.screen, this->GetTopX()+border.time_label_offset.first,this->GetTopY()+border.time_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		strHolder = std::to_string(this->GetChains());
 		player_chain.SetText(strHolder);
-		player_chain.Draw(globalData.screen, this->GetTopX()+border.chain_label_offset.first,this->GetTopY()+border.chain_label_offset.second+22);
+		player_chain.Draw(globalData.screen, this->GetTopX()+border.chain_label_offset.first,this->GetTopY()+border.chain_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		//drawspeedLevel:
 		strHolder = std::to_string(this->GetSpeedLevel());
 		player_speed.SetText(strHolder);
-		player_speed.Draw(globalData.screen, this->GetTopX()+border.speed_label_offset.first,this->GetTopY()+border.speed_label_offset.second+22);
+		player_speed.Draw(globalData.screen, this->GetTopX()+border.speed_label_offset.first,this->GetTopY()+border.speed_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		if ((this->isStageClear()) &&(this->GetTopY()+700+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1<600+this->GetTopY())) {
 			oldBubleX = this->GetTopX()+280;
 			oldBubleY = this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1;
@@ -593,9 +593,9 @@ public:
 			objectiveField.SetText(_("Objective:"));
 			sagoTextSetHelpFont(gametypeNameField);
 			gametypeNameField.SetText(infostringName);
-			gametypeNameField.Draw(globalData.screen, this->GetTopX()+7,this->GetTopY()+10);
-			objectiveField.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160);
-			infoBox.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160+32);
+			gametypeNameField.Draw(globalData.screen, this->GetTopX()+7,this->GetTopY()+10, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+			objectiveField.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+			infoBox.Draw(globalData.screen, this->GetTopX()+7, this->GetTopY()+160+32, sago::SagoTextField::Alignment::left, &globalData.logicalResize);
 
 			int y = this->GetTopY()+400;
 			static sago::SagoTextBox controldBox;
@@ -603,7 +603,7 @@ public:
 			sagoTextSetHelpFont(controldBox);
 			controldBox.SetMaxWidth(290);
 			controldBox.SetText(controldBoxText);
-			controldBox.Draw(globalData.screen, this->GetTopX()+7,y);
+			controldBox.Draw(globalData.screen, this->GetTopX()+7,y, sago::SagoTextField::Alignment::left, &globalData.logicalResize);
 		}
 	}
 
