@@ -8,6 +8,11 @@
 
 ### Removed
 
+## [2.9.1] - 2025-02-09
+
+### Changed
+ - Left and right on gamepad d-pad now works again. Broken in 2.6.0.
+
 ## [2.9.0] - 2024-05-09
 
 ### Added

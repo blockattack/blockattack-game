@@ -47,7 +47,7 @@ static sago::SagoTextField* getCachedText(const std::string& text) {
 }
 
 static void Write(SDL_Renderer* target, int x, int y, const char* text) {
-	getCachedText(text)->Draw(target, x, y);
+	getCachedText(text)->Draw(target, x, y, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 }
 
 //The function that allows the player to choose PuzzleLevel
@@ -80,7 +80,10 @@ int PuzzleLevelSelect(int Type) {
 		SDL_Delay(1);
 		auto ticks = SDL_GetTicks();
 		DrawBackground(globalData.screen);
-		globalData.iCheckBoxArea.Draw(globalData.screen,ticks,xplace,yplace);
+		int mousex;
+		int mousey;
+		globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
+		globalData.iCheckBoxArea.Draw(globalData.screen,ticks,xplace,yplace, &globalData.logicalResize);
 		if (Type == 0) {
 			Write(globalData.screen, xplace+12,yplace+2,_("Select Puzzle") );
 		}
@@ -89,21 +92,22 @@ int PuzzleLevelSelect(int Type) {
 		}
 		//Now drow the fields you click in (and a V if clicked):
 		for (int i = 0; i < nrOfLevels; i++) {
-			globalData.iLevelCheckBox.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+			globalData.iLevelCheckBox.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50, &globalData.logicalResize);
 			if (i==selected) {
-				globalData.iLevelCheckBoxMarked.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+				globalData.iLevelCheckBoxMarked.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50, &globalData.logicalResize);
 			}
 			if (Type == 0 && PuzzleIsCleared(i)) {
-				globalData.iLevelCheck.Draw(globalData.screen,ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+				globalData.iLevelCheck.Draw(globalData.screen,ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50, &globalData.logicalResize);
 			}
 			if (Type == 1 && IsStageCleared(i)) {
-				globalData.iLevelCheck.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50);
+				globalData.iLevelCheck.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50, &globalData.logicalResize);
 			}
 		}
 
 		SDL_Event event;
 		while ( SDL_PollEvent(&event) ) {
 			UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
+			globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
 
 			if ( event.type == SDL_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
@@ -146,25 +150,25 @@ int PuzzleLevelSelect(int Type) {
 
 		SDL_GetKeyboardState(nullptr);
 
-		if (globalData.mousex != oldmousex || globalData.mousey != oldmousey) {
+		if (mousex != oldmousex || mousey != oldmousey) {
 			int tmpSelected = -1;
 			int j;
 			for (j = 0; (tmpSelected == -1) && ( (j<nrOfLevels/10)||((j<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)) ); j++) {
-				if ((60+j*50<globalData.mousey-yplace)&&(globalData.mousey-yplace<j*50+92)) {
+				if ((60+j*50<mousey-yplace)&&(mousey-yplace<j*50+92)) {
 					tmpSelected = j*10;
 				}
 			}
 			if (tmpSelected != -1) {
 				for (int k = 0; (( (!(nrOfLevels%10) || k<nrOfLevels-10*(j-1)) )&&(k<10)); k++) {
-					if ((10+k*50<globalData.mousex-xplace)&&(globalData.mousex-xplace<k*50+42)) {
+					if ((10+k*50<mousex-xplace)&&(mousex-xplace<k*50+42)) {
 						tmpSelected +=k;
 						selected = tmpSelected;
 					}
 				}
 			}
 		}
-		oldmousey = globalData.mousey;
-		oldmousex= globalData.mousex;
+		oldmousey = mousey;
+		oldmousex= mousex;
 
 		// If the mouse button is released, make bMouseUp equal true
 		if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
@@ -177,13 +181,13 @@ int PuzzleLevelSelect(int Type) {
 			int levelClicked = -1;
 			int i;
 			for (i = 0; (i<nrOfLevels/10)||((i<nrOfLevels/10+1)&&(nrOfLevels%10 != 0)); i++)
-				if ((60+i*50<globalData.mousey-yplace)&&(globalData.mousey-yplace<i*50+92)) {
+				if ((60+i*50<mousey-yplace)&&(mousey-yplace<i*50+92)) {
 					levelClicked = i*10;
 				}
 			i++;
 			if (levelClicked != -1)
 				for (int j = 0; ((j<nrOfStageLevels%(i*10))&&(j<10)); j++)
-					if ((10+j*50<globalData.mousex-xplace)&&(globalData.mousex-xplace<j*50+42)) {
+					if ((10+j*50<mousex-xplace)&&(mousex-xplace<j*50+42)) {
 						levelClicked +=j;
 						levelSelected = true;
 						levelNr = levelClicked;

@@ -65,20 +65,20 @@ SagoSprite::~SagoSprite() {
 	delete data;
 }
 
-void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y) const {
-	DrawScaled(target, frameTime, x, y, data->imgCord.w, data->imgCord.h);
+void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, SagoLogicalResize* resize) const {
+	DrawScaled(target, frameTime, x, y, data->imgCord.w, data->imgCord.h, resize);
 }
 
-void SagoSprite::DrawRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, const double angleRadian) const {
+void SagoSprite::DrawRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, const double angleRadian, SagoLogicalResize* resize) const {
 	SDL_Point center = {this->data->origin.x, this->data->origin.y};
-	DrawScaledAndRotated(target, frameTime, x, y, data->imgCord.w, data->imgCord.h, angleRadian, &center, SDL_FLIP_NONE);
+	DrawScaledAndRotated(target, frameTime, x, y, data->imgCord.w, data->imgCord.h, angleRadian, &center, SDL_FLIP_NONE, resize);
 }
 
-void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h) const {
-	DrawScaledAndRotated(target, frameTime, x, y, w, h, 0.0, nullptr, SDL_FLIP_NONE);
+void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, SagoLogicalResize* resize) const {
+	DrawScaledAndRotated(target, frameTime, x, y, w, h, 0.0, nullptr, SDL_FLIP_NONE, resize);
 }
 
-void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip) const {
+void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip, SagoLogicalResize* resize) const {
 	if (!data->tex.get()) {
 		std::cerr << "Texture is null!\n";
 	}
@@ -94,10 +94,13 @@ void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, in
 		pos.h = h;
 	}
 	double angleDegress = angleRadian/M_PI*180.0;
+	if (resize) {
+		resize->LogicalToPhysical(pos);
+	}
 	SDL_RenderCopyEx(target, data->tex.get(), &rect, &pos, angleDegress, center, flip);
 }
 
-void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part) const {
+void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part, SagoLogicalResize* resize) const {
 	SDL_Rect rect = data->imgCord;
 	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
 	rect.x += part.x;
@@ -107,16 +110,19 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, cons
 	SDL_Rect pos = rect;
 	pos.x = x - this->data->origin.x;
 	pos.y = y - this->data->origin.y;
+	if (resize) {
+		resize->LogicalToPhysical(pos);
+	}
 	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
 }
 
-void SagoSprite::DrawProgressive(SDL_Renderer* target, float progress, int x, int y) const {
+void SagoSprite::DrawProgressive(SDL_Renderer* target, float progress, int x, int y, SagoLogicalResize* resize) const {
 	Sint32 frameNumber = progress*data->aniFrames;
 	Sint32 frameTime = frameNumber*data->aniFrameTime;
-	Draw(target, frameTime, x, y);
+	Draw(target, frameTime, x, y, resize);
 }
 
-void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds) const {
+void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds, SagoLogicalResize* resize) const {
 	SDL_Rect rect = data->imgCord;
 	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
 	SDL_Rect pos = rect;
@@ -159,6 +165,9 @@ void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int 
 		rect.h -= absDiff;
 	}
 
+	if (resize) {
+		resize->LogicalToPhysical(pos);
+	}
 	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
 }
 

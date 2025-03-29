@@ -193,7 +193,7 @@ void SagoTextField::GetRenderedSize(const char* text, int* w, int* h) {
 	}
 }
 
-void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment, VerticalAlignment verticalAlignment) {
+void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment, VerticalAlignment verticalAlignment, SagoLogicalResize* resize) {
 	if (data->text.empty()) {
 		return;
 	}
@@ -224,7 +224,13 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment
 		int outlineTexH = 0;
 		SDL_QueryTexture(data->outlineTexture, NULL, NULL, &outlineTexW, &outlineTexH);
 		SDL_Rect dstrectOutline = { x-(data->outline), y-(data->outline), outlineTexW, outlineTexH };
+		if (resize) {
+			resize->LogicalToPhysical(dstrectOutline);
+		}
 		SDL_RenderCopy(target, data->outlineTexture, NULL, &dstrectOutline);
+	}
+	if (resize) {
+		resize->LogicalToPhysical(dstrect);
 	}
 	SDL_RenderCopy(target, data->texture, NULL, &dstrect);
 }

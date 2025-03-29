@@ -177,14 +177,14 @@ void SagoTextBox::UpdateCache() {
 	data->renderedText = data->text;
 }
 
-void SagoTextBox::Draw(SDL_Renderer* target, int x, int y, SagoTextField::Alignment alignment ) {
+void SagoTextBox::Draw(SDL_Renderer* target, int x, int y, SagoTextField::Alignment alignment, SagoLogicalResize* resize ) {
 	if (data->text != data->renderedText) {
 		UpdateCache();
 	}
 	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
 	int lineSkip = TTF_FontLineSkip(font);
 	for (size_t i = 0; i < data->lines.size(); ++i) {
-		data->lines[i].Draw(target, x, y+i*lineSkip, alignment);
+		data->lines[i].Draw(target, x, y+i*lineSkip, alignment, sago::SagoTextField::VerticalAlignment::top, resize);
 	}
 }
 

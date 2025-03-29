@@ -26,6 +26,7 @@ http://www.blockattack.net
 
 #include <memory>
 #include "sago/SagoSpriteHolder.hpp"
+#include "sago/SagoLogicalResize.hpp"
 #include "highscore.h"
 #include "sago/GameStateInterface.hpp"
 #include "TextManager.hpp"
@@ -107,6 +108,7 @@ struct GlobalData {
 	std::vector<std::string> modList;
 	ModInfo modinfo;
 	Theme theme;
+	sago::SagoLogicalResize logicalResize;
 
 	TextManager theTextManager;
 

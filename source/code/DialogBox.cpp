@@ -29,6 +29,7 @@ http://www.blockattack.net
 #include "MenuSystem.h"
 #include <unordered_map>
 #include <fmt/core.h>
+#include "sago/SagoLogicalResize.hpp"
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
 	field.SetHolder(holder);
@@ -52,9 +53,12 @@ static void draw_rect_cache_clear() {
 }
 
 
-static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name) {
+static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int width, const std::string& name, sago::SagoLogicalResize* resize) {
 	const int size = 32;
 	SDL_Rect dstrect = { topx, topy, width, height };
+	if (resize) {
+		resize->LogicalToPhysical(dstrect);
+	}
 	std::string key_name = fmt::format("{}-{}-{}", name, width, height);
 	Uint64 new_version = globalData.spriteHolder->GetDataHolder().getVersion();
 	if (draw_rect_cache_version != new_version) {
@@ -104,14 +108,14 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 	SDL_RenderCopy( target, mTexture, NULL, &dstrect );
 }
 
-static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, int width) {
+static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, int width, sago::SagoLogicalResize* resize) {
 	std::string name = "ui_rect_white_";
-	DrawRect(target, topx, topy, height, width, name);
+	DrawRect(target, topx, topy, height, width, name, resize);
 }
 
-void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width) {
+void DrawRectYellow(SDL_Renderer* target, int topx, int topy, int height, int width, sago::SagoLogicalResize* resize) {
 	std::string name = "ui_rect_yellow_";
-	DrawRect(target, topx, topy, height, width, name);
+	DrawRect(target, topx, topy, height, width, name, resize);
 }
 
 bool OpenDialogbox(int x, int y, std::string& name, const std::string& header) {
@@ -160,16 +164,19 @@ bool DialogBox::IsActive() {
 }
 
 static bool insideRect (int x, int y, int height, int width) {
-	if (globalData.mousex < x) {
+	int mousex;
+	int mousey;
+	globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
+	if (mousex < x) {
 		return false;
 	}
-	if (globalData.mousex > x+width) {
+	if (mousex > x+width) {
 		return false;
 	}
-	if (globalData.mousey < y) {
+	if (mousey < y) {
 		return false;
 	}
-	if (globalData.mousey > y+height) {
+	if (mousey > y+height) {
 		return false;
 	}
 	return true;
@@ -182,25 +189,25 @@ void DialogBox::Draw(SDL_Renderer* target) {
 	DrawBackground(globalData.screen);
 	this->x = globalData.xsize/2-300;
 	this->y = globalData.ysize/2-100;
-	DrawRectYellow(target, x, y, 200, 600);
-	headerLabel.Draw(target, x+300, y+20, sago::SagoTextField::Alignment::center);
+	DrawRectYellow(target, x, y, 200, 600, &globalData.logicalResize);
+	headerLabel.Draw(target, x+300, y+20, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	if (insideRect(x+25, y+128, 50, 250)) {
-		DrawRectYellow(target, x+24, y+127, 52, 252);
+		DrawRectYellow(target, x+24, y+127, 52, 252, &globalData.logicalResize);
 	}
 	else {
-		DrawRectYellow(target, x+25, y+128, 50, 250);
+		DrawRectYellow(target, x+25, y+128, 50, 250, &globalData.logicalResize);
 	}
-	enterLabel.Draw(target, x+150, y+140, sago::SagoTextField::Alignment::center);
+	enterLabel.Draw(target, x+150, y+140, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	if (insideRect(x+325, y+128, 50, 250)) {
-		DrawRectYellow(target, x+324, y+127, 52, 252);
+		DrawRectYellow(target, x+324, y+127, 52, 252, &globalData.logicalResize);
 	}
 	else {
-		DrawRectYellow(target, x+325, y+128, 50, 250);
+		DrawRectYellow(target, x+325, y+128, 50, 250, &globalData.logicalResize);
 	}
-	cancelLabel.Draw(target, x+450, y+140, sago::SagoTextField::Alignment::center);
-	DrawRectWhite(target, x+26, y+64, 54, 600-2*26);
+	cancelLabel.Draw(target, x+450, y+140, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+	DrawRectWhite(target, x+26, y+64, 54, 600-2*26, &globalData.logicalResize);
 	textField.SetText(rk->GetString());
-	textField.Draw(target, x+40, y+76);
+	textField.Draw(target, x+40, y+76, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	std::string strHolder = rk->GetString();
 	strHolder.erase((int)rk->CharsBeforeCursor());
 
@@ -208,15 +215,15 @@ void DialogBox::Draw(SDL_Renderer* target) {
 		int width = 0;
 		textField.GetRenderedSize( strHolder.c_str(), &width);
 		width -= 2;
-		cursorLabel.Draw(target, x+40+width,y+76);
+		cursorLabel.Draw(target, x+40+width,y+76, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	}
 	const sago::SagoSprite& marked = globalData.spriteHolder->GetSprite("i_level_check_box_marked");
 	for (size_t i = 0; i<virtualKeyboard.gamePadCharFields.size(); ++i) {
 		if (virtualKeyboard.selectedChar == static_cast<int>(i)) {
-			marked.Draw(target, SDL_GetTicks(), globalData.xsize/2-400+(i%keyboardRowLimit)*40-5, globalData.ysize/2+150+(i/keyboardRowLimit)*40-5);
+			marked.Draw(target, SDL_GetTicks(), globalData.xsize/2-400+(i%keyboardRowLimit)*40-5, globalData.ysize/2+150+(i/keyboardRowLimit)*40-5, &globalData.logicalResize);
 		}
 		sago::SagoTextField& f = virtualKeyboard.gamePadCharFields.at(i);
-		f.Draw(target, globalData.xsize/2-400+(i%keyboardRowLimit)*40, globalData.ysize/2+150+(i/keyboardRowLimit)*40);
+		f.Draw(target, globalData.xsize/2-400+(i%keyboardRowLimit)*40, globalData.ysize/2+150+(i/keyboardRowLimit)*40, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	}
 }
 
@@ -369,7 +376,11 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 		}
 	}
 
-	if (globalData.mousex != oldmousex || globalData.mousey != oldmousey) {
+	int mousex;
+	int mousey;
+	globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
+
+	if (mousex != oldmousex || mousey != oldmousey) {
 		for (size_t i = 0; i<virtualKeyboard.gamePadCharFields.size(); ++i) {
 			auto topx = globalData.xsize/2-400+(i%keyboardRowLimit)*40-5;
 			auto topy = globalData.ysize/2+150+(i/keyboardRowLimit)*40-5;
@@ -377,8 +388,8 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 				virtualKeyboard.selectedChar = i;
 			}
 		}
-		oldmousex = globalData.mousex;
-		oldmousey = globalData.mousey;
+		oldmousex = mousex;
+		oldmousey = mousey;
 	}
 }
 

@@ -67,34 +67,40 @@ void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 
 #define OFFSETX (-512+globalData.xsize/2)
 
+static void RenderDrawLine(SDL_Renderer * renderer, int x1, int y1, int x2, int y2) {
+	globalData.logicalResize.LogicalToPhysical(&x1, &y1);
+	globalData.logicalResize.LogicalToPhysical(&x2, &y2);
+	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
 void HelpGamepadState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 	const sago::SagoSprite& gamepad = globalData.spriteHolder->GetSprite("help_controller");
-	gamepad.Draw(target, SDL_GetTicks(), globalData.xsize/2-480/2, 100);
+	gamepad.Draw(target, SDL_GetTicks(), globalData.xsize/2-480/2, 100, &globalData.logicalResize);
 	SDL_SetRenderDrawColor(target, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_RenderDrawLine(target, 100+OFFSETX, 210, globalData.xsize/2-480/2+130, 210);
-	SDL_RenderDrawLine(target, 100+OFFSETX, 298, globalData.xsize/2-480/2+158, 298);
-	SDL_RenderDrawLine(target, 100+OFFSETX, 210, 100+OFFSETX, 400);
-	moveLabel.Draw(target, 100+OFFSETX, 404, sago::SagoTextField::Alignment::center);
+	RenderDrawLine(target, 100+OFFSETX, 210, globalData.xsize/2-480/2+130, 210);
+	RenderDrawLine(target, 100+OFFSETX, 298, globalData.xsize/2-480/2+158, 298);
+	RenderDrawLine(target, 100+OFFSETX, 210, 100+OFFSETX, 400);
+	moveLabel.Draw(target, 100+OFFSETX, 404, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	//Push lines
-	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140, 90, globalData.xsize/2-480/2+140, 105);
-	SDL_RenderDrawLine(target, globalData.xsize/2+480/2-140, 90, globalData.xsize/2+480/2-140, 105);
-	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140-38, 90, globalData.xsize/2+480/2-140+38, 90);
-	SDL_RenderDrawLine(target, globalData.xsize/2-480/2+140-38, 90, globalData.xsize/2-480/2+140-38, 110);
-	SDL_RenderDrawLine(target, globalData.xsize/2+480/2-140+38, 90, globalData.xsize/2+480/2-140+38, 110);
-	SDL_RenderDrawLine(target, globalData.xsize/2, 80, globalData.xsize/2, 90);
-	pushLabel.Draw(target, globalData.xsize/2, 80, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom);
+	RenderDrawLine(target, globalData.xsize/2-480/2+140, 90, globalData.xsize/2-480/2+140, 105);
+	RenderDrawLine(target, globalData.xsize/2+480/2-140, 90, globalData.xsize/2+480/2-140, 105);
+	RenderDrawLine(target, globalData.xsize/2-480/2+140-38, 90, globalData.xsize/2+480/2-140+38, 90);
+	RenderDrawLine(target, globalData.xsize/2-480/2+140-38, 90, globalData.xsize/2-480/2+140-38, 110);
+	RenderDrawLine(target, globalData.xsize/2+480/2-140+38, 90, globalData.xsize/2+480/2-140+38, 110);
+	RenderDrawLine(target, globalData.xsize/2, 80, globalData.xsize/2, 90);
+	pushLabel.Draw(target, globalData.xsize/2, 80, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom, &globalData.logicalResize);
 	//Back lines
-	SDL_RenderDrawLine(target, 800+OFFSETX, 158, 800+OFFSETX, 207);
-	SDL_RenderDrawLine(target, 490+OFFSETX, 180, 800+OFFSETX, 180);
-	SDL_RenderDrawLine(target, 490+OFFSETX, 180, 490+OFFSETX, 195);
-	SDL_RenderDrawLine(target, 663+OFFSETX, 207, 800+OFFSETX, 207);
-	backLabel.Draw(target, 800+OFFSETX, 156, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom);
-	SDL_RenderDrawLine(target, 625+OFFSETX, 241, 900+OFFSETX, 241);
-	SDL_RenderDrawLine(target, 900+OFFSETX, 241, 900+OFFSETX, 400);
-	switchLabel.Draw(target, 900+OFFSETX, 404, sago::SagoTextField::Alignment::center);
-	confirmLabel.Draw(target, 900+OFFSETX, 404+30, sago::SagoTextField::Alignment::center);
-	supportedControllers.Draw(target, 10, 600);
+	RenderDrawLine(target, 800+OFFSETX, 158, 800+OFFSETX, 207);
+	RenderDrawLine(target, 490+OFFSETX, 180, 800+OFFSETX, 180);
+	RenderDrawLine(target, 490+OFFSETX, 180, 490+OFFSETX, 195);
+	RenderDrawLine(target, 663+OFFSETX, 207, 800+OFFSETX, 207);
+	backLabel.Draw(target, 800+OFFSETX, 156, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::bottom, &globalData.logicalResize);
+	RenderDrawLine(target, 625+OFFSETX, 241, 900+OFFSETX, 241);
+	RenderDrawLine(target, 900+OFFSETX, 241, 900+OFFSETX, 400);
+	switchLabel.Draw(target, 900+OFFSETX, 404, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+	confirmLabel.Draw(target, 900+OFFSETX, 404+30, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+	supportedControllers.Draw(target, 10, 600, sago::SagoTextField::Alignment::left, &globalData.logicalResize);
 	HelpCommonState::Draw(target);
 }
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.1...3.27.4)
+cmake_minimum_required(VERSION 3.5.1...3.30.3)
 project (blockattack)
 set(BIN_DIR ${blockattack_SOURCE_DIR}/Game)
 
@@ -77,7 +77,7 @@ pkg_search_module(SDL2TTF REQUIRED SDL2_ttf)
 
 find_package(Intl REQUIRED)
 
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS program_options REQUIRED NO_MODULE)
 
 include_directories(SYSTEM "source/code/Libs/imgui")
 
