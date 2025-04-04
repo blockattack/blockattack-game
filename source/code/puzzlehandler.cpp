@@ -123,3 +123,21 @@ int LoadPuzzleStages( ) {
 	LoadClearData();
 	return 0;
 }
+
+int SavePuzzleStages() {
+	if (puzzleName.length() == 0) {
+		std::cerr << "Error: No puzzle name set. Cannot save.\n";
+		return -1;
+	}
+	std::string fileContent = std::to_string(nrOfPuzzles) + "\n";
+	for (int k=0; k<nrOfPuzzles ; k++) {
+		fileContent += std::to_string(nrOfMovesAllowed.at(k)) + "\n";
+		for (int i=11; i>=0; i--)
+			for (int j=0; j<6; j++) {
+				fileContent += std::to_string(puzzleLevels[k][j][i]) + " ";
+			}
+		fileContent += "\n";
+	}
+	sago::WriteFileContent(((std::string)("puzzles/"+puzzleName)).c_str(), fileContent);
+	return 0;
+}

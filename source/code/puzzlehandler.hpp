@@ -31,6 +31,7 @@ int PuzzleNumberOfMovesAllowed(int level);
 int PuzzleGetBrick(int level, int x, int y);
 bool PuzzleIsCleared(int level);
 int LoadPuzzleStages();
+int SavePuzzleStages();
 int PuzzleGetNumberOfPuzzles();
 void PuzzleSetClear(int level);
 const std::string& PuzzleGetName();
