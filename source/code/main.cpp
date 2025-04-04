@@ -1309,6 +1309,7 @@ int main(int argc, char* argv[]) {
 		else if (puzzleEditor) {
 			InitImGui(sdlWindow, renderer, globalData.xsize, globalData.ysize);
 			PuzzleEditorState s;
+			s.Init();
 			RunImGuiGameState(s);
 		}
 		else if (globalData.replayArgument.length()) {

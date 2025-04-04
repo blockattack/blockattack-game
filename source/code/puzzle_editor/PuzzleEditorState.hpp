@@ -26,7 +26,7 @@ https://blockattack.net
 
 #include "../sago/GameStateInterface.hpp"
 #include <string>
-
+#include <vector>
 
 
 class PuzzleEditorState : public sago::GameStateInterface {
@@ -35,12 +35,17 @@ public:
 	PuzzleEditorState(const PuzzleEditorState& orig) = delete;
 	virtual ~PuzzleEditorState() = default;
 
+	void Init();
+
 	bool IsActive() override;
 	void ProcessInput(const SDL_Event& event, bool& processed) override;
 	void Draw(SDL_Renderer* target) override;
 	void Update() override;
 
 private:
+	void SelectFile(const std::string& file);
+
 	bool isActive = true;
 	std::string selected_file;
+	std::vector<std::string> puzzle_files;
 };

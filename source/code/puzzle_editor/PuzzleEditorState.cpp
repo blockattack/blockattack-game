@@ -25,7 +25,8 @@ https://blockattack.net
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
-
+#include "../sago/SagoMisc.hpp"
+#include "../puzzlehandler.hpp"
 
 
 bool PuzzleEditorState::IsActive() {
@@ -36,15 +37,33 @@ void PuzzleEditorState::ProcessInput(const SDL_Event& event, bool& processed) {
 	ImGui_ImplSDL2_ProcessEvent(&event);
 }
 
+void PuzzleEditorState::Init() {
+	this->selected_file = "";
+	this->puzzle_files = sago::GetFileList("puzzles");
+}
+
+void PuzzleEditorState::SelectFile(const std::string& file) {
+	this->selected_file = file;
+	PuzzleSetName(file);
+	LoadPuzzleStages();
+}
+
 void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	ImGui::Begin("File list", nullptr, ImGuiWindowFlags_NoCollapse);
-	if (ImGui::Selectable("File 1", this->selected_file == "File 1")) {
-		 this->selected_file = "File 1";
-	}
-	if (ImGui::Selectable("File 2",  this->selected_file == "File 2")) {
-		 this->selected_file = "File 2";
+	for (const auto& file : this->puzzle_files) {
+		if (ImGui::Selectable(file.c_str(), this->selected_file == file)) {
+			SelectFile(file);
+		}
 	}
 
+
+	ImGui::End();
+	ImGui::Begin("Puzzles in file");
+	int puzzle_count = PuzzleGetNumberOfPuzzles();
+	for (int i = 0; i < puzzle_count; ++i) {
+		if (ImGui::Selectable(std::to_string(i).c_str(), false)) {
+		}
+	}
 	ImGui::End();
 }
 
