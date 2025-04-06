@@ -69,6 +69,13 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	for (int i = 0; i < puzzle_count; ++i) {
 		if (ImGui::Selectable(std::to_string(i).c_str(), this->selected_puzzle == i)) {
 			this->selected_puzzle = i;
+			BlockGameStartInfo s;
+			s.ticks = 0;
+			s.level = i+1;
+			s.puzzleMode = true;
+			if (game) {
+				game->NewGame(s);
+			}
 		}
 	}
 	ImGui::End();
