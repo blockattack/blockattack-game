@@ -40,6 +40,8 @@ void PuzzleEditorState::ProcessInput(const SDL_Event& event, bool& processed) {
 void PuzzleEditorState::Init() {
 	this->selected_file = "";
 	this->puzzle_files = sago::GetFileList("puzzles");
+	game = std::make_shared<BlockGameSdl>(globalData.xsize-450,100,&globalData.spriteHolder->GetDataHolder());
+	game->name = "Player 1";
 }
 
 void PuzzleEditorState::SelectFile(const std::string& file) {
@@ -49,6 +51,10 @@ void PuzzleEditorState::SelectFile(const std::string& file) {
 }
 
 void PuzzleEditorState::Draw(SDL_Renderer* target) {
+	DrawBackground(target);
+	if (game) {
+		game->DoPaintJob();
+	}
 	ImGui::Begin("File list", nullptr, ImGuiWindowFlags_NoCollapse);
 	for (const auto& file : this->puzzle_files) {
 		if (ImGui::Selectable(file.c_str(), this->selected_file == file)) {
@@ -61,7 +67,8 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	ImGui::Begin("Puzzles in file");
 	int puzzle_count = PuzzleGetNumberOfPuzzles();
 	for (int i = 0; i < puzzle_count; ++i) {
-		if (ImGui::Selectable(std::to_string(i).c_str(), false)) {
+		if (ImGui::Selectable(std::to_string(i).c_str(), this->selected_puzzle == i)) {
+			this->selected_puzzle = i;
 		}
 	}
 	ImGui::End();

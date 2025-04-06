@@ -24,7 +24,9 @@ https://blockattack.net
 
 #pragma once
 
+#include "../global.hpp"
 #include "../sago/GameStateInterface.hpp"
+#include "../BlockGameSdl.hpp"
 #include <string>
 #include <vector>
 
@@ -46,6 +48,8 @@ private:
 	void SelectFile(const std::string& file);
 
 	bool isActive = true;
+	int selected_puzzle = -1;
 	std::string selected_file;
 	std::vector<std::string> puzzle_files;
+	std::shared_ptr<BlockGameSdl> game;
 };
