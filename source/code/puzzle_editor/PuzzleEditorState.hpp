@@ -51,5 +51,4 @@ private:
 	int selected_puzzle = -1;
 	std::string selected_file;
 	std::vector<std::string> puzzle_files;
-	std::shared_ptr<BlockGameSdl> game;
 };

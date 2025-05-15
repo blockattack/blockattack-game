@@ -40,8 +40,6 @@ void PuzzleEditorState::ProcessInput(const SDL_Event& event, bool& processed) {
 void PuzzleEditorState::Init() {
 	this->selected_file = "";
 	this->puzzle_files = sago::GetFileList("puzzles");
-	game = std::make_shared<BlockGameSdl>(globalData.xsize-450,100,&globalData.spriteHolder->GetDataHolder());
-	game->name = "Player 1";
 }
 
 void PuzzleEditorState::SelectFile(const std::string& file) {
@@ -52,9 +50,23 @@ void PuzzleEditorState::SelectFile(const std::string& file) {
 
 void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
-	if (game) {
-		game->DoPaintJob();
+
+	ImGui::Begin("Board area");
+	ImGui::BeginChild("Test");
+	ImVec2 p = ImGui::GetCursorScreenPos();
+	float xoffset = p.x;
+	float yoffset = p.y;
+	float height = BOARD_HEIGHT;
+	float width = BOARD_WIDTH;
+	for (int i=0; i <= 6;++i) {
+		ImGui::GetWindowDrawList()->AddLine(ImVec2(i*50.0f+xoffset, yoffset), ImVec2(i*50.0f+xoffset, height+yoffset), IM_COL32(255, 0, 0, 100));
 	}
+	for (int i=0; i <= 12;++i) {
+		ImGui::GetWindowDrawList()->AddLine(ImVec2(xoffset,yoffset+i*50.0f), ImVec2(xoffset+width, yoffset+i*50.0f), IM_COL32(255, 0, 0, 100));
+	}
+	ImGui::EndChild();
+	ImGui::End();
+
 	ImGui::Begin("File list", nullptr, ImGuiWindowFlags_NoCollapse);
 	for (const auto& file : this->puzzle_files) {
 		if (ImGui::Selectable(file.c_str(), this->selected_file == file)) {
@@ -69,13 +81,6 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	for (int i = 0; i < puzzle_count; ++i) {
 		if (ImGui::Selectable(std::to_string(i).c_str(), this->selected_puzzle == i)) {
 			this->selected_puzzle = i;
-			BlockGameStartInfo s;
-			s.ticks = 0;
-			s.level = i+1;
-			s.puzzleMode = true;
-			if (game) {
-				game->NewGame(s);
-			}
 		}
 	}
 	ImGui::End();
