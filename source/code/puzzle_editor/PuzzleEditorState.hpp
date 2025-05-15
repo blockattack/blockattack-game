@@ -33,7 +33,7 @@ https://blockattack.net
 
 class PuzzleEditorState : public sago::GameStateInterface {
 public:
-	PuzzleEditorState() = default;
+	PuzzleEditorState();
 	PuzzleEditorState(const PuzzleEditorState& orig) = delete;
 	virtual ~PuzzleEditorState() = default;
 
@@ -51,4 +51,5 @@ private:
 	int selected_puzzle = -1;
 	std::string selected_file;
 	std::vector<std::string> puzzle_files;
+	sago::SagoLogicalResize window_resize;
 };

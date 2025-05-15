@@ -29,6 +29,10 @@ https://blockattack.net
 #include "../puzzlehandler.hpp"
 
 
+PuzzleEditorState::PuzzleEditorState() {
+	this->window_resize = sago::SagoLogicalResize(BOARD_WIDTH+5, BOARD_HEIGHT+5);
+}
+
 bool PuzzleEditorState::IsActive() {
 	return isActive;
 }
@@ -48,21 +52,51 @@ void PuzzleEditorState::SelectFile(const std::string& file) {
 	LoadPuzzleStages();
 }
 
+static void LogicalToPhysical(const sago::SagoLogicalResize& resize, ImVec2& inout) {
+	int inx = inout.x;
+	int iny = inout.y;
+	int outx = inout.x;
+	int outy = inout.y;
+	resize.LogicalToPhysical(inx, iny, outx, outy);
+	inout.x = outx;
+	inout.y = outy;
+}
+
 void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 
 	ImGui::Begin("Board area");
 	ImGui::BeginChild("Test");
 	ImVec2 p = ImGui::GetCursorScreenPos();
-	float xoffset = p.x;
-	float yoffset = p.y;
-	float height = BOARD_HEIGHT;
-	float width = BOARD_WIDTH;
+	ImVec2 size = ImGui::GetContentRegionAvail();
+	int xoffset = p.x;
+	int yoffset = p.y;
+	int height = BOARD_HEIGHT;
+	int width = BOARD_WIDTH;
+	window_resize.SetPhysicalSize(size.x, size.y);
+
+
 	for (int i=0; i <= 6;++i) {
-		ImGui::GetWindowDrawList()->AddLine(ImVec2(i*50.0f+xoffset, yoffset), ImVec2(i*50.0f+xoffset, height+yoffset), IM_COL32(255, 0, 0, 100));
+		ImVec2 p1(i*50.0f, 0);
+		ImVec2 p2(i*50.0f, height);
+		LogicalToPhysical(window_resize, p1);
+		LogicalToPhysical(window_resize, p2);
+		p1.x += xoffset;
+		p1.y += yoffset;
+		p2.x += xoffset;
+		p2.y += yoffset;
+		ImGui::GetWindowDrawList()->AddLine(p1, p2, IM_COL32(255, 0, 0, 100));
 	}
 	for (int i=0; i <= 12;++i) {
-		ImGui::GetWindowDrawList()->AddLine(ImVec2(xoffset,yoffset+i*50.0f), ImVec2(xoffset+width, yoffset+i*50.0f), IM_COL32(255, 0, 0, 100));
+		ImVec2 p1(0,i*50.0f);
+		ImVec2 p2(width, i*50.0f);
+		LogicalToPhysical(window_resize, p1);
+		LogicalToPhysical(window_resize, p2);
+		p1.x += xoffset;
+		p1.y += yoffset;
+		p2.x += xoffset;
+		p2.y += yoffset;
+		ImGui::GetWindowDrawList()->AddLine(p1, p2, IM_COL32(255, 0, 0, 100));
 	}
 	ImGui::EndChild();
 	ImGui::End();
