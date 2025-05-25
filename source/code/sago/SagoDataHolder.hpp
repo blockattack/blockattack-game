@@ -40,11 +40,11 @@ class TextureHandler {
 public:
 	TextureHandler() {};
 	TextureHandler(const SagoDataHolder* holder, const std::string& textureName);
-	SDL_Texture* get();
+	SDL_Texture* get() const;
 private:
 	std::string textureName;
 	const SagoDataHolder* holder = nullptr;
-	SDL_Texture* data = nullptr;
+	mutable SDL_Texture* data = nullptr;
 	Uint64 version = 0;
 };
 

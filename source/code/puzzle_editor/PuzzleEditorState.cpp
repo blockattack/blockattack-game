@@ -62,6 +62,30 @@ static void LogicalToPhysical(const sago::SagoLogicalResize& resize, ImVec2& ino
 	inout.y = outy;
 }
 
+
+static void ImGuiWritePartOfImage(SDL_Texture* texture, int topx, int topy, int w, int h) {
+	int tex_w, tex_h;
+	SDL_QueryTexture(texture, nullptr, nullptr, &tex_w, &tex_h);
+	float sprite_w = w;
+	float sprite_h = h;
+	float topxf = topx;
+	float topyf = topy;
+	ImVec2 uv0 = ImVec2(topxf / tex_w, topyf / tex_h);
+	ImVec2 uv1 = ImVec2((topxf + sprite_w) / tex_w, (topyf + sprite_h) / tex_h);
+	ImGui::Image((ImTextureID)(intptr_t)texture, ImVec2((float)w, (float)h), uv0, uv1);
+}
+
+
+static void DrawBrick(int brick, int x, int y, int width, int height) {
+	if (brick < 0 || brick > 6) {
+		return;
+	}
+
+	sago::SagoSprite& sprite = globalData.bricks[brick];
+	ImGui::SetCursorScreenPos({ static_cast<float>(x), static_cast<float>(y) });
+	ImGuiWritePartOfImage(sprite.tex.get(), sprite.imgCord.x, sprite.imgCord.y, sprite.GetWidth(), sprite.GetHeight());
+}
+
 void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 
@@ -75,6 +99,19 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	int width = BOARD_WIDTH;
 	window_resize.SetPhysicalSize(size.x, size.y);
 
+
+	int brick_size = 50;
+	window_resize.LogicalToPhysical(&brick_size, nullptr);
+	for (int i=0; i < 6; ++i) {
+		for (int j=0; j < 12; ++j) {
+			ImVec2 p1(i*50.0f, (11-j)*50.0f);
+			LogicalToPhysical(window_resize, p1);
+			p1.x += xoffset;
+			p1.y += yoffset;
+			int brick = PuzzleGetBrick(this->selected_puzzle, i, j);
+			DrawBrick(brick, static_cast<int>(p1.x), static_cast<int>(p1.y), brick_size, brick_size);
+		}
+	}
 
 	for (int i=0; i <= 6;++i) {
 		ImVec2 p1(i*50.0f, 0);

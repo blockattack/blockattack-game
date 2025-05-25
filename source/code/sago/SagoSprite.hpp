@@ -92,14 +92,17 @@ public:
 	 * @param newOrigin the coordinates that should be the new origin. Call with {0,0} to reset to default
 	 */
 	void SetOrigin(const SDL_Rect& newOrigin);
-	SagoSprite(const SagoSprite& base);
-	SagoSprite& operator=(const SagoSprite& base);
+	SagoSprite(const SagoSprite& base) = default;
+	SagoSprite& operator=(const SagoSprite& base) = default;
 	int GetWidth() const;
 	int GetHeight() const;
-	~SagoSprite();
-private:
-	struct SagoSpriteData;
-	SagoSpriteData* data;
+	~SagoSprite() = default;
+
+	TextureHandler tex;
+	SDL_Rect imgCord = {};
+	SDL_Rect origin = {};
+	int aniFrames = 0;
+	int aniFrameTime = 0;
 };
 
 }

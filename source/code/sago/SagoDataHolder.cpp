@@ -257,7 +257,7 @@ TextureHandler::TextureHandler(const SagoDataHolder* holder, const std::string& 
 	this->data = nullptr;
 }
 
-SDL_Texture* TextureHandler::get() {
+SDL_Texture* TextureHandler::get() const {
 	if (version != holder->getVersion()) {
 		//The holder has been invalidated
 		this->data = this->holder->getTexturePtr(textureName);
