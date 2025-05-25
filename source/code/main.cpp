@@ -1308,9 +1308,14 @@ int main(int argc, char* argv[]) {
 		}
 		else if (puzzleEditor) {
 			InitImGui(sdlWindow, renderer, globalData.xsize, globalData.ysize);
+			ImGuiIO& io = ImGui::GetIO();
+			io.IniFilename = nullptr;
+			std::string imgui_inifile = getPathToSaveFiles() + "/imgui.ini";
+			ImGui::LoadIniSettingsFromDisk(imgui_inifile.c_str());
 			PuzzleEditorState s;
 			s.Init();
 			RunImGuiGameState(s);
+			ImGui::SaveIniSettingsToDisk(imgui_inifile.c_str());
 		}
 		else if (globalData.replayArgument.length()) {
 			ReplayPlayer rp;
