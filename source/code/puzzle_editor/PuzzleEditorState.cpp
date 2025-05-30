@@ -81,7 +81,7 @@ static void DrawBrick(int brick, int x, int y, int width, int height) {
 
 	sago::SagoSprite& sprite = globalData.bricks[brick];
 	ImGui::SetCursorScreenPos({ static_cast<float>(x), static_cast<float>(y) });
-	ImGuiWritePartOfTexture(sprite.tex.get(), sprite.imgCord.x, sprite.imgCord.y, sprite.GetWidth(), sprite.GetHeight(), width, height);
+	ImGuiWritePartOfTexture(sprite.GetTextureHandler().get(), sprite.GetImageCord().x, sprite.GetImageCord().y, sprite.GetWidth(), sprite.GetHeight(), width, height);
 }
 
 void PuzzleEditorState::Draw(SDL_Renderer* target) {

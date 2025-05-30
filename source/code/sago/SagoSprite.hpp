@@ -98,6 +98,19 @@ public:
 	int GetHeight() const;
 	~SagoSprite() = default;
 
+	const TextureHandler& GetTextureHandler() const {
+		return this->tex;
+	}
+
+	const SDL_Rect& GetImageCord() const {
+		return this->imgCord;
+	}
+
+	const SDL_Rect& GetOrigin() const {
+		return this->origin;
+	}
+
+private:
 	TextureHandler tex;
 	SDL_Rect imgCord = {};
 	SDL_Rect origin = {};
