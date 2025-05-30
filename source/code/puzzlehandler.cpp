@@ -28,6 +28,7 @@ http://blockattack.net
 #include <sstream>
 #include "stats.h"
 #include <physfs.h>         //Abstract file system. To use containers
+#include <fmt/core.h>
 #include "sago/SagoMisc.hpp"
 
 using json = nlohmann::json;
@@ -71,7 +72,7 @@ void PuzzleSetName(const std::string& name) {
 
 void LoadClearData() {
 	std::string readFileContent = sago::GetFileContent(puzzleSavePath.c_str());
-	if (readFileContent.length() > 0) {
+	if (readFileContent.length()) {
 		json j = json::parse(readFileContent);
 		try {
 			j.at("cleared").get_to(puzzleCleared);
@@ -88,7 +89,7 @@ void LoadClearData() {
 
 void SaveClearData() {
 	json j = json{ { "cleared", puzzleCleared } };
-	std::string s = j.dump(4);
+	const std::string s = j.dump(4);
 	sago::WriteFileContent(puzzleSavePath.c_str(), s);
 }
 
@@ -102,11 +103,12 @@ void PuzzleSetClear(int Level) {
 
 /*Loads all the puzzle levels*/
 int LoadPuzzleStages( ) {
-	if (!PHYSFS_exists(((std::string)("puzzles/"+puzzleName)).c_str())) {
-		std::cerr << "Warning: File not in blockattack.data: " << ("puzzles/"+puzzleName) << "\n";
+	const std::string filename = fmt::format("puzzles/{}",puzzleName);
+	if (!PHYSFS_exists(filename.c_str())) {
+		std::cerr << "Warning: File not in blockattack.data: " << filename << "\n";
 		return -1; //file doesn't exist
 	}
-	std::string fileContent = sago::GetFileContent(((std::string)("puzzles/"+puzzleName)).c_str());
+	const std::string fileContent = sago::GetFileContent(filename.c_str());
 	std::stringstream inFile(fileContent);
 
 	inFile >> nrOfPuzzles;
@@ -128,7 +130,7 @@ int LoadPuzzleStages( ) {
 }
 
 int SavePuzzleStages() {
-	if (puzzleName.length() == 0) {
+	if (puzzleName.empty()) {
 		std::cerr << "Error: No puzzle name set. Cannot save.\n";
 		return -1;
 	}
