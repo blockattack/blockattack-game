@@ -46,6 +46,9 @@ int PuzzleNumberOfMovesAllowed(int level) {
 }
 
 int PuzzleGetBrick(int level, int x, int y) {
+	if (level >= maxNrOfPuzzleStages || x >= 6 || y >= 12 || level < 0 || x < 0 || y < 0) {
+		return -1;
+	}
 	return puzzleLevels[level][x][y];
 }
 
