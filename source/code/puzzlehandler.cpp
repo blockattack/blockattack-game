@@ -43,6 +43,9 @@ static int puzzleLevels[maxNrOfPuzzleStages][6][12]; //Contains board layout;
 static int nrOfPuzzles;    //How many are there actually?
 
 int PuzzleNumberOfMovesAllowed(int level) {
+	if (level < 0 || level >= nrOfMovesAllowed.size()) {
+		return -1;
+	}
 	return nrOfMovesAllowed.at(level);
 }
 

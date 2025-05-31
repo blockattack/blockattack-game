@@ -22,6 +22,9 @@ https://blockattack.net
 */
 
 #include "PuzzleEditorState.hpp"
+
+#include <unistd.h>
+
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
@@ -50,6 +53,10 @@ void PuzzleEditorState::SelectFile(const std::string& file) {
 	this->selected_file = file;
 	PuzzleSetName(file);
 	LoadPuzzleStages();
+	read_only = false;
+	if (file == "puzzle.levels") {
+		read_only = true;
+	}
 }
 
 static void LogicalToPhysical(const sago::SagoLogicalResize& resize, ImVec2& inout) {
@@ -152,6 +159,37 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		if (ImGui::Selectable(std::to_string(i).c_str(), this->selected_puzzle == i)) {
 			this->selected_puzzle = i;
 		}
+	}
+	ImGui::End();
+
+	ImGui::Begin("Palette");
+	if (ImGui::Selectable("Red", this->selected_action == 0)) {
+		this->selected_action = 0;
+	}
+	if (ImGui::Selectable("Blue", this->selected_action == 1)) {
+		this->selected_action = 1;
+	}
+	if (ImGui::Selectable("Clear", this->selected_action == selection_clear)) {
+		this->selected_action = selection_clear;
+	}
+	if (ImGui::Selectable("Move Up", this->selected_action == selection_move_up)) {
+		this->selected_action = selection_move_up;
+	}
+	if (ImGui::Selectable("Move down", this->selected_action == selection_move_down)) {
+		this->selected_action = selection_move_down;
+	}
+	if (ImGui::Selectable("Move left", this->selected_action == selection_move_left)) {
+		this->selected_action = selection_move_left;
+	}
+	if (ImGui::Selectable("Move right", this->selected_action == selection_move_right)) {
+		this->selected_action = selection_move_right;
+	}
+	ImGui::Separator();
+	ImGui::LabelText("moves allowed", "%i", PuzzleNumberOfMovesAllowed(this->selected_puzzle));
+	ImGui::Separator();
+	if (read_only) {
+		ImGui::LabelText("Read Only", "");
+		ImGui::Separator();
 	}
 	ImGui::End();
 }

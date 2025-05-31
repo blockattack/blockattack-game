@@ -30,6 +30,11 @@ https://blockattack.net
 #include <string>
 #include <vector>
 
+#define selection_clear 10
+#define selection_move_up 11
+#define selection_move_down 12
+#define selection_move_left 13
+#define selection_move_right 14
 
 class PuzzleEditorState : public sago::GameStateInterface {
 public:
@@ -47,7 +52,10 @@ public:
 private:
 	void SelectFile(const std::string& file);
 
+	int selected_action = 0;
+
 	bool isActive = true;
+	bool read_only = true;
 	int selected_puzzle = -1;
 	std::string selected_file;
 	std::vector<std::string> puzzle_files;
