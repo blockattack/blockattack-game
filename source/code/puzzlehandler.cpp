@@ -42,15 +42,15 @@ static std::vector<int> nrOfMovesAllowed(maxNrOfPuzzleStages);  //Moves to clear
 static int puzzleLevels[maxNrOfPuzzleStages][6][12]; //Contains board layout;
 static int nrOfPuzzles;    //How many are there actually?
 
-int PuzzleNumberOfMovesAllowed(int level) {
-	if (level < 0 || level >= nrOfMovesAllowed.size()) {
+int PuzzleNumberOfMovesAllowed(size_t level) {
+	if (level >= nrOfMovesAllowed.size()) {
 		return -1;
 	}
 	return nrOfMovesAllowed.at(level);
 }
 
-int PuzzleGetBrick(int level, int x, int y) {
-	if (level >= maxNrOfPuzzleStages || x >= 6 || y >= 12 || level < 0 || x < 0 || y < 0) {
+int PuzzleGetBrick(size_t level, int x, int y) {
+	if (level >= maxNrOfPuzzleStages || x >= 6 || y >= 12 || x < 0 || y < 0) {
 		return -1;
 	}
 	return puzzleLevels[level][x][y];
@@ -60,7 +60,7 @@ int PuzzleGetNumberOfPuzzles() {
 	return nrOfPuzzles;
 }
 
-bool PuzzleIsCleared(int level) {
+bool PuzzleIsCleared(size_t level) {
 	return puzzleCleared.at(level);
 }
 
@@ -96,7 +96,7 @@ void SaveClearData() {
 	sago::WriteFileContent(puzzleSavePath.c_str(), s);
 }
 
-void PuzzleSetClear(int Level) {
+void PuzzleSetClear(size_t Level) {
 	if (puzzleCleared[Level]==false) {
 		Stats::getInstance()->addOne("puzzlesSolved");
 	}

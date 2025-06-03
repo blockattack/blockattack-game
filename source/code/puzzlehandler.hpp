@@ -27,13 +27,13 @@ http://www.blockattack.net
 
 #include <string>
 
-int PuzzleNumberOfMovesAllowed(int level);
-int PuzzleGetBrick(int level, int x, int y);
-bool PuzzleIsCleared(int level);
+int PuzzleNumberOfMovesAllowed(size_t level);
+int PuzzleGetBrick(size_t level, int x, int y);
+bool PuzzleIsCleared(size_t level);
 int LoadPuzzleStages();
 int SavePuzzleStages();
 int PuzzleGetNumberOfPuzzles();
-void PuzzleSetClear(int level);
+void PuzzleSetClear(size_t level);
 const std::string& PuzzleGetName();
 void PuzzleSetName(const std::string& name);
 

@@ -24,6 +24,7 @@ https://blockattack.net
 #include "PuzzleEditorState.hpp"
 
 #include <unistd.h>
+#include <fmt/core.h>
 
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
@@ -163,11 +164,13 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	ImGui::End();
 
 	ImGui::Begin("Palette");
-	if (ImGui::Selectable("Red", this->selected_action == 0)) {
-		this->selected_action = 0;
-	}
-	if (ImGui::Selectable("Blue", this->selected_action == 1)) {
-		this->selected_action = 1;
+	for (size_t i = 0; i < 7; ++i) {
+		if (ImGui::Selectable(fmt::format("##{}", i).c_str(), this->selected_action == i, 0, ImVec2(0,50))) {
+			this->selected_action = i;
+		}
+		ImGui::SameLine();
+		sago::SagoSprite& sprite = globalData.bricks[i];
+		ImGuiWritePartOfTexture(sprite.GetTextureHandler().get(), sprite.GetImageCord().x, sprite.GetImageCord().y, sprite.GetWidth(), sprite.GetHeight(), 50, 50);
 	}
 	if (ImGui::Selectable("Clear", this->selected_action == selection_clear)) {
 		this->selected_action = selection_clear;
