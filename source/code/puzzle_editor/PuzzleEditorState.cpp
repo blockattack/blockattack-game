@@ -93,6 +93,49 @@ static void DrawBrick(int brick, int x, int y, int width, int height) {
 	ImGuiWritePartOfTexture(sprite.GetTextureHandler().get(), sprite.GetImageCord().x, sprite.GetImageCord().y, sprite.GetWidth(), sprite.GetHeight(), width, height);
 }
 
+/**
+ * Takes the brick pointed to and moves up all bricks above it to leave an empty space.
+ * If bricks are pushed out of the board then the disappear.
+ * @param level The level to edit
+ * @param x
+ * @param y
+ */
+static void BricksMoveUp(int level, int x, int y) {
+	for (int i = 11; i > y; i--) {
+		PuzzleSetBrick(level, x, i, PuzzleGetBrick(level, x, i-1));
+	}
+	PuzzleSetBrick(level, x, y, -1);  //Clear the space we started
+}
+
+static void BricksMoveDown(int level, int x, int y) {
+	for (int i = 0; i < y; i++) {
+		PuzzleSetBrick(level, x, i, PuzzleGetBrick(level, x, i+1));
+	}
+	PuzzleSetBrick(level, x, y, -1);  //Clear the space we started
+}
+
+static void BricksMoveColumnLeft(int level, int x) {
+	for (int i=0; i < x; i++) {
+		for (int j=0; j<12 ; j++) {
+			PuzzleSetBrick(level, i, j, PuzzleGetBrick(level, i+1, j));
+		}
+	}
+	for (int j=0; j<12 ; j++) {
+		PuzzleSetBrick(level, x, j, -1);
+	}
+}
+
+static void BricksMoveColumnRight(int level, int x) {
+	for (int i=5; i > x; i--) {
+		for (int j=0; j<12 ; j++) {
+			PuzzleSetBrick(level, i, j, PuzzleGetBrick(level, i-1, j));
+		}
+	}
+	for (int j=0; j<12 ; j++) {
+		PuzzleSetBrick(level, x, j, -1);
+	}
+}
+
 
 void PuzzleEditorState::BrickClicked(int x, int y) {
 	if (read_only) {
@@ -106,9 +149,27 @@ void PuzzleEditorState::BrickClicked(int x, int y) {
 	}
 	if (selected_action >= 0 && selected_action < 7) {
 		PuzzleSetBrick(this->selected_puzzle, x, y, this->selected_action);
+		SavePuzzleStages();
 	}
 	if (selected_action == selection_clear) {
 		PuzzleSetBrick(this->selected_puzzle, x, y, -1);
+		SavePuzzleStages();
+	}
+	if (selected_action == selection_move_up) {
+		BricksMoveUp(this->selected_puzzle, x, y);
+		SavePuzzleStages();
+	}
+	if (selected_action == selection_move_down) {
+		BricksMoveDown(this->selected_puzzle, x, y);
+		SavePuzzleStages();
+	}
+	if (selected_action == selection_move_left) {
+		BricksMoveColumnLeft(this->selected_puzzle, x);
+		SavePuzzleStages();
+	}
+	if (selected_action == selection_move_right) {
+		BricksMoveColumnRight(this->selected_puzzle, x);
+		SavePuzzleStages();
 	}
 
 }
