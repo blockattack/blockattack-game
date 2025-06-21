@@ -93,6 +93,26 @@ static void DrawBrick(int brick, int x, int y, int width, int height) {
 	ImGuiWritePartOfTexture(sprite.GetTextureHandler().get(), sprite.GetImageCord().x, sprite.GetImageCord().y, sprite.GetWidth(), sprite.GetHeight(), width, height);
 }
 
+
+void PuzzleEditorState::BrickClicked(int x, int y) {
+	if (read_only) {
+		return;
+	}
+	if (x < 0 || x >= 6) {
+		return;
+	}
+	if (y <0 || y >= 12) {
+		return;
+	}
+	if (selected_action >= 0 && selected_action < 7) {
+		PuzzleSetBrick(this->selected_puzzle, x, y, this->selected_action);
+	}
+	if (selected_action == selection_clear) {
+		PuzzleSetBrick(this->selected_puzzle, x, y, -1);
+	}
+
+}
+
 void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	DrawBackground(target);
 
@@ -154,9 +174,10 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		//std::cout << "Clicked at: " << pos.x << "," << pos.y << "\n";
 		//std::cout << "Logical Pos: " << logical_pos_x << "," << logical_pos_y << "\n";
 		int board_x = logical_pos_x / 50;
-		int board_y = logical_pos_y / 50;
+		int board_y = 11-(logical_pos_y / 50);
 		if (board_x >=0 && board_x < 6 && board_y >= 0 && board_y < 12) {
 			std::cout << "Board Pos: " << board_x << "," << board_y << "\n";
+			BrickClicked(board_x, board_y);
 		}
 
 	}

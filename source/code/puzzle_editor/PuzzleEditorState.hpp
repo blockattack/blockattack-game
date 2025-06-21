@@ -52,6 +52,8 @@ public:
 private:
 	void SelectFile(const std::string& file);
 
+	void BrickClicked(int x, int y);
+
 	int selected_action = 0;
 
 	bool isActive = true;

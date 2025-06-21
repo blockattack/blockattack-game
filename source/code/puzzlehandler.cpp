@@ -56,6 +56,16 @@ int PuzzleGetBrick(size_t level, int x, int y) {
 	return puzzleLevels[level][x][y];
 }
 
+void PuzzleSetBrick(size_t level, int x, int y, int brick) {
+	if (level >= maxNrOfPuzzleStages || x >= 6 || y >= 12 || x < 0 || y < 0) {
+		return;
+	}
+	if (brick >= 7) {
+		return;
+	}
+	puzzleLevels[level][x][y] = brick;
+}
+
 int PuzzleGetNumberOfPuzzles() {
 	return nrOfPuzzles;
 }

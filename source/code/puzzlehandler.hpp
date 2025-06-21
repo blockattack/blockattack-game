@@ -29,6 +29,7 @@ http://www.blockattack.net
 
 int PuzzleNumberOfMovesAllowed(size_t level);
 int PuzzleGetBrick(size_t level, int x, int y);
+void PuzzleSetBrick(size_t level, int x, int y, int brick);  // used only for editor
 bool PuzzleIsCleared(size_t level);
 int LoadPuzzleStages();
 int SavePuzzleStages();
