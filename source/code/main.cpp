@@ -1395,6 +1395,11 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+void SetSinglePuzzleMode(int level) {
+	singlePuzzle = true;
+	singlePuzzleNr = level;
+}
+
 int runGame(Gametype gametype, int level) {
 	drawBalls = true;
 	puzzleLoaded = false;

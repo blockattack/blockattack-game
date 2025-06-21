@@ -34,6 +34,8 @@ https://blockattack.net
 #include "../puzzlehandler.hpp"
 
 
+void SetSinglePuzzleMode(int level);
+
 PuzzleEditorState::PuzzleEditorState() {
 	this->window_resize = sago::SagoLogicalResize(BOARD_WIDTH+5, BOARD_HEIGHT+5);
 }
@@ -293,6 +295,10 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	if (read_only) {
 		ImGui::LabelText("Read Only", "");
 		ImGui::Separator();
+	}
+	if (ImGui::Button("Play")) {
+		SetSinglePuzzleMode(this->selected_puzzle);
+		runGame(Gametype::Puzzle, this->selected_puzzle);
 	}
 	ImGui::End();
 }
