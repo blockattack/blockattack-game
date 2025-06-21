@@ -27,6 +27,7 @@ https://blockattack.net
 #include <fmt/core.h>
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
 #include "../sago/SagoMisc.hpp"
@@ -141,6 +142,23 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		p2.x += xoffset;
 		p2.y += yoffset;
 		ImGui::GetWindowDrawList()->AddLine(p1, p2, IM_COL32(255, 0, 0, 100));
+	}
+	ImGuiIO& io = ImGui::GetIO();
+	if (ImGui::IsMouseReleased(0) && io.MouseDownDurationPrev[0] < 0.3f && !ImGui::IsMouseDragPastThreshold(0)) {
+		ImVec2 pos = io.MousePos;
+		pos.x -= xoffset;
+		pos.y -= yoffset;
+		int logical_pos_x = 0;
+		int logical_pos_y = 0;
+		window_resize.PhysicalToLogical(pos.x, pos.y, logical_pos_x, logical_pos_y);
+		//std::cout << "Clicked at: " << pos.x << "," << pos.y << "\n";
+		//std::cout << "Logical Pos: " << logical_pos_x << "," << logical_pos_y << "\n";
+		int board_x = logical_pos_x / 50;
+		int board_y = logical_pos_y / 50;
+		if (board_x >=0 && board_x < 6 && board_y >= 0 && board_y < 12) {
+			std::cout << "Board Pos: " << board_x << "," << board_y << "\n";
+		}
+
 	}
 	ImGui::EndChild();
 	ImGui::End();
