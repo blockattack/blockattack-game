@@ -291,6 +291,14 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	}
 	ImGui::Separator();
 	ImGui::LabelText("moves allowed", "%i", PuzzleNumberOfMovesAllowed(this->selected_puzzle));
+	if (ImGui::Button("+1 move")) {
+		PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)+1);
+		SavePuzzleStages();
+	}
+	if (ImGui::Button("-1 move")) {
+		PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)-1);
+		SavePuzzleStages();
+	}
 	ImGui::Separator();
 	if (read_only) {
 		ImGui::LabelText("Read Only", "");

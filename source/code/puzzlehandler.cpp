@@ -49,6 +49,13 @@ int PuzzleNumberOfMovesAllowed(size_t level) {
 	return nrOfMovesAllowed.at(level);
 }
 
+void PuzzleNumberOfMovesAllowedSet(size_t level, int numbler_of_moves) {
+	if (level >= nrOfMovesAllowed.size()) {
+		return;
+	}
+	nrOfMovesAllowed[level] = numbler_of_moves;
+}
+
 int PuzzleGetBrick(size_t level, int x, int y) {
 	if (level >= maxNrOfPuzzleStages || x >= 6 || y >= 12 || x < 0 || y < 0) {
 		return -1;

@@ -28,6 +28,7 @@ http://www.blockattack.net
 #include <string>
 
 int PuzzleNumberOfMovesAllowed(size_t level);
+void PuzzleNumberOfMovesAllowedSet(size_t level, int numbler_of_moves);
 int PuzzleGetBrick(size_t level, int x, int y);
 void PuzzleSetBrick(size_t level, int x, int y, int brick);  // used only for editor
 bool PuzzleIsCleared(size_t level);
