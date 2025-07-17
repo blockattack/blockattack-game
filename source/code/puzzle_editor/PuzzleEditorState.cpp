@@ -254,7 +254,6 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		}
 	}
 
-
 	ImGui::End();
 	ImGui::Begin("Puzzles in file");
 	int puzzle_count = PuzzleGetNumberOfPuzzles();
@@ -262,6 +261,12 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		if (ImGui::Selectable(std::to_string(i).c_str(), this->selected_puzzle == i)) {
 			this->selected_puzzle = i;
 		}
+	}
+	if (ImGui::Button("Add puzzle")) {
+		EditorAddPuzzle(this->selected_puzzle);
+	}
+	if (ImGui::Button("Remove puzzle")) {
+		EditorRemovePuzzle(this->selected_puzzle);
 	}
 	ImGui::End();
 
@@ -280,7 +285,7 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	if (ImGui::Selectable("Move Up", this->selected_action == selection_move_up)) {
 		this->selected_action = selection_move_up;
 	}
-	if (ImGui::Selectable("Move down", this->selected_action == selection_move_down)) {
+	/*if (ImGui::Selectable("Move down", this->selected_action == selection_move_down)) {
 		this->selected_action = selection_move_down;
 	}
 	if (ImGui::Selectable("Move left", this->selected_action == selection_move_left)) {
@@ -288,7 +293,7 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	}
 	if (ImGui::Selectable("Move right", this->selected_action == selection_move_right)) {
 		this->selected_action = selection_move_right;
-	}
+	}*/
 	ImGui::Separator();
 	ImGui::LabelText("moves allowed", "%i", PuzzleNumberOfMovesAllowed(this->selected_puzzle));
 	if (ImGui::Button("+1 move")) {

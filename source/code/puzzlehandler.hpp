@@ -39,5 +39,8 @@ void PuzzleSetClear(size_t level);
 const std::string& PuzzleGetName();
 void PuzzleSetName(const std::string& name);
 
+void EditorRemovePuzzle(size_t level);
+void EditorAddPuzzle(size_t level);
+
 #endif  /* PUZZLEHANDLER_HPP */
 

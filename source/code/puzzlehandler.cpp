@@ -166,3 +166,25 @@ int SavePuzzleStages() {
 	sago::WriteFileContent(((std::string)("puzzles/"+puzzleName)).c_str(), fileContent);
 	return 0;
 }
+
+void EditorRemovePuzzle(size_t level) {
+	if (level >= nrOfPuzzles) {
+		return;
+	}
+	//Shift all puzzles up.
+	memmove(puzzleLevels[level], puzzleLevels[level+1], sizeof(puzzleLevels[0])*(nrOfPuzzles-level-1));
+	nrOfPuzzles--;
+}
+
+void EditorAddPuzzle(size_t level) {
+	if (nrOfPuzzles >= 50) {
+		return;
+	}
+	memmove( puzzleLevels[level+1], puzzleLevels[level], sizeof(puzzleLevels[0])*(50-level-1) );
+	nrOfPuzzles++;
+	for (size_t i = 0; i < 6; i++) {
+		for (size_t j =0; j < 12; j++) {
+			puzzleLevels[level][i][j] = -1;
+		}
+	}
+}
