@@ -21,6 +21,8 @@ https://blockattack.net
 ===========================================================================
 */
 
+#pragma once
+
 #include "BlockGame.hpp"
 #include "global.hpp"
 #include "sago/SagoTextField.hpp"
