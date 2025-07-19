@@ -32,46 +32,24 @@ SOFTWARE.
 
 namespace sago {
 
-struct SagoSprite::SagoSpriteData {
-	TextureHandler tex;
-	SDL_Rect imgCord = {};
-	SDL_Rect origin = {};
-	int aniFrames = 0;
-	int aniFrameTime = 0;
-};
 
 SagoSprite::SagoSprite() {
-	data = new SagoSpriteData();
 }
 
 SagoSprite::SagoSprite(const SagoDataHolder& texHolder, const std::string& texture,const SDL_Rect& initImage,const int animationFrames, const int animationFrameLength) {
-	data = new SagoSpriteData();
-	data->tex = texHolder.getTextureHandler(texture);
-	data->imgCord = initImage;
-	data->aniFrames = animationFrames;
-	data->aniFrameTime = animationFrameLength;
-}
-
-SagoSprite::SagoSprite(const SagoSprite& base) : data(new SagoSpriteData(*base.data)) {
-
-}
-
-SagoSprite& SagoSprite::operator=(const SagoSprite& base) {
-	*data = *base.data;
-	return *this;
-}
-
-SagoSprite::~SagoSprite() {
-	delete data;
+	tex = texHolder.getTextureHandler(texture);
+	imgCord = initImage;
+	aniFrames = animationFrames;
+	aniFrameTime = animationFrameLength;
 }
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, SagoLogicalResize* resize) const {
-	DrawScaled(target, frameTime, x, y, data->imgCord.w, data->imgCord.h, resize);
+	DrawScaled(target, frameTime, x, y, imgCord.w, imgCord.h, resize);
 }
 
 void SagoSprite::DrawRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, const double angleRadian, SagoLogicalResize* resize) const {
-	SDL_Point center = {this->data->origin.x, this->data->origin.y};
-	DrawScaledAndRotated(target, frameTime, x, y, data->imgCord.w, data->imgCord.h, angleRadian, &center, SDL_FLIP_NONE, resize);
+	SDL_Point center = {this->origin.x, this->origin.y};
+	DrawScaledAndRotated(target, frameTime, x, y, imgCord.w, imgCord.h, angleRadian, &center, SDL_FLIP_NONE, resize);
 }
 
 void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, SagoLogicalResize* resize) const {
@@ -79,14 +57,14 @@ void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y
 }
 
 void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip, SagoLogicalResize* resize) const {
-	if (!data->tex.get()) {
+	if (!tex.get()) {
 		std::cerr << "Texture is null!\n";
 	}
-	SDL_Rect rect = data->imgCord;
-	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
+	SDL_Rect rect = imgCord;
+	rect.x+=rect.w*((frameTime/aniFrameTime)%aniFrames);
 	SDL_Rect pos = rect;
-	pos.x = x - this->data->origin.x;
-	pos.y = y - this->data->origin.y;
+	pos.x = x - this->origin.x;
+	pos.y = y - this->origin.y;
 	if (w > 0) {
 		pos.w = w;
 	}
@@ -97,34 +75,34 @@ void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, in
 	if (resize) {
 		resize->LogicalToPhysical(pos);
 	}
-	SDL_RenderCopyEx(target, data->tex.get(), &rect, &pos, angleDegress, center, flip);
+	SDL_RenderCopyEx(target, tex.get(), &rect, &pos, angleDegress, center, flip);
 }
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part, SagoLogicalResize* resize) const {
-	SDL_Rect rect = data->imgCord;
-	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
+	SDL_Rect rect = imgCord;
+	rect.x+=rect.w*((frameTime/aniFrameTime)%aniFrames);
 	rect.x += part.x;
 	rect.y += part.y;
 	rect.w = part.w;
 	rect.h = part.h;
 	SDL_Rect pos = rect;
-	pos.x = x - this->data->origin.x;
-	pos.y = y - this->data->origin.y;
+	pos.x = x - this->origin.x;
+	pos.y = y - this->origin.y;
 	if (resize) {
 		resize->LogicalToPhysical(pos);
 	}
-	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
+	SDL_RenderCopy(target, tex.get(), &rect, &pos);
 }
 
 void SagoSprite::DrawProgressive(SDL_Renderer* target, float progress, int x, int y, SagoLogicalResize* resize) const {
-	Sint32 frameNumber = progress*data->aniFrames;
-	Sint32 frameTime = frameNumber*data->aniFrameTime;
+	Sint32 frameNumber = progress*aniFrames;
+	Sint32 frameTime = frameNumber*aniFrameTime;
 	Draw(target, frameTime, x, y, resize);
 }
 
 void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& bounds, SagoLogicalResize* resize) const {
-	SDL_Rect rect = data->imgCord;
-	rect.x+=rect.w*((frameTime/data->aniFrameTime)%data->aniFrames);
+	SDL_Rect rect = imgCord;
+	rect.x+=rect.w*((frameTime/aniFrameTime)%aniFrames);
 	SDL_Rect pos = rect;
 	pos.x = x;
 	pos.y = y;
@@ -168,18 +146,18 @@ void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int 
 	if (resize) {
 		resize->LogicalToPhysical(pos);
 	}
-	SDL_RenderCopy(target, data->tex.get(), &rect, &pos);
+	SDL_RenderCopy(target, tex.get(), &rect, &pos);
 }
 
 void SagoSprite::SetOrigin(const SDL_Rect& newOrigin) {
-	data->origin = newOrigin;
+	origin = newOrigin;
 }
 
 int SagoSprite::GetWidth() const {
-	return data->imgCord.w;
+	return imgCord.w;
 }
 int SagoSprite::GetHeight() const {
-	return data->imgCord.h;
+	return imgCord.h;
 }
 
 }  //namespace sago

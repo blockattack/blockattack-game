@@ -1,7 +1,7 @@
 /*
 ===========================================================================
-blockattack - Block Attack - Rise of the Blocks
-Copyright (C) 2005-2015 Poul Sander
+ * Sago Multi Scrambler Puzzle
+Copyright (C) 2024 Poul Sander
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,30 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/
 
 Source information and contacts persons can be found at
-http://www.blockattack.net
+https://github.com/sago007/sago_multi_scrambler_puzzle2
 ===========================================================================
 */
 
-#ifndef PUZZLEHANDLER_HPP
-#define PUZZLEHANDLER_HPP
+#include "imgui.h"
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_sdlrenderer2.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 
-#include <string>
 
-int PuzzleNumberOfMovesAllowed(size_t level);
-void PuzzleNumberOfMovesAllowedSet(size_t level, int numbler_of_moves);
-int PuzzleGetBrick(size_t level, int x, int y);
-void PuzzleSetBrick(size_t level, int x, int y, int brick);  // used only for editor
-bool PuzzleIsCleared(size_t level);
-int LoadPuzzleStages();
-int SavePuzzleStages();
-int PuzzleGetNumberOfPuzzles();
-void PuzzleSetClear(size_t level);
-const std::string& PuzzleGetName();
-void PuzzleSetName(const std::string& name);
-
-void EditorRemovePuzzle(size_t level);
-void EditorAddPuzzle(size_t level);
-
-#endif  /* PUZZLEHANDLER_HPP */
-
+void InitImGui(SDL_Window* window, SDL_Renderer* renderer, int width, int height);

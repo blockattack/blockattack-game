@@ -15,6 +15,6 @@ jobs:
       - name: Check lint
         run: bash source/misc/lint/runLint.sh
       - name: Test Ubuntu
-        run: docker build -f source/misc/docker/Dockerfile.Ubuntu20.04build . -t blockattack_test
+        run: docker build -f source/misc/docker/Dockerfile.Ubuntu22.04build . -t blockattack_test
       - name: Test Windows MXE
         run: docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test

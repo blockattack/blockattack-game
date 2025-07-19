@@ -68,6 +68,9 @@ https://blockattack.net
 
 #include "ExplosionManager.hpp"
 
+#include "puzzle_editor/PuzzleEditorState.hpp"
+#include "SagoImGui.hpp"
+
 /*******************************************************************************
 * All variables and constant has been moved to mainVars.inc for the overview.  *
 *******************************************************************************/
@@ -257,6 +260,7 @@ void ResetFullscreen() {
 	if (globalData.xsize < FOUR_THREE_WIDTH) {
 		globalData.xsize = FOUR_THREE_WIDTH;
 	}
+
 	//SDL_RenderSetLogicalSize(globalData.screen, globalData.xsize, globalData.ysize);
 	globalData.logicalResize = sago::SagoLogicalResize(globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
@@ -410,6 +414,65 @@ void RunGameState(sago::GameStateInterface& state ) {
 		if (mustWriteScreenshot) {
 			writeScreenShot();
 		}
+
+		if (!state.IsActive()) {
+			done = true;
+		}
+	}
+}
+
+void RunImGuiGameState(sago::GameStateInterface& state ) {
+	bool done = false;     //We are done!
+	while (!done && !Config::getInstance()->isShuttingDown()) {
+		SDL_SetRenderDrawColor(globalData.screen, 0, 0, 0, 0);
+		SDL_RenderClear(globalData.screen);
+		ImGui_ImplSDLRenderer2_NewFrame();
+		ImGui_ImplSDL2_NewFrame();
+		ImGui::NewFrame();
+		state.Draw(globalData.screen);
+		ImGui::Render();
+		ImGui_ImplSDLRenderer2_RenderDrawData( ImGui::GetDrawData(), globalData.screen );
+
+		//While using Dear ImGui we do not draw the mouse ourself. This is gone: globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), globalData.mousex, globalData.mousey);
+		SDL_RenderPresent(globalData.screen);
+
+		SDL_Delay(1);
+		SDL_Event event;
+		bool mustWriteScreenshot = false;
+
+		while ( SDL_PollEvent(&event) ) {
+			if ( event.type == SDL_QUIT ) {
+				Config::getInstance()->setShuttingDown(5);
+				done = true;
+			}
+
+			if (event.type == SDL_WINDOWEVENT) {
+				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+					std::cout << event.window.data1 << ", " << event.window.data2 << "\n";
+					SDL_GetRendererOutputSize(globalData.screen, &globalData.xsize, &globalData.ysize);
+				}
+			}
+
+			if (event.type == SDL_KEYDOWN) {
+				if ( event.key.keysym.sym == SDLK_F9 ) {
+					mustWriteScreenshot = true;
+				}
+			}
+
+			if (mustWriteScreenshot) {
+				writeScreenShot();
+			}
+			bool processed = false;
+			ImGui_ImplSDL2_ProcessEvent(&event);
+			state.ProcessInput(event, processed);
+
+		}
+
+
+		state.Update();
+
+		//SDL_RenderPresent(globalData.screen);
+
 
 		if (!state.IsActive()) {
 			done = true;
@@ -862,6 +925,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("print-search-path", "Prints the search path and quits")
 	("no-auto-scale", "Do not automatically auto scale")
 	("always-sixteen-nine", "Use 16:9 format even in Window mode")
+	("puzzle-editor", "Start the build in puzzle editor")
 	("puzzle-level-file", boost::program_options::value<std::string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 #ifdef REPLAY_IMPLEMENTED
@@ -956,6 +1020,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("always-sixteen-nine")) {
 		globalData.alwaysSixteenNine = true;
+	}
+	if (vm.count("puzzle-editor")) {
+		puzzleEditor = true;
 	}
 	if (vm.count("puzzle-level-file")) {
 		conf.puzzleName = vm["puzzle-level-file"].as<std::string>();
@@ -1193,9 +1260,7 @@ int main(int argc, char* argv[]) {
 		}
 		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, rendererFlags);
 		dieOnNullptr(renderer, "Unable to create render");
-		/*if (config.autoScale) {
-			SDL_RenderSetLogicalSize(renderer, globalData.xsize, globalData.ysize);
-		}*/
+
 		if (globalData.verboseLevel) {
 			SDL_RendererInfo info;
 			SDL_GetRendererInfo(renderer, &info);
@@ -1240,6 +1305,17 @@ int main(int argc, char* argv[]) {
 		SDL_RenderPresent(globalData.screen);
 		if (singlePuzzle) {
 			runGame(Gametype::Puzzle, singlePuzzleNr);
+		}
+		else if (puzzleEditor) {
+			InitImGui(sdlWindow, renderer, globalData.xsize, globalData.ysize);
+			ImGuiIO& io = ImGui::GetIO();
+			io.IniFilename = nullptr;
+			std::string imgui_inifile = getPathToSaveFiles() + "/imgui.ini";
+			ImGui::LoadIniSettingsFromDisk(imgui_inifile.c_str());
+			PuzzleEditorState s;
+			s.Init();
+			RunImGuiGameState(s);
+			ImGui::SaveIniSettingsToDisk(imgui_inifile.c_str());
 		}
 		else if (globalData.replayArgument.length()) {
 			ReplayPlayer rp;
@@ -1317,6 +1393,11 @@ int main(int argc, char* argv[]) {
 	//Close file system Apstraction layer!
 	PHYSFS_deinit();
 	return 0;
+}
+
+void SetSinglePuzzleMode(int level) {
+	singlePuzzle = true;
+	singlePuzzleNr = level;
 }
 
 int runGame(Gametype gametype, int level) {

@@ -84,12 +84,13 @@ static Uint8 player2handicap=0;
 
 unsigned long int currentTime;      //contains the current time, so we don't call SDL_GetTickets() too often...
 
-bool twoPlayers;    //True if two players are playing
+bool twoPlayers;    //True if two playerImGui_ImplSDL2_ProcessEvent(&event);s are playing
 
 
 
 //Allows starting the game with just a single puzzle. Mainly to be able to open a puzzle directly from the level editor
 static bool singlePuzzle = false; 
+static bool puzzleEditor = false;
 static int singlePuzzleNr = 0;
 static std::string singlePuzzleFile;
 
