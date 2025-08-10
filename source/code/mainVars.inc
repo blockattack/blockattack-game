@@ -89,7 +89,8 @@ bool twoPlayers;    //True if two playerImGui_ImplSDL2_ProcessEvent(&event);s ar
 
 
 //Allows starting the game with just a single puzzle. Mainly to be able to open a puzzle directly from the level editor
-static bool singlePuzzle = false; 
+static bool singlePuzzle = false;
+static bool editor = false;
 static bool puzzleEditor = false;
 static int singlePuzzleNr = 0;
 static std::string singlePuzzleFile;

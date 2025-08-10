@@ -104,6 +104,7 @@ struct GlobalData {
 	bool NoSound = false;
 	bool alwaysSixteenNine = false;
 	int verboseLevel = 0;
+	sago::SagoDataHolder* dataHolder = nullptr;
 	std::unique_ptr<sago::SagoSpriteHolder> spriteHolder;
 	std::vector<std::string> modList;
 	ModInfo modinfo;

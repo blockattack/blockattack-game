@@ -68,6 +68,7 @@ https://blockattack.net
 
 #include "ExplosionManager.hpp"
 
+#include "editor/SagoTextureSelector.hpp"
 #include "puzzle_editor/PuzzleEditorState.hpp"
 #include "SagoImGui.hpp"
 
@@ -265,6 +266,7 @@ void ResetFullscreen() {
 	globalData.logicalResize = sago::SagoLogicalResize(globalData.xsize, globalData.ysize);
 	dataHolder.invalidateAll(globalData.screen);
 	globalData.spriteHolder.reset(new sago::SagoSpriteHolder( dataHolder ) );
+	globalData.dataHolder = &dataHolder;
 	globalData.spriteHolder->ReadSprites(globalData.modinfo.getModSpriteFiles());
 	if (sago::FileExists("sprites/custom_backgrounds.sprite")) {
 		std::vector<std::string> custom_backgrounds = { "custom_backgrounds" };
@@ -925,6 +927,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("print-search-path", "Prints the search path and quits")
 	("no-auto-scale", "Do not automatically auto scale")
 	("always-sixteen-nine", "Use 16:9 format even in Window mode")
+	("editor", "Start the sprite editor/browser")
 	("puzzle-editor", "Start the build in puzzle editor")
 	("puzzle-level-file", boost::program_options::value<std::string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
@@ -1020,6 +1023,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("always-sixteen-nine")) {
 		globalData.alwaysSixteenNine = true;
+	}
+	if (vm.count("editor")) {
+		editor = true;
 	}
 	if (vm.count("puzzle-editor")) {
 		puzzleEditor = true;
@@ -1305,6 +1311,17 @@ int main(int argc, char* argv[]) {
 		SDL_RenderPresent(globalData.screen);
 		if (singlePuzzle) {
 			runGame(Gametype::Puzzle, singlePuzzleNr);
+		}
+		else if (editor) {
+			InitImGui(sdlWindow, renderer, globalData.xsize, globalData.ysize);
+			ImGuiIO& io = ImGui::GetIO();
+			io.IniFilename = nullptr;
+			std::string imgui_inifile = getPathToSaveFiles() + "/imgui.ini";
+			ImGui::LoadIniSettingsFromDisk(imgui_inifile.c_str());
+			SagoTextureSelector sts;
+			sts.Init();
+			RunImGuiGameState(sts);
+			ImGui::SaveIniSettingsToDisk(imgui_inifile.c_str());
 		}
 		else if (puzzleEditor) {
 			InitImGui(sdlWindow, renderer, globalData.xsize, globalData.ysize);
