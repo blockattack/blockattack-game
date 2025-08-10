@@ -171,15 +171,6 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
-"bomb" : {
-	"texture" : "bomb",
- 	"topx" : 0,
-	"topy" : 0,
-	"height" : 50,
-	"width" : 100,
-	"number_of_frames" : 1,
-	"frame_time" : 1
-},
 "chain_frame" : {
 	"texture" : "chain_frame",
  	"topx" : 0,
