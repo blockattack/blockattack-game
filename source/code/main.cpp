@@ -292,12 +292,12 @@ void DrawBackground(SDL_Renderer* target) {
 		if (globalData.theme.background.tileMoveSpeedX) {
 			nextX -= (ticks/globalData.theme.background.tileMoveSpeedX)%background.GetWidth();
 		}
-		while (nextX < globalData.xsize) {
+		while (nextX < w) {
 			int nextY = 0;
 			if (globalData.theme.background.tileMoveSpeedY) {
 				nextY -= (ticks/globalData.theme.background.tileMoveSpeedY)%background.GetWidth();
 			}
-			while (nextY < globalData.ysize) {
+			while (nextY < h ) {
 				background.Draw(target, ticks, nextX, nextY);
 				nextY += background.GetHeight();
 			}
