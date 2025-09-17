@@ -29,6 +29,9 @@ https://github.com/sago007/saland
 #include <SDL_image.h>
 #include "../../sago/SagoMisc.hpp"
 #include "../global.hpp"
+#include "../common.h"
+
+const char* const editor_texture_grid_size = "editor_texture_grid_size";
 
 
 class ChangeSDLColor
@@ -183,6 +186,10 @@ void SagoTextureSelector::runSpriteSelectorFrame(SDL_Renderer* target) {
 
 void SagoTextureSelector::runTextureSelectorFrame(SDL_Renderer* target) {
 	ImGui::Begin("TextureList", nullptr, ImGuiWindowFlags_NoCollapse);
+	if (ImGui::SliderInt("grid size", &grid_size, 0, 100))
+	{
+		Config::getInstance()->setInt(editor_texture_grid_size, grid_size);
+	}
 	static char filter[256] = "";
 	ImGui::InputText("Filter", filter, IM_ARRAYSIZE(filter));
 	ImGui::Separator();
@@ -193,7 +200,6 @@ void SagoTextureSelector::runTextureSelectorFrame(SDL_Renderer* target) {
 			}
 		}
 	}
-
 	ImGui::End();
 
 	ImGui::Begin("TextureViewer");
@@ -207,7 +213,10 @@ void SagoTextureSelector::runTextureSelectorFrame(SDL_Renderer* target) {
 		ImGui::Image((ImTextureID)(intptr_t)current_texture, ImVec2((float)tex_w, (float)tex_h));
 		ChangeSDLColor color(target);
 		color.setRed();
-		addLinesToCanvas(target, current_texture, 32, 32, p.x, p.y);
+		if (grid_size)
+		{
+			addLinesToCanvas(target, current_texture, grid_size, grid_size, p.x, p.y);
+		}
 		ImGui::EndChild();
 	}
 	ImGui::End();
@@ -217,6 +226,7 @@ void SagoTextureSelector::runTextureSelectorFrame(SDL_Renderer* target) {
 
 
 SagoTextureSelector::SagoTextureSelector() {
+	grid_size = Config::getInstance()->getInt(editor_texture_grid_size, 32);
 }
 
 SagoTextureSelector::~SagoTextureSelector() {

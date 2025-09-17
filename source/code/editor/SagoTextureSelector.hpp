@@ -49,4 +49,5 @@ private:
 	std::map<std::string,SagoSprite> sprites;
 	std::string selected_texture;
 	std::string selected_sprite;
+	int grid_size = 32;
 };
