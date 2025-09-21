@@ -17,7 +17,7 @@ Recent Linux version. Target is all current Ubuntu Desktop LTS versions (up to 5
 Target is all official supported versions of windows for x86-64 that allows manually installed software. Currently Windows 10+.
 
 ## Dependencies
-* A version of g++ with C++11 support. Tested on g++-4.9
+* A version of g++ with C++17 support. Tested on g++-11
 * libSDL2
 * libSDL2_image
 * libSDL2_mixer

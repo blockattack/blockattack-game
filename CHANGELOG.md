@@ -5,6 +5,7 @@
 ### Added
 
 ### Changed
+ - Now compiled with C++17 standard. Also required.
 
 ### Removed
 
