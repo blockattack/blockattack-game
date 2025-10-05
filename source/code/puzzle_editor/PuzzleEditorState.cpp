@@ -46,6 +46,23 @@ bool PuzzleEditorState::IsActive() {
 
 void PuzzleEditorState::ProcessInput(const SDL_Event& event, bool& processed) {
 	ImGui_ImplSDL2_ProcessEvent(&event);
+
+	if (event.type == SDL_KEYDOWN && !read_only) {
+		const Uint8* keystate = SDL_GetKeyboardState(NULL);
+		bool ctrl_held = keystate[SDL_SCANCODE_LCTRL] || keystate[SDL_SCANCODE_RCTRL];
+
+		if (ctrl_held && event.key.keysym.sym == SDLK_z) {
+			if (keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]) {
+				Redo();
+			} else {
+				Undo();
+			}
+			processed = true;
+		} else if (ctrl_held && event.key.keysym.sym == SDLK_y) {
+			Redo();
+			processed = true;
+		}
+	}
 }
 
 void PuzzleEditorState::Init() {
@@ -54,10 +71,14 @@ void PuzzleEditorState::Init() {
 }
 
 void PuzzleEditorState::SelectFile(const std::string& file) {
+	undo_file_stack[this->selected_file] = undo_stack;
+	redo_file_stack[this->selected_file] = redo_stack;
 	this->selected_file = file;
 	PuzzleSetName(file);
 	LoadPuzzleStages();
 	read_only = false;
+	undo_stack = undo_file_stack[this->selected_file];
+	redo_stack = redo_file_stack[this->selected_file];
 	if (file == "puzzle.levels") {
 		read_only = true;
 	}
@@ -139,6 +160,122 @@ static void BricksMoveColumnRight(int level, int x) {
 }
 
 
+void PuzzleEditorState::SaveCurrentState() {
+	if (undo_stack.size() >= MAX_UNDO_STATES) {
+		std::vector<PuzzleState> temp;
+		for (size_t i = 0; i < MAX_UNDO_STATES - 1; ++i) {
+			temp.push_back(undo_stack.back());
+			undo_stack.pop_back();
+		}
+		undo_stack = std::vector<PuzzleState>();
+		while (!temp.empty()) {
+			undo_stack.push_back(temp.back());
+			temp.pop_back();
+		}
+	}
+
+	PuzzleState current_state;
+	current_state.puzzle_count = PuzzleGetNumberOfPuzzles();
+	current_state.current_puzzle = this->selected_puzzle;
+	current_state.moves_allowed.resize(current_state.puzzle_count);
+
+	for (int level = 0; level < current_state.puzzle_count; ++level) {
+		current_state.moves_allowed[level] = PuzzleNumberOfMovesAllowed(level);
+		for (int x = 0; x < 6; ++x) {
+			for (int y = 0; y < 12; ++y) {
+				current_state.puzzle_data[level][x][y] = PuzzleGetBrick(level, x, y);
+			}
+		}
+	}
+
+	undo_stack.push_back(current_state);
+	while (!redo_stack.empty()) {
+		redo_stack.pop_back();
+	}
+}
+
+void PuzzleEditorState::Undo() {
+	if (!CanUndo()) {
+		return;
+	}
+
+	PuzzleState current_state;
+	current_state.puzzle_count = PuzzleGetNumberOfPuzzles();
+	current_state.current_puzzle = this->selected_puzzle;
+	current_state.moves_allowed.resize(current_state.puzzle_count);
+
+	for (int level = 0; level < current_state.puzzle_count; ++level) {
+		current_state.moves_allowed[level] = PuzzleNumberOfMovesAllowed(level);
+		for (int x = 0; x < 6; ++x) {
+			for (int y = 0; y < 12; ++y) {
+				current_state.puzzle_data[level][x][y] = PuzzleGetBrick(level, x, y);
+			}
+		}
+	}
+	redo_stack.push_back(current_state);
+
+	PuzzleState previous_state = undo_stack.back();
+	undo_stack.pop_back();
+
+	EditorResizePuzzleNumber(previous_state.puzzle_count);
+	for (int level = 0; level < previous_state.puzzle_count; ++level) {
+		PuzzleNumberOfMovesAllowedSet(level, previous_state.moves_allowed[level]);
+		for (int x = 0; x < 6; ++x) {
+			for (int y = 0; y < 12; ++y) {
+				PuzzleSetBrick(level, x, y, previous_state.puzzle_data[level][x][y]);
+			}
+		}
+	}
+
+	this->selected_puzzle = previous_state.current_puzzle;
+	SavePuzzleStages();
+}
+
+void PuzzleEditorState::Redo() {
+	if (!CanRedo()) {
+		return;
+	}
+
+	PuzzleState current_state;
+	current_state.puzzle_count = PuzzleGetNumberOfPuzzles();
+	current_state.current_puzzle = this->selected_puzzle;
+	current_state.moves_allowed.resize(current_state.puzzle_count);
+
+	for (int level = 0; level < current_state.puzzle_count; ++level) {
+		current_state.moves_allowed[level] = PuzzleNumberOfMovesAllowed(level);
+		for (int x = 0; x < 6; ++x) {
+			for (int y = 0; y < 12; ++y) {
+				current_state.puzzle_data[level][x][y] = PuzzleGetBrick(level, x, y);
+			}
+		}
+	}
+	undo_stack.push_back(current_state);
+
+	PuzzleState next_state = redo_stack.back();
+	redo_stack.pop_back();
+
+	EditorResizePuzzleNumber(next_state.puzzle_count);
+	for (int level = 0; level < next_state.puzzle_count; ++level) {
+		PuzzleNumberOfMovesAllowedSet(level, next_state.moves_allowed[level]);
+		for (int x = 0; x < 6; ++x) {
+			for (int y = 0; y < 12; ++y) {
+				PuzzleSetBrick(level, x, y, next_state.puzzle_data[level][x][y]);
+			}
+		}
+	}
+
+	this->selected_puzzle = next_state.current_puzzle;
+	SavePuzzleStages();
+}
+
+bool PuzzleEditorState::CanUndo() const {
+	return !undo_stack.empty();
+}
+
+bool PuzzleEditorState::CanRedo() const {
+	return !redo_stack.empty();
+}
+
 void PuzzleEditorState::BrickClicked(int x, int y) {
 	if (read_only) {
 		return;
@@ -149,6 +286,9 @@ void PuzzleEditorState::BrickClicked(int x, int y) {
 	if (y <0 || y >= 12) {
 		return;
 	}
+
+	SaveCurrentState();
+
 	if (selected_action >= 0 && selected_action < 7) {
 		PuzzleSetBrick(this->selected_puzzle, x, y, this->selected_action);
 		SavePuzzleStages();
@@ -263,17 +403,25 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		}
 	}
 	if (ImGui::Button("Add puzzle")) {
-		EditorAddPuzzle(this->selected_puzzle);
+		if (!read_only) {
+			SaveCurrentState();
+			EditorAddPuzzle(this->selected_puzzle);
+			SavePuzzleStages();
+		}
 	}
 	if (ImGui::Button("Remove puzzle")) {
-		EditorRemovePuzzle(this->selected_puzzle);
+		if (!read_only) {
+			SaveCurrentState();
+			EditorRemovePuzzle(this->selected_puzzle);
+			SavePuzzleStages();
+		}
 	}
 	ImGui::End();
 
 	ImGui::Begin("Palette");
 	for (size_t i = 0; i < 7; ++i) {
-		if (ImGui::Selectable(fmt::format("##{}", i).c_str(), this->selected_action == i, 0, ImVec2(0,50))) {
-			this->selected_action = i;
+		if (ImGui::Selectable(fmt::format("##{}", i).c_str(), this->selected_action == static_cast<int>(i), 0, ImVec2(0,50))) {
+			this->selected_action = static_cast<int>(i);
 		}
 		ImGui::SameLine();
 		sago::SagoSprite& sprite = globalData.bricks[i];
@@ -297,18 +445,48 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	ImGui::Separator();
 	ImGui::LabelText("moves allowed", "%i", PuzzleNumberOfMovesAllowed(this->selected_puzzle));
 	if (ImGui::Button("+1 move")) {
+		if (!read_only) {
+			SaveCurrentState();
+		}
 		PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)+1);
 		SavePuzzleStages();
 	}
 	if (ImGui::Button("-1 move")) {
+		if (!read_only) {
+			SaveCurrentState();
+		}
 		PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)-1);
 		SavePuzzleStages();
 	}
 	ImGui::Separator();
 	if (read_only) {
 		ImGui::LabelText("Read Only", "");
-		ImGui::Separator();
+	} else {
+		bool undo_availible = CanUndo();
+		if (!undo_availible) {
+			ImGui::BeginDisabled();
+		}
+		if (ImGui::Button("Undo (Ctrl+Z)")) {
+			Undo();
+		}
+		if (!undo_availible) {
+			ImGui::EndDisabled();
+		}
+
+		ImGui::SameLine();
+		bool redo_availeble = CanRedo();
+
+		if (!redo_availeble) {
+			ImGui::BeginDisabled();
+		}
+		if (ImGui::Button("Redo (Ctrl+Y)")) {
+			Redo();
+		}
+		if (!redo_availeble) {
+			ImGui::EndDisabled();
+		}
 	}
+	ImGui::Separator();
 	if (ImGui::Button("Play")) {
 		SetSinglePuzzleMode(this->selected_puzzle);
 		runGame(Gametype::Puzzle, this->selected_puzzle);

@@ -41,6 +41,7 @@ void PuzzleSetName(const std::string& name);
 
 void EditorRemovePuzzle(size_t level);
 void EditorAddPuzzle(size_t level);
+void EditorResizePuzzleNumber(size_t number_of_puzzles);
 
 #endif  /* PUZZLEHANDLER_HPP */
 

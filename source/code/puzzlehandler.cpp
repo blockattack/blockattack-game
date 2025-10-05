@@ -188,3 +188,10 @@ void EditorAddPuzzle(size_t level) {
 		}
 	}
 }
+
+void EditorResizePuzzleNumber(size_t number_of_puzzles) {
+	if (number_of_puzzles > 50) {
+		number_of_puzzles = 50;
+	}
+	nrOfPuzzles = number_of_puzzles;
+}

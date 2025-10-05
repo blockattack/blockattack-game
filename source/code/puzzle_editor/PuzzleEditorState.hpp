@@ -29,12 +29,20 @@ https://blockattack.net
 #include "../BlockGameSdl.hpp"
 #include <string>
 #include <vector>
+#include <array>
 
 #define selection_clear 10
 #define selection_move_up 11
 #define selection_move_down 12
 #define selection_move_left 13
 #define selection_move_right 14
+
+struct PuzzleState {
+	std::array<std::array<std::array<int, 12>, 6>, 50> puzzle_data;
+	std::vector<int> moves_allowed;
+	int puzzle_count;
+	int current_puzzle;
+};
 
 class PuzzleEditorState : public sago::GameStateInterface {
 public:
@@ -53,6 +61,11 @@ private:
 	void SelectFile(const std::string& file);
 
 	void BrickClicked(int x, int y);
+	void SaveCurrentState();
+	void Undo();
+	void Redo();
+	bool CanUndo() const;
+	bool CanRedo() const;
 
 	int selected_action = 0;
 
@@ -62,4 +75,10 @@ private:
 	std::string selected_file;
 	std::vector<std::string> puzzle_files;
 	sago::SagoLogicalResize window_resize;
+
+	std::map<std::string, std::vector<PuzzleState> > undo_file_stack;
+	std::map<std::string, std::vector<PuzzleState> > redo_file_stack;
+	std::vector<PuzzleState> undo_stack;
+	std::vector<PuzzleState> redo_stack;
+	static const size_t MAX_UNDO_STATES = 50;
 };
