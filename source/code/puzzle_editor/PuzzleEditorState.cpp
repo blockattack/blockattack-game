@@ -291,28 +291,23 @@ void PuzzleEditorState::BrickClicked(int x, int y) {
 
 	if (selected_action >= 0 && selected_action < 7) {
 		PuzzleSetBrick(this->selected_puzzle, x, y, this->selected_action);
-		SavePuzzleStages();
 	}
 	if (selected_action == selection_clear) {
 		PuzzleSetBrick(this->selected_puzzle, x, y, -1);
-		SavePuzzleStages();
 	}
 	if (selected_action == selection_move_up) {
 		BricksMoveUp(this->selected_puzzle, x, y);
-		SavePuzzleStages();
 	}
 	if (selected_action == selection_move_down) {
 		BricksMoveDown(this->selected_puzzle, x, y);
-		SavePuzzleStages();
 	}
 	if (selected_action == selection_move_left) {
 		BricksMoveColumnLeft(this->selected_puzzle, x);
-		SavePuzzleStages();
 	}
 	if (selected_action == selection_move_right) {
 		BricksMoveColumnRight(this->selected_puzzle, x);
-		SavePuzzleStages();
 	}
+	SavePuzzleStages();
 
 }
 
@@ -447,16 +442,16 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	if (ImGui::Button("+1 move")) {
 		if (!read_only) {
 			SaveCurrentState();
+			PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)+1);
+			SavePuzzleStages();
 		}
-		PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)+1);
-		SavePuzzleStages();
 	}
 	if (ImGui::Button("-1 move")) {
 		if (!read_only) {
 			SaveCurrentState();
+			PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)-1);
+			SavePuzzleStages();
 		}
-		PuzzleNumberOfMovesAllowedSet(this->selected_puzzle, PuzzleNumberOfMovesAllowed(this->selected_puzzle)-1);
-		SavePuzzleStages();
 	}
 	ImGui::Separator();
 	if (read_only) {
