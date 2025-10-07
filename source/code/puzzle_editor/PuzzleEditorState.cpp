@@ -389,6 +389,21 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		}
 	}
 
+	ImGui::Separator();
+	ImGui::InputText("##newfilename", new_filename_buffer, sizeof(new_filename_buffer));
+	if (ImGui::Button("Create file")) {
+		std::string new_file(new_filename_buffer);
+		if (new_file.size()) {
+			const auto it = std::find(puzzle_files.begin(), puzzle_files.end(), new_file);
+			if (it == puzzle_files.end()) {
+				puzzle_files.push_back(new_file);
+				std::sort(puzzle_files.begin(), puzzle_files.end());
+				sago::WriteFileContent(fmt::format("puzzles/{}", new_file).c_str(), "0"); // Create file with 0 puzzles in it
+				SelectFile(new_file);
+			}
+		}
+	}
+
 	ImGui::End();
 	ImGui::Begin("Puzzles in file");
 	const int puzzle_count = PuzzleGetNumberOfPuzzles();

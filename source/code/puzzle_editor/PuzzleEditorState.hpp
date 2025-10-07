@@ -75,6 +75,7 @@ private:
 	std::string selected_file;
 	std::vector<std::string> puzzle_files;
 	sago::SagoLogicalResize window_resize;
+	char new_filename_buffer[256] = "untitled.levels";
 
 	std::map<std::string, std::vector<PuzzleState> > undo_file_stack;
 	std::map<std::string, std::vector<PuzzleState> > redo_file_stack;

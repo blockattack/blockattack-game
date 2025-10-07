@@ -177,10 +177,14 @@ void EditorRemovePuzzle(size_t level) {
 }
 
 void EditorAddPuzzle(size_t level) {
-	if (nrOfPuzzles >= 50) {
+	if (nrOfPuzzles >= maxNrOfPuzzleStages) {
 		return;
 	}
-	memmove( puzzleLevels[level+1], puzzleLevels[level], sizeof(puzzleLevels[0])*(50-level-1) );
+	if (level >= maxNrOfPuzzleStages)
+	{
+		level = 0;
+	}
+	memmove( puzzleLevels[level+1], puzzleLevels[level], sizeof(puzzleLevels[0])*(maxNrOfPuzzleStages-level-1) );
 	nrOfPuzzles++;
 	for (size_t i = 0; i < 6; i++) {
 		for (size_t j =0; j < 12; j++) {
