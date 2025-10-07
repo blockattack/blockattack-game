@@ -45,8 +45,6 @@ bool PuzzleEditorState::IsActive() {
 }
 
 void PuzzleEditorState::ProcessInput(const SDL_Event& event, bool& processed) {
-	ImGui_ImplSDL2_ProcessEvent(&event);
-
 	if (event.type == SDL_KEYDOWN && !read_only) {
 		const Uint8* keystate = SDL_GetKeyboardState(nullptr);
 		const bool ctrl_held = keystate[SDL_SCANCODE_LCTRL] || keystate[SDL_SCANCODE_RCTRL];

@@ -237,7 +237,6 @@ bool SagoTextureSelector::IsActive() {
 }
 
 void SagoTextureSelector::ProcessInput(const SDL_Event& event, bool &processed) {
-	ImGui_ImplSDL2_ProcessEvent(&event);
 }
 
 void SagoTextureSelector::Draw(SDL_Renderer* target) {
