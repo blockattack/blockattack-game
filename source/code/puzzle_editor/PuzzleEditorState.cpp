@@ -48,8 +48,8 @@ void PuzzleEditorState::ProcessInput(const SDL_Event& event, bool& processed) {
 	ImGui_ImplSDL2_ProcessEvent(&event);
 
 	if (event.type == SDL_KEYDOWN && !read_only) {
-		const Uint8* keystate = SDL_GetKeyboardState(NULL);
-		bool ctrl_held = keystate[SDL_SCANCODE_LCTRL] || keystate[SDL_SCANCODE_RCTRL];
+		const Uint8* keystate = SDL_GetKeyboardState(nullptr);
+		const bool ctrl_held = keystate[SDL_SCANCODE_LCTRL] || keystate[SDL_SCANCODE_RCTRL];
 
 		if (ctrl_held && event.key.keysym.sym == SDLK_z) {
 			if (keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]) {
@@ -85,23 +85,23 @@ void PuzzleEditorState::SelectFile(const std::string& file) {
 }
 
 static void LogicalToPhysical(const sago::SagoLogicalResize& resize, ImVec2& inout) {
-	int inx = inout.x;
-	int iny = inout.y;
-	int outx = inout.x;
-	int outy = inout.y;
-	resize.LogicalToPhysical(inx, iny, outx, outy);
-	inout.x = outx;
-	inout.y = outy;
+	const int inx = inout.x;
+	const int iny = inout.y;
+	int out_x = inout.x;
+	int out_y = inout.y;
+	resize.LogicalToPhysical(inx, iny, out_x, out_y);
+	inout.x = out_x;
+	inout.y = out_y;
 }
 
 
 static void ImGuiWritePartOfTexture(SDL_Texture* texture, int topx, int topy, int tex_w, int tex_h, int w, int h) {
-	float sprite_w = tex_w;
-	float sprite_h = tex_h;
-	float topxf = topx;
-	float topyf = topy;
-	ImVec2 uv0 = ImVec2(topxf / tex_w, topyf / tex_h);
-	ImVec2 uv1 = ImVec2((topxf + sprite_w) / tex_w, (topyf + sprite_h) / tex_h);
+	const float sprite_w = tex_w;
+	const float sprite_h = tex_h;
+	const float top_x_f = topx;
+	const float top_y_f = topy;
+	const ImVec2 uv0 = ImVec2(top_x_f / tex_w, top_y_f / tex_h);
+	const ImVec2 uv1 = ImVec2((top_x_f + sprite_w) / tex_w, (top_y_f + sprite_h) / tex_h);
 	ImGui::Image((ImTextureID)(intptr_t)texture, ImVec2((float)w, (float)h), uv0, uv1);
 }
 
@@ -318,10 +318,10 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	ImGui::BeginChild("Test");
 	ImVec2 p = ImGui::GetCursorScreenPos();
 	ImVec2 size = ImGui::GetContentRegionAvail();
-	int xoffset = p.x;
-	int yoffset = p.y;
-	int height = BOARD_HEIGHT;
-	int width = BOARD_WIDTH;
+	const int x_offset = p.x;
+	const int y_offset = p.y;
+	constexpr int height = BOARD_HEIGHT;
+	constexpr int width = BOARD_WIDTH;
 	window_resize.SetPhysicalSize(size.x, size.y);
 
 
@@ -332,9 +332,9 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		for (int j=0; j < 12; ++j) {
 			ImVec2 p1(i*50.0f, (11-j)*50.0f);
 			LogicalToPhysical(window_resize, p1);
-			p1.x += xoffset;
-			p1.y += yoffset;
-			int brick = PuzzleGetBrick(this->selected_puzzle, i, j);
+			p1.x += x_offset;
+			p1.y += y_offset;
+			const int brick = PuzzleGetBrick(this->selected_puzzle, i, j);
 			DrawBrick(brick, static_cast<int>(p1.x), static_cast<int>(p1.y), brick_size, brick_size);
 		}
 	}
@@ -344,10 +344,10 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		ImVec2 p2(i*50.0f, height);
 		LogicalToPhysical(window_resize, p1);
 		LogicalToPhysical(window_resize, p2);
-		p1.x += xoffset;
-		p1.y += yoffset;
-		p2.x += xoffset;
-		p2.y += yoffset;
+		p1.x += x_offset;
+		p1.y += y_offset;
+		p2.x += x_offset;
+		p2.y += y_offset;
 		ImGui::GetWindowDrawList()->AddLine(p1, p2, IM_COL32(255, 0, 0, 100));
 	}
 	for (int i=0; i <= 12;++i) {
@@ -355,24 +355,24 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 		ImVec2 p2(width, i*50.0f);
 		LogicalToPhysical(window_resize, p1);
 		LogicalToPhysical(window_resize, p2);
-		p1.x += xoffset;
-		p1.y += yoffset;
-		p2.x += xoffset;
-		p2.y += yoffset;
+		p1.x += x_offset;
+		p1.y += y_offset;
+		p2.x += x_offset;
+		p2.y += y_offset;
 		ImGui::GetWindowDrawList()->AddLine(p1, p2, IM_COL32(255, 0, 0, 100));
 	}
-	ImGuiIO& io = ImGui::GetIO();
+	const ImGuiIO& io = ImGui::GetIO();
 	if (ImGui::IsMouseReleased(0) && io.MouseDownDurationPrev[0] < 0.3f && !ImGui::IsMouseDragPastThreshold(0)) {
 		ImVec2 pos = io.MousePos;
-		pos.x -= xoffset;
-		pos.y -= yoffset;
+		pos.x -= x_offset;
+		pos.y -= y_offset;
 		int logical_pos_x = 0;
 		int logical_pos_y = 0;
 		window_resize.PhysicalToLogical(pos.x, pos.y, logical_pos_x, logical_pos_y);
 		//std::cout << "Clicked at: " << pos.x << "," << pos.y << "\n";
 		//std::cout << "Logical Pos: " << logical_pos_x << "," << logical_pos_y << "\n";
-		int board_x = logical_pos_x / 50;
-		int board_y = 11-(logical_pos_y / 50);
+		const int board_x = logical_pos_x / 50;
+		const int board_y = 11-(logical_pos_y / 50);
 		if (board_x >=0 && board_x < 6 && board_y >= 0 && board_y < 12) {
 			std::cout << "Board Pos: " << board_x << "," << board_y << "\n";
 			BrickClicked(board_x, board_y);
@@ -391,7 +391,7 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 
 	ImGui::End();
 	ImGui::Begin("Puzzles in file");
-	int puzzle_count = PuzzleGetNumberOfPuzzles();
+	const int puzzle_count = PuzzleGetNumberOfPuzzles();
 	for (int i = 0; i < puzzle_count; ++i) {
 		if (ImGui::Selectable(std::to_string(i).c_str(), this->selected_puzzle == i)) {
 			this->selected_puzzle = i;
@@ -457,27 +457,27 @@ void PuzzleEditorState::Draw(SDL_Renderer* target) {
 	if (read_only) {
 		ImGui::LabelText("Read Only", "");
 	} else {
-		bool undo_availible = CanUndo();
-		if (!undo_availible) {
+		const bool undo_available = CanUndo();
+		if (!undo_available) {
 			ImGui::BeginDisabled();
 		}
 		if (ImGui::Button("Undo (Ctrl+Z)")) {
 			Undo();
 		}
-		if (!undo_availible) {
+		if (!undo_available) {
 			ImGui::EndDisabled();
 		}
 
 		ImGui::SameLine();
-		bool redo_availeble = CanRedo();
+		const bool redo_available = CanRedo();
 
-		if (!redo_availeble) {
+		if (!redo_available) {
 			ImGui::BeginDisabled();
 		}
 		if (ImGui::Button("Redo (Ctrl+Y)")) {
 			Redo();
 		}
-		if (!redo_availeble) {
+		if (!redo_available) {
 			ImGui::EndDisabled();
 		}
 	}
