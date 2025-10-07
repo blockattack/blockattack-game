@@ -168,7 +168,7 @@ void PuzzleEditorState::SaveCurrentState() {
 			undo_stack.pop_back();
 		}
 		undo_stack = std::vector<PuzzleState>();
-		while (!temp.empty()) {
+		while (temp.size()) {
 			undo_stack.push_back(temp.back());
 			temp.pop_back();
 		}
@@ -189,7 +189,7 @@ void PuzzleEditorState::SaveCurrentState() {
 	}
 
 	undo_stack.push_back(current_state);
-	while (!redo_stack.empty()) {
+	while (redo_stack.size()) {
 		redo_stack.pop_back();
 	}
 }
@@ -269,11 +269,11 @@ void PuzzleEditorState::Redo() {
 }
 
 bool PuzzleEditorState::CanUndo() const {
-	return !undo_stack.empty();
+	return undo_stack.size();
 }
 
 bool PuzzleEditorState::CanRedo() const {
-	return !redo_stack.empty();
+	return redo_stack.size();
 }
 
 void PuzzleEditorState::BrickClicked(int x, int y) {
