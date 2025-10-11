@@ -7,22 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-02 12:34+0200\n"
-"PO-Revision-Date: 2022-07-03 08:15+0200\n"
+"POT-Creation-Date: 2025-10-11 19:11+0200\n"
+"PO-Revision-Date: 2025-10-11 19:15+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: sv\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#: ../../code/DialogBox.cpp:132
+#: ../../code/DialogBox.cpp:136
 msgid "Enter to accept"
 msgstr "Tryck retur för att acceptera"
 
-#: ../../code/DialogBox.cpp:133
+#: ../../code/DialogBox.cpp:137
 msgid "Esc to cancel"
 msgstr "Tryck esc för att avbryta"
 
@@ -34,7 +34,7 @@ msgstr "Ingen ljuddrivrutin"
 msgid "Name:"
 msgstr "Namn:"
 
-#: ../../code/HelpAboutState.cpp:55 ../../code/main.cpp:323
+#: ../../code/HelpAboutState.cpp:55 ../../code/main.cpp:354
 msgid "Block Attack - Rise of the Blocks"
 msgstr "Blockattack - blocken reser sig"
 
@@ -110,7 +110,7 @@ msgstr "Spara i mapp:"
 msgid "Locale:"
 msgstr "Lokal:"
 
-#: ../../code/HelpAboutState.cpp:85 ../../code/menudef.cpp:550
+#: ../../code/HelpAboutState.cpp:85 ../../code/menudef.cpp:572
 msgid "About"
 msgstr "Om"
 
@@ -142,440 +142,481 @@ msgstr "Växla"
 msgid "Confirm"
 msgstr "Bekräfta"
 
-#: ../../code/HelpHowtoState.cpp:123
+#: ../../code/HelpHowtoState.cpp:122
 msgid "Switch block horizontally"
 msgstr "Växla block horisontellt"
 
-#: ../../code/HelpHowtoState.cpp:124
+#: ../../code/HelpHowtoState.cpp:123
 msgid "Match 3 to clear"
 msgstr "Para ihop tre för att tömma"
 
-#: ../../code/HelpHowtoState.cpp:125
+#: ../../code/HelpHowtoState.cpp:124
 msgid "Create combos!"
 msgstr "Skapa kombinationer!"
 
-#: ../../code/HelpHowtoState.cpp:126
+#: ../../code/HelpHowtoState.cpp:125
 msgid "Drop blocks!"
 msgstr "Släpp block!"
 
-#: ../../code/HelpHowtoState.cpp:127
+#: ../../code/HelpHowtoState.cpp:126
 msgid "Create a chain effect"
 msgstr "Skapa en kedjeeffekt"
 
-#: ../../code/HelpModInfoState.cpp:93
+#: ../../code/HelpModInfoState.cpp:102
 msgid "Load order:"
 msgstr "Läs in ordning:"
 
-#: ../../code/HelpModInfoState.cpp:100
+#: ../../code/HelpModInfoState.cpp:109
 msgid "(Disabled)"
 msgstr "(Avaktiverad)"
 
-#: ../../code/HelpModInfoState.cpp:104 ../../code/menudef.cpp:542
+#: ../../code/HelpModInfoState.cpp:113 ../../code/menudef.cpp:564
 msgid "Mod info"
 msgstr "Modinformation"
 
-#: ../../code/levelselect.cpp:85
+#: ../../code/levelselect.cpp:88
 msgid "Select Puzzle"
 msgstr "Markera pussel"
 
-#: ../../code/levelselect.cpp:88
+#: ../../code/levelselect.cpp:91
 msgid "Stage Clear Level Select"
 msgstr "Markera bana för nivåtömning"
 
-#: ../../code/levelselect.cpp:194
+#: ../../code/levelselect.cpp:203
 msgid "Best score: {}"
 msgstr "Bästa poäng: {}"
 
-#: ../../code/levelselect.cpp:195
+#: ../../code/levelselect.cpp:204
 msgid "Time used: {}"
 msgstr "Använd tid: {}"
 
-#: ../../code/levelselect.cpp:198
+#: ../../code/levelselect.cpp:205
+msgid "Par score: {}"
+msgstr "Jämförelseresultat: {}"
+
+#: ../../code/levelselect.cpp:208
 msgid "Time used: {} : {:02}"
 msgstr "Använd tid: {} : {:02}"
 
-#: ../../code/levelselect.cpp:203
+#: ../../code/levelselect.cpp:214
 msgid "Total score: {} in {}:{:02}"
 msgstr "Total poäng {} på {}:{:02}"
 
-#: ../../code/main.cpp:150
+#: ../../code/main.cpp:157
 msgid "GAME OVER"
 msgstr "SPELET ÄR SLUT"
 
-#: ../../code/main.cpp:151
+#: ../../code/main.cpp:158
 msgid "WINNER"
 msgstr "VINNARE"
 
-#: ../../code/main.cpp:152
+#: ../../code/main.cpp:159
 msgid "DRAW"
 msgstr "OAVGJORT"
 
-#: ../../code/main.cpp:477 ../../code/main.cpp:608
-msgid "AI"
-msgstr "AI"
-
-#: ../../code/main.cpp:480
-msgid "Playing field"
-msgstr "Spelfält"
-
-#: ../../code/main.cpp:554
+#: ../../code/main.cpp:634 ../../code/main.cpp:1526
 msgid "Time Trial"
 msgstr "Tidsutmaning"
 
-#: ../../code/main.cpp:555
+#: ../../code/main.cpp:635 ../../code/main.cpp:1527
 msgid "Score as much as possible in 2 minutes"
 msgstr "Få så många poäng som möjligt på två minuter"
 
-#: ../../code/main.cpp:559
+#: ../../code/main.cpp:639 ../../code/main.cpp:1531
 msgid "Stage Clear"
 msgstr "Nivåtömning"
 
-#: ../../code/main.cpp:560
+#: ../../code/main.cpp:640 ../../code/main.cpp:1532
 msgid "You must clear a number of lines. Speed is rapidly increased."
 msgstr "Du måste tömma ett antal rader. Hastigheten ökar fort."
 
-#: ../../code/main.cpp:563
+#: ../../code/main.cpp:643 ../../code/main.cpp:1535
 msgid "Puzzle"
 msgstr "Pussel"
 
-#: ../../code/main.cpp:564
+#: ../../code/main.cpp:644 ../../code/main.cpp:1536
 msgid "Clear the entire board with a limited number of moves."
 msgstr "Töm hela spelfältet med ett begränsat antal steg."
 
-#: ../../code/main.cpp:567
+#: ../../code/main.cpp:647 ../../code/main.cpp:1539
 msgid "Endless"
 msgstr "Oändligt"
 
-#: ../../code/main.cpp:568
+#: ../../code/main.cpp:648 ../../code/main.cpp:1540
 msgid "Score as much as possible. No time limit."
 msgstr "Få så många poäng som möjligt. Ingen tidsbegräsning."
 
-#: ../../code/main.cpp:578
+#: ../../code/main.cpp:658 ../../code/BlockGameSdl.hpp:595
 msgid "Objective:"
 msgstr "Mål:"
 
-#: ../../code/main.cpp:588
+#: ../../code/main.cpp:668 ../../code/main.cpp:1545
 msgid "Movement keys:"
 msgstr "Tangenter för steg:"
 
-#: ../../code/main.cpp:590
+#: ../../code/main.cpp:670 ../../code/main.cpp:1547
 msgid "Switch: "
 msgstr "Växla:"
 
-#: ../../code/main.cpp:592
+#: ../../code/main.cpp:672 ../../code/main.cpp:1549
 msgid "Restart: "
 msgstr "Omstart:"
 
-#: ../../code/main.cpp:595
+#: ../../code/main.cpp:675 ../../code/main.cpp:1552
 msgid "Push line: "
 msgstr "Flytta upp rad:"
 
-#: ../../code/main.cpp:1072
+#: ../../code/main.cpp:688 ../../code/BlockGameSdl.hpp:524
+msgid "AI"
+msgstr "AI"
+
+#: ../../code/main.cpp:1165
 msgid "Player 2"
 msgstr "Spelare 2"
 
-#: ../../code/menudef.cpp:60
+#: ../../code/menudef.cpp:61
 msgid "Up arrow"
 msgstr "Uppil"
 
-#: ../../code/menudef.cpp:63
+#: ../../code/menudef.cpp:64
 msgid "Down arrow"
 msgstr "Nerpil"
 
-#: ../../code/menudef.cpp:66
+#: ../../code/menudef.cpp:67
 msgid "Left arrow"
 msgstr "Vänster pil"
 
-#: ../../code/menudef.cpp:69
+#: ../../code/menudef.cpp:70
 msgid "Right arrow"
 msgstr "Höger pil"
 
-#: ../../code/menudef.cpp:72
+#: ../../code/menudef.cpp:73
 msgid "Right Ctrl"
 msgstr "Höger ctrl"
 
-#: ../../code/menudef.cpp:75
+#: ../../code/menudef.cpp:76
 msgid "Left Ctrl"
 msgstr "Vänster ctrl"
 
-#: ../../code/menudef.cpp:78
+#: ../../code/menudef.cpp:79
 msgid "Right shift"
 msgstr "Höger skift"
 
-#: ../../code/menudef.cpp:81
+#: ../../code/menudef.cpp:82
 msgid "Left shift"
 msgstr "Vänster skift"
 
-#: ../../code/menudef.cpp:84
+#: ../../code/menudef.cpp:85
 msgid "Right alt"
 msgstr "Höger alt"
 
-#: ../../code/menudef.cpp:87
+#: ../../code/menudef.cpp:88
 msgid "Left alt"
 msgstr "Vänster alt"
 
-#: ../../code/menudef.cpp:90
+#: ../../code/menudef.cpp:91
 msgid "Return"
 msgstr "Retur"
 
-#: ../../code/menudef.cpp:93
+#: ../../code/menudef.cpp:94
 msgid "Space"
 msgstr "Mellanslag"
 
-#: ../../code/menudef.cpp:150
+#: ../../code/menudef.cpp:151
 msgid "Volume: {}%"
 msgstr "Volym {}%"
 
-#: ../../code/menudef.cpp:195
+#: ../../code/menudef.cpp:196
 msgid "Test sound"
 msgstr "Testa ljud"
 
-#: ../../code/menudef.cpp:211
+#: ../../code/menudef.cpp:212 ../../code/menudef_themes.cpp:152
 msgid "Test music"
 msgstr "Testa musik"
 
-#: ../../code/menudef.cpp:245
+#: ../../code/menudef.cpp:243
 msgid "Single Player Endless"
 msgstr "Enspelarläge oändligt"
 
-#: ../../code/menudef.cpp:252
+#: ../../code/menudef.cpp:250
 msgid "Slow"
 msgstr "Långsamt"
 
-#: ../../code/menudef.cpp:253
+#: ../../code/menudef.cpp:251
 msgid "Fast"
 msgstr "Snabbt"
 
-#: ../../code/menudef.cpp:254
+#: ../../code/menudef.cpp:252
 msgid "Faster"
 msgstr "Snabbare"
 
-#: ../../code/menudef.cpp:255
+#: ../../code/menudef.cpp:253
 msgid "Even faster"
 msgstr "Ännu snabbare"
 
-#: ../../code/menudef.cpp:256
+#: ../../code/menudef.cpp:254
 msgid "Fastest"
 msgstr "Snabbast"
 
-#: ../../code/menudef.cpp:298
+#: ../../code/menudef.cpp:296
 msgid "Always use software render: On"
 msgstr "Använd alltid programåtergivare: På"
 
-#: ../../code/menudef.cpp:299
+#: ../../code/menudef.cpp:297
 msgid "Always use software render: Off"
 msgstr "Använd alltid programåtergivare: Av"
 
-#: ../../code/menudef.cpp:325
+#: ../../code/menudef.cpp:323
 msgid "Music: "
 msgstr "Musik:"
 
-#: ../../code/menudef.cpp:328
+#: ../../code/menudef.cpp:326
 msgid "Music: Off"
 msgstr "Musik: Av"
 
-#: ../../code/menudef.cpp:336
+#: ../../code/menudef.cpp:334
 msgid "Sound: "
 msgstr "Ljud:"
 
-#: ../../code/menudef.cpp:339
+#: ../../code/menudef.cpp:337
 msgid "Sound: Off"
 msgstr "Ljud: Av"
 
-#: ../../code/menudef.cpp:344
+#: ../../code/menudef.cpp:342
 msgid "Fullscreen: On"
 msgstr "Helskärm: På"
 
-#: ../../code/menudef.cpp:344
+#: ../../code/menudef.cpp:342
 msgid "Fullscreen: Off"
 msgstr "Helskärm: Av"
 
-#: ../../code/menudef.cpp:356
+#: ../../code/menudef.cpp:346
+msgid "Block variants: "
+msgstr ""
+
+#: ../../code/menudef.cpp:358
 msgid "Music volume"
 msgstr "Musikvolym"
 
-#: ../../code/menudef.cpp:364
+#: ../../code/menudef.cpp:366
 msgid "Sound volume"
 msgstr "Ljudvolym"
 
-#: ../../code/menudef.cpp:379
+#: ../../code/menudef.cpp:393
 msgid "Enter player 1 name:"
 msgstr "Skriv namnet på spelare 1:"
 
-#: ../../code/menudef.cpp:385
+#: ../../code/menudef.cpp:399
 msgid "Enter player 2 name:"
 msgstr "Skriv namnet på spelare 2:"
 
-#: ../../code/menudef.cpp:395
+#: ../../code/menudef.cpp:409
 msgid "Change key bindings"
 msgstr "Ändra tangentbindningar"
 
-#: ../../code/menudef.cpp:396
+#: ../../code/menudef.cpp:410
 msgid "Left"
 msgstr "Vänster"
 
-#: ../../code/menudef.cpp:397
+#: ../../code/menudef.cpp:411
 msgid "Right"
 msgstr "Höger"
 
-#: ../../code/menudef.cpp:398
+#: ../../code/menudef.cpp:412
 msgid "Up"
 msgstr "Upp"
 
-#: ../../code/menudef.cpp:399
+#: ../../code/menudef.cpp:413
 msgid "Down"
 msgstr "Ner"
 
-#: ../../code/menudef.cpp:400
+#: ../../code/menudef.cpp:414
 msgid "Push"
 msgstr "Tryck"
 
-#: ../../code/menudef.cpp:401
+#: ../../code/menudef.cpp:415
 msgid "Change"
 msgstr "Ändra"
 
-#: ../../code/menudef.cpp:420 ../../code/menudef.cpp:445
+#: ../../code/menudef.cpp:434 ../../code/menudef.cpp:461
 msgid "Player configuration"
 msgstr "Spelarkonfiguration"
 
-#: ../../code/menudef.cpp:424
+#: ../../code/menudef.cpp:438
 msgid "Change player 1's name"
 msgstr "Ändra namnet på spelare 1"
 
-#: ../../code/menudef.cpp:426
+#: ../../code/menudef.cpp:440
 msgid "Change player 2's name"
 msgstr "Ändra namnet på spelare 2"
 
-#: ../../code/menudef.cpp:428
+#: ../../code/menudef.cpp:442
 msgid "Change player 1's keys"
 msgstr "Ändra tangenterna för spelare 1"
 
-#: ../../code/menudef.cpp:430
+#: ../../code/menudef.cpp:444
 msgid "Change player 2's keys"
 msgstr "Ändra tangenterna för spelare 2"
 
-#: ../../code/menudef.cpp:439
+#: ../../code/menudef.cpp:454
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: ../../code/menudef.cpp:460
+#: ../../code/menudef.cpp:464 ../../code/menudef_themes.cpp:137
+msgid "Themes"
+msgstr ""
+
+#: ../../code/menudef.cpp:482
 msgid "Single player VS"
 msgstr "Enspelarläge VS"
 
-#: ../../code/menudef.cpp:476
+#: ../../code/menudef.cpp:498
 msgid "Very easy"
 msgstr "Väldigt lätt"
 
-#: ../../code/menudef.cpp:477
+#: ../../code/menudef.cpp:499
 msgid "Easy"
 msgstr "Lätt"
 
-#: ../../code/menudef.cpp:478
+#: ../../code/menudef.cpp:500
 msgid "Below normal"
 msgstr "Under normal"
 
-#: ../../code/menudef.cpp:479
+#: ../../code/menudef.cpp:501
 msgid "Normal"
 msgstr "Normal"
 
-#: ../../code/menudef.cpp:480
+#: ../../code/menudef.cpp:502
 msgid "Above normal"
 msgstr "Över normal"
 
-#: ../../code/menudef.cpp:481
+#: ../../code/menudef.cpp:503
 msgid "Hard"
 msgstr "Svår"
 
-#: ../../code/menudef.cpp:482
+#: ../../code/menudef.cpp:504
 msgid "Hardest"
 msgstr "Svårast"
 
-#: ../../code/menudef.cpp:494
+#: ../../code/menudef.cpp:516
 msgid "Multiplayer"
 msgstr "Flerspelarläge"
 
-#: ../../code/menudef.cpp:496
+#: ../../code/menudef.cpp:518
 msgid "Two player - time trial"
 msgstr "Tvåspelarläge - tidsutmaning"
 
-#: ../../code/menudef.cpp:498
+#: ../../code/menudef.cpp:520
 msgid "Two player - vs"
 msgstr "Tvåspelarläge - vs"
 
-#: ../../code/menudef.cpp:527 ../../code/menudef.cpp:546
+#: ../../code/menudef.cpp:549 ../../code/menudef.cpp:568
 msgid "Credits"
 msgstr "Tack till"
 
-#: ../../code/menudef.cpp:532 ../../code/menudef.cpp:609
+#: ../../code/menudef.cpp:554 ../../code/menudef.cpp:629
 msgid "Help"
 msgstr "Hjälp"
 
-#: ../../code/menudef.cpp:534
+#: ../../code/menudef.cpp:556
 msgid "How to"
 msgstr "Handledning"
 
-#: ../../code/menudef.cpp:538
+#: ../../code/menudef.cpp:560
 msgid "Gamepad"
 msgstr "Spelkontroll"
 
-#: ../../code/menudef.cpp:557 ../../code/menudef.cpp:601
+#: ../../code/menudef.cpp:579 ../../code/menudef.cpp:621
 msgid "Single player"
 msgstr "Enspelarläge"
 
-#: ../../code/menudef.cpp:559
+#: ../../code/menudef.cpp:581
 msgid "Single player - endless"
 msgstr "Enspelarläge - oändligt"
 
-#: ../../code/menudef.cpp:561
+#: ../../code/menudef.cpp:583
 msgid "Single player - time trial"
 msgstr "Enspelarläge - tidsutmaning"
 
-#: ../../code/menudef.cpp:563
+#: ../../code/menudef.cpp:585
 msgid "Single player - stage clear"
 msgstr "Enspelarläge - nivåtömning"
 
-#: ../../code/menudef.cpp:565
+#: ../../code/menudef.cpp:587
 msgid "Single player - puzzle mode"
 msgstr "Enspelarläge - pusselläge"
 
-#: ../../code/menudef.cpp:567
+#: ../../code/menudef.cpp:589
 msgid "Single player - vs"
 msgstr "Enspelarläge - vs"
 
-#: ../../code/menudef.cpp:582
+#: ../../code/menudef.cpp:603
 msgid "Game did not shutdown as it should"
 msgstr "Spelet stängdes inte av som det borde"
 
-#: ../../code/menudef.cpp:585
+#: ../../code/menudef.cpp:606
 msgid "Use software renderer this time"
 msgstr "Använd programåtergivare denna gång"
 
-#: ../../code/menudef.cpp:586
+#: ../../code/menudef.cpp:607
 msgid "Always use software renderer"
 msgstr "Använd alltid programåtergivare"
 
-#: ../../code/menudef.cpp:599
+#: ../../code/menudef.cpp:619
 msgid "Block Attack - Rise of the blocks"
 msgstr "Block Attack - Rise of the blocks"
 
-#: ../../code/menudef.cpp:603
+#: ../../code/menudef.cpp:623
 msgid "Multi player"
 msgstr "Flerspelarläge"
 
-#: ../../code/menudef.cpp:605
+#: ../../code/menudef.cpp:625
 msgid "Configure"
 msgstr "Konfigurera"
 
-#: ../../code/menudef.cpp:607
+#: ../../code/menudef.cpp:627
 msgid "Highscores"
 msgstr "Poängrekord"
 
-#: ../../code/MenuSystem.cpp:147 ../../code/MenuSystem.cpp:152
-#: ../../code/MenuSystem.cpp:161 ../../code/ScoresDisplay.cpp:218
+#: ../../code/menudef_themes.cpp:76
+#, fuzzy
+#| msgid "Time used: {}"
+msgid "Theme: {}"
+msgstr "Använd tid: {}"
+
+#: ../../code/menudef_themes.cpp:100 ../../code/menudef_themes.cpp:143
+#: ../../code/menudef_themes.cpp:147
+msgid "Edit custom theme {}"
+msgstr ""
+
+#: ../../code/menudef_themes.cpp:107
+#, fuzzy
+#| msgid "Switch block horizontally"
+msgid "Switch background"
+msgstr "Växla block horisontellt"
+
+#: ../../code/menudef_themes.cpp:111
+msgid "Switch board background"
+msgstr ""
+
+#: ../../code/menudef_themes.cpp:115
+#, fuzzy
+#| msgid "Switch: "
+msgid "Switch border"
+msgstr "Växla:"
+
+#: ../../code/menudef_themes.cpp:139
+#, fuzzy
+#| msgid "Switch: "
+msgid "Switch theme"
+msgstr "Växla:"
+
+#: ../../code/MenuSystem.cpp:162 ../../code/MenuSystem.cpp:170
+#: ../../code/MenuSystem.cpp:183 ../../code/ScoresDisplay.cpp:269
 msgid "Back"
 msgstr "Tillbaka"
 
-#: ../../code/MenuSystem.cpp:155 ../../code/MenuSystem.cpp:164
+#: ../../code/MenuSystem.cpp:173 ../../code/MenuSystem.cpp:186
 msgid "Exit"
 msgstr "Avsluta"
 
@@ -600,62 +641,98 @@ msgid "Endless (Fastest):"
 msgstr "Oändligt (snabbast):"
 
 #: ../../code/ScoresDisplay.cpp:89
+#, fuzzy
+#| msgid "Endless (Fast):"
+msgid "Endless (5 blocks):"
+msgstr "Oändligt (snabbt):"
+
+#: ../../code/ScoresDisplay.cpp:92
+#, fuzzy
+#| msgid "Endless (Fast):"
+msgid "Endless (5 blocks, Fast):"
+msgstr "Oändligt (snabbt):"
+
+#: ../../code/ScoresDisplay.cpp:95
+#, fuzzy
+#| msgid "Endless (Faster):"
+msgid "Endless (5 blocks, Faster):"
+msgstr "Oändligt (snabbare):"
+
+#: ../../code/ScoresDisplay.cpp:98
+#, fuzzy
+#| msgid "Endless (Even faster):"
+msgid "Endless (5 blocks, Even faster):"
+msgstr "Oändligt (ännu snabbare):"
+
+#: ../../code/ScoresDisplay.cpp:101
+#, fuzzy
+#| msgid "Endless (Fastest):"
+msgid "Endless (5 blocks, Fastest):"
+msgstr "Oändligt (snabbast):"
+
+#: ../../code/ScoresDisplay.cpp:104
 msgid "Endless:"
 msgstr "Oändligt:"
 
-#: ../../code/ScoresDisplay.cpp:94
+#: ../../code/ScoresDisplay.cpp:109
 msgid "Time Trial:"
 msgstr "Tidsutmaning:"
 
-#: ../../code/ScoresDisplay.cpp:132
+#: ../../code/ScoresDisplay.cpp:111
+#, fuzzy
+#| msgid "Time Trial:"
+msgid "Time Trial (5 blocks):"
+msgstr "Tidsutmaning:"
+
+#: ../../code/ScoresDisplay.cpp:171
 msgid "Stats"
 msgstr "Statistik"
 
-#: ../../code/ScoresDisplay.cpp:134
+#: ../../code/ScoresDisplay.cpp:173
 msgid "Chains"
 msgstr "Kedjor"
 
-#: ../../code/ScoresDisplay.cpp:142
+#: ../../code/ScoresDisplay.cpp:181
 msgid "Lines Pushed: "
 msgstr "Uppflyttade rader:"
 
-#: ../../code/ScoresDisplay.cpp:147
+#: ../../code/ScoresDisplay.cpp:186
 msgid "Puzzles solved: "
 msgstr "Lösta pussel:"
 
-#: ../../code/ScoresDisplay.cpp:152
+#: ../../code/ScoresDisplay.cpp:191
 msgid "Run time: "
 msgstr "Körtid:"
 
-#: ../../code/ScoresDisplay.cpp:155 ../../code/ScoresDisplay.cpp:168
+#: ../../code/ScoresDisplay.cpp:194 ../../code/ScoresDisplay.cpp:207
 msgid "Days: {}"
 msgstr "Dagar: {}"
 
-#: ../../code/ScoresDisplay.cpp:157 ../../code/ScoresDisplay.cpp:170
+#: ../../code/ScoresDisplay.cpp:196 ../../code/ScoresDisplay.cpp:209
 msgid "Hours: {:02}"
 msgstr "Timmar: {:02}"
 
-#: ../../code/ScoresDisplay.cpp:159 ../../code/ScoresDisplay.cpp:172
+#: ../../code/ScoresDisplay.cpp:198 ../../code/ScoresDisplay.cpp:211
 msgid "Minutes: {:02}"
 msgstr "Minuter: {:02}"
 
-#: ../../code/ScoresDisplay.cpp:161 ../../code/ScoresDisplay.cpp:174
+#: ../../code/ScoresDisplay.cpp:200 ../../code/ScoresDisplay.cpp:213
 msgid "Seconds: {:02}"
 msgstr "Sekunder: {:02}"
 
-#: ../../code/ScoresDisplay.cpp:165
+#: ../../code/ScoresDisplay.cpp:204
 msgid "Play time: "
 msgstr "Speltid:"
 
-#: ../../code/ScoresDisplay.cpp:178
+#: ../../code/ScoresDisplay.cpp:217
 msgid "VS CPU (win/loss)"
 msgstr "VS datorn (vinst/förlust)"
 
-#: ../../code/ScoresDisplay.cpp:222 ../../code/BlockGameSdl.inc:55
+#: ../../code/ScoresDisplay.cpp:273 ../../code/BlockGameSdl.hpp:71
 msgid "Next"
 msgstr "Nästa"
 
-#: ../../code/ScoresDisplay.cpp:226
+#: ../../code/ScoresDisplay.cpp:277
 msgid "Page {} of {}"
 msgstr "Sida {} av {}"
 
@@ -663,42 +740,45 @@ msgstr "Sida {} av {}"
 msgid "Showing content of: {}"
 msgstr "Visar innehåll i: {}"
 
-#: ../../code/BlockGameSdl.inc:51
+#: ../../code/BlockGameSdl.hpp:67
 msgid "Score:"
 msgstr "Poäng:"
 
-#: ../../code/BlockGameSdl.inc:52
+#: ../../code/BlockGameSdl.hpp:68
 msgid "Time:"
 msgstr "Tid:"
 
-#: ../../code/BlockGameSdl.inc:53
+#: ../../code/BlockGameSdl.hpp:69
 msgid "Chain:"
 msgstr "Kedja:"
 
-#: ../../code/BlockGameSdl.inc:54
+#: ../../code/BlockGameSdl.hpp:70
 msgid "Speed:"
 msgstr "Hastighet:"
 
-#: ../../code/BlockGameSdl.inc:56
+#: ../../code/BlockGameSdl.hpp:72
 msgid "Retry"
 msgstr "Försök igen"
 
-#: ../../code/BlockGameSdl.inc:57
+#: ../../code/BlockGameSdl.hpp:73
 msgid "Skip"
 msgstr "Hoppa över"
 
-#: ../../code/BlockGameSdl.inc:420
+#: ../../code/BlockGameSdl.hpp:393
 msgid "Moves left: "
 msgstr "Steg kvar:"
 
-#: ../../code/BlockGameSdl.inc:443
+#: ../../code/BlockGameSdl.hpp:416
 msgid "Last puzzle"
 msgstr "Senaste pussel"
 
-#: ../../code/BlockGameSdl.inc:463
+#: ../../code/BlockGameSdl.hpp:436
 msgid "Last stage"
 msgstr "Senaste nivå"
 
 #: ../../code/DialogBox.hpp:38
 msgid "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:!?+_^@#%&=*"
 msgstr "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖabcdefghijklmnopqrstuvwxyzåäö.,:!?+_^@#%&=*"
+
+#~ msgid "Playing field"
+#~ msgstr "Spelfält"

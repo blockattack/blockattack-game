@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-14 22:32+0200\n"
+"POT-Creation-Date: 2025-10-11 19:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../code/DialogBox.cpp:132
+#: ../../code/DialogBox.cpp:136
 msgid "Enter to accept"
 msgstr ""
 
-#: ../../code/DialogBox.cpp:133
+#: ../../code/DialogBox.cpp:137
 msgid "Esc to cancel"
 msgstr ""
 
@@ -33,7 +33,7 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
-#: ../../code/HelpAboutState.cpp:55 ../../code/main.cpp:341
+#: ../../code/HelpAboutState.cpp:55 ../../code/main.cpp:354
 msgid "Block Attack - Rise of the Blocks"
 msgstr ""
 
@@ -171,99 +171,103 @@ msgstr ""
 msgid "Mod info"
 msgstr ""
 
-#: ../../code/levelselect.cpp:85
+#: ../../code/levelselect.cpp:88
 msgid "Select Puzzle"
 msgstr ""
 
-#: ../../code/levelselect.cpp:88
+#: ../../code/levelselect.cpp:91
 msgid "Stage Clear Level Select"
 msgstr ""
 
-#: ../../code/levelselect.cpp:194
+#: ../../code/levelselect.cpp:203
 msgid "Best score: {}"
 msgstr ""
 
-#: ../../code/levelselect.cpp:195
+#: ../../code/levelselect.cpp:204
 msgid "Time used: {}"
 msgstr ""
 
-#: ../../code/levelselect.cpp:198
+#: ../../code/levelselect.cpp:205
+msgid "Par score: {}"
+msgstr ""
+
+#: ../../code/levelselect.cpp:208
 msgid "Time used: {} : {:02}"
 msgstr ""
 
-#: ../../code/levelselect.cpp:203
+#: ../../code/levelselect.cpp:214
 msgid "Total score: {} in {}:{:02}"
 msgstr ""
 
-#: ../../code/main.cpp:151
+#: ../../code/main.cpp:157
 msgid "GAME OVER"
 msgstr ""
 
-#: ../../code/main.cpp:152
+#: ../../code/main.cpp:158
 msgid "WINNER"
 msgstr ""
 
-#: ../../code/main.cpp:153
+#: ../../code/main.cpp:159
 msgid "DRAW"
 msgstr ""
 
-#: ../../code/main.cpp:562 ../../code/main.cpp:1421
+#: ../../code/main.cpp:634 ../../code/main.cpp:1526
 msgid "Time Trial"
 msgstr ""
 
-#: ../../code/main.cpp:563 ../../code/main.cpp:1422
+#: ../../code/main.cpp:635 ../../code/main.cpp:1527
 msgid "Score as much as possible in 2 minutes"
 msgstr ""
 
-#: ../../code/main.cpp:567 ../../code/main.cpp:1426
+#: ../../code/main.cpp:639 ../../code/main.cpp:1531
 msgid "Stage Clear"
 msgstr ""
 
-#: ../../code/main.cpp:568 ../../code/main.cpp:1427
+#: ../../code/main.cpp:640 ../../code/main.cpp:1532
 msgid "You must clear a number of lines. Speed is rapidly increased."
 msgstr ""
 
-#: ../../code/main.cpp:571 ../../code/main.cpp:1430
+#: ../../code/main.cpp:643 ../../code/main.cpp:1535
 msgid "Puzzle"
 msgstr ""
 
-#: ../../code/main.cpp:572 ../../code/main.cpp:1431
+#: ../../code/main.cpp:644 ../../code/main.cpp:1536
 msgid "Clear the entire board with a limited number of moves."
 msgstr ""
 
-#: ../../code/main.cpp:575 ../../code/main.cpp:1434
+#: ../../code/main.cpp:647 ../../code/main.cpp:1539
 msgid "Endless"
 msgstr ""
 
-#: ../../code/main.cpp:576 ../../code/main.cpp:1435
+#: ../../code/main.cpp:648 ../../code/main.cpp:1540
 msgid "Score as much as possible. No time limit."
 msgstr ""
 
-#: ../../code/main.cpp:586 ../../code/BlockGameSdl.hpp:647
+#: ../../code/main.cpp:658 ../../code/BlockGameSdl.hpp:595
 msgid "Objective:"
 msgstr ""
 
-#: ../../code/main.cpp:596 ../../code/main.cpp:1440
+#: ../../code/main.cpp:668 ../../code/main.cpp:1545
 msgid "Movement keys:"
 msgstr ""
 
-#: ../../code/main.cpp:598 ../../code/main.cpp:1442
+#: ../../code/main.cpp:670 ../../code/main.cpp:1547
 msgid "Switch: "
 msgstr ""
 
-#: ../../code/main.cpp:600 ../../code/main.cpp:1444
+#: ../../code/main.cpp:672 ../../code/main.cpp:1549
 msgid "Restart: "
 msgstr ""
 
-#: ../../code/main.cpp:603 ../../code/main.cpp:1447
+#: ../../code/main.cpp:675 ../../code/main.cpp:1552
 msgid "Push line: "
 msgstr ""
 
-#: ../../code/main.cpp:616 ../../code/BlockGameSdl.hpp:576
+#: ../../code/main.cpp:688 ../../code/BlockGameSdl.hpp:524
 msgid "AI"
 msgstr ""
 
-#: ../../code/main.cpp:1085
+#: ../../code/main.cpp:1165
 msgid "Player 2"
 msgstr ""
 
@@ -701,7 +705,7 @@ msgstr ""
 msgid "VS CPU (win/loss)"
 msgstr ""
 
-#: ../../code/ScoresDisplay.cpp:273 ../../code/BlockGameSdl.hpp:69
+#: ../../code/ScoresDisplay.cpp:273 ../../code/BlockGameSdl.hpp:71
 msgid "Next"
 msgstr ""
 
@@ -713,39 +717,39 @@ msgstr ""
 msgid "Showing content of: {}"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:65
+#: ../../code/BlockGameSdl.hpp:67
 msgid "Score:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:66
+#: ../../code/BlockGameSdl.hpp:68
 msgid "Time:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:67
+#: ../../code/BlockGameSdl.hpp:69
 msgid "Chain:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:68
+#: ../../code/BlockGameSdl.hpp:70
 msgid "Speed:"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:70
+#: ../../code/BlockGameSdl.hpp:72
 msgid "Retry"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:71
+#: ../../code/BlockGameSdl.hpp:73
 msgid "Skip"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:445
+#: ../../code/BlockGameSdl.hpp:393
 msgid "Moves left: "
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:468
+#: ../../code/BlockGameSdl.hpp:416
 msgid "Last puzzle"
 msgstr ""
 
-#: ../../code/BlockGameSdl.hpp:488
+#: ../../code/BlockGameSdl.hpp:436
 msgid "Last stage"
 msgstr ""
 
