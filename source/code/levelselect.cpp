@@ -99,8 +99,13 @@ int PuzzleLevelSelect(int Type) {
 			if (Type == 0 && PuzzleIsCleared(i)) {
 				globalData.iLevelCheck.Draw(globalData.screen,ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50, &globalData.logicalResize);
 			}
-			if (Type == 1 && IsStageCleared(i)) {
-				globalData.iLevelCheck.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50, &globalData.logicalResize);
+			if (Type == 1) {
+				if (GetStageScores(i) >= GetStageParScore(i)) {
+					globalData.yellow_star.Draw(globalData.screen, ticks, xplace+10+(i%10)*50+2, yplace+60+(i/10)*50+2, &globalData.logicalResize);
+				}
+				if (IsStageCleared(i)) {
+					globalData.iLevelCheck.Draw(globalData.screen, ticks, xplace+10+(i%10)*50, yplace+60+(i/10)*50, &globalData.logicalResize);
+				}
 			}
 		}
 
@@ -197,12 +202,14 @@ int PuzzleLevelSelect(int Type) {
 		if (Type == 1) {
 			std::string scoreString = fmt::format(_("Best score: {}"), GetStageScores(selected)) ;
 			std::string timeString = fmt::format(_("Time used: {}"),"-- : --");
+			std::string parScoreString = fmt::format(_("Par score: {}"), GetStageParScore(selected));
 
 			if (GetStageTime(selected)>0) {
 				timeString = fmt::format(_("Time used: {} : {:02}"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
 			}
 
 			Write(globalData.screen, 200,200,scoreString.c_str());
+			Write(globalData.screen,  500, 200, parScoreString.c_str());
 			Write(globalData.screen, 200,250,timeString.c_str());
 			std::string totalString = fmt::format(_("Total score: {} in {}:{:02}"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
 			Write(globalData.screen, 200,600,totalString.c_str());

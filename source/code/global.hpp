@@ -164,6 +164,8 @@ struct GlobalData {
 
 	ButtonCords cordNextButton;
 	ButtonCords cordRetryButton;
+
+	sago::SagoSprite yellow_star;
 };
 
 #include "BallManager.hpp"

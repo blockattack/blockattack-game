@@ -41,6 +41,7 @@ int GetTotalTime();
 int GetNrOfLevels();
 bool IsStageCleared(int level);
 int GetStageScores(int level);
+int GetStageParScore(int level);
 int GetStageTime(int level);
 
 const int nrOfStageLevels = 50;     //number of stages in stage Clear

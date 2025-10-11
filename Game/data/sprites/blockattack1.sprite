@@ -117,6 +117,15 @@
 	"number_of_frames" : 1,
 	"frame_time" : 1
 },
+"star_yellow" : {
+	"texture" : "ball_yellow",
+ 	"topx" : 0,
+	"topy" : 0,
+	"height" : 16,
+	"width" : 16,
+	"number_of_frames" : 1,
+	"frame_time" : 1
+},
 "b_blank" : {
 	"texture" : "b_blank",
  	"topx" : 0,

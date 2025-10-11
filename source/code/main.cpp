@@ -144,6 +144,7 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.balls[4] = holder.GetSprite("ball_yellow");
 	globalData.balls[5] = holder.GetSprite("ball_turkish");
 	globalData.balls[6] = holder.GetSprite("ball_gray");
+	globalData.yellow_star = holder.GetSprite("star_yellow");
 	globalData.cursor = holder.GetSprite("cursor");
 	globalData.ready = holder.GetSprite("block_ready");
 	globalData.explosion[0] = holder.GetSprite("explosion0");

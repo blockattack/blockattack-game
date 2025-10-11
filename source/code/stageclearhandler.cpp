@@ -52,9 +52,10 @@ void from_json(const json& j, StageClearElement& p) {
 
 std::vector<StageClearElement> stages(nrOfStageLevels);
 
-std::vector<bool> stageCleared(nrOfStageLevels);        //vector that tells if a stage is cleared
-std::vector<Sint32> stageTimes(nrOfStageLevels);             //For statistical puposes
-std::vector<Sint32> stageScores(nrOfStageLevels);            //--||--
+//std::vector<bool> stageCleared(nrOfStageLevels);        //vector that tells if a stage is cleared
+//std::vector<Sint32> stageTimes(nrOfStageLevels);             //For statistical puposes
+//std::vector<Sint32> stageScores(nrOfStageLevels);            //--||--
+std::vector<StageClearElement> parScores(nrOfStageLevels);
 Sint32 totalScore = 0;
 Sint32 totalTime = 0;
 
@@ -93,6 +94,13 @@ void LoadStageClearStages() {
 	else {
 		stages.clear();
 	}
+	readFileContent = sago::GetFileContent("misc/stage_clear_par.json");
+	json j = json::parse(readFileContent);
+	try {
+		j.at("stages").get_to(parScores);
+	} catch (json::exception& e) {
+		std::cerr << "Failed to read par times. Reason: " << e.what() << "\n";
+	}
 	stages.resize(nrOfStageLevels);
 	totalScore = 0;
 	totalTime = 0;
@@ -117,6 +125,9 @@ bool IsStageCleared(int level) {
 	return stages.at(level).cleared;
 }
 
+int GetStageParScore(int level) {
+	return parScores.at(level).score;
+}
 
 int GetStageScores(int level) {
 	return stages.at(level).score;
