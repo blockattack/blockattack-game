@@ -2,9 +2,10 @@ FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -y software-properties-common
 
-RUN add-apt-repository ppa:savoury1/gcc-defaults-11
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test
 
-RUN apt-get update && apt-get install -y build-essential cmake pkg-config libfreetype6-dev libvorbis-dev libgl1-mesa-dev libpulse-dev zip gettext
+
+RUN apt-get update && apt-get install -y build-essential cmake g++11 pkg-config libfreetype6-dev libvorbis-dev libgl1-mesa-dev libpulse-dev zip gettext
 
 
 COPY source/misc/standalone/compile_requirements.sh /
