@@ -3,9 +3,14 @@
 ## Unreleased
 
 ### Added
+ - Build in puzzle editor. Can be started with `--puzzle-editor`
 
 ### Changed
  - Now compiled with C++17 standard. Also required.
+ - Tested with newer versions of CMake
+ - Updated versions for the compiled version:
+   - SDL2: 2.30.2 to 2.32.10
+   - boost: 1.65.1 to 1.89.0
 
 ### Removed
 
