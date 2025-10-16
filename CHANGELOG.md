@@ -3,6 +3,12 @@
 ## Unreleased
 
 ### Added
+### Removed
+### Changed
+
+## [2.10.0] - 2025-10-16
+
+### Added
  - Build in puzzle editor. Can be started with `--puzzle-editor`
 
 ### Changed
