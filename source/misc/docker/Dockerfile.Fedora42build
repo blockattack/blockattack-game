@@ -15,7 +15,7 @@ zip \
 
 COPY . /staging/blockattack-game
 
-ENV BLOCKATTACK_VERSION 2.10.0-SNAPSHOT
+ENV BLOCKATTACK_VERSION 2.11.0-SNAPSHOT
 
 RUN cd /staging/blockattack-game && \
 ./packdata.sh && \
