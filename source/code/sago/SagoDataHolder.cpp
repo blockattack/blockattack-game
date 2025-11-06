@@ -24,7 +24,6 @@ SOFTWARE.
 
 #include "SagoDataHolder.hpp"
 #include <iostream>
-#include <mutex>
 #include <map>
 #include <vector>
 #include <physfs.h>

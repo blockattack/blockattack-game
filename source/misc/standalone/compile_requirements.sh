@@ -27,7 +27,7 @@ cd /staging/deps/physfs-3.0.2 && cmake . && make && make install
 cd ~
 mkdir -p Downloads
 cd Downloads
-curl https://archives.boost.io/release/1.89.0/source/boost_1_89_0.tar.bz2 -O
+curl https://files.poulsander.com/~poul19/public_files/boost_1_89_0.tar.bz2 -O
 tar xvfj boost_1_89_0.tar.bz2
 pushd boost_1_89_0
 ./bootstrap.sh --with-libraries=program_options
