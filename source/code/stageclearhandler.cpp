@@ -85,7 +85,8 @@ void LoadStageClearStages() {
 		json j = json::parse(readFileContent);
 		try {
 			j.at("stages").get_to(stages);
-		} catch (json::exception& e) {
+		}
+		catch (json::exception& e) {
 			std::cerr << "Failed to read highscore " << stageClearSaveName << " due to formatting errors. Resetting the file. Reason: " <<
 			          e.what() << "\n";
 			stages.clear();
@@ -98,7 +99,8 @@ void LoadStageClearStages() {
 	json j = json::parse(readFileContent);
 	try {
 		j.at("stages").get_to(parScores);
-	} catch (json::exception& e) {
+	}
+	catch (json::exception& e) {
 		std::cerr << "Failed to read par times. Reason: " << e.what() << "\n";
 	}
 	stages.resize(nrOfStageLevels);

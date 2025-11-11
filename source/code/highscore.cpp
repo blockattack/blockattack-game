@@ -58,7 +58,8 @@ Highscore::Highscore(const std::string& type, double speed) : filename(type+".js
 		json j = json::parse(readFileContent);
 		try {
 			j.at("highscore").get_to(table);
-		} catch (json::exception& e) {
+		}
+		catch (json::exception& e) {
 			std::cerr << "Failed to read highscore " << filename << " due to formatting errors. Resetting the file. Reason: " <<
 			          e.what() << "\n";
 			table.clear();

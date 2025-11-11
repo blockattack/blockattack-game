@@ -1761,7 +1761,7 @@ int runGame(Gametype gametype, int level) {
 						bool pressed = false;
 						int x = 0;
 						int y = 0;
-						
+
 						theGame.GetBrickCoordinateFromMouse(pressed, mousex, mousey, x, y);
 						if (pressed) {
 							a.action = BlockGameAction::Action::MOUSE_DOWN;

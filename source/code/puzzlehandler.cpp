@@ -96,7 +96,8 @@ void LoadClearData() {
 		json j = json::parse(readFileContent);
 		try {
 			j.at("cleared").get_to(puzzleCleared);
-		} catch (json::exception& e) {
+		}
+		catch (json::exception& e) {
 			std::cerr << "Failed to read \"" << puzzleSavePath << "\". File will be regenerated. Reason: " << e.what() << "\n";
 			puzzleCleared.clear();
 		}
@@ -180,8 +181,7 @@ void EditorAddPuzzle(size_t level) {
 	if (nrOfPuzzles >= maxNrOfPuzzleStages) {
 		return;
 	}
-	if (level >= maxNrOfPuzzleStages)
-	{
+	if (level >= maxNrOfPuzzleStages) {
 		level = 0;
 	}
 	memmove( puzzleLevels[level+1], puzzleLevels[level], sizeof(puzzleLevels[0])*(maxNrOfPuzzleStages-level-1) );

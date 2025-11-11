@@ -138,7 +138,7 @@ static size_t current_theme = 0;
 
 
 void ThemesFillMissingFields(Theme& theme) {
-	if (theme.background.name.empty() || !ThemesBackgroundExists(theme.background.name) ){
+	if (theme.background.name.empty() || !ThemesBackgroundExists(theme.background.name) ) {
 		//If the theme does not define a background then use the standard.
 		theme.background.name = "standard";
 	}

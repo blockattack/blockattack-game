@@ -131,7 +131,7 @@ HelpHowtoState::~HelpHowtoState() {
 
 const double PI  =3.141592653589793238463;
 
-static void RenderDrawLine(SDL_Renderer * renderer, int x1, int y1, int x2, int y2) {
+static void RenderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2) {
 	globalData.logicalResize.LogicalToPhysical(&x1, &y1);
 	globalData.logicalResize.LogicalToPhysical(&x2, &y2);
 	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
