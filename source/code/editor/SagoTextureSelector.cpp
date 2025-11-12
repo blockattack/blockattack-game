@@ -162,6 +162,27 @@ void SagoTextureSelector::runSpriteSelectorFrame(SDL_Renderer* target) {
 	}
 	ImGui::End();
 
+	ImGui::Begin("SpriteProperties");
+	if (selected_sprite.length()) {
+		const SagoSprite& current_sprite = sprites[selected_sprite];
+		ImGui::Text("Sprite: %s", selected_sprite.c_str());
+		ImGui::Separator();
+		ImGui::Text("texture: %s", current_sprite.texture.c_str());
+		ImGui::Text("topx: %d", current_sprite.topx);
+		ImGui::Text("topy: %d", current_sprite.topy);
+		ImGui::Text("width: %d", current_sprite.width);
+		ImGui::Text("height: %d", current_sprite.height);
+		ImGui::Text("number_of_frames: %d", current_sprite.number_of_frames);
+		ImGui::Text("frame_time: %d", current_sprite.frame_time);
+		ImGui::Text("originx: %d", current_sprite.originx);
+		ImGui::Text("originy: %d", current_sprite.originy);
+		ImGui::Separator();
+		ImGui::Text("meta_name: %s", current_sprite.meta_name.c_str());
+		ImGui::Text("meta_from_file: %s", current_sprite.meta_from_file.c_str());
+		ImGui::Text("meta_modified: %s", current_sprite.meta_modified.c_str());
+	}
+	ImGui::End();
+
 	ImGui::Begin("SpriteTexture");
 	if (selected_sprite.length() && sprites[selected_sprite].texture.length()) {
 		int tex_w, tex_h;
