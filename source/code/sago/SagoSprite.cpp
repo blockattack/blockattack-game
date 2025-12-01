@@ -72,10 +72,19 @@ void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, in
 		pos.h = h;
 	}
 	double angleDegress = angleRadian/M_PI*180.0;
+	SDL_Point scaledCenter;
+	const SDL_Point* centerToUse = center;
 	if (resize) {
+		SDL_Rect originalPos = pos;
 		resize->LogicalToPhysical(pos);
+		// Scale the center point proportionally if resize is active
+		if (center) {
+			scaledCenter.x = (center->x * pos.w) / originalPos.w;
+			scaledCenter.y = (center->y * pos.h) / originalPos.h;
+			centerToUse = &scaledCenter;
+		}
 	}
-	SDL_RenderCopyEx(target, tex.get(), &rect, &pos, angleDegress, center, flip);
+	SDL_RenderCopyEx(target, tex.get(), &rect, &pos, angleDegress, centerToUse, flip);
 }
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part, SagoLogicalResize* resize) const {
