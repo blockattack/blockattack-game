@@ -86,8 +86,7 @@ add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES}
 # Modern target-based compiler settings
 target_compile_features(blockattack PRIVATE cxx_std_17)
 target_compile_options(blockattack PRIVATE
-	-Wall
-	-Wextra
+	$<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra>
 	$<$<CONFIG:Debug>:-g>
 	$<$<AND:$<BOOL:${WIN32}>,$<CXX_COMPILER_ID:GNU>>:-march=i686>
 )
