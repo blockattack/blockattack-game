@@ -35,34 +35,11 @@ endif(MINGW)
 
 if (WIN32)
       SET(GUI_TYPE WIN32)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i686")
-	if(NOT _WIN32_WINNT AND NOT WINVER)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601 -DWINVER=0x0601")
-	endif()
-endif()
-
-if (NOT WIN32 AND NOT STANDALONE)
-	#The path to the data dir must be compiled into the binary
-	if (IS_ABSOLUTE ${INSTALL_DATA_DIR})
-		add_definitions(-DSHAREDIR=\"${INSTALL_DATA_DIR}\")
-	else()
-		add_definitions(-DSHAREDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_DATA_DIR}\")
-	endif()
-	if (IS_ABSOLUTE ${INSTALL_DATA_DIR})
-		add_definitions(-DLOCALEDIR=\"${INSTALL_LOCALE_DIR}\")
-	else()
-		add_definitions(-DLOCALEDIR=\"${CMAKE_INSTALL_PREFIX}/${INSTALL_LOCALE_DIR}\")
-	endif()
 endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
-
-#Compiler options
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g -DDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
 #Setup SDL2
 find_package(SDL2 REQUIRED)
@@ -79,10 +56,8 @@ find_package(Intl REQUIRED)
 
 find_package(Boost COMPONENTS program_options REQUIRED NO_MODULE)
 
-include_directories(SYSTEM "source/code/Libs/imgui")
-
 #Find all sources but one
-file(GLOB SOURCES "source/code/*.cpp" "source/code/*.inc" "source/code/*.h*" "source/code/*/*.cpp" "source/code/*/*.h*" "source/code/Libs/*.c" "source/code/Libs/*.h*" "source/code/Libs/*/*.cpp" "source/code/Libs/*/*/*.cpp")
+file(GLOB SOURCES CONFIGURE_DEPENDS "source/code/*.cpp" "source/code/*.inc" "source/code/*.h*" "source/code/*/*.cpp" "source/code/*/*.h*" "source/code/Libs/*.c" "source/code/Libs/*.h*" "source/code/Libs/*/*.cpp" "source/code/Libs/*/*/*.cpp")
 #I am still trying to get BlockGame to compile as a source file
 #list(REMOVE_ITEM SOURCES "${blockattack_SOURCE_DIR}/source/code/BlockGame.cpp")
 
@@ -108,6 +83,35 @@ add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES}
     source/code/menudef_themes.cpp
     source/code/menudef_themes.hpp)
 
+# Modern target-based compiler settings
+target_compile_features(blockattack PRIVATE cxx_std_17)
+target_compile_options(blockattack PRIVATE
+	-Wall
+	-Wextra
+	$<$<CONFIG:Debug>:-g>
+	$<$<AND:$<BOOL:${WIN32}>,$<CXX_COMPILER_ID:GNU>>:-march=i686>
+)
+target_compile_definitions(blockattack PRIVATE
+	$<$<CONFIG:Debug>:DEBUG>
+	$<$<AND:$<BOOL:${WIN32}>,$<NOT:$<BOOL:${_WIN32_WINNT}>>>:_WIN32_WINNT=0x0601>
+	$<$<AND:$<BOOL:${WIN32}>,$<NOT:$<BOOL:${WINVER}>>>:WINVER=0x0601>
+)
+
+# Platform-specific definitions for data and locale directories
+if (NOT WIN32 AND NOT STANDALONE)
+	if (IS_ABSOLUTE ${INSTALL_DATA_DIR})
+		target_compile_definitions(blockattack PRIVATE SHAREDIR="${INSTALL_DATA_DIR}")
+	else()
+		target_compile_definitions(blockattack PRIVATE SHAREDIR="${CMAKE_INSTALL_PREFIX}/${INSTALL_DATA_DIR}")
+	endif()
+	if (IS_ABSOLUTE ${INSTALL_LOCALE_DIR})
+		target_compile_definitions(blockattack PRIVATE LOCALEDIR="${INSTALL_LOCALE_DIR}")
+	else()
+		target_compile_definitions(blockattack PRIVATE LOCALEDIR="${CMAKE_INSTALL_PREFIX}/${INSTALL_LOCALE_DIR}")
+	endif()
+endif()
+
+target_include_directories(blockattack SYSTEM PRIVATE "source/code/Libs/imgui")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
 target_include_directories(blockattack PRIVATE ${SDL2_INCLUDE_DIRS})
