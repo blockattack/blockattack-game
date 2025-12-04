@@ -41,15 +41,26 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
 
-#Setup SDL2
+# Setup SDL2 and extensions
 find_package(SDL2 REQUIRED)
 
+# Try modern CMake approach first, fallback to pkg-config for cross-compilation (e.g., MXE)
+find_package(SDL2_image QUIET)
+find_package(SDL2_mixer QUIET)
+find_package(SDL2_ttf QUIET)
 
-#Setup things that use pkg-config
-find_package(PkgConfig REQUIRED)
-pkg_search_module(SDL2MIXER REQUIRED SDL2_mixer)
-pkg_search_module(SDL2IMAGE REQUIRED SDL2_image)
-pkg_search_module(SDL2TTF REQUIRED SDL2_ttf)
+if(NOT SDL2_image_FOUND OR NOT SDL2_mixer_FOUND OR NOT SDL2_ttf_FOUND)
+	find_package(PkgConfig REQUIRED)
+	if(NOT SDL2_image_FOUND)
+		pkg_search_module(SDL2_image REQUIRED SDL2_image)
+	endif()
+	if(NOT SDL2_mixer_FOUND)
+		pkg_search_module(SDL2_mixer REQUIRED SDL2_mixer)
+	endif()
+	if(NOT SDL2_ttf_FOUND)
+		pkg_search_module(SDL2_ttf REQUIRED SDL2_ttf)
+	endif()
+endif()
 
 
 find_package(Intl REQUIRED)
@@ -113,21 +124,31 @@ endif()
 target_include_directories(blockattack SYSTEM PRIVATE "source/code/Libs/imgui")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
-target_include_directories(blockattack PRIVATE ${SDL2_INCLUDE_DIRS})
-target_include_directories(blockattack PRIVATE ${SDL2MIXER_INCLUDE_DIRS})
-target_include_directories(blockattack PRIVATE ${SDL2IMAGE_INCLUDE_DIRS})
-target_include_directories(blockattack PRIVATE ${SDL2TTF_INCLUDE_DIRS})
+if(NOT TARGET SDL2_image::SDL2_image)
+	target_include_directories(blockattack PRIVATE ${SDL2_image_INCLUDE_DIRS})
+	target_include_directories(blockattack PRIVATE ${SDL2_mixer_INCLUDE_DIRS})
+	target_include_directories(blockattack PRIVATE ${SDL2_ttf_INCLUDE_DIRS})
+endif()
 target_include_directories(blockattack PRIVATE ${Intl_INCLUDE_DIRS})
 
-target_link_libraries(blockattack PRIVATE ${SDL2_LIBRARIES})
-target_link_libraries(blockattack PRIVATE fmt)
-target_link_libraries(blockattack PRIVATE platform_folders)
-target_link_libraries(blockattack PRIVATE physfs)
+target_link_libraries(blockattack PRIVATE
+	SDL2::SDL2
+	fmt
+	platform_folders
+	physfs
+	${Boost_LIBRARIES}
+)
+
+# Link SDL2 extensions - use imported targets if available, otherwise use pkg-config variables
+if(TARGET SDL2_image::SDL2_image)
+	target_link_libraries(blockattack PRIVATE SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf)
+else()
+	target_link_libraries(blockattack PRIVATE ${SDL2_image_LIBRARIES} ${SDL2_mixer_LIBRARIES} ${SDL2_ttf_LIBRARIES})
+endif()
+
 if (MACOSX)
 	target_link_libraries(blockattack PRIVATE intl)
 endif()
-target_link_libraries(blockattack PRIVATE ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
-target_link_libraries(blockattack PRIVATE ${Boost_LIBRARIES} )
 set_target_properties(blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
 
 #Installing
