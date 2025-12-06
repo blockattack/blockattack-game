@@ -49,17 +49,14 @@ find_package(SDL2_image QUIET)
 find_package(SDL2_mixer QUIET)
 find_package(SDL2_ttf QUIET)
 
+set(SDL2_USE_PKGCONFIG OFF)
 if(NOT SDL2_image_FOUND OR NOT SDL2_mixer_FOUND OR NOT SDL2_ttf_FOUND)
+	set(SDL2_USE_PKGCONFIG ON)
 	find_package(PkgConfig REQUIRED)
-	if(NOT SDL2_image_FOUND)
-		pkg_search_module(SDL2_image REQUIRED SDL2_image)
-	endif()
-	if(NOT SDL2_mixer_FOUND)
-		pkg_search_module(SDL2_mixer REQUIRED SDL2_mixer)
-	endif()
-	if(NOT SDL2_ttf_FOUND)
-		pkg_search_module(SDL2_ttf REQUIRED SDL2_ttf)
-	endif()
+	# When using pkg-config, always search for all SDL2 extensions
+	pkg_search_module(SDL2_image REQUIRED SDL2_image)
+	pkg_search_module(SDL2_mixer REQUIRED SDL2_mixer)
+	pkg_search_module(SDL2_ttf REQUIRED SDL2_ttf)
 endif()
 
 
@@ -124,10 +121,14 @@ endif()
 target_include_directories(blockattack SYSTEM PRIVATE "source/code/Libs/imgui")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
-if(NOT TARGET SDL2_image::SDL2_image)
+if(SDL2_USE_PKGCONFIG)
 	target_include_directories(blockattack PRIVATE ${SDL2_image_INCLUDE_DIRS})
 	target_include_directories(blockattack PRIVATE ${SDL2_mixer_INCLUDE_DIRS})
 	target_include_directories(blockattack PRIVATE ${SDL2_ttf_INCLUDE_DIRS})
+	# Add library directories for pkg-config-based libraries
+	target_link_directories(blockattack PRIVATE ${SDL2_image_LIBRARY_DIRS})
+	target_link_directories(blockattack PRIVATE ${SDL2_mixer_LIBRARY_DIRS})
+	target_link_directories(blockattack PRIVATE ${SDL2_ttf_LIBRARY_DIRS})
 endif()
 target_include_directories(blockattack PRIVATE ${Intl_INCLUDE_DIRS})
 
@@ -140,10 +141,10 @@ target_link_libraries(blockattack PRIVATE
 )
 
 # Link SDL2 extensions - use imported targets if available, otherwise use pkg-config variables
-if(TARGET SDL2_image::SDL2_image)
-	target_link_libraries(blockattack PRIVATE SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf)
+if(SDL2_USE_PKGCONFIG)
+	target_link_libraries(blockattack PRIVATE ${SDL2_image_LINK_LIBRARIES} ${SDL2_mixer_LINK_LIBRARIES} ${SDL2_ttf_LINK_LIBRARIES})
 else()
-	target_link_libraries(blockattack PRIVATE ${SDL2_image_LIBRARIES} ${SDL2_mixer_LIBRARIES} ${SDL2_ttf_LIBRARIES})
+	target_link_libraries(blockattack PRIVATE SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf)
 endif()
 
 if (MACOSX)
