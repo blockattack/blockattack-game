@@ -5,7 +5,7 @@ A Tetris Attack Clone under the GPL.
 Homepage: <https://blockattack.net><br/>
 Source: <https://github.com/blockattack/blockattack-game>
 
-## Screen shot
+## Screenshot
 ![Block Attack - Rise of the Blocks](https://blockattack.github.io/images/screenshots/blockattack-2.3.0-3.png "Screen shot")
 
 ## Supported OS
@@ -13,8 +13,8 @@ Source: <https://github.com/blockattack/blockattack-game>
 ### Linux
 Recent Linux version. Target is all current Ubuntu Desktop LTS versions (up to 5 years).
 
-### Windoes
-Target is all official supported versions of windows for x86-64 that allows manually installed software. Currently Windows 10+.
+### Windows
+Target is all officially supported versions of Windows for x86-64 that allow manually installed software. Currently Windows 10+.
 
 ## Dependencies
 * A version of g++ with C++17 support. Tested on g++-11
@@ -28,7 +28,7 @@ Target is all official supported versions of windows for x86-64 that allows manu
 * libboost-program-options
 
 ## Building
-The only supported build method is using the CMake<br/>
+The only supported build method is using CMake<br/>
 To build do:
 ```bash
 ./packdata.sh
@@ -52,7 +52,7 @@ sudo make install
 Windows build uses MXE (mxe.cc) and Docker. See "Building with Docker".
 
 ## Building using Docker
-As getting a C++ project with many dependencies to compile can be a daunting task then I have provided a couple of Docker images that can perform a build. Both for Windows and Linux.
+Since getting a C++ project with many dependencies to compile can be a daunting task, I have provided a couple of Docker images that can perform a build. Both for Windows and Linux.
 
 The project should at all time be able to compile on the oldest and latest supported version of Ubuntu. This is tested with Docker.
 
@@ -62,7 +62,7 @@ docker build -f source/misc/docker/Dockerfile.Ubuntu18.04build . -t blockattack_
 ```
 and
 ```bash
-docker build -f source/misc/docker/Dockerfile.WindoesBuild . -t blockattack_test
+docker build -f source/misc/docker/Dockerfile.WindowsBuild . -t blockattack_test
 ```
 
 ## Source Structure
@@ -85,7 +85,7 @@ This project is a bit unconventional because I didn't know any better at the tim
 
 ## Reporting bugs
 Please report bugs on github: <https://github.com/blockattack/blockattack-game/issues>
-If possible: Check if the bug is already fixed in master. But if you don't know how to check it then just report it.
+If possible: Check if the bug is already fixed in master. But if you don't know how to check it, then just report it.
 
 ## Contributions
 Contributions are welcome. See CONTRIBUTING.md for details.

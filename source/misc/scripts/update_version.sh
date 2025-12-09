@@ -25,7 +25,7 @@ sed -i "/SET(CPACK_PACKAGE_VERSION_PATCH /c\\SET(CPACK_PACKAGE_VERSION_PATCH \"$
 
 sed -i -E "s/#define VERSION_NUMBER.*$/#define VERSION_NUMBER \"$FULLVERSION\"/" source/code/version.h
 sed -i -E "s/!define PRODUCT_VERSION .*$/!define PRODUCT_VERSION \"$FULLVERSION\"/" "windows installer/install_script.nsi"
-sed -i -E "s/#ENV BLOCKATTACK_VERSION .*$/#ENV BLOCKATTACK_VERSION $FULLVERSION/" source/misc/docker/Dockerfile.WindoesBuild
+sed -i -E "s/#ENV BLOCKATTACK_VERSION .*$/#ENV BLOCKATTACK_VERSION $FULLVERSION/" source/misc/docker/Dockerfile.WindowsBuild
 
 make
 pushd man
