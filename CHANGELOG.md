@@ -9,7 +9,7 @@
 ## [2.10.0] - 2025-10-16
 
 ### Added
- - Build in puzzle editor. Can be started with `--puzzle-editor`
+ - Built-in puzzle editor. Can be started with `--puzzle-editor`
 
 ### Changed
  - Now compiled with C++17 standard. Also required.
@@ -30,7 +30,7 @@
 ### Added
  - Option to use 5 different basic blocks instead of 6
  - Added Swedish translation by sanchez-gayatri
- - Can now compile on Mac OS X. However: No prebuilds will be provided.
+ - Can now compile on Mac OS X. However: No prebuilt versions will be provided.
  - Themes menu allowing some additional customization.
 
 ### Changed
@@ -40,7 +40,7 @@
    - SDL2_Mixer: 2.0.4 to 2.8.0
    - SDL2_ttf: 2.0.15 to 2.22.0
  - Added Releases and OARS to AppStream file
- - Removed the executable bit from a lot of files that data files that should not have it
+ - Removed the executable bit from a lot of data files that should not have it
  - The CMake file now uses more target based rules
 
 ## [2.8.0] - 2022-02-18
@@ -65,9 +65,9 @@
  - Linux icons have been converted to png (patch by pinotree)
  - Now requires Ubuntu 18.04 or later (or equivalent)
  - utfcpp is now an embedded library
- - Dialog boxes now uses contructed textures thus reducing tearing on some renderers
- - Garbage blocks now uses constructed textures thus reducing tearing on some renderers
- - Screen shot feature now works with hardware render
+ - Dialog boxes now use constructed textures thus reducing tearing on some renderers
+ - Garbage blocks now use constructed textures thus reducing tearing on some renderers
+ - Screenshot feature now works with hardware render
  - Update library versions for the compiled version:
    - SDL2: 2.0.12 to 2.0.16
 
@@ -82,7 +82,7 @@
 
 ### Changed
  - Modified the controller keybind. "B" is now Cancel instead of "Y"
- - Update embedded Cerial from 1.2.2 to 1.3.0
+ - Update embedded Cereal from 1.2.2 to 1.3.0
  - Update library versions for the compiled version:
    - SDL2: 2.0.9 to 2.0.12
    - SDL2_image: 2.0.4 to 2.0.5
@@ -165,9 +165,9 @@ high speed Stage Clear levels.
 
 ### Changed
  - There is now an upper limit on how long the rise will stop
- - The internal updated of the game has been updated from 20 times a second to 100 times a second
+ - The internal update of the game has been updated from 20 times a second to 100 times a second
  - Menu fonts have been changed
- - Window is now resizeable by default
+ - Window is now resizable by default
  - Code cleanup
  - Translation strings changed
  - Updated libraries
@@ -238,7 +238,7 @@ Preview release for SDL2 support
 ## [1.3.1] - 2007-01-17
 
 ### Fixed
- - Windows 9x know works again (Windows only)
+ - Windows 9x now works again (Windows only)
  - Puzzle mode has been fixed (Windows only)
 
 ## [1.3.0] - 2006-08-29
@@ -283,7 +283,7 @@ Preview release for SDL2 support
 
 ### Changed
  - Radically changed gameplay
- - Blocks no longer falls instantly
+ - Blocks no longer fall instantly
  - Blocks will not match while falling
  - Chains give more points
  - Combos give less points
