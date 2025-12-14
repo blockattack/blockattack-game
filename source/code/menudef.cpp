@@ -249,6 +249,7 @@ void Button_soundVolume::doLeft() {
 		newValue = 0;
 	}
 	Config::getInstance()->setInt("volume_sound", newValue);
+	leftButtonMarkTime = SDL_GetTicks();
 }
 
 void Button_soundVolume::doRight() {
@@ -258,6 +259,7 @@ void Button_soundVolume::doRight() {
 		newValue = MIX_MAX_VOLUME;
 	}
 	Config::getInstance()->setInt("volume_sound", newValue);
+	rightButtonMarkTime = SDL_GetTicks();
 }
 
 const std::string& Button_soundVolume::getLabel() const {
@@ -297,6 +299,7 @@ void Button_musicVolume::doLeft() {
 		newValue = 0;
 	}
 	Config::getInstance()->setInt("volume_music", newValue);
+	leftButtonMarkTime = SDL_GetTicks();
 }
 
 void Button_musicVolume::doRight() {
@@ -306,6 +309,7 @@ void Button_musicVolume::doRight() {
 		newValue = MIX_MAX_VOLUME;
 	}
 	Config::getInstance()->setInt("volume_music", newValue);
+	rightButtonMarkTime = SDL_GetTicks();
 }
 
 const std::string& Button_musicVolume::getLabel() const {

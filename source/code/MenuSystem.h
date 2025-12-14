@@ -112,7 +112,11 @@ public:
 		return adjustSize + 10 + standardButton.xsize + 10 + adjustSize;
 	};
 
-	int getAdjustButtonSize() const { return standardButton.ysize / 2; };
+	int getAdjustButtonSize() const { return standardButton.ysize; };
+
+	mutable Uint32 leftButtonMarkTime = 0;
+	mutable Uint32 rightButtonMarkTime = 0;
+	static const Uint32 MARK_DURATION = 200; // milliseconds
 };
 
 

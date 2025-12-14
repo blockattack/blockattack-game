@@ -137,23 +137,36 @@ void ButtonWithAdjustment::drawToScreen(SDL_Renderer* target) const {
 	// Draw left adjustment button (down arrow)
 	int adjustSize = getAdjustButtonSize();
 	int leftX = x - adjustSize - 10;
-	int leftY = y + (standardButton.ysize - adjustSize) / 2;  // Vertically center the small button
-	globalData.spriteHolder->GetSprite("menu_unmarked").DrawScaled(globalData.screen, SDL_GetTicks(), leftX, leftY, adjustSize, adjustSize, &globalData.logicalResize);
-	standardButton.getLabel("\u25c0", false)->Draw(globalData.screen, leftX+adjustSize/2, leftY+adjustSize/2,
+	int leftY = y;
+	Uint32 currentTime = SDL_GetTicks();
+	bool leftMarked = (currentTime - leftButtonMarkTime) < MARK_DURATION;
+	if (leftMarked) {
+		globalData.spriteHolder->GetSprite("menu_marked").DrawScaled(globalData.screen, SDL_GetTicks(), leftX, leftY, adjustSize, adjustSize, &globalData.logicalResize);
+	}
+	else {
+		globalData.spriteHolder->GetSprite("menu_unmarked").DrawScaled(globalData.screen, SDL_GetTicks(), leftX, leftY, adjustSize, adjustSize, &globalData.logicalResize);
+	}
+	standardButton.getLabel("\u25c0", leftMarked)->Draw(globalData.screen, leftX+adjustSize/2, leftY+adjustSize/2,
 	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
 
 	// Draw right adjustment button (up arrow)
 	int rightX = x + standardButton.xsize + 10;
-	int rightY = y + (standardButton.ysize - adjustSize) / 2;  // Vertically center the small button
-	globalData.spriteHolder->GetSprite("menu_unmarked").DrawScaled(globalData.screen, SDL_GetTicks(), rightX, rightY, adjustSize, adjustSize, &globalData.logicalResize);
-	standardButton.getLabel("\u25b6", false)->Draw(globalData.screen, rightX+adjustSize/2, rightY+adjustSize/2,
+	int rightY = y;
+	bool rightMarked = (currentTime - rightButtonMarkTime) < MARK_DURATION;
+	if (rightMarked) {
+		globalData.spriteHolder->GetSprite("menu_marked").DrawScaled(globalData.screen, SDL_GetTicks(), rightX, rightY, adjustSize, adjustSize, &globalData.logicalResize);
+	}
+	else {
+		globalData.spriteHolder->GetSprite("menu_unmarked").DrawScaled(globalData.screen, SDL_GetTicks(), rightX, rightY, adjustSize, adjustSize, &globalData.logicalResize);
+	}
+	standardButton.getLabel("\u25b6", rightMarked)->Draw(globalData.screen, rightX+adjustSize/2, rightY+adjustSize/2,
 	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
 }
 
 bool ButtonWithAdjustment::isClickedAdjustLeft(int mx, int my) const {
 	int adjustSize = getAdjustButtonSize();
 	int leftX = x - adjustSize - 10;
-	int leftY = y + (standardButton.ysize - adjustSize) / 2;
+	int leftY = y;
 	if (mx >= leftX && my >= leftY && mx <= leftX + adjustSize && my <= leftY + adjustSize) {
 		return true;
 	}
@@ -163,7 +176,7 @@ bool ButtonWithAdjustment::isClickedAdjustLeft(int mx, int my) const {
 bool ButtonWithAdjustment::isClickedAdjustRight(int mx, int my) const {
 	int adjustSize = getAdjustButtonSize();
 	int rightX = x + standardButton.xsize + 10;
-	int rightY = y + (standardButton.ysize - adjustSize) / 2;
+	int rightY = y;
 	if (mx >= rightX && my >= rightY && mx <= rightX + adjustSize && my <= rightY + adjustSize) {
 		return true;
 	}
