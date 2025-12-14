@@ -27,9 +27,14 @@ http://blockattack.net
 #define HANGTIME 40
 #define FALLTIME 20
 //Don't change the following, they are fundamental and later some functions are hardcoded
+#define BLOCKHANG 1000
 #define BLOCKFALL 10000
+#define BLOCKWAIT 100000
 #define GARBAGE 1000000
 #define CHAINPLACE 10000000
+
+#define GARBAGE_NORMAL 1
+#define GARBAGE_GRAY 2
 
 // The game uses a very special  base-10 pack system
 // int  999999999999
@@ -42,8 +47,36 @@ http://blockattack.net
 // TT = Time (in steps) until something happens
 // C = color
 
+static int getBlockChain(int block) {
+	return (block / CHAINPLACE) % 1000;
+}
+
+static int getBlockGarbage(int block) {
+	return (block / GARBAGE) % 10;
+}
+
+static int getStepsUntilEvent(int block) {
+	return (block / 10) % 100;
+}
+
+static int getBlockColor(int block) {
+	return block % 10;
+}
+
+static bool isWaiting(int block) {
+	return (block / BLOCKWAIT) % 10;
+}
+
+static bool isHanging(int block) {
+	return (block / BLOCKHANG) % 10;
+}
+
 static bool block_isFalling(int block) {
 	return (block/BLOCKFALL)%10;
+}
+
+static int getBlockWithoutChain(int block) {
+	return block % CHAINPLACE;
 }
 
 static void block_setFalling(int& block, bool value) {
@@ -621,8 +654,8 @@ void BlockGame::ReduceStuff() {
 	if (howMuchHang>0) {
 		for (int i=0; i<7; i++) {
 			for (int j=0; j<30; j++) {
-				if ((board[i][j]/BLOCKHANG)%10==1) {
-					int hangNumber = (board[i][j]/10)%100;
+				if (isHanging(board[i][j])) {
+					int hangNumber = getStepsUntilEvent(board[i][j]);
 					if (hangNumber<=howMuchHang) {
 						board[i][j]-=BLOCKHANG;
 						board[i][j]-=hangNumber*10;
@@ -631,8 +664,8 @@ void BlockGame::ReduceStuff() {
 						board[i][j]-=10*howMuchHang;
 					}
 				}
-				if ((board[i][j]/BLOCKWAIT)%10==1) {
-					int hangNumber = (board[i][j]/10)%100;
+				if (isWaiting(board[i][j])) {
+					int hangNumber = getStepsUntilEvent(board[i][j]);
 					if (hangNumber<=howMuchHang) {
 						//The blocks must be cleared
 						board[i][j]-=hangNumber*10;
@@ -782,16 +815,16 @@ void BlockGame::ClearBlocks() {
 	for (int i=0; i<7; i++) {
 		bool faaling = false;
 		for (int j=0; j<30; j++) {
-			if ((faaling)&&(board[i][j]>-1)&&(board[i][j]%10000000<7)) {
+			if ((faaling)&&(board[i][j]>-1)&&(getBlockWithoutChain(board[i][j])<7)) {
 				block_setFalling(board[i][j], true);
 			}
-			if ((!faaling)&&((board[i][j]/BLOCKFALL)%10==1)) {
+			if ((!faaling)&&(block_isFalling(board[i][j]))) {
 				block_setFalling(board[i][j], false);
 			}
-			if (!((board[i][j]>-1)&&(board[i][j]%10000000<7))) {
+			if (!((board[i][j]>-1)&&(getBlockWithoutChain(board[i][j])<7))) {
 				faaling=true;
 			}
-			if (((board[i][j]/1000000)%10==1)||((board[i][j]/1000000)%10==2)||((board[i][j]/BLOCKHANG)%10==1)||((board[i][j]/BLOCKWAIT)%10==1)) {
+			if ((getBlockGarbage(board[i][j])==GARBAGE_NORMAL)||(getBlockGarbage(board[i][j])==GARBAGE_GRAY)||isHanging(board[i][j])||isWaiting(board[i][j])) {
 				faaling = false;
 			}
 		}
@@ -803,8 +836,8 @@ void BlockGame::ClearBlocks() {
 		combo=0;
 
 		for (int i=1; i<30; i++) {
-			if ((board[j][i]>-1)&&(board[j][i]%10000000<7)) {
-				if (board[j][i]%10000000 == previus) {
+			if ((board[j][i]>-1)&&(getBlockWithoutChain(board[j][i])<7)) {
+				if (getBlockWithoutChain(board[j][i]) == previus) {
 					combo++;
 				}
 				else {
@@ -814,7 +847,7 @@ void BlockGame::ClearBlocks() {
 						}
 					}
 					combo=1;
-					previus = board[j][i]%10000000;
+					previus = getBlockWithoutChain(board[j][i]);
 				}
 			} //if board
 			else {
@@ -835,14 +868,14 @@ void BlockGame::ClearBlocks() {
 		for (int j=0; j<30; j++) {
 			//Clears blocks marked for clearing
 			int temp=board[i][j];
-			if (1==((temp/BLOCKWAIT)%10)) {
-				if (((temp/10)%100)==0) {
-					if (chainSize[chain]<chainSize[board[i][j]/10000000]) {
-						chain = board[i][j]/10000000;
+			if (isWaiting(temp)) {
+				if (getStepsUntilEvent(temp)==0) {
+					if (chainSize[chain]<chainSize[getBlockChain(board[i][j])]) {
+						chain = getBlockChain(board[i][j]);
 					}
 
-					AddBall(i, j, true, board[i][j]%10);
-					AddBall(i, j, false, board[i][j]%10);
+					AddBall(i, j, true, getBlockColor(board[i][j]));
+					AddBall(i, j, false, getBlockColor(board[i][j]));
 					AddExplosion(i, j);
 					board[i][j]=-2;
 				}
@@ -861,8 +894,8 @@ void BlockGame::ClearBlocks() {
 				BlockPopEvent();
 			}
 			if (board[i][j]!=-1) {
-				if ((setChain)&&((board[i][j]/GARBAGE)%10!=1)&&((board[i][j]/GARBAGE)%10!=2)) {
-					board[i][j]=((board[i][j]%CHAINPLACE)+CHAINPLACE*chain);
+				if ((setChain)&&(getBlockGarbage(board[i][j])!=GARBAGE_NORMAL)&&(getBlockGarbage(board[i][j])!=GARBAGE_GRAY)) {
+					board[i][j]=((getBlockWithoutChain(board[i][j]))+CHAINPLACE*chain);
 				}
 			}
 		}
@@ -878,8 +911,8 @@ void BlockGame::ClearBlocks() {
 		previus=-1;
 		combo=0;
 		for (int j=0; j<7; j++) {
-			if (((board[j][i]>-1)&&(board[j][i]%10000000<7))) {
-				if (board[j][i]%10000000 == previus) {
+			if (((board[j][i]>-1)&&(getBlockWithoutChain(board[j][i])<7))) {
+				if (getBlockWithoutChain(board[j][i]) == previus) {
 					combo++;
 				}
 				else {
@@ -889,7 +922,7 @@ void BlockGame::ClearBlocks() {
 						}
 					}
 					combo=1;
-					previus = board[j][i]%10000000;
+					previus = getBlockWithoutChain(board[j][i]);
 				}
 			} //if board
 			else {
@@ -917,20 +950,20 @@ void BlockGame::ClearBlocks() {
 				FirstGarbageMarker(j, i-1);
 				FirstGarbageMarker(j, i+1);
 				//that is checked now :-)
-				if (board[j][i]%10000000==6) {
+				if (getBlockWithoutChain(board[j][i])==6) {
 					grey++;
 				}
-				if ((vsMode) && (grey>2) && (board[j][i]%10000000==6)) {
+				if ((vsMode) && (grey>2) && (getBlockWithoutChain(board[j][i])==6)) {
 					GarbageStruct s;
 					s.setGarbage(6, 1, true);
 					this->garbageSendQueue.push_back(s);
 				}
-				if ((board[j][i]>-1)&&(board[j][i]%10000000<7)) {
+				if ((board[j][i]>-1)&&(getBlockWithoutChain(board[j][i])<7)) {
 					board[j][i]+=BLOCKWAIT+10*FALLTIME;
 				}
 
-				if (chainSize[board[j][i]/10000000]>chainSize[chain]) {
-					chain=board[j][i]/10000000;
+				if (chainSize[getBlockChain(board[j][i])]>chainSize[chain]) {
+					chain=getBlockChain(board[j][i]);
 				}
 				combo++;
 				stop+=140*combo;
@@ -951,7 +984,7 @@ void BlockGame::ClearBlocks() {
 	for (int i=0; i<30; i++) {
 		for (int j=0; j<6; j++) {
 			if (toBeCleared[j][i]) {
-				board[j][i]=(board[j][i]%10000000)+chain*10000000;
+				board[j][i]=(getBlockWithoutChain(board[j][i]))+chain*CHAINPLACE;
 			}
 		}
 	}
@@ -1031,7 +1064,7 @@ void BlockGame::ClearBlocks() {
 	for (int i=0; i<30; i++) {
 		for (int j=0; j<6; j++) {
 			if (garbageToBeCleared[j][i]) {
-				GarbageClearer(j, i, board[j][i]%1000000, true, chain); //Clears the blocks and all blocks connected to it.
+				GarbageClearer(j, i, getBlockWithoutChain(board[j][i]) % 1000, true, chain); //Clears the blocks and all blocks connected to it.
 			}
 		}
 	}
@@ -1048,16 +1081,16 @@ void BlockGame::ClearBlocks() {
 			if (!faaling) {
 				block_setFalling(board[i][j], false);
 			}
-			if ((!faaling)&&(board[i][j]>0)&&(board[i][j]/10000000!=0)&&((board[i][j]/BLOCKWAIT)%10!=1)&&((board[i][j]/BLOCKHANG)%10!=1)) {
-				if (chainSize[board[i][j]/10000000]>chainSize[chain]) {
-					chain=board[i][j]/10000000;
+			if ((!faaling)&&(board[i][j]>0)&&(getBlockChain(board[i][j])!=0)&&!isWaiting(board[i][j])&&!isHanging(board[i][j])) {
+				if (chainSize[getBlockChain(board[i][j])]>chainSize[chain]) {
+					chain=getBlockChain(board[i][j]);
 				}
-				board[i][j]=board[i][j]%10000000;
+				board[i][j]=getBlockWithoutChain(board[i][j]);
 			}
 			if (!((board[i][j]>-1)&&(board[i][j]<7))) {
 				faaling=true;
 			}
-			if (((board[i][j]/1000000)%10==1)||((board[i][j]/BLOCKHANG)%10==1)||((board[i][j]/BLOCKWAIT)%10==1)) {
+			if ((getBlockGarbage(board[i][j])==GARBAGE_NORMAL)||isHanging(board[i][j])||isWaiting(board[i][j])) {
 				faaling = false;
 			}
 		}
@@ -1067,8 +1100,8 @@ void BlockGame::ClearBlocks() {
 	chain=0;
 	for (int i=0; i<6; i++) {
 		for (int j=0; j<30; j++) {
-			if (chainSize[board[i][j]/10000000]>chain) {
-				chain=chainSize[board[i][j]/10000000];
+			if (chainSize[getBlockChain(board[i][j])]>chain) {
+				chain=chainSize[getBlockChain(board[i][j])];
 			}
 		}
 	}
@@ -1148,7 +1181,7 @@ int BlockGame::FallBlock(int x, int y, int number) {
 void BlockGame::GarbageFall() {
 	for (int i=0; i<30; i++) {
 		for (int j=0; j<7; j++) {
-			if ((((board[j][i]/1000000)%10) == 1)||(((board[j][i]/1000000)%10) == 2)) {
+			if ((getBlockGarbage(board[j][i]) == GARBAGE_NORMAL)||(getBlockGarbage(board[j][i]) == GARBAGE_GRAY)) {
 				FallBlock(j, i, board[j][i]);
 			}
 		}
@@ -1160,12 +1193,12 @@ void BlockGame::FallDown() {
 	bool falling =false;        //nothing is moving unless proven otherwise
 	for (int i=0; i<29; i++) {
 		for (int j=0; j<6; j++) {
-			if ((board[j][i]==-1) && (board[j][i+1]!=-1) && (board[j][i+1]%BLOCKFALL<7)) {
+			if ((board[j][i]==-1) && (board[j][i+1]!=-1) && (getBlockWithoutChain(board[j][i+1]) % BLOCKFALL<7)) {
 				board[j][i] = board[j][i+1];
 				board[j][i+1] = -1;
 				falling = true;              //something is moving!
 			}
-			if ((board[j][i]/BLOCKWAIT)%10==1) {
+			if (isWaiting(board[j][i])) {
 				falling=true;
 			}
 		}
