@@ -218,6 +218,102 @@ void Button_testMusic::doAction() {
 	Mix_PlayMusic(bgMusic.get(), -1);
 }
 
+// Sound volume button with adjustment controls
+class Button_soundVolume : public ButtonWithAdjustment {
+private:
+	mutable std::string volumeLabel;
+	int incrementValue = 5;
+public:
+	Button_soundVolume();
+	virtual void doAction() override;
+	virtual void doLeft() override;
+	virtual void doRight() override;
+	virtual const std::string& getLabel() const override;
+};
+
+Button_soundVolume::Button_soundVolume() {
+	standardButton.setSurfaces();
+}
+
+void Button_soundVolume::doAction() {
+	// Test sound
+	sago::SoundHandler testSound = globalData.spriteHolder->GetDataHolder().getSoundHandler("pop");
+	Mix_VolumeChunk(testSound.get(), Config::getInstance()->getInt("volume_sound"));
+	Mix_PlayChannel(1, testSound.get(), 0);
+}
+
+void Button_soundVolume::doLeft() {
+	// Decrease volume
+	int newValue = Config::getInstance()->getInt("volume_sound") - incrementValue;
+	if (newValue < 0) {
+		newValue = 0;
+	}
+	Config::getInstance()->setInt("volume_sound", newValue);
+}
+
+void Button_soundVolume::doRight() {
+	// Increase volume
+	int newValue = Config::getInstance()->getInt("volume_sound") + incrementValue;
+	if (newValue > MIX_MAX_VOLUME) {
+		newValue = MIX_MAX_VOLUME;
+	}
+	Config::getInstance()->setInt("volume_sound", newValue);
+}
+
+const std::string& Button_soundVolume::getLabel() const {
+	int volumePct = Config::getInstance()->getInt("volume_sound")*100.0/MIX_MAX_VOLUME;
+	volumeLabel = fmt::format(_("Sound: {}"), volumePct)+"%";
+	return volumeLabel;
+}
+
+// Music volume button with adjustment controls
+class Button_musicVolume : public ButtonWithAdjustment {
+private:
+	mutable std::string volumeLabel;
+	int incrementValue = 5;
+public:
+	Button_musicVolume();
+	virtual void doAction() override;
+	virtual void doLeft() override;
+	virtual void doRight() override;
+	virtual const std::string& getLabel() const override;
+};
+
+Button_musicVolume::Button_musicVolume() {
+	standardButton.setSurfaces();
+}
+
+void Button_musicVolume::doAction() {
+	// Test music
+	Mix_VolumeMusic(Config::getInstance()->getInt("volume_music"));
+	sago::MusicHandler bgMusic = globalData.spriteHolder->GetDataHolder().getMusicHandler("bgmusic");
+	Mix_PlayMusic(bgMusic.get(), -1);
+}
+
+void Button_musicVolume::doLeft() {
+	// Decrease volume
+	int newValue = Config::getInstance()->getInt("volume_music") - incrementValue;
+	if (newValue < 0) {
+		newValue = 0;
+	}
+	Config::getInstance()->setInt("volume_music", newValue);
+}
+
+void Button_musicVolume::doRight() {
+	// Increase volume
+	int newValue = Config::getInstance()->getInt("volume_music") + incrementValue;
+	if (newValue > MIX_MAX_VOLUME) {
+		newValue = MIX_MAX_VOLUME;
+	}
+	Config::getInstance()->setInt("volume_music", newValue);
+}
+
+const std::string& Button_musicVolume::getLabel() const {
+	int volumePct = Config::getInstance()->getInt("volume_music")*100.0/MIX_MAX_VOLUME;
+	volumeLabel = fmt::format(_("Music: {}"), volumePct)+"%";
+	return volumeLabel;
+}
+
 
 static void runSinglePlayerEndless0() {
 	runGame(Gametype::SinglePlayerEndless, 0);
@@ -453,8 +549,8 @@ static void PlayerConfigMenu() {
 static void ConfigureMenu() {
 	Menu cm(globalData.screen,_("Configuration"),true);
 	AlwaysSoftwareRenderButton bSoftware;
-	MusicButton bMusic;
-	SoundButton bSound;
+	Button_musicVolume bMusic;
+	Button_soundVolume bSound;
 	FullscreenButton buttonFullscreen;
 	BlockVariantButton bBlockVariant;
 	Button bPlayerConfig;
@@ -464,8 +560,6 @@ static void ConfigureMenu() {
 	bThemes.setLabel(_("Themes"));
 	bThemes.setAction(OpenThemesMenu);
 	SetAlwaysSoftwareLabel(&bSoftware);
-	SetMusicLabel(&bMusic);
-	SetSoundLabel(&bSound);
 	SetFullscreenLabel(&buttonFullscreen);
 	SetBlockVariationLabel(&bBlockVariant);
 	cm.addButton(&bMusic);

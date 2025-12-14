@@ -118,6 +118,58 @@ static void drawToScreen(const Button& b) {
 	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
 }
 
+void Button::drawToScreen(SDL_Renderer* target) const {
+	::drawToScreen(*this);
+}
+
+void ButtonWithAdjustment::drawToScreen(SDL_Renderer* target) const {
+	// Draw the main button
+	if (marked) {
+		globalData.spriteHolder->GetSprite(standardButton.menu_marked).Draw(globalData.screen, SDL_GetTicks(), x, y, &globalData.logicalResize);
+	}
+	else {
+		globalData.spriteHolder->GetSprite(standardButton.menu_unmarked).Draw(globalData.screen, SDL_GetTicks(), x, y, &globalData.logicalResize);
+	}
+
+	standardButton.getLabel(getLabel(), marked)->Draw(globalData.screen, x+standardButton.xsize/2, y+standardButton.ysize/2,
+	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
+
+	// Draw left adjustment button (down arrow)
+	int adjustSize = getAdjustButtonSize();
+	int leftX = x - adjustSize - 10;
+	int leftY = y + (standardButton.ysize - adjustSize) / 2;  // Vertically center the small button
+	globalData.spriteHolder->GetSprite("menu_unmarked").DrawScaled(globalData.screen, SDL_GetTicks(), leftX, leftY, adjustSize, adjustSize, &globalData.logicalResize);
+	standardButton.getLabel("\u25c0", false)->Draw(globalData.screen, leftX+adjustSize/2, leftY+adjustSize/2,
+	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
+
+	// Draw right adjustment button (up arrow)
+	int rightX = x + standardButton.xsize + 10;
+	int rightY = y + (standardButton.ysize - adjustSize) / 2;  // Vertically center the small button
+	globalData.spriteHolder->GetSprite("menu_unmarked").DrawScaled(globalData.screen, SDL_GetTicks(), rightX, rightY, adjustSize, adjustSize, &globalData.logicalResize);
+	standardButton.getLabel("\u25b6", false)->Draw(globalData.screen, rightX+adjustSize/2, rightY+adjustSize/2,
+	        sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::center, &globalData.logicalResize);
+}
+
+bool ButtonWithAdjustment::isClickedAdjustLeft(int mx, int my) const {
+	int adjustSize = getAdjustButtonSize();
+	int leftX = x - adjustSize - 10;
+	int leftY = y + (standardButton.ysize - adjustSize) / 2;
+	if (mx >= leftX && my >= leftY && mx <= leftX + adjustSize && my <= leftY + adjustSize) {
+		return true;
+	}
+	return false;
+}
+
+bool ButtonWithAdjustment::isClickedAdjustRight(int mx, int my) const {
+	int adjustSize = getAdjustButtonSize();
+	int rightX = x + standardButton.xsize + 10;
+	int rightY = y + (standardButton.ysize - adjustSize) / 2;
+	if (mx >= rightX && my >= rightY && mx <= rightX + adjustSize && my <= rightY + adjustSize) {
+		return true;
+	}
+	return false;
+}
+
 
 static bool isClicked(const Button& b, int x,int y) {
 	if ( x >= b.x && y >= b.y && x<= b.x+b.standardButton.xsize && y <= b.y + b.standardButton.ysize) {
@@ -129,9 +181,9 @@ static bool isClicked(const Button& b, int x,int y) {
 void Menu::drawSelf(SDL_Renderer* target) {
 	DrawBackground(target);
 	for (const Button* b : buttons) {
-		drawToScreen(*b);
+		b->drawToScreen(target);
 	}
-	drawToScreen(exit);
+	exit.drawToScreen(target);
 	exit.standardButton.getLabel(title, false)->Draw(target, 50, 50, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 }
 
@@ -140,10 +192,12 @@ void Menu::placeButtons() {
 	int nextY = 100;
 	int X = 50;
 	for (Button* it : buttons) {
-		X = (globalData.xsize - it->standardButton.xsize)/2;
-		it->x = X;
+		// For all buttons, center based on the main button width to keep them aligned
+		int centerX = (globalData.xsize - it->standardButton.xsize)/2;
+		it->x = centerX;
 		it->y = nextY;
 		nextY += it->standardButton.ysize+10;
+		X = it->x;
 	}
 	exit.x = X;
 	exit.y = nextY;
@@ -300,6 +354,20 @@ void Menu::ProcessInput(const SDL_Event& event, bool& processed) {
 		processed = true;
 	}
 
+	if (isLeftEvent(event)) {
+		if (marked < (int)buttons.size()) {
+			buttons.at(marked)->doLeft();
+		}
+		processed = true;
+	}
+
+	if (isRightEvent(event)) {
+		if (marked < (int)buttons.size()) {
+			buttons.at(marked)->doRight();
+		}
+		processed = true;
+	}
+
 	if (isEscapeEvent(event) && isSubmenu) {
 		running = false;
 		processed = true;
@@ -351,6 +419,16 @@ void Menu::Update() {
 	if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
 		bMouseUp = false;
 		for (int i=0; i< (int)buttons.size(); ++i) {
+			// Check for adjustment button clicks first
+			if (buttons.at(i)->isClickedAdjustLeft(mousex, mousey)) {
+				buttons.at(i)->doLeft();
+				return;
+			}
+			if (buttons.at(i)->isClickedAdjustRight(mousex, mousey)) {
+				buttons.at(i)->doRight();
+				return;
+			}
+			// Then check for main button click
 			if (isClicked(*buttons.at(i), mousex, mousey)) {
 				buttons.at(i)->doAction();
 				if (buttons.at(i)->isPopOnRun()) {

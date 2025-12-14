@@ -81,12 +81,38 @@ public:
 	void setAction(void (*action2run)(void));
 
 	virtual void doAction(); //Run the callback function
+	virtual void doLeft() {}; //Handle left input (for adjustment buttons)
+	virtual void doRight() {}; //Handle right input (for adjustment buttons)
 	void setPopOnRun(bool popOnRun);
 	bool isPopOnRun() const;
 	virtual const std::string& getLabel() const {return this->label; };
+	virtual bool hasAdjustmentButtons() const { return false; };
+	virtual void drawToScreen(SDL_Renderer* target) const;
+	virtual bool isClickedAdjustLeft(int /*x*/, int /*y*/) const { return false; };
+	virtual bool isClickedAdjustRight(int /*x*/, int /*y*/) const { return false; };
+	virtual int getTotalWidth() const { return standardButton.xsize; };
 
 	//May hold any other information the callback might need
 	int iGeneric1 = 0;
+};
+
+//A button with left/right adjustment controls
+class ButtonWithAdjustment : public Button
+{
+public:
+	ButtonWithAdjustment() = default;
+	virtual ~ButtonWithAdjustment() = default;
+
+	virtual bool hasAdjustmentButtons() const override { return true; };
+	virtual void drawToScreen(SDL_Renderer* target) const override;
+	virtual bool isClickedAdjustLeft(int x, int y) const override;
+	virtual bool isClickedAdjustRight(int x, int y) const override;
+	virtual int getTotalWidth() const override {
+		int adjustSize = getAdjustButtonSize();
+		return adjustSize + 10 + standardButton.xsize + 10 + adjustSize;
+	};
+
+	int getAdjustButtonSize() const { return standardButton.ysize / 2; };
 };
 
 
