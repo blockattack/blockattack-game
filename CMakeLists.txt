@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.5.1...4.1.0)
 project (blockattack)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
+endif()
+
 set(BIN_DIR ${blockattack_SOURCE_DIR}/Game)
 
 SET(CPACK_PACKAGE_VERSION "2.11.0-SNAPSHOT")
@@ -8,7 +13,6 @@ SET(CPACK_PACKAGE_VERSION_MINOR "11")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Block Attack - Rise of the Blocks ${CPACK_PACKAGE_VERSION}")
 SET(CPACK_PACKAGE_VENDOR "Poul Sander")
-INCLUDE(CPack)
 
 # Define install paths
 set(INSTALL_BIN_DIR "bin" CACHE STRING "Install executable in this directory")
@@ -153,6 +157,7 @@ endif()
 set_target_properties(blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
 
 #Installing
+include(CPack)
 install(TARGETS blockattack RUNTIME DESTINATION ${INSTALL_BIN_DIR} )
 install(FILES Game/blockattack.data DESTINATION ${INSTALL_DATA_DIR} )
 install(FILES Game/mods/1.3.0.bricks.data DESTINATION "${INSTALL_DATA_DIR}/mods" )
