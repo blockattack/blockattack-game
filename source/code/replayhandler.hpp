@@ -33,3 +33,7 @@ struct SavedReplayStruct {
 void SaveReplay(const BlockGameInfo& game1);
 
 void SaveReplay(const BlockGameInfo& game1, const BlockGameInfo& game2);
+
+void SaveLatestSinglePlayerReplay(const BlockGameInfo& game1);
+
+bool LoadLatestSinglePlayerReplay(BlockGameInfo& game1);

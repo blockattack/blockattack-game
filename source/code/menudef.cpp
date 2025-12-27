@@ -616,9 +616,13 @@ static void HelpMenu() {
 	RunGameState(m);
 }
 
+static void runReplayLastGame() {
+	runGame(Gametype::Replay, 0);
+}
+
 static void SinglePlayerMenu() {
 	Menu m(globalData.screen, _("Single player"), true);
-	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1;
+	Button bHi,bTimetrial1, bStageClear, bPuzzle, bVs1, bReplay;
 	bHi.setLabel(_("Single player - endless") );
 	bHi.setAction(runSinglePlayerEndless);
 	bTimetrial1.setLabel(_("Single player - time trial") );
@@ -629,11 +633,15 @@ static void SinglePlayerMenu() {
 	bPuzzle.setAction(runSinglePlayerPuzzle);
 	bVs1.setLabel(_("Single player - vs") );
 	bVs1.setAction(SinglePlayerVsMenu);
+	bReplay.setLabel(_("Replay last game") );
+	bReplay.setAction(runReplayLastGame);
+	bReplay.setPopOnRun(true);
 	m.addButton(&bHi);
 	m.addButton(&bTimetrial1);
 	m.addButton(&bStageClear);
 	m.addButton(&bPuzzle);
 	m.addButton(&bVs1);
+	m.addButton(&bReplay);
 	RunGameState(m);
 }
 

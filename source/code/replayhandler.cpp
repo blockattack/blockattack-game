@@ -84,3 +84,25 @@ void SaveReplay(const BlockGameInfo& game1, const BlockGameInfo& game2) {
 	std::string filename = CreateFileName(t);
 	SaveReplayToFile(sr, filename);
 }
+
+void SaveLatestSinglePlayerReplay(const BlockGameInfo& game1) {
+	SavedReplayStruct sr;
+	sr.numberOfPlayers = 1;
+	sr.playerInfo.push_back(game1);
+	std::string filename = "replays/latest_single_player_replay.json";
+	SaveReplayToFile(sr, filename);
+}
+
+bool LoadLatestSinglePlayerReplay(BlockGameInfo& game1) {
+	try {
+		SavedReplayStruct sr;
+		LoadReplayFromPhysFile(sr, "replays/latest_single_player_replay.json");
+		if (sr.playerInfo.size() > 0) {
+			game1 = sr.playerInfo.at(0);
+			return true;
+		}
+	} catch (const std::exception& e) {
+		return false;
+	}
+	return false;
+}

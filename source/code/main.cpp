@@ -773,6 +773,10 @@ static bool registerEndlessHighscore = false;
 static bool registerTTHighscorePlayer1 = false;
 static bool registerTTHighscorePlayer2 = false;
 static bool saveReplay = false;
+static std::deque<BlockGameAction> replayQueue;
+static size_t replayActionIndex = 0;
+static bool isReplayMode = false;
+static unsigned int replayTimeOffset = 0; // Offset between original game time and replay time
 
 /**
  * startSpeed is a value from 0 to 4
@@ -1463,6 +1467,10 @@ int runGame(Gametype gametype, int level) {
 			registerEndlessHighscore = false;
 			registerTTHighscorePlayer1 = false;
 			registerTTHighscorePlayer2 = false;
+			isReplayMode = false;
+			replayQueue.clear();
+			replayActionIndex = 0;
+			replayTimeOffset = 0;
 			switch (gametype) {
 			case Gametype::SinglePlayerTimeTrial:
 				StartSinglePlayerTimeTrial();
@@ -1515,6 +1523,35 @@ int runGame(Gametype gametype, int level) {
 			case Gametype::TwoPlayerVs:
 				StartTwoPlayerVs();
 				break;
+			case Gametype::Replay: {
+				BlockGameInfo replayInfo;
+				if (!LoadLatestSinglePlayerReplay(replayInfo)) {
+					// No replay available, exit
+					return 1;
+				}
+				// Calculate time offset: current time - original start time
+				unsigned int currentStartTime = SDL_GetTicks();
+				unsigned int originalStartTime = replayInfo.startInfo.ticks;
+				replayTimeOffset = currentStartTime - originalStartTime;
+				
+				// Adjust startInfo ticks to current time
+				replayInfo.startInfo.ticks = currentStartTime;
+				theGame.NewGame(replayInfo.startInfo);
+				twoPlayers = false;
+				BlockGameAction a;
+				a.action = BlockGameAction::Action::SET_GAME_OVER;
+				theGame2.DoAction(a);
+				theGame.name = replayInfo.extra.name;
+				theGame2.name = globalData.player2name;
+				// Set up replay queue and adjust all action timestamps
+				replayQueue = replayInfo.actions;
+				for (BlockGameAction& action : replayQueue) {
+					action.tick += replayTimeOffset;
+				}
+				replayActionIndex = 0;
+				isReplayMode = true;
+			}
+			break;
 			case Gametype::SinglePlayerEndless:
 			default:
 				StartSinglePlayerEndless(level);
@@ -1606,7 +1643,7 @@ int runGame(Gametype gametype, int level) {
 						done=1;
 						DrawBackground(globalData.screen);
 					}
-					if (!theGame.GetAIenabled()) {
+					if (!theGame.GetAIenabled() && !isReplayMode) {
 						//player1:
 						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
 							a.action = BlockGameAction::Action::MOVE;
@@ -1923,9 +1960,34 @@ int runGame(Gametype gametype, int level) {
 
 		//set bNearDeath to false theGame*.Update() will change to true as needed
 		bNearDeath = theGame.IsNearDeath() || theGame2.IsNearDeath();
-		//Updates the objects
+		
+		// Process replay actions if in replay mode
+		if (isReplayMode) {
+			unsigned int currentTick = SDL_GetTicks();
+			while (replayActionIndex < replayQueue.size()) {
+				const BlockGameAction& replayAction = replayQueue[replayActionIndex];
+				// Process all actions up to the current tick
+				if (replayAction.action == BlockGameAction::Action::UPDATE) {
+					if (replayAction.tick > currentTick) {
+						break; // Wait for the right time
+					}
+					theGame.DoAction(replayAction);
+					replayActionIndex++;
+					break; // Only process one UPDATE per frame
+				} else {
+					// Non-UPDATE actions can be processed immediately
+					theGame.DoAction(replayAction);
+					replayActionIndex++;
+				}
+			}
+		} else {
+			//Updates the objects (only when not in replay mode)
+			a.action = BlockGameAction::Action::UPDATE;
+			theGame.DoAction(a);
+		}
+		
+		// Always update player 2
 		a.action = BlockGameAction::Action::UPDATE;
-		theGame.DoAction(a);
 		theGame2.DoAction(a);
 
 //see if anyone has won (two players only)
@@ -2021,6 +2083,10 @@ int runGame(Gametype gametype, int level) {
 			}
 		}
 #endif
+		// Save latest single player replay for replay feature
+		if (theGame.isGameOver() && !twoPlayers && !theGame.GetAIenabled()) {
+			SaveLatestSinglePlayerReplay(theGame.GetBlockGameInfo());
+		}
 
 		//Once evrything has been checked, update graphics
 		MoveBlockGameSdls(theGame, theGame2);
