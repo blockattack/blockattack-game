@@ -101,7 +101,8 @@ bool LoadLatestSinglePlayerReplay(BlockGameInfo& game1) {
 			game1 = sr.playerInfo.at(0);
 			return true;
 		}
-	} catch (const std::exception& e) {
+	}
+	catch (const std::exception& e) {
 		return false;
 	}
 	return false;

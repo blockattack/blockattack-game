@@ -1533,7 +1533,7 @@ int runGame(Gametype gametype, int level) {
 				unsigned int currentStartTime = SDL_GetTicks();
 				unsigned int originalStartTime = replayInfo.startInfo.ticks;
 				replayTimeOffset = currentStartTime - originalStartTime;
-				
+
 				// Adjust startInfo ticks to current time
 				replayInfo.startInfo.ticks = currentStartTime;
 				theGame.NewGame(replayInfo.startInfo);
@@ -1960,32 +1960,31 @@ int runGame(Gametype gametype, int level) {
 
 		//set bNearDeath to false theGame*.Update() will change to true as needed
 		bNearDeath = theGame.IsNearDeath() || theGame2.IsNearDeath();
-		
+
 		// Process replay actions if in replay mode
 		if (isReplayMode) {
 			unsigned int currentTick = SDL_GetTicks();
+			// Process all actions from the replay queue up to the current time
+			// We MUST use recorded UPDATE tick values to maintain deterministic state
 			while (replayActionIndex < replayQueue.size()) {
 				const BlockGameAction& replayAction = replayQueue[replayActionIndex];
-				// Process all actions up to the current tick
-				if (replayAction.action == BlockGameAction::Action::UPDATE) {
-					if (replayAction.tick > currentTick) {
-						break; // Wait for the right time
-					}
-					theGame.DoAction(replayAction);
-					replayActionIndex++;
-					break; // Only process one UPDATE per frame
-				} else {
-					// Non-UPDATE actions can be processed immediately
-					theGame.DoAction(replayAction);
-					replayActionIndex++;
+
+				// Check if it's time to process this action
+				if (replayAction.tick > currentTick) {
+					break; // Wait for the right time
 				}
+
+				// Process the action with its original recorded tick value
+				theGame.DoAction(replayAction);
+				replayActionIndex++;
 			}
-		} else {
+		}
+		else {
 			//Updates the objects (only when not in replay mode)
 			a.action = BlockGameAction::Action::UPDATE;
 			theGame.DoAction(a);
 		}
-		
+
 		// Always update player 2
 		a.action = BlockGameAction::Action::UPDATE;
 		theGame2.DoAction(a);

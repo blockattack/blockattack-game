@@ -372,11 +372,15 @@ void BlockGame::NewGame(const BlockGameStartInfo& s) {
 void BlockGame::NewGameInternal( unsigned int ticks) {
 	this->ticks = ticks;
 	stageButtonStatus = SBdontShow;
+	hangTicks = ticks / FRAMELENGTH;  // Must be relative to ticks for replay determinism
+	bGarbageFallLeft = false;  // Reset for deterministic garbage placement
 	nrFellDown = 0;
 	nrPushedPixel = 0;
 	nrStops = 0;
 	cursorx = 2;
 	cursory = 3;
+	mouse_cursorx = -1;
+	mouse_cursory = -1;
 	stop = 0;
 	pixels = 0;
 	score = 0;
