@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Cover Art for Block Attack - Rise of the Blocks -->
+
+<svg
+   width="630"
+   height="500"
+   viewBox="0 0 630 500"
+   version="1.1"
+   id="svg68"
+   sodipodi:docname="cover_art.svg"
+   inkscape:export-filename="cover_art.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview68"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.42"
+     inkscape:cx="314.87603"
+     inkscape:cy="250"
+     inkscape:window-width="2648"
+     inkscape:window-height="1418"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg68" />
+  <metadata
+     id="metadata1">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Block Attack - Rise of the Blocks Cover Art</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs18">
+    <!-- Blue Brick -->
+    <g
+       id="blueBrick">
+      <rect
+         width="50"
+         height="50"
+         x="0"
+         y="0"
+         rx="4"
+         ry="4"
+         style="fill:#000765;fill-opacity:1"
+         id="rect1" />
+      <rect
+         width="46"
+         height="46"
+         x="2"
+         y="2"
+         rx="4"
+         ry="4"
+         style="fill:#0037d6;fill-opacity:1"
+         id="rect2" />
+      <rect
+         width="30"
+         height="30"
+         x="10"
+         y="10"
+         rx="4"
+         ry="4"
+         style="fill:#00a6dc;fill-opacity:1"
+         id="rect3" />
+    </g>
+    <!-- Red Brick -->
+    <g
+       id="redBrick">
+      <rect
+         width="50"
+         height="50"
+         x="0"
+         y="0"
+         rx="4"
+         ry="4"
+         style="fill:#650000;fill-opacity:1"
+         id="rect4" />
+      <rect
+         width="46"
+         height="46"
+         x="2"
+         y="2"
+         rx="4"
+         ry="4"
+         style="fill:#d63700;fill-opacity:1"
+         id="rect5" />
+      <rect
+         width="30"
+         height="30"
+         x="10"
+         y="10"
+         rx="4"
+         ry="4"
+         style="fill:#ff5722;fill-opacity:1"
+         id="rect6" />
+    </g>
+    <!-- Green Brick -->
+    <g
+       id="greenBrick">
+      <rect
+         width="50"
+         height="50"
+         x="0"
+         y="0"
+         rx="4"
+         ry="4"
+         style="fill:#006507;fill-opacity:1"
+         id="rect7" />
+      <rect
+         width="46"
+         height="46"
+         x="2"
+         y="2"
+         rx="4"
+         ry="4"
+         style="fill:#00d637;fill-opacity:1"
+         id="rect8" />
+      <rect
+         width="30"
+         height="30"
+         x="10"
+         y="10"
+         rx="4"
+         ry="4"
+         style="fill:#4caf50;fill-opacity:1"
+         id="rect9" />
+    </g>
+    <!-- Yellow Brick -->
+    <g
+       id="yellowBrick">
+      <rect
+         width="50"
+         height="50"
+         x="0"
+         y="0"
+         rx="4"
+         ry="4"
+         style="fill:#655000;fill-opacity:1"
+         id="rect10" />
+      <rect
+         width="46"
+         height="46"
+         x="2"
+         y="2"
+         rx="4"
+         ry="4"
+         style="fill:#d6b700;fill-opacity:1"
+         id="rect11" />
+      <rect
+         width="30"
+         height="30"
+         x="10"
+         y="10"
+         rx="4"
+         ry="4"
+         style="fill:#ffeb3b;fill-opacity:1"
+         id="rect12" />
+    </g>
+    <!-- Purple Brick -->
+    <g
+       id="purpleBrick">
+      <rect
+         width="50"
+         height="50"
+         x="0"
+         y="0"
+         rx="4"
+         ry="4"
+         style="fill:#4a0765;fill-opacity:1"
+         id="rect13" />
+      <rect
+         width="46"
+         height="46"
+         x="2"
+         y="2"
+         rx="4"
+         ry="4"
+         style="fill:#9c27d6;fill-opacity:1"
+         id="rect14" />
+      <rect
+         width="30"
+         height="30"
+         x="10"
+         y="10"
+         rx="4"
+         ry="4"
+         style="fill:#e1bee7;fill-opacity:1"
+         id="rect15" />
+    </g>
+    <!-- Turkish/Cyan Brick -->
+    <g
+       id="turkishBrick">
+      <rect
+         width="50"
+         height="50"
+         x="0"
+         y="0"
+         rx="4"
+         ry="4"
+         style="fill:#076565;fill-opacity:1"
+         id="rect16" />
+      <rect
+         width="46"
+         height="46"
+         x="2"
+         y="2"
+         rx="4"
+         ry="4"
+         style="fill:#00d6d6;fill-opacity:1"
+         id="rect17" />
+      <rect
+         width="30"
+         height="30"
+         x="10"
+         y="10"
+         rx="4"
+         ry="4"
+         style="fill:#00ffff;fill-opacity:1"
+         id="rect18" />
+    </g>
+  </defs>
+  <!-- Background with wave layers -->
+  <defs
+     id="defs21">
+    <linearGradient
+       id="bgGradient"
+       x1="0%"
+       y1="0%"
+       x2="0%"
+       y2="100%">
+      <stop
+         offset="0%"
+         style="stop-color:#1a1a2e;stop-opacity:1"
+         id="stop18" />
+      <stop
+         offset="100%"
+         style="stop-color:#0f0f1e;stop-opacity:1"
+         id="stop19" />
+    </linearGradient>
+    <radialGradient
+       id="glowGradient"
+       cx="50%"
+       cy="50%">
+      <stop
+         offset="0%"
+         style="stop-color:#ffffff;stop-opacity:0.3"
+         id="stop20" />
+      <stop
+         offset="100%"
+         style="stop-color:#ffffff;stop-opacity:0"
+         id="stop21" />
+    </radialGradient>
+  </defs>
+  <!-- Base background layer -->
+  <rect
+     width="630"
+     height="500"
+     fill="#a5faff"
+     id="rect21" />
+  <!-- Wave layers inspired by back.svg -->
+  <path
+     d="M 0,50 L 0,500 L 630,500 L 630,50 C 400,75 180,85 0,50 Z"
+     style="fill:#18abff;fill-opacity:1"
+     id="path21" />
+  <path
+     d="M 0,140 L 0,500 L 630,500 L 630,140 C 420,155 270,100 0,140 Z"
+     style="fill:#18e1ff;fill-opacity:1"
+     id="path22" />
+  <path
+     d="M 0,240 L 0,500 L 630,500 L 630,240 C 400,220 240,280 0,240 Z"
+     style="fill:#18ff9e;fill-opacity:1"
+     id="path23" />
+  <path
+     d="M 0,340 L 0,500 L 630,500 L 630,340 C 470,370 200,370 0,340 Z"
+     style="fill:#18ff3b;fill-opacity:1"
+     id="path24" />
+  <path
+     d="M 0,440 L 0,500 L 630,500 L 630,440 C 520,470 380,470 330,450 C 280,430 200,425 0,440 Z"
+     style="fill:#906112;fill-opacity:1"
+     id="path25" />
+  <path
+     d="M 0,500 L 630,500 L 630,480 C 420,520 210,470 0,480 Z"
+     style="fill:#d03b15;fill-opacity:1"
+     id="path26" />
+  <!-- Dark overlay -->
+  <rect
+     width="630"
+     height="500"
+     fill="#000000"
+     opacity="0.3"
+     id="rect26" />
+  <!-- Rising blocks arrangement - creating a tower with 6 blocks width -->
+  <!-- Bottom row -->
+  <use
+     href="#redBrick"
+     x="165"
+     y="420"
+     id="use26" />
+  <use
+     href="#blueBrick"
+     x="225"
+     y="420"
+     id="use27" />
+  <use
+     href="#greenBrick"
+     x="285"
+     y="420"
+     id="use28" />
+  <use
+     href="#yellowBrick"
+     x="345"
+     y="420"
+     id="use29" />
+  <use
+     href="#purpleBrick"
+     x="405"
+     y="420"
+     id="use30" />
+  <use
+     href="#turkishBrick"
+     x="465"
+     y="420"
+     id="use31" />
+  <!-- Second row from bottom -->
+  <use
+     href="#yellowBrick"
+     x="165"
+     y="360"
+     id="use32" />
+  <use
+     href="#purpleBrick"
+     x="225"
+     y="360"
+     id="use33" />
+  <use
+     href="#redBrick"
+     x="285"
+     y="360"
+     id="use34" />
+  <use
+     href="#turkishBrick"
+     x="345"
+     y="360"
+     id="use35" />
+  <use
+     href="#blueBrick"
+     x="405"
+     y="360"
+     id="use36" />
+  <use
+     href="#greenBrick"
+     x="465"
+     y="360"
+     id="use37" />
+  <!-- Third row -->
+  <use
+     href="#blueBrick"
+     x="165"
+     y="300"
+     id="use38" />
+  <use
+     href="#greenBrick"
+     x="225"
+     y="300"
+     id="use39" />
+  <use
+     href="#yellowBrick"
+     x="285"
+     y="300"
+     id="use40" />
+  <use
+     href="#redBrick"
+     x="345"
+     y="300"
+     id="use41" />
+  <use
+     href="#purpleBrick"
+     x="405"
+     y="300"
+     id="use42" />
+  <use
+     href="#turkishBrick"
+     x="465"
+     y="300"
+     id="use43" />
+  <!-- Fourth row -->
+  <use
+     href="#turkishBrick"
+     x="165"
+     y="240"
+     id="use44" />
+  <use
+     href="#redBrick"
+     x="225"
+     y="240"
+     id="use45" />
+  <use
+     href="#blueBrick"
+     x="285"
+     y="240"
+     id="use46" />
+  <use
+     href="#greenBrick"
+     x="345"
+     y="240"
+     id="use47" />
+  <use
+     href="#yellowBrick"
+     x="405"
+     y="240"
+     id="use48" />
+  <use
+     href="#purpleBrick"
+     x="465"
+     y="240"
+     id="use49" />
+  <!-- Fifth row -->
+  <use
+     href="#purpleBrick"
+     x="165"
+     y="180"
+     id="use50" />
+  <use
+     href="#yellowBrick"
+     x="225"
+     y="180"
+     id="use51" />
+  <use
+     href="#turkishBrick"
+     x="285"
+     y="180"
+     id="use52" />
+  <use
+     href="#redBrick"
+     x="345"
+     y="180"
+     id="use53" />
+  <use
+     href="#greenBrick"
+     x="405"
+     y="180"
+     id="use54" />
+  <use
+     href="#blueBrick"
+     x="465"
+     y="180"
+     id="use55" />
+  <!-- Floating/rising blocks -->
+  <use
+     href="#greenBrick"
+     x="90"
+     y="280"
+     transform="rotate(-15 115 305)"
+     opacity="0.9"
+     id="use56" />
+  <use
+     href="#blueBrick"
+     x="530"
+     y="260"
+     transform="rotate(12 555 285)"
+     opacity="0.9"
+     id="use57" />
+  <use
+     href="#redBrick"
+     x="60"
+     y="150"
+     transform="rotate(-8 85 175)"
+     opacity="0.8"
+     id="use58" />
+  <use
+     href="#yellowBrick"
+     x="550"
+     y="140"
+     transform="rotate(10 575 165)"
+     opacity="0.8"
+     id="use59" />
+  <use
+     href="#turkishBrick"
+     x="30"
+     y="50"
+     transform="rotate(-20 55 75)"
+     opacity="0.7"
+     id="use60" />
+  <use
+     href="#purpleBrick"
+     x="570"
+     y="40"
+     transform="rotate(18 595 65)"
+     opacity="0.7"
+     id="use61" />
+  <!-- Title -->
+  <text
+     x="315"
+     y="80"
+     font-family="Arial, sans-serif"
+     font-size="48"
+     font-weight="bold"
+     text-anchor="middle"
+     fill="#ffffff"
+     stroke="#000000"
+     stroke-width="2"
+     id="text61">
+    BLOCK ATTACK
+  </text>
+  <text
+     x="315"
+     y="120"
+     font-family="Arial, sans-serif"
+     font-size="28"
+     font-weight="bold"
+     text-anchor="middle"
+     fill="#ffeb3b"
+     stroke="#000000"
+     stroke-width="1.5"
+     id="text62">
+    Rise of the Blocks
+  </text>
+  <!-- Decorative elements - arrows pointing up to show "rise" -->
+  <defs
+     id="defs64">
+    <polygon
+       id="arrow"
+       points="0,10 10,0 20,10 15,10 15,25 5,25 5,10"
+       fill="#ffeb3b"
+       opacity="0.6" />
+    <!-- Evil Smiley -->
+    <g
+       id="evilSmiley">
+      <!-- Face circle -->
+      <circle
+         cx="50"
+         cy="50"
+         r="47.5"
+         style="fill:#fffa72;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:round"
+         id="circle62" />
+      <!-- Happy smile - curved upward -->
+      <path
+         d="M 20,55 Q 50,75 80,55"
+         style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-linejoin:round"
+         id="path62" />
+      <!-- Left eye -->
+      <g
+         transform="translate(0, 0)"
+         id="g63">
+        <circle
+           cx="30"
+           cy="35"
+           r="6.9"
+           style="fill:#000000;fill-opacity:1"
+           id="circle63" />
+      </g>
+      <!-- Right eye -->
+      <g
+         transform="translate(0, 0)"
+         id="g64">
+        <circle
+           cx="70"
+           cy="35"
+           r="6.9"
+           style="fill:#000000;fill-opacity:1"
+           id="circle64" />
+      </g>
+    </g>
+    <!-- Red glow filter for evil eyes -->
+    <filter
+       id="redGlow"
+       height="2.68"
+       y="-0.84"
+       width="2.68"
+       x="-0.84">
+      <feGaussianBlur
+         stdDeviation="0.7"
+         id="feGaussianBlur64" />
+    </filter>
+  </defs>
+  <!-- Evil smiley watching the blocks -->
+  <use
+     href="#evilSmiley"
+     x="10"
+     y="250"
+     transform="scale(1.2)"
+     id="use64" />
+  <use
+     href="#arrow"
+     x="50"
+     y="350"
+     id="use65" />
+  <use
+     href="#arrow"
+     x="560"
+     y="320"
+     id="use66" />
+  <use
+     href="#arrow"
+     x="30"
+     y="200"
+     id="use67" />
+  <use
+     href="#arrow"
+     x="580"
+     y="180"
+     id="use68" />
+</svg>
