@@ -123,11 +123,16 @@ void ThemeEditorState::UpdatePreview() {
 }
 
 void ThemeEditorState::Draw(SDL_Renderer* target) {
-	(void)target;
+	// Get actual physical renderer size and keep logicalResize in sync every frame
+	int display_w = 1;
+	int display_h = 1;
+	SDL_GetRendererOutputSize(target, &display_w, &display_h);
+	globalData.logicalResize.SetPhysicalSize(display_w, display_h);
+
 	// Main window - take up left 60% of screen to leave room for preview
-	const float editor_width = globalData.xsize * 0.6f;
+	const float editor_width = display_w * 0.5f;
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(editor_width, (float)globalData.ysize), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(editor_width, (float)display_h), ImGuiCond_Always);
 
 	ImGui::Begin("Theme Editor", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
@@ -158,16 +163,14 @@ void ThemeEditorState::Draw(SDL_Renderer* target) {
 
 	ImGui::End();
 
-	// Draw preview label in the right portion of screen
-	ImGui::SetNextWindowPos(ImVec2(editor_width + 10, 10), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(globalData.xsize - editor_width - 20, 80), ImGuiCond_Always);
-	ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-	ImGui::Text("Live Preview:");
-	ImGui::TextWrapped("Changes are shown in real-time below");
-	ImGui::End();
-
-	// Draw the preview
+	// Draw the preview: convert physical position (ImGui space) to logical space for DoPaintJob
 	if (preview_game) {
+		const int preview_physical_x = static_cast<int>(editor_width) + 250;
+		const int preview_physical_y = 150;
+		int preview_logical_x = 0;
+		int preview_logical_y = 0;
+		globalData.logicalResize.PhysicalToLogical(preview_physical_x, preview_physical_y, preview_logical_x, preview_logical_y);
+		preview_game->SetTopXY(preview_logical_x, preview_logical_y);
 		preview_game->DoPaintJob();
 	}
 }
@@ -546,6 +549,7 @@ void ThemeEditorState::LoadBorder(const std::string& name) {
 	chain_offset_y = current_border.chain_label_offset.second;
 	speed_offset_x = current_border.speed_label_offset.first;
 	speed_offset_y = current_border.speed_label_offset.second;
+	preview_needs_update = true;
 }
 
 void ThemeEditorState::LoadBackground(const std::string& name) {
@@ -566,6 +570,7 @@ void ThemeEditorState::LoadBackground(const std::string& name) {
 
 	tile_move_speed_x = current_background.tileMoveSpeedX;
 	tile_move_speed_y = current_background.tileMoveSpeedY;
+	preview_needs_update = true;
 }
 
 bool ThemeEditorState::ValidateSprite(const std::string& sprite_name) {
