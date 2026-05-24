@@ -92,6 +92,7 @@ bool twoPlayers;    //True if two playerImGui_ImplSDL2_ProcessEvent(&event);s ar
 static bool singlePuzzle = false;
 static bool editor = false;
 static bool puzzleEditor = false;
+static bool themeEditor = false;
 static int singlePuzzleNr = 0;
 static std::string singlePuzzleFile;
 

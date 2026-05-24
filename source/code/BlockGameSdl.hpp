@@ -519,7 +519,7 @@ public:
 		std::string strHolder;
 		strHolder = std::to_string(this->GetScore()+this->GetHandicap());
 		player_score.SetText(strHolder);
-		player_score.Draw(globalData.screen, this->GetTopX()+border.score_label_offset.first,this->GetTopY()+border.score_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		player_score.Draw(globalData.screen, this->GetTopX()+border.score_field_offset.first,this->GetTopY()+border.score_field_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		if (this->GetAIenabled()) {
 			player_name.SetText(_("AI"));
 		}
@@ -570,14 +570,14 @@ public:
 			}
 			player_time.SetText(strHolder);
 		}
-		player_time.Draw(globalData.screen, this->GetTopX()+border.time_label_offset.first,this->GetTopY()+border.time_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		player_time.Draw(globalData.screen, this->GetTopX()+border.time_field_offset.first,this->GetTopY()+border.time_field_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		strHolder = std::to_string(this->GetChains());
 		player_chain.SetText(strHolder);
-		player_chain.Draw(globalData.screen, this->GetTopX()+border.chain_label_offset.first,this->GetTopY()+border.chain_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		player_chain.Draw(globalData.screen, this->GetTopX()+border.chain_field_offset.first,this->GetTopY()+border.chain_field_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		//drawspeedLevel:
 		strHolder = std::to_string(this->GetSpeedLevel());
 		player_speed.SetText(strHolder);
-		player_speed.Draw(globalData.screen, this->GetTopX()+border.speed_label_offset.first,this->GetTopY()+border.speed_label_offset.second+22, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
+		player_speed.Draw(globalData.screen, this->GetTopX()+border.speed_field_offset.first,this->GetTopY()+border.speed_field_offset.second, sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 		if ((this->isStageClear()) &&(this->GetTopY()+700+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1<600+this->GetTopY())) {
 			oldBubleX = this->GetTopX()+280;
 			oldBubleY = this->GetTopY()+650+50*(this->GetStageClearLimit()-this->GetLinesCleared())-this->GetPixels()-1;

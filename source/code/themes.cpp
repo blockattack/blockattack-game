@@ -24,6 +24,7 @@ https://www.blockattack.net
 
 #include "themes.hpp"
 #include "sago/SagoMisc.hpp"
+#include "os.hpp"
 #include <vector>
 #include <sstream>
 #include <map>
@@ -82,6 +83,22 @@ void to_json(json& j, const BackGroundData& p) {
 	j = json{ {"background_name", p.name}, {"background_sprite", p.background_sprite}, {"background_sprite_16x9", p.background_sprite_16x9}, {"background_scale", p.background_scale}, {"tileMoveSpeedX", p.tileMoveSpeedX}, {"tileMoveSpeedY", p.tileMoveSpeedY} };
 }
 
+void to_json(json& j, const ThemeBorderData& p) {
+	j = json{
+		{"border_name", p.name},
+		{"border_sprite", p.border_sprite},
+		{"border_sprite_offset", {p.border_sprite_offset.first, p.border_sprite_offset.second}},
+		{"score_label_offset", {p.score_label_offset.first, p.score_label_offset.second}},
+		{"time_label_offset", {p.time_label_offset.first, p.time_label_offset.second}},
+		{"chain_label_offset", {p.chain_label_offset.first, p.chain_label_offset.second}},
+		{"speed_label_offset", {p.speed_label_offset.first, p.speed_label_offset.second}},
+		{"score_field_offset", {p.score_field_offset.first, p.score_field_offset.second}},
+		{"time_field_offset", {p.time_field_offset.first, p.time_field_offset.second}},
+		{"chain_field_offset", {p.chain_field_offset.first, p.chain_field_offset.second}},
+		{"speed_field_offset", {p.speed_field_offset.first, p.speed_field_offset.second}}
+	};
+}
+
 void to_json(json& j, const Theme& p) {
 	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background.name}, {"decoration_name", p.decoration.name} };
 }
@@ -91,7 +108,7 @@ void to_json(json& j, const DecorationData& p) {
 }
 
 void to_json(json& j, const ThemeFileData& p) {
-	j = json{ {"background_data", p.background_data}, {"decoration_data", p.decoration_data}, {"themes", p.themes} };
+	j = json{ {"background_data", p.background_data}, {"decoration_data", p.decoration_data}, {"border_data", p.border_data}, {"themes", p.themes} };
 }
 
 void from_json(const json& j, BackGroundData& p) {
@@ -101,6 +118,47 @@ void from_json(const json& j, BackGroundData& p) {
 	j.at("background_scale").get_to(p.background_scale);
 	j.at("tileMoveSpeedX").get_to(p.tileMoveSpeedX);
 	j.at("tileMoveSpeedY").get_to(p.tileMoveSpeedY);
+}
+
+void from_json(const json& j, ThemeBorderData& p) {
+	j.at("border_name").get_to(p.name);
+	j.at("border_sprite").get_to(p.border_sprite);
+	if (j.contains("border_sprite_offset")) {
+		auto offset = j.at("border_sprite_offset");
+		p.border_sprite_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("score_label_offset")) {
+		auto offset = j.at("score_label_offset");
+		p.score_label_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("time_label_offset")) {
+		auto offset = j.at("time_label_offset");
+		p.time_label_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("chain_label_offset")) {
+		auto offset = j.at("chain_label_offset");
+		p.chain_label_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("speed_label_offset")) {
+		auto offset = j.at("speed_label_offset");
+		p.speed_label_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("score_field_offset")) {
+		auto offset = j.at("score_field_offset");
+		p.score_field_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("time_field_offset")) {
+		auto offset = j.at("time_field_offset");
+		p.time_field_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("chain_field_offset")) {
+		auto offset = j.at("chain_field_offset");
+		p.chain_field_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("speed_field_offset")) {
+		auto offset = j.at("speed_field_offset");
+		p.speed_field_offset = {offset[0], offset[1]};
+	}
 }
 
 void from_json(const json& j, Theme& p) {
@@ -121,6 +179,9 @@ void from_json(const json& j, ThemeFileData& p) {
 	}
 	if (j.contains("decoration_data")) {
 		j.at("decoration_data").get_to(p.decoration_data);
+	}
+	if (j.contains("border_data")) {
+		j.at("border_data").get_to(p.border_data);
 	}
 	if (j.contains("themes")) {
 		j.at("themes").get_to(p.themes);
@@ -162,6 +223,9 @@ static void ThemesReadDataFromFile(const std::string& filename) {
 	for (const auto& dec : tfd.decoration_data) {
 		decoration_data[dec.name] = dec;
 	}
+	for (const auto& border : tfd.border_data) {
+		border_data[border.name] = border;
+	}
 	for (const Theme& theme : tfd.themes) {
 		if (globalData.verboseLevel) {
 			std::cout << "Adding theme " << theme.theme_name << "\n";
@@ -197,6 +261,10 @@ static void ThemesInitBorderData() {
 	mirror.time_label_offset = {-100,129};
 	mirror.chain_label_offset = {-100, 178};
 	mirror.speed_label_offset = {-100, 227};
+	mirror.score_field_offset = {-100, 102};
+	mirror.time_field_offset = {-100, 151};
+	mirror.chain_field_offset = {-100, 200};
+	mirror.speed_field_offset = {-100, 249};
 	border_data[mirror.name] = mirror;
 }
 
@@ -212,6 +280,9 @@ static void ThemesDumpData() {
 	}
 	for (auto& pair : decoration_data) {
 		tfd.decoration_data.push_back(pair.second);
+	}
+	for (auto& pair : border_data) {
+		tfd.border_data.push_back(pair.second);
 	}
 	json j = tfd;
 	std::string s = j.dump(4);
@@ -252,6 +323,8 @@ void ThemesInit() {
 	ThemesInitBackGroundData();
 	ThemesInitCustomBackgrounds();
 	ThemesInitBorderData();
+	ThemesLoadCustomBorders();
+	ThemesLoadCustomBackgrounds();
 	themes.resize(1);  //Add the default theme
 	ThemesFillMissingFields(themes[0]);
 	const std::vector<std::string>& theme_files = sago::GetFileList("themes");
@@ -395,4 +468,127 @@ void ThemesInitCustomBackgrounds() {
 	}
 	sprite_stream << "}\n";
 	sago::WriteFileContent("sprites/custom_backgrounds.sprite", sprite_stream.str());
+}
+
+void ThemesSaveBorderData(const std::string& name, const ThemeBorderData& data) {
+	ThemesInit();
+	// Create borders directory if it doesn't exist
+	OsCreateFolder("borders");
+
+	json j = data;
+	std::string s = j.dump(4);
+	std::string filename = fmt::format("borders/{}.json", name);
+	sago::WriteFileContent(filename.c_str(), s);
+
+	// Add to the border_data map
+	border_data[name] = data;
+}
+
+void ThemesSaveBackgroundData(const std::string& name, const BackGroundData& data) {
+	ThemesInit();
+	// Create backgrounds directory if it doesn't exist
+	OsCreateFolder("backgrounds");
+
+	json j = data;
+	std::string s = j.dump(4);
+	std::string filename = fmt::format("backgrounds/{}.json", name);
+	sago::WriteFileContent(filename.c_str(), s);
+
+	// Add to the background_data map
+	background_data[name] = data;
+}
+
+void ThemesLoadCustomBorders() {
+	const std::vector<std::string>& border_files = sago::GetFileList("borders");
+	for (const std::string& filename : border_files) {
+		if (boost::algorithm::ends_with(filename, ".json")) {
+			std::string filepath = fmt::format("borders/{}", filename);
+			std::string s = sago::GetFileContent(filepath);
+			if (s.empty()) {
+				continue;
+			}
+			try {
+				json j = json::parse(s);
+				ThemeBorderData border = j;
+				border_data[border.name] = border;
+				if (globalData.verboseLevel) {
+					std::cout << "Loaded custom border: " << border.name << "\n";
+				}
+			}
+			catch (const std::exception& e) {
+				std::cerr << "Error loading border file " << filepath << ": " << e.what() << "\n";
+			}
+		}
+	}
+}
+
+void ThemesLoadCustomBackgrounds() {
+	const std::vector<std::string>& background_files = sago::GetFileList("backgrounds");
+	for (const std::string& filename : background_files) {
+		if (boost::algorithm::ends_with(filename, ".json")) {
+			std::string filepath = fmt::format("backgrounds/{}", filename);
+			std::string s = sago::GetFileContent(filepath);
+			if (s.empty()) {
+				continue;
+			}
+			try {
+				json j = json::parse(s);
+				BackGroundData background = j;
+				background_data[background.name] = background;
+				if (globalData.verboseLevel) {
+					std::cout << "Loaded custom background: " << background.name << "\n";
+				}
+			}
+			catch (const std::exception& e) {
+				std::cerr << "Error loading background file " << filepath << ": " << e.what() << "\n";
+			}
+		}
+	}
+}
+
+bool ThemesValidateSpriteName(const std::string& sprite_name) {
+	ThemesInit();
+	if (sprite_name.empty()) {
+		return false;
+	}
+	// Note: GetSprite returns a default sprite if not found, so we can't easily validate
+	// The sprite will be validated when actually used in the game
+	// For now, just check that it's not empty
+	return true;
+}
+
+std::vector<std::string> ThemesGetBorderNames() {
+	ThemesInit();
+	std::vector<std::string> names;
+	for (const auto& pair : border_data) {
+		names.push_back(pair.first);
+	}
+	return names;
+}
+
+std::vector<std::string> ThemesGetBackgroundNames() {
+	ThemesInit();
+	std::vector<std::string> names;
+	for (const auto& pair : background_data) {
+		names.push_back(pair.first);
+	}
+	return names;
+}
+
+std::vector<std::string> ThemesGetDecorationNames() {
+	ThemesInit();
+	std::vector<std::string> names;
+	for (const auto& pair : decoration_data) {
+		names.push_back(pair.first);
+	}
+	return names;
+}
+
+BackGroundData ThemesGetBackground(const std::string& name) {
+	ThemesInit();
+	auto it = background_data.find(name);
+	if (it == background_data.end()) {
+		return background_data["standard"];
+	}
+	return it->second;
 }
