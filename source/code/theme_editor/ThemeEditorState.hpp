@@ -78,6 +78,14 @@ private:
 	int chain_offset_y = 178;
 	int speed_offset_x = 310;
 	int speed_offset_y = 227;
+	int score_field_x = 310;
+	int score_field_y = 102;
+	int time_field_x = 310;
+	int time_field_y = 151;
+	int chain_field_x = 310;
+	int chain_field_y = 200;
+	int speed_field_x = 310;
+	int speed_field_y = 249;
 
 	// Background editor state
 	BackGroundData current_background;

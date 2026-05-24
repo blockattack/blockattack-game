@@ -51,6 +51,10 @@ struct ThemeBorderData {
 	std::pair<int, int> time_label_offset = {310,129};
 	std::pair<int, int> chain_label_offset = {310, 178};
 	std::pair<int, int> speed_label_offset = {310, 227};
+	std::pair<int, int> score_field_offset = {310, 102};
+	std::pair<int, int> time_field_offset = {310, 151};
+	std::pair<int, int> chain_field_offset = {310, 200};
+	std::pair<int, int> speed_field_offset = {310, 249};
 };
 
 

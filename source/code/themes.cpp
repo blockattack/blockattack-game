@@ -91,7 +91,11 @@ void to_json(json& j, const ThemeBorderData& p) {
 		{"score_label_offset", {p.score_label_offset.first, p.score_label_offset.second}},
 		{"time_label_offset", {p.time_label_offset.first, p.time_label_offset.second}},
 		{"chain_label_offset", {p.chain_label_offset.first, p.chain_label_offset.second}},
-		{"speed_label_offset", {p.speed_label_offset.first, p.speed_label_offset.second}}
+		{"speed_label_offset", {p.speed_label_offset.first, p.speed_label_offset.second}},
+		{"score_field_offset", {p.score_field_offset.first, p.score_field_offset.second}},
+		{"time_field_offset", {p.time_field_offset.first, p.time_field_offset.second}},
+		{"chain_field_offset", {p.chain_field_offset.first, p.chain_field_offset.second}},
+		{"speed_field_offset", {p.speed_field_offset.first, p.speed_field_offset.second}}
 	};
 }
 
@@ -138,6 +142,22 @@ void from_json(const json& j, ThemeBorderData& p) {
 	if (j.contains("speed_label_offset")) {
 		auto offset = j.at("speed_label_offset");
 		p.speed_label_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("score_field_offset")) {
+		auto offset = j.at("score_field_offset");
+		p.score_field_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("time_field_offset")) {
+		auto offset = j.at("time_field_offset");
+		p.time_field_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("chain_field_offset")) {
+		auto offset = j.at("chain_field_offset");
+		p.chain_field_offset = {offset[0], offset[1]};
+	}
+	if (j.contains("speed_field_offset")) {
+		auto offset = j.at("speed_field_offset");
+		p.speed_field_offset = {offset[0], offset[1]};
 	}
 }
 
@@ -241,6 +261,10 @@ static void ThemesInitBorderData() {
 	mirror.time_label_offset = {-100,129};
 	mirror.chain_label_offset = {-100, 178};
 	mirror.speed_label_offset = {-100, 227};
+	mirror.score_field_offset = {-100, 102};
+	mirror.time_field_offset = {-100, 151};
+	mirror.chain_field_offset = {-100, 200};
+	mirror.speed_field_offset = {-100, 249};
 	border_data[mirror.name] = mirror;
 }
 

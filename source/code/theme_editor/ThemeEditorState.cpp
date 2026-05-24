@@ -41,6 +41,10 @@ ThemeEditorState::ThemeEditorState() {
 	current_border.time_label_offset = {310, 129};
 	current_border.chain_label_offset = {310, 178};
 	current_border.speed_label_offset = {310, 227};
+	current_border.score_field_offset = {310, 102};
+	current_border.time_field_offset = {310, 151};
+	current_border.chain_field_offset = {310, 200};
+	current_border.speed_field_offset = {310, 249};
 
 	current_background.name = "standard";
 	current_background.background_sprite = "background";
@@ -254,6 +258,26 @@ void ThemeEditorState::DrawBorderEditor() {
 		preview_needs_update = true;
 	}
 
+	// Field offsets
+	ImGui::Separator();
+	ImGui::Text("Field Positions:");
+	if (ImGui::DragInt2("Score Field Offset", &score_field_x)) {
+		current_border.score_field_offset = {score_field_x, score_field_y};
+		preview_needs_update = true;
+	}
+	if (ImGui::DragInt2("Time Field Offset", &time_field_x)) {
+		current_border.time_field_offset = {time_field_x, time_field_y};
+		preview_needs_update = true;
+	}
+	if (ImGui::DragInt2("Chain Field Offset", &chain_field_x)) {
+		current_border.chain_field_offset = {chain_field_x, chain_field_y};
+		preview_needs_update = true;
+	}
+	if (ImGui::DragInt2("Speed Field Offset", &speed_field_x)) {
+		current_border.speed_field_offset = {speed_field_x, speed_field_y};
+		preview_needs_update = true;
+	}
+
 	ImGui::Separator();
 	if (ImGui::Button("Save Border")) {
 		SaveCurrentBorder();
@@ -455,6 +479,10 @@ void ThemeEditorState::SaveCurrentBorder() {
 	current_border.time_label_offset = {time_offset_x, time_offset_y};
 	current_border.chain_label_offset = {chain_offset_x, chain_offset_y};
 	current_border.speed_label_offset = {speed_offset_x, speed_offset_y};
+	current_border.score_field_offset = {score_field_x, score_field_y};
+	current_border.time_field_offset = {time_field_x, time_field_y};
+	current_border.chain_field_offset = {chain_field_x, chain_field_y};
+	current_border.speed_field_offset = {speed_field_x, speed_field_y};
 
 	// Validate sprite
 	if (!ValidateSprite(current_border.border_sprite)) {
@@ -549,6 +577,14 @@ void ThemeEditorState::LoadBorder(const std::string& name) {
 	chain_offset_y = current_border.chain_label_offset.second;
 	speed_offset_x = current_border.speed_label_offset.first;
 	speed_offset_y = current_border.speed_label_offset.second;
+	score_field_x = current_border.score_field_offset.first;
+	score_field_y = current_border.score_field_offset.second;
+	time_field_x = current_border.time_field_offset.first;
+	time_field_y = current_border.time_field_offset.second;
+	chain_field_x = current_border.chain_field_offset.first;
+	chain_field_y = current_border.chain_field_offset.second;
+	speed_field_x = current_border.speed_field_offset.first;
+	speed_field_y = current_border.speed_field_offset.second;
 	preview_needs_update = true;
 }
 
