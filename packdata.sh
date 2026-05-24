@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+export LC_ALL=C
+export TZ=UTC
 zip -9ojX  Game/blockattack.data source/AUTH
 pushd Game/data
 zip -9oX $(find ../blockattack.data ./* | sort) -x \*svn*
