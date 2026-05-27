@@ -28,7 +28,7 @@ Added to project 5/11-2004
 #ifndef READKEYBOARD_HPP
 #define READKEYBOARD_HPP
 
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include <string>
 
 class ReadKeyboard

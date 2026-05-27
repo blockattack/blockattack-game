@@ -23,7 +23,10 @@ SOFTWARE.
 */
 
 #include "SagoMiscSdl2.hpp"
-#include "SDL.h"
+#include <SDL3/SDL.h>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
 
 void sago::SagoFatalError(const char* errorMsg) {
 	const SDL_MessageBoxButtonData buttons[] = {

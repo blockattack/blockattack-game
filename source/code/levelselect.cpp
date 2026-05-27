@@ -22,7 +22,7 @@ https://blockattack.net
 */
 
 #include "levelselect.hpp"
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include "common.h"
 #include "global.hpp"
 #include "puzzlehandler.hpp"
@@ -114,7 +114,7 @@ int PuzzleLevelSelect(int Type) {
 			UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
 			globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
 
-			if ( event.type == SDL_QUIT ) {
+			if ( event.type == SDL_EVENT_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				levelNr = -1;
 				levelSelected = true;
@@ -176,11 +176,11 @@ int PuzzleLevelSelect(int Type) {
 		oldmousex= mousex;
 
 		// If the mouse button is released, make bMouseUp equal true
-		if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+		if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON_LMASK) ) {
 			bMouseUp=true;
 		}
 
-		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+		if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON_LMASK && bMouseUp) {
 			bMouseUp = false;
 
 			int levelClicked = -1;

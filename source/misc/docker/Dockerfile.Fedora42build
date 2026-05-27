@@ -3,11 +3,11 @@ FROM fedora:42
 RUN dnf -y install cmake \
 make \
 gcc-c++ \
-SDL2-devel \
+SDL3-devel \
 boost-devel \
 fmt-devel \
 physfs-devel \
-SDL2_image-devel SDL2_ttf-devel SDL2_mixer-devel \
+SDL3_image-devel SDL3_ttf-devel SDL3_mixer-devel \
 findutils \
 gettext \
 zip \
@@ -19,5 +19,5 @@ ENV BLOCKATTACK_VERSION 2.11.0-SNAPSHOT
 
 RUN cd /staging/blockattack-game && \
 ./packdata.sh && \
-cmake . && \
+cmake . -DBLOCKATTACK_DOWNLOAD_SDL3=OFF && \
 make

@@ -303,11 +303,11 @@ void ScoresDisplay::ProcessInput(const SDL_Event& event, bool& processed) {
 
 void ScoresDisplay::Update() {
 	// If the mouse button is released, make bMouseUp equal true
-	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON_LMASK) ) {
 		bMouseUp=true;
 	}
 
-	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON_LMASK && bMouseUp) {
 		bMouseUp = false;
 		int mousex;
 		int mousey;

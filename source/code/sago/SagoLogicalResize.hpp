@@ -24,7 +24,7 @@ SOFTWARE.
 
 #pragma once
 #include <algorithm>
-#include "SDL.h"
+#include <SDL3/SDL.h>
 
 
 namespace sago {

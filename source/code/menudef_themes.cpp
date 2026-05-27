@@ -39,8 +39,13 @@ static void testMusic() {
 	if (highbeatNext) {
 		music_name = "highbeat";
 	}
-	Mix_PlayMusic(globalData.spriteHolder->GetDataHolder().getMusicHandler(music_name.c_str()).get(), 1);
-	Mix_VolumeMusic(musicVolume);
+	MIX_Audio* audio = globalData.spriteHolder->GetDataHolder().getMusicHandler(music_name.c_str()).get();
+	MIX_SetTrackAudio(globalData.musicTrack, audio);
+	MIX_SetTrackGain(globalData.musicTrack, musicVolume / 128.0f);
+	SDL_PropertiesID opts = SDL_CreateProperties();
+	SDL_SetNumberProperty(opts, MIX_PROP_PLAY_LOOPS_NUMBER, 1);
+	MIX_PlayTrack(globalData.musicTrack, opts);
+	SDL_DestroyProperties(opts);
 	highbeatNext = !highbeatNext; //Toggle between standard and highbeat
 }
 

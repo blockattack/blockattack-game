@@ -28,7 +28,7 @@ SOFTWARE.
 #include <vector>
 #include <physfs.h>
 #include <memory>
-#include <SDL_mixer.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include "SagoMiscSdl2.hpp"
 #include "SagoMisc.hpp"
 
@@ -42,13 +42,14 @@ namespace sago {
 struct SagoDataHolder::SagoDataHolderData {
 	std::map<std::string, SDL_Texture*> textures;
 	std::map<std::string, std::map<int, TTF_Font*> > fonts;  //font, ptsize
-	std::map<std::string, Mix_Music*> music;
-	std::map<std::string, Mix_Chunk*> sounds;
-	std::vector<SDL_RWops*> rwOpsToFree;
+	std::map<std::string, MIX_Audio*> music;
+	std::map<std::string, MIX_Audio*> sounds;
+	std::vector<SDL_IOStream*> ioStreamsToFree;
 	std::vector<std::unique_ptr<char[]>> dataToFree;
 	bool verbose = false;
 	Uint64 version = 1;
 	SDL_Renderer* renderer = nullptr;
+	MIX_Mixer* mixer = nullptr;
 };
 
 static void printFileWeLoad(const std::string& value) {
@@ -76,11 +77,11 @@ void SagoDataHolder::invalidateAll() {
 	}
 	data->textures.clear();
 	for (auto& item : data->music) {
-		Mix_FreeMusic(item.second);
+		MIX_DestroyAudio(item.second);
 	}
 	data->music.clear();
 	for (auto& item : data->sounds) {
-		Mix_FreeChunk(item.second);
+		MIX_DestroyAudio(item.second);
 	}
 	data->sounds.clear();
 	for (auto& item : data->fonts) {
@@ -89,10 +90,10 @@ void SagoDataHolder::invalidateAll() {
 		}
 	}
 	data->fonts.clear();
-	for (auto& item : data->rwOpsToFree) {
-		SDL_FreeRW(item);
+	for (auto& item : data->ioStreamsToFree) {
+		SDL_CloseIO(item);
 	}
-	data->rwOpsToFree.clear();
+	data->ioStreamsToFree.clear();
 }
 
 SagoDataHolder::~SagoDataHolder() {
@@ -123,20 +124,20 @@ SDL_Texture* SagoDataHolder::getTexturePtr(const std::string& textureName) const
 	unsigned int m_size = 0;
 	std::unique_ptr<char[]> m_data;
 	ReadBytesFromFile(path.c_str(), m_data, m_size);
-	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
+	SDL_IOStream* rw = SDL_IOFromMem(m_data.get(), m_size);
 	//The above might fail an return null.
 	if (!rw) {
 		std::cerr << "Error. Corrupt data file!\n";
 		return NULL;
 	}
-	SDL_Surface* surface = IMG_Load_RW(rw,true);
+	SDL_Surface* surface = IMG_Load_IO(rw, true);
 
 	ret = SDL_CreateTextureFromSurface(data->renderer, surface);
 
 	if (!ret) {
 		std::cerr << "getTextureFailed to load " << path << "\n";
 	}
-	SDL_FreeSurface(surface);
+	SDL_DestroySurface(surface);
 	data->textures[textureName] = ret;
 	return ret;
 }
@@ -158,7 +159,7 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 	std::unique_ptr<char[]> m_data;
 	ReadBytesFromFile(path.c_str(), m_data, m_size);
 
-	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
+	SDL_IOStream* rw = SDL_IOFromMem(m_data.get(), m_size);
 
 	//The above might fail an return null.
 	if (!rw) {
@@ -166,18 +167,18 @@ TTF_Font* SagoDataHolder::getFontPtr(const std::string& fontName, int ptsize) co
 		return ret;
 	}
 
-	ret = TTF_OpenFontRW(rw, SDL_FALSE, ptsize);
+	ret = TTF_OpenFontIO(rw, false, ptsize);
 	if (!ret) {
-		std::cerr << "Error openening font: " << fontName << " because: " << TTF_GetError() << "\n";
+		std::cerr << "Error openening font: " << fontName << " because: " << SDL_GetError() << "\n";
 	}
 	data->fonts[fontName][ptsize] = ret;
 	data->dataToFree.push_back(std::move(m_data));
-	data->rwOpsToFree.push_back(rw);
+	data->ioStreamsToFree.push_back(rw);
 	return ret;
 }
 
-Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
-	Mix_Music* ret = data->music[musicName];
+MIX_Audio* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
+	MIX_Audio* ret = data->music[musicName];
 	if (ret) {
 		return ret;
 	}
@@ -189,10 +190,14 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 		std::cerr << "getMusicPtr - Music file does not exists: " << path << "\n";
 		return ret;
 	}
+	if (!data->mixer) {
+		std::cerr << "getMusicPtr - Mixer not set, cannot load: " << path << "\n";
+		return ret;
+	}
 	unsigned int m_size = 0;
 	std::unique_ptr<char[]> m_data;
 	ReadBytesFromFile(path.c_str(), m_data, m_size);
-	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
+	SDL_IOStream* rw = SDL_IOFromMem(m_data.get(), m_size);
 
 	//The above might fail an return null.
 	if (!rw) {
@@ -200,10 +205,10 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 		return NULL;
 	}
 
-	ret = Mix_LoadMUS_RW(rw, SDL_TRUE);  //SDL_TRUE causes rw to be freed
+	ret = MIX_LoadAudio_IO(data->mixer, rw, false, true);  // stream (not predecode), close rw after load
 
 	if (!ret) {
-		std::cerr << "getMusicPtr to load " << path << " because: " << Mix_GetError() << "\n";
+		std::cerr << "getMusicPtr failed to load " << path << " because: " << SDL_GetError() << "\n";
 	}
 	data->music[musicName] = ret;
 	data->dataToFree.push_back(std::move(m_data));
@@ -211,8 +216,8 @@ Mix_Music* SagoDataHolder::getMusicPtr(const std::string& musicName) const {
 }
 
 
-Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
-	Mix_Chunk* ret = data->sounds[soundName];
+MIX_Audio* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
+	MIX_Audio* ret = data->sounds[soundName];
 	if (ret) {
 		return ret;
 	}
@@ -224,10 +229,14 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 		std::cerr << "getSoundPtr - Sound file does not exists: " << path << "\n";
 		return ret;
 	}
+	if (!data->mixer) {
+		std::cerr << "getSoundPtr - Mixer not set, cannot load: " << path << "\n";
+		return ret;
+	}
 	unsigned int m_size = 0;
 	std::unique_ptr<char[]> m_data;
 	ReadBytesFromFile(path.c_str(), m_data, m_size);
-	SDL_RWops* rw = SDL_RWFromMem (m_data.get(), m_size);
+	SDL_IOStream* rw = SDL_IOFromMem(m_data.get(), m_size);
 
 	//The above might fail an return null.
 	if (!rw) {
@@ -235,10 +244,14 @@ Mix_Chunk* SagoDataHolder::getSoundPtr(const std::string& soundName) const {
 		return NULL;
 	}
 
-	ret = Mix_LoadWAV_RW(rw, SDL_TRUE);
+	ret = MIX_LoadAudio_IO(data->mixer, rw, true, true);  // predecode (SFX), close rw after load
 	data->sounds[soundName] = ret;
 	data->dataToFree.push_back(std::move(m_data));
 	return ret;
+}
+
+void SagoDataHolder::setMixer(MIX_Mixer* mixer) {
+	data->mixer = mixer;
 }
 
 void SagoDataHolder::setVerbose(bool value) {
@@ -272,7 +285,7 @@ MusicHandler::MusicHandler(const SagoDataHolder* holder, const std::string& musi
 	this->data = nullptr;
 }
 
-Mix_Music* MusicHandler::get() {
+MIX_Audio* MusicHandler::get() {
 	if (version != holder->getVersion()) {
 		//The holder has been invalidated
 		this->data = this->holder->getMusicPtr(musicName);
@@ -287,7 +300,7 @@ SoundHandler::SoundHandler(const SagoDataHolder* holder, const std::string& soun
 	this->data = nullptr;
 }
 
-Mix_Chunk* SoundHandler::get() {
+MIX_Audio* SoundHandler::get() {
 	if (version != holder->getVersion()) {
 		//The holder has been invalidated
 		this->data = this->holder->getSoundPtr(soundName);

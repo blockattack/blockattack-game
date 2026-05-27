@@ -22,12 +22,12 @@ http://www.blockattack.net
 */
 
 #include "gamecontroller.h"
-#include "SDL_gamecontroller.h"
+#include <SDL3/SDL.h>
 #include "platform_folders.h"
 #include "common.h"
 #include <iostream>
 #include <map>
-#include <SDL2/SDL_joystick.h>
+// SDL_joystick is now part of SDL3/SDL.h
 
 static bool verbose = false;
 
@@ -39,22 +39,22 @@ struct ControllerStatus {
 static std::map<SDL_JoystickID, ControllerStatus> controllerStatusMap;
 static std::map<std::string, int> gamecontrollers_assigned;
 static std::vector<std::string> supportedControllers;
-static std::vector<SDL_GameController*> controllersOpened;
+static std::vector<SDL_Gamepad*> controllersOpened;
 
 
 void GameControllerSetVerbose(bool value) {
 	verbose = value;
 }
 
-static const char* GameControllerGetName(SDL_GameController* gamecontroller) {
-	const char* result = SDL_GameControllerName(gamecontroller);
+static const char* GameControllerGetName(SDL_Gamepad* gamecontroller) {
+	const char* result = SDL_GetGamepadName(gamecontroller);
 	if (!result) {
 		result = "Unnamed";
 	}
 	return result;
 }
 
-static std::string GetGuidAsHex(const SDL_JoystickGUID& guid) {
+static std::string GetGuidAsHex(const SDL_GUID& guid) {
 	std::string ret;
 	char buffer[3];
 	for (size_t j = 0; j < sizeof(guid.data); j++) {
@@ -65,7 +65,7 @@ static std::string GetGuidAsHex(const SDL_JoystickGUID& guid) {
 }
 
 
-static int GetNextPlayerByGui(const SDL_JoystickGUID& guid) {
+static int GetNextPlayerByGui(const SDL_GUID& guid) {
 	Config::getInstance()->setDefault("gc_AllToOnePlayer", "0");
 	int fixedPlayer = Config::getInstance()->getInt("gc_AllToOnePlayer");
 	if (fixedPlayer > 0 && fixedPlayer <= 2) {
@@ -87,8 +87,8 @@ void UnInitGameControllers() {
 	if (controllersOpened.empty()) {
 		return;
 	}
-	for (SDL_GameController* t : controllersOpened) {
-		SDL_GameControllerClose(t);
+	for (SDL_Gamepad* t : controllersOpened) {
+		SDL_CloseGamepad(t);
 	}
 	controllersOpened.clear();
 	controllerStatusMap.clear();
@@ -98,30 +98,34 @@ void UnInitGameControllers() {
 
 void InitGameControllers() {
 	std::string configFile = sago::getConfigHome()+"/blockattack/gamecontrollerdb.txt";
-	int errorCode = SDL_GameControllerAddMappingsFromFile(configFile.c_str());
+	int errorCode = SDL_AddGamepadMappingsFromFile(configFile.c_str());
 	if (errorCode == -1 && verbose) {
 		std::cerr << "Could not load mapping file: " << configFile << "\n";
 	}
+	int joystickCount = 0;
+	SDL_JoystickID* joysticks = SDL_GetJoysticks(&joystickCount);
 	if (verbose) {
-		std::cout << "Number of Game controllers: " << SDL_NumJoysticks() << "\n";
+		std::cout << "Number of joysticks: " << joystickCount << "\n";
 	}
-	SDL_GameController* controller = nullptr;
-	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
-		if (SDL_IsGameController(i)) {
-			controller = SDL_GameControllerOpen(i);
-			SDL_Joystick* j = SDL_GameControllerGetJoystick(controller);
-			SDL_JoystickID instanceId = SDL_JoystickInstanceID(j);
-			SDL_JoystickGUID guid = SDL_JoystickGetGUID(j);
+	for (int i = 0; i < joystickCount; ++i) {
+		SDL_JoystickID instanceId = joysticks[i];
+		if (SDL_IsGamepad(instanceId)) {
+			SDL_Gamepad* controller = SDL_OpenGamepad(instanceId);
+			SDL_Joystick* j = SDL_GetGamepadJoystick(controller);
+			SDL_GUID guid = SDL_GetJoystickGUID(j);
 			int assingToPlayer = GetNextPlayerByGui(guid);
 			controllerStatusMap[instanceId].player = assingToPlayer;
 			supportedControllers.push_back(GameControllerGetName(controller));
 			controllersOpened.push_back(controller);
 			if (verbose) {
-				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << SDL_GameControllerMapping(controller) <<  "\n";
+				char* mapping = SDL_GetGamepadMapping(controller);
+				std::cout << "Supported game controller detected: " << GameControllerGetName(controller) << ", mapping: " << (mapping ? mapping : "") <<  "\n";
 				std::cout << "Assigned to player: " << controllerStatusMap[instanceId].player << "\n";
+				SDL_free(mapping);
 			}
 		}
 	}
+	SDL_free(joysticks);
 }
 
 const std::vector<std::string>& GetSupportedControllerNames() {
@@ -129,12 +133,12 @@ const std::vector<std::string>& GetSupportedControllerNames() {
 }
 
 void GameControllerCheckDeadZone(const SDL_Event& event) {
-	if (event.type != SDL_CONTROLLERAXISMOTION) {
+	if (event.type != SDL_EVENT_GAMEPAD_AXIS_MOTION) {
 		return;  //assert?
 	}
-	int value = event.caxis.value;
+	int value = event.gaxis.value;
 	if (value > -deadZoneLimit && value < deadZoneLimit) {
-		controllerStatusMap[event.caxis.which].AxisInDeadZone[event.caxis.axis] = true;
+		controllerStatusMap[event.gaxis.which].AxisInDeadZone[event.gaxis.axis] = true;
 	}
 }
 
@@ -148,14 +152,14 @@ void GameControllerSetIsInDeadZone(SDL_JoystickID id, int axis, bool value) {
 
 static bool GameControllerExtSkipThisPlayer(int playerNumber, const SDL_Event& event) {
 
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		ControllerStatus& cs = controllerStatusMap[event.cbutton.which];
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		ControllerStatus& cs = controllerStatusMap[event.gbutton.which];
 		if (cs.player == playerNumber) {
 			return false;
 		}
 	}
-	if (event.type == SDL_CONTROLLERAXISMOTION ) {
-		ControllerStatus& cs = controllerStatusMap[event.caxis.which];
+	if (event.type == SDL_EVENT_GAMEPAD_AXIS_MOTION ) {
+		ControllerStatus& cs = controllerStatusMap[event.gaxis.which];
 		if (cs.player == playerNumber) {
 			return false;
 		}
@@ -165,9 +169,9 @@ static bool GameControllerExtSkipThisPlayer(int playerNumber, const SDL_Event& e
 
 
 bool GameControllerIsConnectionEvent(const SDL_Event& event) {
-	if ( event.type == SDL_CONTROLLERDEVICEADDED
-	        || event.type == SDL_CONTROLLERDEVICEREMOVED
-	        || event.type == SDL_CONTROLLERDEVICEREMAPPED ) {
+	if ( event.type == SDL_EVENT_GAMEPAD_ADDED
+	        || event.type == SDL_EVENT_GAMEPAD_REMOVED
+	        || event.type == SDL_EVENT_GAMEPAD_REMAPPED ) {
 		return true;
 	}
 	return false;
@@ -182,17 +186,17 @@ bool GameControllerExtIsPlayerDownEvent(int playerNumber, const SDL_Event& event
 	return GameControllerIsDownEvent(event);
 }
 
-bool GameControllerIsControllerDirectionEvent(const SDL_Event& event, SDL_GameControllerButton dpad_direction, SDL_GameControllerAxis axis, float axis_mod = 1.0f) {
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == dpad_direction ) {
+bool GameControllerIsControllerDirectionEvent(const SDL_Event& event, SDL_GamepadButton dpad_direction, SDL_GamepadAxis axis, float axis_mod = 1.0f) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == dpad_direction ) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERAXISMOTION  && event.caxis.axis == axis ) {
-		const SDL_ControllerAxisEvent& a = event.caxis;
+	if (event.type == SDL_EVENT_GAMEPAD_AXIS_MOTION  && event.gaxis.axis == axis ) {
+		const SDL_GamepadAxisEvent& a = event.gaxis;
 		GameControllerCheckDeadZone(event);
 		if (GameControllerIsInDeadZone(a.which, a.axis)) {
-			if (event.caxis.value * axis_mod > deadZoneLimit) {
+			if (event.gaxis.value * axis_mod > deadZoneLimit) {
 				GameControllerSetIsInDeadZone(a.which,a.axis,false);
 				return true;
 			}
@@ -202,19 +206,19 @@ bool GameControllerIsControllerDirectionEvent(const SDL_Event& event, SDL_GameCo
 }
 
 bool GameControllerIsDownEvent(const SDL_Event& event) {
-	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_DOWN, SDL_CONTROLLER_AXIS_LEFTY);
+	return GameControllerIsControllerDirectionEvent(event, SDL_GAMEPAD_BUTTON_DPAD_DOWN, SDL_GAMEPAD_AXIS_LEFTY);
 }
 
 bool GameControllerIsUpEvent(const SDL_Event& event) {
-	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_UP, SDL_CONTROLLER_AXIS_LEFTY, -1.0f);
+	return GameControllerIsControllerDirectionEvent(event, SDL_GAMEPAD_BUTTON_DPAD_UP, SDL_GAMEPAD_AXIS_LEFTY, -1.0f);
 }
 
 bool GameControllerIsLeftEvent(const SDL_Event& event) {
-	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_CONTROLLER_AXIS_LEFTX, -1.0f);
+	return GameControllerIsControllerDirectionEvent(event, SDL_GAMEPAD_BUTTON_DPAD_LEFT, SDL_GAMEPAD_AXIS_LEFTX, -1.0f);
 }
 
 bool GameControllerIsRightEvent(const SDL_Event& event) {
-	return GameControllerIsControllerDirectionEvent(event, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, SDL_CONTROLLER_AXIS_LEFTX);
+	return GameControllerIsControllerDirectionEvent(event, SDL_GAMEPAD_BUTTON_DPAD_RIGHT, SDL_GAMEPAD_AXIS_LEFTX);
 }
 
 bool GameControllerExtIsPlayerUpEvent(int playerNumber, const SDL_Event& event) {
@@ -242,8 +246,8 @@ bool GameControllerExtIsPlayerSwitchEvent(int playerNumber, const SDL_Event& eve
 	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A || event.cbutton.button == SDL_CONTROLLER_BUTTON_B ) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH || event.gbutton.button == SDL_GAMEPAD_BUTTON_EAST ) {
 			return true;
 		}
 	}
@@ -254,16 +258,16 @@ bool GameControllerExtIsPlayerPushEvent(int playerNumber, const SDL_Event& event
 	if (GameControllerExtSkipThisPlayer(playerNumber, event)) {
 		return false;
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER || event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER ) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER || event.gbutton.button == SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER ) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERAXISMOTION  && (event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT || event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT ) ) {
+	if (event.type == SDL_EVENT_GAMEPAD_AXIS_MOTION  && (event.gaxis.axis == SDL_GAMEPAD_AXIS_LEFT_TRIGGER || event.gaxis.axis == SDL_GAMEPAD_AXIS_RIGHT_TRIGGER ) ) {
 		GameControllerCheckDeadZone(event);
-		const SDL_ControllerAxisEvent& a = event.caxis;
+		const SDL_GamepadAxisEvent& a = event.gaxis;
 		if (GameControllerIsInDeadZone(a.which, a.axis)) {
-			if (event.caxis.value > deadZoneLimit) {
+			if (event.gaxis.value > deadZoneLimit) {
 				GameControllerSetIsInDeadZone(a.which,a.axis,false);
 				return true;
 			}

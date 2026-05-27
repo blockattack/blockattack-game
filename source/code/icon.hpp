@@ -24,7 +24,7 @@ http://blockattack.net
 #ifndef ICON_HPP
 #define ICON_HPP
 
-#include "SDL.h"
+#include <SDL3/SDL.h>
 
 void SetSDLIcon(SDL_Window* window);
 

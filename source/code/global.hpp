@@ -25,6 +25,7 @@ http://www.blockattack.net
 #define _GLOBAL_HPP
 
 #include <memory>
+#include <SDL3_mixer/SDL_mixer.h>
 #include "sago/SagoSpriteHolder.hpp"
 #include "sago/SagoLogicalResize.hpp"
 #include "highscore.h"
@@ -98,6 +99,10 @@ struct GlobalData {
 	std::string player1name;
 	std::string player2name;
 	SDL_Renderer* screen = nullptr;  //The whole screen;
+	MIX_Mixer*  sdlMixer   = nullptr;
+	MIX_Track*  sfxTrack0  = nullptr;
+	MIX_Track*  sfxTrack1  = nullptr;
+	MIX_Track*  musicTrack = nullptr;
 	sago::SoundHandler typingChunk;
 	sago::SagoSprite mouse;
 	bool highPriority = false;
@@ -171,6 +176,7 @@ struct GlobalData {
 #include "BallManager.hpp"
 
 extern GlobalData globalData;
+extern SDL_Window* sdlWindow;
 
 #endif  /* _GLOBAL_HPP */
 

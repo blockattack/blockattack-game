@@ -105,11 +105,11 @@ void HelpTextBoxState::Draw(SDL_Renderer* target) {
 
 void HelpCommonState::Update() {
 	// If the mouse button is released, make bMouseUp equal true
-	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON_LMASK) ) {
 		bMouseUp=true;
 	}
 
-	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON_LMASK && bMouseUp) {
 		bMouseUp = false;
 
 		int mousex;

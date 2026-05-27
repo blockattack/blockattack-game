@@ -28,8 +28,8 @@ https://blockattack.net
 
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "backends/imgui_impl_sdl2.h"
-#include "backends/imgui_impl_sdlrenderer2.h"
+#include "backends/imgui_impl_sdl3.h"
+#include "backends/imgui_impl_sdlrenderer3.h"
 #include "../sago/SagoMisc.hpp"
 #include "../puzzlehandler.hpp"
 
@@ -45,18 +45,18 @@ bool PuzzleEditorState::IsActive() {
 }
 
 void PuzzleEditorState::ProcessInput(const SDL_Event& event, bool& processed) {
-	if (event.type == SDL_KEYDOWN && !read_only) {
-		const Uint8* keystate = SDL_GetKeyboardState(nullptr);
+	if (event.type == SDL_EVENT_KEY_DOWN && !read_only) {
+		const bool* keystate = SDL_GetKeyboardState(nullptr);
 		const bool ctrl_held = keystate[SDL_SCANCODE_LCTRL] || keystate[SDL_SCANCODE_RCTRL];
 
-		if (ctrl_held && event.key.keysym.sym == SDLK_z) {
+		if (ctrl_held && event.key.key == SDLK_Z) {
 			if (keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]) {
 				Redo();
 			} else {
 				Undo();
 			}
 			processed = true;
-		} else if (ctrl_held && event.key.keysym.sym == SDLK_y) {
+		} else if (ctrl_held && event.key.key == SDLK_Y) {
 			Redo();
 			processed = true;
 		}

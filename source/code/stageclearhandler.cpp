@@ -23,7 +23,7 @@ http://www.blockattack.net
 
 #include "nlohmann/json.hpp"
 #include "stageclearhandler.hpp"
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include <vector>
 #include <iostream>
 #include <sstream>

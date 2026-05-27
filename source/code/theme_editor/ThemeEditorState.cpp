@@ -28,8 +28,8 @@ https://blockattack.net
 
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "backends/imgui_impl_sdl2.h"
-#include "backends/imgui_impl_sdlrenderer2.h"
+#include "backends/imgui_impl_sdl3.h"
+#include "backends/imgui_impl_sdlrenderer3.h"
 #include "../sago/SagoMisc.hpp"
 #include "../BlockGameSdl.hpp"
 
@@ -130,7 +130,7 @@ void ThemeEditorState::Draw(SDL_Renderer* target) {
 	// Get actual physical renderer size and keep logicalResize in sync every frame
 	int display_w = 1;
 	int display_h = 1;
-	SDL_GetRendererOutputSize(target, &display_w, &display_h);
+	SDL_GetCurrentRenderOutputSize(target, &display_w, &display_h);
 	globalData.logicalResize.SetPhysicalSize(display_w, display_h);
 
 	// Main window - take up left 60% of screen to leave room for preview

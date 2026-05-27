@@ -25,7 +25,7 @@ SOFTWARE.
 #ifndef GAMESTATEINTERFACE_HPP
 #define GAMESTATEINTERFACE_HPP
 
-#include "SDL.h"
+#include <SDL3/SDL.h>
 
 namespace sago {
 

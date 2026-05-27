@@ -4,20 +4,19 @@ set -x
 set -u
 set -o pipefail
 
-mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL/releases/download/release-2.32.10/SDL2-2.32.10.tar.gz | tar -zx && cd SDL2-2.32.10 && ls -lrt
-cd /staging/deps/SDL2-2.32.10 && ./configure --enable-shared --enable-static && make && make install
+# SDL3 (uses CMake, not autotools)
+mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL/releases/download/release-3.4.8/SDL3-3.4.8.tar.gz | tar -zx && cd SDL3-3.4.8 && ls -lrt
+cd /staging/deps/SDL3-3.4.8 && cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DSDL_SHARED=ON -DSDL_STATIC=ON && cmake --build build && cmake --install build
 
-#https://github.com/libsdl-org/SDL_image/releases/download/release-2.6.2/SDL2_image-2.6.2.tar.gz
-mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-2.8.2.tar.gz | tar -zx && cd SDL2_image-2.8.2 && ls -lrt
-cd /staging/deps/SDL2_image-2.8.2 && ./configure --enable-shared --enable-static && make && make install
+mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.4/SDL3_image-3.4.4.tar.gz | tar -zx && cd SDL3_image-3.4.4 && ls -lrt
+cd /staging/deps/SDL3_image-3.4.4 && cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DSDLIMAGE_SHARED=ON -DSDLIMAGE_STATIC=ON && cmake --build build && cmake --install build
 
-#https://github.com/libsdl-org/SDL_mixer/releases/download/release-2.8./SDL2_mixer-2.8.0.tar.gz
-mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-2.8.0/SDL2_mixer-2.8.0.tar.gz | tar -zx && cd SDL2_mixer-2.8.0 && ls -lrt
-cd /staging/deps/SDL2_mixer-2.8.0 && ./configure --enable-shared --enable-static && make && make install
+mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-3.2.2/SDL3_mixer-3.2.2.tar.gz | tar -zx && cd SDL3_mixer-3.2.2 && ls -lrt
+cd /staging/deps/SDL3_mixer-3.2.2 && cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DSDLMIXER_SHARED=ON -DSDLMIXER_STATIC=ON && cmake --build build && cmake --install build
 
-#https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.22.0/SDL2_ttf-2.22.0.tar.gz
-mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.22.0/SDL2_ttf-2.22.0.tar.gz | tar -zx && cd SDL2_ttf-2.22.0 && ls -lrt
-cd /staging/deps/SDL2_ttf-2.22.0 && ./configure --enable-shared --enable-static && make && make install
+mkdir -p /staging/deps && cd /staging/deps && curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz | tar -zx && cd SDL3_ttf-3.2.2 && ls -lrt
+cd /staging/deps/SDL3_ttf-3.2.2 && cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DSDLTTF_SHARED=ON -DSDLTTF_STATIC=ON && cmake --build build && cmake --install build
+
 mkdir -p /staging/blockattack-game
 
 mkdir -p /staging/deps && cd /staging/deps && curl https://icculus.org/physfs/downloads/physfs-3.0.2.tar.bz2 | tar -jx && cd physfs-3.0.2 && ls -lrt

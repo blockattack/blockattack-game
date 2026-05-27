@@ -85,7 +85,7 @@ public:
 
 	void DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, SagoLogicalResize* resize = nullptr) const;
 	void DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h,
-	                          const double angleRadian, const SDL_Point* center, const SDL_RendererFlip flip, SagoLogicalResize* resize = nullptr) const;
+	                          const double angleRadian, const SDL_Point* center, const SDL_FlipMode flip, SagoLogicalResize* resize = nullptr) const;
 
 	/**
 	 * Set a different origin. Normally it is the top left cornor. But in some cases you might want to center the origin or tranform it for other reasons

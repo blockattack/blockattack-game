@@ -138,7 +138,7 @@ void ButtonWithAdjustment::drawToScreen(SDL_Renderer* target) const {
 	int adjustSize = getAdjustButtonSize();
 	int leftX = x - adjustSize - 10;
 	int leftY = y;
-	Uint32 currentTime = SDL_GetTicks();
+	Uint64 currentTime = SDL_GetTicks();
 	bool leftMarked = (currentTime - leftButtonMarkTime) < MARK_DURATION;
 	if (leftMarked) {
 		globalData.spriteHolder->GetSprite("menu_marked").DrawScaled(globalData.screen, SDL_GetTicks(), leftX, leftY, adjustSize, adjustSize, &globalData.logicalResize);
@@ -255,8 +255,8 @@ Menu::Menu(SDL_Renderer* screen, const std::string& title, bool submenu) {
 }
 
 bool isUpEvent(const SDL_Event& event) {
-	if ( event.type == SDL_KEYDOWN ) {
-		if (event.key.keysym.sym == SDLK_UP) {
+	if ( event.type == SDL_EVENT_KEY_DOWN ) {
+		if (event.key.key == SDLK_UP) {
 			return true;
 		}
 	}
@@ -264,8 +264,8 @@ bool isUpEvent(const SDL_Event& event) {
 }
 
 bool isDownEvent(const SDL_Event& event) {
-	if ( event.type == SDL_KEYDOWN ) {
-		if (event.key.keysym.sym == SDLK_DOWN) {
+	if ( event.type == SDL_EVENT_KEY_DOWN ) {
+		if (event.key.key == SDLK_DOWN) {
 			return true;
 		}
 	}
@@ -273,8 +273,8 @@ bool isDownEvent(const SDL_Event& event) {
 }
 
 bool isLeftEvent(const SDL_Event& event) {
-	if ( event.type == SDL_KEYDOWN ) {
-		if (event.key.keysym.sym == SDLK_LEFT) {
+	if ( event.type == SDL_EVENT_KEY_DOWN ) {
+		if (event.key.key == SDLK_LEFT) {
 			return true;
 		}
 	}
@@ -282,8 +282,8 @@ bool isLeftEvent(const SDL_Event& event) {
 }
 
 bool isRightEvent(const SDL_Event& event) {
-	if ( event.type == SDL_KEYDOWN ) {
-		if (event.key.keysym.sym == SDLK_RIGHT) {
+	if ( event.type == SDL_EVENT_KEY_DOWN ) {
+		if (event.key.key == SDLK_RIGHT) {
 			return true;
 		}
 	}
@@ -291,13 +291,13 @@ bool isRightEvent(const SDL_Event& event) {
 }
 
 bool isEscapeEvent(const SDL_Event& event) {
-	if ( event.type == SDL_KEYDOWN ) {
-		if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+	if ( event.type == SDL_EVENT_KEY_DOWN ) {
+		if ( event.key.key == SDLK_ESCAPE ) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B || event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == SDL_GAMEPAD_BUTTON_EAST || event.gbutton.button == SDL_GAMEPAD_BUTTON_BACK ) {
 			return true;
 		}
 	}
@@ -305,13 +305,13 @@ bool isEscapeEvent(const SDL_Event& event) {
 }
 
 bool isConfirmEvent(const SDL_Event& event) {
-	if ( event.type == SDL_KEYDOWN ) {
-		if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER ) {
+	if ( event.type == SDL_EVENT_KEY_DOWN ) {
+		if (event.key.key == SDLK_RETURN || event.key.key == SDLK_KP_ENTER ) {
 			return true;
 		}
 	}
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A ) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH ) {
 			return true;
 		}
 	}
@@ -406,9 +406,9 @@ void Menu::Update() {
 		buttons.at(i)->marked = (i == marked);
 	}
 	exit.marked = (marked == (int)buttons.size());
-	Uint8 buttonState = SDL_GetMouseState(nullptr,nullptr);
+	SDL_MouseButtonFlags buttonState = SDL_GetMouseState(nullptr,nullptr);
 	// If the mouse button is released, make bMouseUp equal true
-	if ( (buttonState&SDL_BUTTON(1))==0) {
+	if ( (buttonState&SDL_BUTTON_LMASK)==0) {
 		bMouseUp=true;
 	}
 	int mousex = globalData.mousex;
@@ -429,7 +429,7 @@ void Menu::Update() {
 	}
 
 	//mouse clicked
-	if ( (buttonState&SDL_BUTTON(1) )==SDL_BUTTON(1) && bMouseUp) {
+	if ( (buttonState&SDL_BUTTON_LMASK )==SDL_BUTTON_LMASK && bMouseUp) {
 		bMouseUp = false;
 		for (int i=0; i< (int)buttons.size(); ++i) {
 			// Check for adjustment button clicks first

@@ -154,30 +154,44 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, globalData.applause.get(), 0);
+		int soundVolume = Config::getInstance()->getInt("volume_sound");
+		MIX_SetTrackAudio(globalData.sfxTrack1, globalData.applause.get());
+		MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+		MIX_PlayTrack(globalData.sfxTrack1, 0);
 	}
 
 	void DrawEvent() const override {
-		Mix_HaltChannel(1);
+		if (globalData.sfxTrack1) {
+			MIX_StopTrack(globalData.sfxTrack1, 0);
+		}
 	}
 
 	void BlockPopEvent() const  override {
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(0, globalData.boing.get(), 0);
+		int soundVolume = Config::getInstance()->getInt("volume_sound");
+		MIX_SetTrackAudio(globalData.sfxTrack0, globalData.boing.get());
+		MIX_SetTrackGain(globalData.sfxTrack0, soundVolume / 128.0f);
+		MIX_PlayTrack(globalData.sfxTrack0, 0);
 	}
 
 	void LongChainDoneEvent() const  override {
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, globalData.applause.get(), 0);
+		int soundVolume = Config::getInstance()->getInt("volume_sound");
+		MIX_SetTrackAudio(globalData.sfxTrack1, globalData.applause.get());
+		MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+		MIX_PlayTrack(globalData.sfxTrack1, 0);
 	}
 
 	void TimeTrialEndEvent() const  override {
 		if (!globalData.NoSound && globalData.SoundEnabled) {
-			Mix_PlayChannel(1,globalData.counterFinalChunk.get(),0);
+			int soundVolume = Config::getInstance()->getInt("volume_sound");
+			MIX_SetTrackAudio(globalData.sfxTrack1, globalData.counterFinalChunk.get());
+			MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+			MIX_PlayTrack(globalData.sfxTrack1, 0);
 		}
 	}
 
@@ -185,7 +199,10 @@ public:
 		if (!globalData.SoundEnabled) {
 			return;
 		}
-		Mix_PlayChannel(1, globalData.applause.get(), 0);
+		int soundVolume = Config::getInstance()->getInt("volume_sound");
+		MIX_SetTrackAudio(globalData.sfxTrack1, globalData.applause.get());
+		MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+		MIX_PlayTrack(globalData.sfxTrack1, 0);
 	}
 private:
 
@@ -465,7 +482,10 @@ public:
 		if (ticks<gameStartedAt) {
 			int currentCounter = abs((int)ticks-(int)gameStartedAt)/1000;
 			if ( (currentCounter!=lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
-				Mix_PlayChannel(1, globalData.counterChunk.get(), 0);
+				int soundVolume = Config::getInstance()->getInt("volume_sound");
+				MIX_SetTrackAudio(globalData.sfxTrack1, globalData.counterChunk.get());
+				MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+				MIX_PlayTrack(globalData.sfxTrack1, 0);
 			}
 			lastCounter = currentCounter;
 			switch (currentCounter) {
@@ -487,14 +507,20 @@ public:
 				int currentCounter = (ticks-(int)gameStartedAt)/1000;
 				if (currentCounter!=lastCounter) {
 					if (currentCounter>115 && currentCounter<120) {
-						Mix_PlayChannel(1, globalData.counterChunk.get(), 0);
+						int soundVolume = Config::getInstance()->getInt("volume_sound");
+						MIX_SetTrackAudio(globalData.sfxTrack1, globalData.counterChunk.get());
+						MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+						MIX_PlayTrack(globalData.sfxTrack1, 0);
 					}
 				}
 				lastCounter = currentCounter;
 			}
 			else {
 				if ( (0==lastCounter) && (globalData.SoundEnabled)&&(!globalData.NoSound)) {
-					Mix_PlayChannel(1, globalData.counterFinalChunk.get(), 0);
+					int soundVolume = Config::getInstance()->getInt("volume_sound");
+					MIX_SetTrackAudio(globalData.sfxTrack1, globalData.counterFinalChunk.get());
+					MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+					MIX_PlayTrack(globalData.sfxTrack1, 0);
 				}
 				lastCounter = -1;
 			}

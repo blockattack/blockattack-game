@@ -44,9 +44,9 @@ https://blockattack.net
 #include <time.h>           //Used for srand()
 #include <sstream>          //Still used by std::to_string2
 #include <string>
-#include "SDL.h"            //The SDL libary, used for most things
-#include <SDL_mixer.h>      //Used for sound & music
-#include <SDL_image.h>      //To load PNG images!
+#include <SDL3/SDL.h>            //The SDL libary, used for most things
+#include <SDL3_mixer/SDL_mixer.h>      //Used for sound & music
+#include <SDL3_image/SDL_image.h>      //To load PNG images!
 #include <physfs.h>         //Abstract file system. To use containers
 #include <vector>
 #include "puzzlehandler.hpp"
@@ -212,13 +212,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 		globalData.counterChunk = holder.GetDataHolder().getSoundHandler("counter");
 		globalData.counterFinalChunk = holder.GetDataHolder().getSoundHandler("counter_final");
 		Config::getInstance()->setDefault("volume_sound", "24"); //0-128
-		int soundVolume = Config::getInstance()->getInt("volume_sound");
-		Mix_VolumeChunk(globalData.boing.get(), soundVolume);
-		Mix_VolumeChunk(globalData.applause.get(), soundVolume);
-		Mix_VolumeChunk(globalData.photoClick.get(), soundVolume);
-		Mix_VolumeChunk(globalData.typingChunk.get(), soundVolume);
-		Mix_VolumeChunk(globalData.counterChunk.get(), soundVolume);
-		Mix_VolumeChunk(globalData.counterFinalChunk.get(), soundVolume);
 	} //All sound has been loaded or not
 	return 0;
 } //InitImages()
@@ -242,15 +235,17 @@ SDL_Window* sdlWindow;
 sago::SagoDataHolder dataHolder;
 
 void ResetFullscreen() {
-	Mix_HaltMusic();  //We need to reload all data in case the screen type changes. Music must be stopped before unload.
+	if (!globalData.NoSound && globalData.musicTrack) {
+		MIX_StopTrack(globalData.musicTrack, 0);  //Music must be stopped before data unload.
+	}
 	if (globalData.bFullscreen) {
-		SDL_DisplayMode dm;
 		globalData.xsize = SIXTEEN_NINE_WIDTH;
 		globalData.ysize = SCREEN_HIGHT;
-		if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
-			globalData.xsize = globalData.ysize*dm.w/(double)dm.h;
+		const SDL_DisplayMode* dm = SDL_GetDesktopDisplayMode(SDL_GetPrimaryDisplay());
+		if (dm) {
+			globalData.xsize = (int)(globalData.ysize * dm->w / (double)dm->h);
 		}
-		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN);
 	}
 	else {
 		globalData.xsize = FOUR_THREE_WIDTH;
@@ -275,14 +270,14 @@ void ResetFullscreen() {
 		globalData.spriteHolder->ReadSprites(custom_backgrounds);
 	}
 	InitImages(*(globalData.spriteHolder.get()) );
-	SDL_ShowCursor(SDL_DISABLE);
+	SDL_HideCursor();
 }
 
 void DrawBackground(SDL_Renderer* target) {
 	SDL_RenderClear(target);
 	int w=1;
 	int h=1;
-	SDL_GetRendererOutputSize(target, &w, &h);
+	SDL_GetCurrentRenderOutputSize(target, &w, &h);
 	globalData.logicalResize.SetPhysicalSize(w, h);
 	sago::SagoSprite background = globalData.spriteHolder->GetSprite(globalData.theme.background.background_sprite);
 	if ( (double)globalData.xsize/globalData.ysize > 1.5 && globalData.theme.background.background_sprite_16x9.length()) {
@@ -321,12 +316,12 @@ void DrawBackground(SDL_Renderer* target) {
  */
 void UpdateMouseCoordinates(const SDL_Event& event, int& mousex, int& mousey) {
 	switch (event.type) {
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
 		mousex = event.button.x;
 		mousey = event.button.y;
 		break;
-	case SDL_MOUSEMOTION:
+	case SDL_EVENT_MOUSE_MOTION:
 		mousex = event.motion.x;
 		mousey = event.motion.y;
 		break;
@@ -366,18 +361,18 @@ void writeScreenShot() {
 		std::cout << "Saving screenshot" << "\n";
 	}
 	int rightNow = (int)time(nullptr);
-	int w, h;
-	SDL_GetRendererOutputSize(globalData.screen, &w, &h);
-	SDL_Surface* sreenshotSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-	SDL_RenderReadPixels(globalData.screen, NULL, SDL_PIXELFORMAT_ARGB8888, sreenshotSurface->pixels, sreenshotSurface->pitch);
-	OsCreateFolder(pathToScreenShots());
-	std::string buf = pathToScreenShots() + "/screenshot"+std::to_string(rightNow)+".bmp";
-	SDL_SaveBMP(sreenshotSurface, buf.c_str());
-	SDL_FreeSurface(sreenshotSurface);
-	if (!globalData.NoSound) {
-		if (globalData.SoundEnabled) {
-			Mix_PlayChannel(1, globalData.photoClick.get(), 0);
-		}
+	SDL_Surface* sreenshotSurface = SDL_RenderReadPixels(globalData.screen, NULL);
+	if (sreenshotSurface) {
+		OsCreateFolder(pathToScreenShots());
+		std::string buf = pathToScreenShots() + "/screenshot"+std::to_string(rightNow)+".bmp";
+		SDL_SaveBMP(sreenshotSurface, buf.c_str());
+		SDL_DestroySurface(sreenshotSurface);
+	}
+	if (!globalData.NoSound && globalData.SoundEnabled) {
+		int soundVolume = Config::getInstance()->getInt("volume_sound");
+		MIX_SetTrackAudio(globalData.sfxTrack1, globalData.photoClick.get());
+		MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+		MIX_PlayTrack(globalData.sfxTrack1, 0);
 	}
 }
 
@@ -397,12 +392,12 @@ void RunGameState(sago::GameStateInterface& state ) {
 
 		while ( SDL_PollEvent(&event) ) {
 			UpdateMouseCoordinates(event, globalData.mousex, globalData.mousey);
-			if ( event.type == SDL_QUIT ) {
+			if ( event.type == SDL_EVENT_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
 			}
 
-			if ( event.key.keysym.sym == SDLK_F9 ) {
+			if ( event.key.key == SDLK_F9 ) {
 				mustWriteScreenshot = true;
 			}
 
@@ -430,12 +425,12 @@ void RunImGuiGameState(sago::GameStateInterface& state ) {
 	while (!done && !Config::getInstance()->isShuttingDown()) {
 		SDL_SetRenderDrawColor(globalData.screen, 0, 0, 0, 0);
 		SDL_RenderClear(globalData.screen);
-		ImGui_ImplSDLRenderer2_NewFrame();
-		ImGui_ImplSDL2_NewFrame();
+		ImGui_ImplSDLRenderer3_NewFrame();
+		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
 		state.Draw(globalData.screen);
 		ImGui::Render();
-		ImGui_ImplSDLRenderer2_RenderDrawData( ImGui::GetDrawData(), globalData.screen );
+		ImGui_ImplSDLRenderer3_RenderDrawData( ImGui::GetDrawData(), globalData.screen );
 
 		//While using Dear ImGui we do not draw the mouse ourself. This is gone: globalData.mouse.Draw(globalData.screen, SDL_GetTicks(), globalData.mousex, globalData.mousey);
 		SDL_RenderPresent(globalData.screen);
@@ -445,20 +440,18 @@ void RunImGuiGameState(sago::GameStateInterface& state ) {
 		bool mustWriteScreenshot = false;
 
 		while ( SDL_PollEvent(&event) ) {
-			if ( event.type == SDL_QUIT ) {
+			if ( event.type == SDL_EVENT_QUIT ) {
 				Config::getInstance()->setShuttingDown(5);
 				done = true;
 			}
 
-			if (event.type == SDL_WINDOWEVENT) {
-				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-					std::cout << event.window.data1 << ", " << event.window.data2 << "\n";
-					SDL_GetRendererOutputSize(globalData.screen, &globalData.xsize, &globalData.ysize);
-				}
+			if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
+				std::cout << event.window.data1 << ", " << event.window.data2 << "\n";
+				SDL_GetCurrentRenderOutputSize(globalData.screen, &globalData.xsize, &globalData.ysize);
 			}
 
-			if (event.type == SDL_KEYDOWN) {
-				if ( event.key.keysym.sym == SDLK_F9 ) {
+			if (event.type == SDL_EVENT_KEY_DOWN) {
+				if ( event.key.key == SDLK_F9 ) {
 					mustWriteScreenshot = true;
 				}
 			}
@@ -467,7 +460,7 @@ void RunImGuiGameState(sago::GameStateInterface& state ) {
 				writeScreenShot();
 			}
 			bool processed = false;
-			ImGui_ImplSDL2_ProcessEvent(&event);
+			ImGui_ImplSDL3_ProcessEvent(&event);
 			state.ProcessInput(event, processed);
 
 		}
@@ -545,7 +538,7 @@ void sagoTextSetBlueFont(sago::SagoTextField& field) {
 
 //draws everything
 void DrawEverything(int xsize, int ysize,BlockGameSdl* theGame, BlockGameSdl* theGame2) {
-	SDL_ShowCursor(SDL_DISABLE);
+	SDL_HideCursor();
 	DrawBackground(globalData.screen);
 	theGame->DoPaintJob();
 	theGame2->DoPaintJob();
@@ -923,7 +916,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("config,c", boost::program_options::value<std::vector<std::string> >(), "Read a config file with the values. Can be given multiple times")
 	("nosound", "Disables the sound. Can be used if sound errors prevents you from starting")
 	("priority", "Causes the game to not sleep between frames.")
-	("software-renderer", "Asks SDL2 to use software renderer")
+	("software-renderer", "Asks SDL to use software renderer")
 	("verbose-basic", "Enables basic verbose messages")
 	("verbose-game-controller", "Enables verbose messages regarding controllers")
 	("print-search-path", "Prints the search path and quits")
@@ -1120,24 +1113,44 @@ int main(int argc, char* argv[]) {
 		theExplosionManager = ExplosionManager();
 		PuzzleSetName(config.puzzleName);
 		//Init SDL
-		if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+		if ( !SDL_Init(SDL_INIT_VIDEO) ) {
 			sago::SagoFatalErrorF("Unable to init SDL: %s", SDL_GetError());
 		}
-		if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER ) != 0) {
+		if (!SDL_InitSubSystem(SDL_INIT_GAMEPAD)) {
 			std::cerr << "Warning: Game controller failed to initialize. Reason: " << SDL_GetError() << "\n";
 		}
 		InitGameControllers();
 		TTF_Init();
-		atexit(SDL_Quit);       //quits SDL when the game stops for some reason (like you hit exit or Esc)
+		atexit([]() {
+			if (globalData.sdlMixer) {
+				MIX_DestroyMixer(globalData.sdlMixer);
+				globalData.sdlMixer = nullptr;
+			}
+			MIX_Quit();
+			SDL_Quit();
+		});
 		globalData.theTextManager = TextManager();
 
 		//Open Audio
 		if (!globalData.NoSound) {
 			//If sound has not been disabled, then load the sound system
-			if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048) < 0) {
-				std::cerr << "Warning: Couldn't set 44100 Hz 16-bit audio - Reason: " << SDL_GetError() << "\n"
+			if (!MIX_Init()) {
+				std::cerr << "Warning: Couldn't init mixer - Reason: " << SDL_GetError() << "\n"
 				          << "Sound will be disabled!" << "\n";
-				globalData.NoSound = true; //Tries to stop all sound from playing/loading
+				globalData.NoSound = true;
+			} else {
+				globalData.sdlMixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+				if (!globalData.sdlMixer) {
+					std::cerr << "Warning: Couldn't open audio - Reason: " << SDL_GetError() << "\n"
+					          << "Sound will be disabled!" << "\n";
+					MIX_Quit();
+					globalData.NoSound = true;
+				} else {
+					globalData.sfxTrack0  = MIX_CreateTrack(globalData.sdlMixer);
+					globalData.sfxTrack1  = MIX_CreateTrack(globalData.sdlMixer);
+					globalData.musicTrack = MIX_CreateTrack(globalData.sdlMixer);
+					dataHolder.setMixer(globalData.sdlMixer);
+				}
 			}
 		}
 		Config::getInstance()->setDefault("volume_music", "20"); //0-128
@@ -1146,7 +1159,7 @@ int main(int argc, char* argv[]) {
 		if (globalData.verboseLevel) {
 			//Copyright notice:
 			std::cout << "Block Attack - Rise of the Blocks (" << VERSION_NUMBER << ")" << "\n" << "http://www.blockattack.net" << "\n" << "Copyright 2004-2022 Poul Sander" << "\n" <<
-			          "A SDL2 based game (see www.libsdl.org)" << "\n" <<
+			          "A SDL3 based game (see www.libsdl.org)" << "\n" <<
 			          "The game is available under the GPL, see COPYING for details." << "\n";
 			std::cout << "-------------------------------------------" << "\n";
 		}
@@ -1159,10 +1172,10 @@ int main(int argc, char* argv[]) {
 		keySettings[player1keys].change = SDLK_RCTRL;
 		keySettings[player1keys].push = SDLK_RSHIFT;
 
-		keySettings[player2keys].up= SDLK_w;
-		keySettings[player2keys].down = SDLK_s;
-		keySettings[player2keys].left = SDLK_a;
-		keySettings[player2keys].right = SDLK_d;
+		keySettings[player2keys].up= SDLK_W;
+		keySettings[player2keys].down = SDLK_S;
+		keySettings[player2keys].left = SDLK_A;
+		keySettings[player2keys].right = SDLK_D;
 		keySettings[player2keys].change = SDLK_LCTRL;
 		keySettings[player2keys].push = SDLK_LSHIFT;
 
@@ -1247,10 +1260,8 @@ int main(int argc, char* argv[]) {
 			config.softwareRenderer = true;
 		}
 
-		// "Block Attack - Rise of the Blocks"
-		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 		//Open video
-		int createWindowParams = 0;
+		SDL_WindowFlags createWindowParams = 0;
 		if (config.allowResize) {
 			createWindowParams |= SDL_WINDOW_RESIZABLE;
 		}
@@ -1261,22 +1272,19 @@ int main(int argc, char* argv[]) {
 		globalData.ysize = SCREEN_HIGHT;
 		globalData.logicalResize = sago::SagoLogicalResize(globalData.xsize, globalData.ysize);
 		sdlWindow = SDL_CreateWindow("Block Attack - Rise of the Blocks " VERSION_NUMBER,
-		                             SDL_WINDOWPOS_UNDEFINED,
-		                             SDL_WINDOWPOS_UNDEFINED,
 		                             (screenHeight)*globalData.xsize/globalData.ysize, screenHeight,
 		                             createWindowParams );
 		dieOnNullptr(sdlWindow, "Unable to create window");
-		int rendererFlags = 0;
+		const char* rendererName = nullptr;
 		if (config.softwareRenderer) {
-			rendererFlags |= SDL_RENDERER_SOFTWARE;
+			rendererName = "software";
 		}
-		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, -1, rendererFlags);
+		SDL_Renderer* renderer = SDL_CreateRenderer(sdlWindow, rendererName);
 		dieOnNullptr(renderer, "Unable to create render");
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 		if (globalData.verboseLevel) {
-			SDL_RendererInfo info;
-			SDL_GetRendererInfo(renderer, &info);
-			std::cout << "Renderer: " << info.name << "\n";
+			std::cout << "Renderer: " << SDL_GetRendererName(renderer) << "\n";
 		}
 		globalData.screen = renderer;
 		globalData.theme=  ThemesGet(ThemesGetNumber(Config::getInstance()->getString("theme")));
@@ -1601,7 +1609,7 @@ int runGame(Gametype gametype, int level) {
 				int mousex;
 				int mousey;
 				globalData.logicalResize.PhysicalToLogical(globalData.mousex, globalData.mousey, mousex, mousey);
-				if ( event.type == SDL_QUIT ) {
+				if ( event.type == SDL_EVENT_QUIT ) {
 					Config::getInstance()->setShuttingDown(5);
 					done = 1;
 				}
@@ -1610,83 +1618,83 @@ int runGame(Gametype gametype, int level) {
 					done = 1;
 				}
 
-				if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-					if ( event.cbutton.button == SDL_CONTROLLER_BUTTON_BACK ) {
+				if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+					if ( event.gbutton.button == SDL_GAMEPAD_BUTTON_BACK ) {
 						done=1;
 						DrawBackground(globalData.screen);
 					}
 				}
 
-				if ( event.type == SDL_KEYDOWN ) {
-					if ( event.key.keysym.sym == SDLK_ESCAPE || ( event.key.keysym.sym == SDLK_RETURN && theGame.isGameOver() ) ) {
+				if ( event.type == SDL_EVENT_KEY_DOWN ) {
+					if ( event.key.key == SDLK_ESCAPE || ( event.key.key == SDLK_RETURN && theGame.isGameOver() ) ) {
 						done=1;
 						DrawBackground(globalData.screen);
 					}
 					if (!theGame.GetAIenabled()) {
 						//player1:
-						if ( event.key.keysym.sym == keySettings[player1keys].up ) {
+						if ( event.key.key == keySettings[player1keys].up ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'N';
 							theGame.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].down ) {
+						if ( event.key.key == keySettings[player1keys].down ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'S';
 							theGame.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].left ) {
+						if ( event.key.key == keySettings[player1keys].left ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'W';
 							theGame.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].right ) {
+						if ( event.key.key == keySettings[player1keys].right ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'E';
 							theGame.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].push ) {
+						if ( event.key.key == keySettings[player1keys].push ) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player1keys].change ) {
+						if ( event.key.key == keySettings[player1keys].change ) {
 							a.action = BlockGameAction::Action::SWITCH;
 							theGame.DoAction(a);
 						}
 					}
 					if (!theGame2.GetAIenabled()) {
 						//player2:
-						if ( event.key.keysym.sym == keySettings[player2keys].up ) {
+						if ( event.key.key == keySettings[player2keys].up ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'N';
 							theGame2.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].down ) {
+						if ( event.key.key == keySettings[player2keys].down ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'S';
 							theGame2.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].left ) {
+						if ( event.key.key == keySettings[player2keys].left ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'W';
 							theGame2.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].right ) {
+						if ( event.key.key == keySettings[player2keys].right ) {
 							a.action = BlockGameAction::Action::MOVE;
 							a.way = 'E';
 							theGame2.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].push ) {
+						if ( event.key.key == keySettings[player2keys].push ) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame2.DoAction(a);
 						}
-						if ( event.key.keysym.sym == keySettings[player2keys].change ) {
+						if ( event.key.key == keySettings[player2keys].change ) {
 							a.action = BlockGameAction::Action::SWITCH;
 							theGame2.DoAction(a);
 						}
 					}
 					//common:
 					if (!singlePuzzle) {
-						if ( event.key.keysym.sym == SDLK_F2 ) {
+						if ( event.key.key == SDLK_F2 ) {
 							/*#if NETWORK
 							if ((!showOptions)&&(!networkActive)){
 							#else
@@ -1697,19 +1705,19 @@ int runGame(Gametype gametype, int level) {
 							 */
 							mustsetupgame = true;
 						}
-						if ( event.key.keysym.sym == SDLK_F10 ) {
+						if ( event.key.key == SDLK_F10 ) {
 							//StartReplay("/home/poul/.gamesaves/blockattack/quicksave");
 						}
-						if ( event.key.keysym.sym == SDLK_F9 ) {
+						if ( event.key.key == SDLK_F9 ) {
 							mustWriteScreenshot = true;
 						}
-						if ( event.key.keysym.sym == SDLK_F5 ) {
+						if ( event.key.key == SDLK_F5 ) {
 						}
-						if ( event.key.keysym.sym == SDLK_F11 ) {
+						if ( event.key.key == SDLK_F11 ) {
 							globalData.theme = ThemesGetNext();
 						} //F11
 					}
-					if ( event.key.keysym.sym == SDLK_F12 ) {
+					if ( event.key.key == SDLK_F12 ) {
 						done=1;
 					}
 				}
@@ -1772,7 +1780,7 @@ int runGame(Gametype gametype, int level) {
 				}
 				static int mouseDownX = 0;
 				static int mouseDownY = 0;
-				if (event.type == SDL_MOUSEBUTTONDOWN) {
+				if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						bool pressed = false;
 						int x = 0;
@@ -1811,7 +1819,7 @@ int runGame(Gametype gametype, int level) {
 						}
 					}
 				}
-				if (event.type == SDL_MOUSEBUTTONUP) {
+				if (event.type == SDL_EVENT_MOUSE_BUTTON_UP) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						int x = mousex;
 						int y = mousey;
@@ -1828,7 +1836,7 @@ int runGame(Gametype gametype, int level) {
 						}
 					}
 				}
-				if (event.type == SDL_MOUSEMOTION) {
+				if (event.type == SDL_EVENT_MOUSE_MOTION) {
 					//cout << "Moved" << "\n";
 					bool pressed = false;
 					int x = 0;
@@ -1864,18 +1872,18 @@ int runGame(Gametype gametype, int level) {
 			} //while event PollEvent - read keys
 
 			// If the mouse button is released, make bMouseUp equal true
-			if (! (SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+			if (! (SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON_LMASK) ) {
 				bMouseUp=true;
 			}
 
 			// If the mouse button 2 is released, make bMouseUp2 equal true
-			if ((SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(3))!=SDL_BUTTON(3)) {
+			if ((SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON_RMASK)!=SDL_BUTTON_RMASK) {
 				bMouseUp2=true;
 			}
 
 			if (true ) {
 				//read mouse events
-				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+				if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON_LMASK && bMouseUp) {
 					//This is the mouse events
 					bMouseUp = false;
 					DrawBackground(globalData.screen);
@@ -1903,7 +1911,7 @@ int runGame(Gametype gametype, int level) {
 				}
 
 				//Mouse button 2:
-				if ((SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(3))==SDL_BUTTON(3) && bMouseUp2) {
+				if ((SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON_RMASK)==SDL_BUTTON_RMASK && bMouseUp2) {
 					bMouseUp2=false; //The button is pressed
 				}
 			}
@@ -1911,25 +1919,37 @@ int runGame(Gametype gametype, int level) {
 
 
 		//Sees if music is stopped and if music is enabled
-		if ((!globalData.NoSound)&&(!Mix_PlayingMusic())&&(globalData.MusicEnabled)&&(!bNearDeath)) {
+		if ((!globalData.NoSound)&&(!MIX_TrackPlaying(globalData.musicTrack))&&(globalData.MusicEnabled)&&(!bNearDeath)) {
 			// then starts playing it.
-			Mix_PlayMusic(bgMusic.get(), -1); //music loop
 			int musicVolume = Config::getInstance()->getInt("volume_music");
-			Mix_VolumeMusic(musicVolume);
+			MIX_SetTrackAudio(globalData.musicTrack, bgMusic.get());
+			MIX_SetTrackGain(globalData.musicTrack, musicVolume / 128.0f);
+			SDL_PropertiesID opts = SDL_CreateProperties();
+			SDL_SetNumberProperty(opts, MIX_PROP_PLAY_LOOPS_NUMBER, -1);
+			MIX_PlayTrack(globalData.musicTrack, opts);
+			SDL_DestroyProperties(opts);
 		}
 
 		if (bNearDeath!=bNearDeathPrev) {
 			int musicVolume = Config::getInstance()->getInt("volume_music");
 			if (bNearDeath) {
 				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
-					Mix_PlayMusic(highbeatMusic.get(), 1);
-					Mix_VolumeMusic(musicVolume);
+					MIX_SetTrackAudio(globalData.musicTrack, highbeatMusic.get());
+					MIX_SetTrackGain(globalData.musicTrack, musicVolume / 128.0f);
+					SDL_PropertiesID opts = SDL_CreateProperties();
+					SDL_SetNumberProperty(opts, MIX_PROP_PLAY_LOOPS_NUMBER, 1);
+					MIX_PlayTrack(globalData.musicTrack, opts);
+					SDL_DestroyProperties(opts);
 				}
 			}
 			else {
 				if (!globalData.NoSound &&(globalData.MusicEnabled)) {
-					Mix_PlayMusic(bgMusic.get(), -1);
-					Mix_VolumeMusic(musicVolume);
+					MIX_SetTrackAudio(globalData.musicTrack, bgMusic.get());
+					MIX_SetTrackGain(globalData.musicTrack, musicVolume / 128.0f);
+					SDL_PropertiesID opts = SDL_CreateProperties();
+					SDL_SetNumberProperty(opts, MIX_PROP_PLAY_LOOPS_NUMBER, -1);
+					MIX_PlayTrack(globalData.musicTrack, opts);
+					SDL_DestroyProperties(opts);
 				}
 			}
 		}

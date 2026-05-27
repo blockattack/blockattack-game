@@ -103,7 +103,7 @@ void SagoTextBox::AppendLineToCache(const std::string& text) {
 
 void SagoTextBox::SplitAndAppendLineToCache(TTF_Font* font, const std::string& text) {
 	int width = data->maxWidth;
-	TTF_SizeUTF8(font, text.c_str(),&width, nullptr);
+	TTF_GetStringSize(font, text.c_str(), 0, &width, nullptr);
 	if (data->maxWidth <= 0 || width <= data->maxWidth || text.length() == 1) {
 		AppendLineToCache(text);
 		return;
@@ -118,7 +118,7 @@ void SagoTextBox::SplitAndAppendLineToCache(TTF_Font* font, const std::string& t
 		}
 		std::string::const_iterator nextSpace = std::find(nextSearchStart, text.end(), ' ');
 		std::string attemptSubString(text.begin(), nextSpace);
-		TTF_SizeUTF8(font, attemptSubString.c_str(),&width, nullptr);
+		TTF_GetStringSize(font, attemptSubString.c_str(), 0, &width, nullptr);
 		if (width <= data->maxWidth && nextSpace != text.end()) {
 			splitLocation = nextSpace;
 		}
@@ -134,7 +134,7 @@ void SagoTextBox::SplitAndAppendLineToCache(TTF_Font* font, const std::string& t
 			std::string::const_iterator nextSplit = splitLocation;
 			utf8::advance(nextSplit, 1, text.end());
 			std::string attemptSubString(text.begin(), nextSplit);
-			TTF_SizeUTF8(font, attemptSubString.c_str(), &width, nullptr);
+			TTF_GetStringSize(font, attemptSubString.c_str(), 0, &width, nullptr);
 			if (width <= data->maxWidth) {
 				splitLocation = nextSplit;
 			}
@@ -182,7 +182,7 @@ void SagoTextBox::Draw(SDL_Renderer* target, int x, int y, SagoTextField::Alignm
 		UpdateCache();
 	}
 	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
-	int lineSkip = TTF_FontLineSkip(font);
+	int lineSkip = TTF_GetFontLineSkip(font);
 	for (size_t i = 0; i < data->lines.size(); ++i) {
 		data->lines[i].Draw(target, x, y+i*lineSkip, alignment, sago::SagoTextField::VerticalAlignment::top, resize);
 	}

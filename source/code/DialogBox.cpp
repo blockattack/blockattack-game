@@ -59,6 +59,7 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 	if (resize) {
 		resize->LogicalToPhysical(dstrect);
 	}
+	SDL_FRect fdstrect = {(float)dstrect.x, (float)dstrect.y, (float)dstrect.w, (float)dstrect.h};
 	std::string key_name = fmt::format("{}-{}-{}", name, width, height);
 	Uint64 new_version = globalData.spriteHolder->GetDataHolder().getVersion();
 	if (draw_rect_cache_version != new_version) {
@@ -66,7 +67,7 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 		draw_rect_cache_version = new_version;
 	}
 	if (draw_rect_cache.find(key_name) != draw_rect_cache.end()) {
-		SDL_RenderCopy( target, draw_rect_cache[key_name], NULL, &dstrect );
+		SDL_RenderTexture( target, draw_rect_cache[key_name], NULL, &fdstrect );
 		return;
 	}
 	SDL_Rect bounds_ns = {0, size, width, height-2*size};  //bounds for south
@@ -105,7 +106,7 @@ static void DrawRect(SDL_Renderer* target, int topx, int topy, int height, int w
 	se.Draw(target, SDL_GetTicks(), width-size, height-size);
 	sw.Draw(target, SDL_GetTicks(), 0, height-size);
 	SDL_SetRenderTarget( target, nullptr );
-	SDL_RenderCopy( target, mTexture, NULL, &dstrect );
+	SDL_RenderTexture( target, mTexture, NULL, &fdstrect );
 }
 
 static void DrawRectWhite(SDL_Renderer* target, int topx, int topy, int height, int width, sago::SagoLogicalResize* resize) {
@@ -229,8 +230,8 @@ void DialogBox::Draw(SDL_Renderer* target) {
 
 
 static bool isGamePadStartEvent(const SDL_Event& event) {
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_START ) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == SDL_GAMEPAD_BUTTON_START ) {
 			return true;
 		}
 	}
@@ -238,8 +239,8 @@ static bool isGamePadStartEvent(const SDL_Event& event) {
 }
 
 static bool isGamePadLEvent(const SDL_Event& event) {
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER ) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER ) {
 			return true;
 		}
 	}
@@ -247,8 +248,8 @@ static bool isGamePadLEvent(const SDL_Event& event) {
 }
 
 static bool isGamePadREvent(const SDL_Event& event) {
-	if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-		if (event.cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER ) {
+	if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+		if (event.gbutton.button == SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER ) {
 			return true;
 		}
 	}
@@ -273,24 +274,31 @@ void DialogBox::virtualKeyboardWriteSelectedChar(ReadKeyboard* rk, const std::st
 
 
 void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
-	if (event.type == SDL_TEXTINPUT) {
+	auto playTypingSound = [&]() {
+		int soundVolume = Config::getInstance()->getInt("volume_sound");
+		MIX_SetTrackAudio(globalData.sfxTrack1, globalData.typingChunk.get());
+		MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+		MIX_PlayTrack(globalData.sfxTrack1, 0);
+	};
+
+	if (event.type == SDL_EVENT_TEXT_INPUT) {
 		if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
-			Mix_PlayChannel(1, globalData.typingChunk.get(), 0);
+			playTypingSound();
 		}
 	}
 
-	if ( event.type == SDL_KEYDOWN ) {
-		if ( (event.key.keysym.sym == SDLK_RETURN)||(event.key.keysym.sym == SDLK_KP_ENTER) ) {
+	if ( event.type == SDL_EVENT_KEY_DOWN ) {
+		if ( (event.key.key == SDLK_RETURN)||(event.key.key == SDLK_KP_ENTER) ) {
 			name = rk->GetString();
 			updated = true;
 			isActive = false;
 		}
-		else if ( (event.key.keysym.sym == SDLK_ESCAPE) ) {
+		else if ( (event.key.key == SDLK_ESCAPE) ) {
 			isActive = false;
 		}
 		else {
 			if ((rk->ReadKey(event))&&(globalData.SoundEnabled)&&(!globalData.NoSound)) {
-				Mix_PlayChannel(1, globalData.typingChunk.get(), 0);
+				playTypingSound();
 			}
 		}
 	}
@@ -308,11 +316,11 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 			const std::string& insertChar = f.GetText();
 			virtualKeyboardWriteSelectedChar(rk.get(), insertChar);
 		}
-		if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-			if (event.cbutton.button == SDL_CONTROLLER_BUTTON_X ) {
+		if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+			if (event.gbutton.button == SDL_GAMEPAD_BUTTON_WEST ) {
 				rk->emulateBackspace();
 			}
-			if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y ) {
+			if (event.gbutton.button == SDL_GAMEPAD_BUTTON_NORTH ) {
 				rk->putchar(" ");
 			}
 		}
@@ -351,11 +359,11 @@ void DialogBox::ProcessInput(const SDL_Event& event, bool& processed) {
 		}
 	}
 	processed = true;
-	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(1)) ) {
+	if ( !(SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON_LMASK) ) {
 		bMouseUp=true;
 	}
 
-	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON(1) && bMouseUp) {
+	if (SDL_GetMouseState(nullptr,nullptr)&SDL_BUTTON_LMASK && bMouseUp) {
 		bMouseUp = false;
 		if (insideRect(x+25, y+128, 50, 250)) {
 			name = rk->GetString();

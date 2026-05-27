@@ -121,9 +121,9 @@ void Button_changekey::doAction() {
 	while (!finnish) {
 		SDL_Delay(10);
 		while ( SDL_PollEvent(&event) ) {
-			if (event.type == SDL_KEYDOWN) {
-				if (event.key.keysym.sym != SDLK_ESCAPE) {
-					*m_key2change = event.key.keysym.sym;
+			if (event.type == SDL_EVENT_KEY_DOWN) {
+				if (event.key.key != SDLK_ESCAPE) {
+					*m_key2change = event.key.key;
 				}
 				finnish = true;
 			}
@@ -147,7 +147,7 @@ Button_confirmVolume::Button_confirmVolume(const char* cvar) : cvar{cvar} {
 }
 
 const std::string& Button_confirmVolume::getLabel() const {
-	int volumePct = Config::getInstance()->getInt(cvar)*100.0/MIX_MAX_VOLUME;
+	int volumePct = Config::getInstance()->getInt(cvar)*100.0/128;
 	this->volumeLabel = fmt::format(_("Volume: {}%"), volumePct); //  std::string(_("Volume: "))+ std::to_string(volumePct)+"%" ;
 	return volumeLabel;
 }
@@ -157,7 +157,7 @@ private:
 	std::string cvar="";
 	int incrementValue = 1;
 	int lowerLimit = 0;
-	int upperLimit = MIX_MAX_VOLUME;
+	int upperLimit = 128;
 public:
 	Button_increaseVolume(const char* cvar, int incrementValue);
 	virtual void doAction() override;
@@ -171,7 +171,7 @@ Button_increaseVolume::Button_increaseVolume(const char* cvar, int incrementValu
 		prefix = '-';
 		value = -incrementValue;
 	}
-	value = value*100.0/MIX_MAX_VOLUME;
+	value = value*100.0/128;
 	setLabel(fmt::format("{}{:.2f}", prefix, value));
 }
 
@@ -198,8 +198,10 @@ Button_testSound::Button_testSound() {
 
 void Button_testSound::doAction() {
 	sago::SoundHandler testSound = globalData.spriteHolder->GetDataHolder().getSoundHandler("pop");
-	Mix_VolumeChunk(testSound.get(), Config::getInstance()->getInt("volume_sound"));
-	Mix_PlayChannel(1, testSound.get(), 0);
+	int soundVolume = Config::getInstance()->getInt("volume_sound");
+	MIX_SetTrackAudio(globalData.sfxTrack1, testSound.get());
+	MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+	MIX_PlayTrack(globalData.sfxTrack1, 0);
 }
 
 class Button_testMusic : public Button {
@@ -213,9 +215,14 @@ Button_testMusic::Button_testMusic() {
 }
 
 void Button_testMusic::doAction() {
-	Mix_VolumeMusic(Config::getInstance()->getInt("volume_music"));
+	int musicVolume = Config::getInstance()->getInt("volume_music");
 	sago::MusicHandler bgMusic = globalData.spriteHolder->GetDataHolder().getMusicHandler("bgmusic");
-	Mix_PlayMusic(bgMusic.get(), -1);
+	MIX_SetTrackAudio(globalData.musicTrack, bgMusic.get());
+	MIX_SetTrackGain(globalData.musicTrack, musicVolume / 128.0f);
+	SDL_PropertiesID opts = SDL_CreateProperties();
+	SDL_SetNumberProperty(opts, MIX_PROP_PLAY_LOOPS_NUMBER, -1);
+	MIX_PlayTrack(globalData.musicTrack, opts);
+	SDL_DestroyProperties(opts);
 }
 
 // Sound volume button with adjustment controls
@@ -238,8 +245,10 @@ Button_soundVolume::Button_soundVolume() {
 void Button_soundVolume::doAction() {
 	// Test sound
 	sago::SoundHandler testSound = globalData.spriteHolder->GetDataHolder().getSoundHandler("pop");
-	Mix_VolumeChunk(testSound.get(), Config::getInstance()->getInt("volume_sound"));
-	Mix_PlayChannel(1, testSound.get(), 0);
+	int soundVolume = Config::getInstance()->getInt("volume_sound");
+	MIX_SetTrackAudio(globalData.sfxTrack1, testSound.get());
+	MIX_SetTrackGain(globalData.sfxTrack1, soundVolume / 128.0f);
+	MIX_PlayTrack(globalData.sfxTrack1, 0);
 }
 
 void Button_soundVolume::doLeft() {
@@ -255,15 +264,15 @@ void Button_soundVolume::doLeft() {
 void Button_soundVolume::doRight() {
 	// Increase volume
 	int newValue = Config::getInstance()->getInt("volume_sound") + incrementValue;
-	if (newValue > MIX_MAX_VOLUME) {
-		newValue = MIX_MAX_VOLUME;
+	if (newValue > 128) {
+		newValue = 128;
 	}
 	Config::getInstance()->setInt("volume_sound", newValue);
 	rightButtonMarkTime = SDL_GetTicks();
 }
 
 const std::string& Button_soundVolume::getLabel() const {
-	int volumePct = Config::getInstance()->getInt("volume_sound")*100.0/MIX_MAX_VOLUME;
+	int volumePct = Config::getInstance()->getInt("volume_sound")*100.0/128;
 	volumeLabel = fmt::format(_("Sound: {}"), volumePct)+"%";
 	return volumeLabel;
 }
@@ -287,9 +296,14 @@ Button_musicVolume::Button_musicVolume() {
 
 void Button_musicVolume::doAction() {
 	// Test music
-	Mix_VolumeMusic(Config::getInstance()->getInt("volume_music"));
+	int musicVolume = Config::getInstance()->getInt("volume_music");
 	sago::MusicHandler bgMusic = globalData.spriteHolder->GetDataHolder().getMusicHandler("bgmusic");
-	Mix_PlayMusic(bgMusic.get(), -1);
+	MIX_SetTrackAudio(globalData.musicTrack, bgMusic.get());
+	MIX_SetTrackGain(globalData.musicTrack, musicVolume / 128.0f);
+	SDL_PropertiesID opts = SDL_CreateProperties();
+	SDL_SetNumberProperty(opts, MIX_PROP_PLAY_LOOPS_NUMBER, -1);
+	MIX_PlayTrack(globalData.musicTrack, opts);
+	SDL_DestroyProperties(opts);
 }
 
 void Button_musicVolume::doLeft() {
@@ -305,15 +319,15 @@ void Button_musicVolume::doLeft() {
 void Button_musicVolume::doRight() {
 	// Increase volume
 	int newValue = Config::getInstance()->getInt("volume_music") + incrementValue;
-	if (newValue > MIX_MAX_VOLUME) {
-		newValue = MIX_MAX_VOLUME;
+	if (newValue > 128) {
+		newValue = 128;
 	}
 	Config::getInstance()->setInt("volume_music", newValue);
 	rightButtonMarkTime = SDL_GetTicks();
 }
 
 const std::string& Button_musicVolume::getLabel() const {
-	int volumePct = Config::getInstance()->getInt("volume_music")*100.0/MIX_MAX_VOLUME;
+	int volumePct = Config::getInstance()->getInt("volume_music")*100.0/128;
 	volumeLabel = fmt::format(_("Music: {}"), volumePct)+"%";
 	return volumeLabel;
 }

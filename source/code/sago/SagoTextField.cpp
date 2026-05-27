@@ -24,7 +24,7 @@ SOFTWARE.
 
 #include "SagoTextField.hpp"
 #include <iostream>
-#include <SDL_ttf.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 namespace sago {
 
@@ -147,7 +147,7 @@ void SagoTextField::ClearCache() {
 		data->texture = nullptr;
 	}
 	if (data->textSurface) {
-		SDL_FreeSurface(data->textSurface);
+		SDL_DestroySurface(data->textSurface);
 		data->textSurface = nullptr;
 	}
 	if (data->outlineTexture) {
@@ -155,7 +155,7 @@ void SagoTextField::ClearCache() {
 		data->outlineTexture = nullptr;
 	}
 	if (data->outlineTextSurface) {
-		SDL_FreeSurface(data->outlineTextSurface);
+		SDL_DestroySurface(data->outlineTextSurface);
 		data->outlineTextSurface = nullptr;
 	}
 }
@@ -167,11 +167,11 @@ void SagoTextField::UpdateCache(SDL_Renderer* target) {
 	}
 	ClearCache();
 	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
-	data->textSurface = TTF_RenderUTF8_Blended (font, data->text.c_str(), data->color);
+	data->textSurface = TTF_RenderText_Blended (font, data->text.c_str(), 0, data->color);
 	data->texture = SDL_CreateTextureFromSurface(target, data->textSurface);
 	if (data->outline > 0) {
 		OutlineHandler oh(font, data->outline);
-		data->outlineTextSurface = TTF_RenderUTF8_Blended (font, data->text.c_str(), data->outlineColor);
+		data->outlineTextSurface = TTF_RenderText_Blended (font, data->text.c_str(), 0, data->outlineColor);
 		data->outlineTexture = SDL_CreateTextureFromSurface(target, data->outlineTextSurface);
 		oh.reset();
 	}
@@ -181,15 +181,14 @@ void SagoTextField::UpdateCache(SDL_Renderer* target) {
 
 void SagoTextField::GetRenderedSize(const char* text, int* w, int* h) {
 	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
-	int ret = TTF_SizeUTF8(font, text, w, h);
-	if (ret) {
+	if (!TTF_GetStringSize(font, text, 0, w, h)) {
 		if (w) {
 			*w = 0;
 		}
 		if (h) {
 			*h = 0;
 		}
-		std::cerr << "GetRenderedSize failed to find size of " << text << ". Error code: " << ret << "\n";
+		std::cerr << "GetRenderedSize failed to find size of " << text << "\n";
 	}
 }
 
@@ -203,9 +202,11 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment
 	if (!data->texture) {
 		return;
 	}
-	int texW = 0;
-	int texH = 0;
-	SDL_QueryTexture(data->texture, NULL, NULL, &texW, &texH);
+	float texWf = 0;
+	float texHf = 0;
+	SDL_GetTextureSize(data->texture, &texWf, &texHf);
+	int texW = (int)texWf;
+	int texH = (int)texHf;
 	if (alignment == Alignment::center) {
 		x -= texW/2;
 	}
@@ -220,19 +221,23 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment
 	}
 	SDL_Rect dstrect = { x, y, texW, texH };
 	if (data->outlineTexture) {
-		int outlineTexW = 0;
-		int outlineTexH = 0;
-		SDL_QueryTexture(data->outlineTexture, NULL, NULL, &outlineTexW, &outlineTexH);
+		float outlineTexWf = 0;
+		float outlineTexHf = 0;
+		SDL_GetTextureSize(data->outlineTexture, &outlineTexWf, &outlineTexHf);
+		int outlineTexW = (int)outlineTexWf;
+		int outlineTexH = (int)outlineTexHf;
 		SDL_Rect dstrectOutline = { x-(data->outline), y-(data->outline), outlineTexW, outlineTexH };
 		if (resize) {
 			resize->LogicalToPhysical(dstrectOutline);
 		}
-		SDL_RenderCopy(target, data->outlineTexture, NULL, &dstrectOutline);
+		SDL_FRect fdstrectOutline = {(float)dstrectOutline.x, (float)dstrectOutline.y, (float)dstrectOutline.w, (float)dstrectOutline.h};
+		SDL_RenderTexture(target, data->outlineTexture, NULL, &fdstrectOutline);
 	}
 	if (resize) {
 		resize->LogicalToPhysical(dstrect);
 	}
-	SDL_RenderCopy(target, data->texture, NULL, &dstrect);
+	SDL_FRect fdstrect = {(float)dstrect.x, (float)dstrect.y, (float)dstrect.w, (float)dstrect.h};
+	SDL_RenderTexture(target, data->texture, NULL, &fdstrect);
 }
 
 }  //namespace sago

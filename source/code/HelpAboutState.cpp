@@ -33,20 +33,21 @@ https://blockattack.net
 #include "fmt/core.h"
 
 
+// SDL3 encodes versions as (major*1000000 + minor*1000 + patch)
+static std::string sdl_version_int_as_string(int version) {
+	int major = version / 1000000;
+	int minor = (version / 1000) % 1000;
+	int patch = version % 1000;
+	return fmt::format("{}.{}.{}", major, minor, patch);
+}
+
 template <class T>
 std::string sdl_verison_as_string(const T& version) {
-	std::string ret = fmt::format("{}.{}.{}", version.major, version.minor, version.patch);
-	return ret;
+	return fmt::format("{}.{}.{}", (int)version.major, (int)version.minor, (int)version.patch);
 }
 
 
 HelpAboutState::HelpAboutState() {
-	SDL_RendererInfo renderInfo;
-	SDL_version compiled;
-	SDL_version linked;
-	SDL_GetRendererInfo(globalData.screen, &renderInfo);
-	SDL_VERSION(&compiled);
-	SDL_GetVersion(&linked);
 	const char* audio_driver_name = SDL_GetCurrentAudioDriver();
 	if (!audio_driver_name) {
 		audio_driver_name = _("No audio driver");
@@ -57,22 +58,16 @@ HelpAboutState::HelpAboutState() {
 	infoStream << _("Version:") << " " << VERSION_NUMBER << "\n";
 	infoStream << _("Homepage:") << " " << "https://blockattack.net\n";
 	infoStream << _("Github page:") << " " << "https://github.com/blockattack/blockattack-game\n";
-	infoStream << _("SDL render:") << " " << renderInfo.name << "\n";
+	infoStream << _("SDL render:") << " " << SDL_GetRendererName(globalData.screen) << "\n";
 	infoStream << _("SDL audio driver:") << " " << audio_driver_name << "\n";
-	infoStream << _("SDL compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
-	infoStream << _("SDL linked version:") << " " << sdl_verison_as_string(linked) << "\n";
-	SDL_IMAGE_VERSION(&compiled);
-	const SDL_version* sdl_link_version=IMG_Linked_Version();
-	infoStream << _("SDL_image compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
-	infoStream << _("SDL_image linked version:") << " " << sdl_verison_as_string(*sdl_link_version) << "\n";
-	SDL_MIXER_VERSION(&compiled);
-	sdl_link_version = Mix_Linked_Version();
-	infoStream << _("SDL_mixer compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
-	infoStream << _("SDL_mixer linked version:") << " " << sdl_verison_as_string(*sdl_link_version) << "\n";
-	SDL_TTF_VERSION(&compiled);
-	sdl_link_version = TTF_Linked_Version();
-	infoStream << _("SDL_ttf compiled version:") << " " << sdl_verison_as_string(compiled) << "\n";
-	infoStream << _("SDL_ttf linked version:") << " " << sdl_verison_as_string(*sdl_link_version) << "\n";
+	infoStream << _("SDL compiled version:") << " " << sdl_version_int_as_string(SDL_VERSION) << "\n";
+	infoStream << _("SDL linked version:") << " " << sdl_version_int_as_string(SDL_GetVersion()) << "\n";
+	infoStream << _("SDL_image compiled version:") << " " << sdl_version_int_as_string(SDL_IMAGE_VERSION) << "\n";
+	infoStream << _("SDL_image linked version:") << " " << sdl_version_int_as_string(IMG_Version()) << "\n";
+	infoStream << _("SDL_mixer compiled version:") << " " << sdl_version_int_as_string(SDL_MIXER_VERSION) << "\n";
+	infoStream << _("SDL_mixer linked version:") << " " << sdl_version_int_as_string(MIX_Version()) << "\n";
+	infoStream << _("SDL_ttf compiled version:") << " " << sdl_version_int_as_string(SDL_TTF_VERSION) << "\n";
+	infoStream << _("SDL_ttf linked version:") << " " << sdl_version_int_as_string(TTF_Version()) << "\n";
 	PHYSFS_Version physfs_compiled_version;
 	PHYSFS_Version physfs_linked_version;
 	PHYSFS_VERSION(&physfs_compiled_version);

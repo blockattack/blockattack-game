@@ -45,22 +45,30 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
 
-# Setup SDL2 and extensions
-find_package(SDL2 REQUIRED)
+# Setup SDL3 and extensions
+option(BLOCKATTACK_DOWNLOAD_SDL3 "Download and build SDL3 from source (required on Ubuntu 22.04)" ON)
 
-# Try modern CMake approach first, fallback to pkg-config for cross-compilation (e.g., MXE)
-find_package(SDL2_image QUIET)
-find_package(SDL2_mixer QUIET)
-find_package(SDL2_ttf QUIET)
-
-set(SDL2_USE_PKGCONFIG OFF)
-if(NOT SDL2_image_FOUND OR NOT SDL2_mixer_FOUND OR NOT SDL2_ttf_FOUND)
-	set(SDL2_USE_PKGCONFIG ON)
-	find_package(PkgConfig REQUIRED)
-	# When using pkg-config, always search for all SDL2 extensions
-	pkg_search_module(SDL2_image REQUIRED SDL2_image)
-	pkg_search_module(SDL2_mixer REQUIRED SDL2_mixer)
-	pkg_search_module(SDL2_ttf REQUIRED SDL2_ttf)
+if(BLOCKATTACK_DOWNLOAD_SDL3)
+	include(FetchContent)
+	set(FETCHCONTENT_QUIET OFF)
+	FetchContent_Declare(SDL3
+		URL https://github.com/libsdl-org/SDL/releases/download/release-3.4.8/SDL3-3.4.8.tar.gz
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+	FetchContent_Declare(SDL3_image
+		URL https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.4/SDL3_image-3.4.4.tar.gz
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+	FetchContent_Declare(SDL3_mixer
+		URL https://github.com/libsdl-org/SDL_mixer/releases/download/release-3.2.2/SDL3_mixer-3.2.2.tar.gz
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+	FetchContent_Declare(SDL3_ttf
+		URL https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+	FetchContent_MakeAvailable(SDL3 SDL3_image SDL3_mixer SDL3_ttf)
+else()
+	find_package(SDL3 REQUIRED CONFIG)
+	find_package(SDL3_image REQUIRED CONFIG)
+	find_package(SDL3_mixer REQUIRED CONFIG)
+	find_package(SDL3_ttf REQUIRED CONFIG)
 endif()
 
 
@@ -125,31 +133,18 @@ endif()
 target_include_directories(blockattack SYSTEM PRIVATE "source/code/Libs/imgui")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
-if(SDL2_USE_PKGCONFIG)
-	target_include_directories(blockattack PRIVATE ${SDL2_image_INCLUDE_DIRS})
-	target_include_directories(blockattack PRIVATE ${SDL2_mixer_INCLUDE_DIRS})
-	target_include_directories(blockattack PRIVATE ${SDL2_ttf_INCLUDE_DIRS})
-	# Add library directories for pkg-config-based libraries
-	target_link_directories(blockattack PRIVATE ${SDL2_image_LIBRARY_DIRS})
-	target_link_directories(blockattack PRIVATE ${SDL2_mixer_LIBRARY_DIRS})
-	target_link_directories(blockattack PRIVATE ${SDL2_ttf_LIBRARY_DIRS})
-endif()
 target_include_directories(blockattack PRIVATE ${Intl_INCLUDE_DIRS})
 
 target_link_libraries(blockattack PRIVATE
-	SDL2::SDL2
+	SDL3::SDL3
+	SDL3_image::SDL3_image
+	SDL3_mixer::SDL3_mixer
+	SDL3_ttf::SDL3_ttf
 	fmt
 	platform_folders
 	physfs
 	${Boost_LIBRARIES}
 )
-
-# Link SDL2 extensions - use imported targets if available, otherwise use pkg-config variables
-if(SDL2_USE_PKGCONFIG)
-	target_link_libraries(blockattack PRIVATE ${SDL2_image_LINK_LIBRARIES} ${SDL2_mixer_LINK_LIBRARIES} ${SDL2_ttf_LINK_LIBRARIES})
-else()
-	target_link_libraries(blockattack PRIVATE SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf)
-endif()
 
 if (MACOSX)
 	target_link_libraries(blockattack PRIVATE intl)

@@ -6,3 +6,4 @@ Makefile
 CMakeCache.txt
 CMakeFiles
 CPack*
+_deps

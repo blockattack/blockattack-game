@@ -26,7 +26,7 @@ http://blockattack.net
 #define	_MENUSYSTEM_H
 
 #include <string>
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include <map>
 #include <vector>
 #include "sago/SagoSprite.hpp"
@@ -114,8 +114,8 @@ public:
 
 	int getAdjustButtonSize() const { return standardButton.ysize; };
 
-	mutable Uint32 leftButtonMarkTime = 0;
-	mutable Uint32 rightButtonMarkTime = 0;
+	mutable Uint64 leftButtonMarkTime = 0;
+	mutable Uint64 rightButtonMarkTime = 0;
 	static const Uint32 MARK_DURATION = 200; // milliseconds
 };
 

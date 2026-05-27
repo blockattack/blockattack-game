@@ -39,7 +39,7 @@ https://blockattack.net
  * @param y
  */
 static void RenderRowOfBricks(SDL_Renderer* target, const std::string& brickStr, int x, int y) {
-	Uint32 tick = SDL_GetTicks();
+	Uint64 tick = SDL_GetTicks();
 	for (size_t i = 0; i < brickStr.size(); ++i) {
 		bool bomb = false;
 		char brickChar = brickStr[i];
@@ -61,10 +61,10 @@ public:
 	std::string brickStr = "abc";
 	int cursorPos = 0;
 	int state = 0; //0=move left, 1 = switch, 2 = move right, 3 = switch
-	Uint32 lastTick = 0;
-	Uint32 animationSpeed = 2000;
+	Uint64 lastTick = 0;
+	Uint64 animationSpeed = 2000;
 
-	void Update (Uint32 tick) {
+	void Update (Uint64 tick) {
 		if (tick > lastTick + animationSpeed) {
 			lastTick = tick;
 			switch (state) {
@@ -134,7 +134,7 @@ const double PI  =3.141592653589793238463;
 static void RenderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2) {
 	globalData.logicalResize.LogicalToPhysical(&x1, &y1);
 	globalData.logicalResize.LogicalToPhysical(&x2, &y2);
-	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+	SDL_RenderLine(renderer, x1, y1, x2, y2);
 }
 
 static void DrawArrow(SDL_Renderer* target, int x1, int y1, int x2, int y2) {

@@ -25,6 +25,7 @@ https://blockattack.net
 #define SCOPEHELPERS_HPP
 
 #include "common.h"
+#include "global.hpp"
 
 
 class SDL_RendererHolder {
@@ -43,11 +44,11 @@ public:
 class SDL_TextInput {
 public:
 	SDL_TextInput() {
-		SDL_StartTextInput();
+		SDL_StartTextInput(sdlWindow);
 	}
 
 	~SDL_TextInput() {
-		SDL_StopTextInput();
+		SDL_StopTextInput(sdlWindow);
 	}
 };
 

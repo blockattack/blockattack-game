@@ -29,7 +29,7 @@ https://blockattack.net
 #include "gamecontroller.h"
 
 static std::string getLabelForSupportedControllerNames() {
-	std::string s = _("Only SDL2 compatible controllers are supported!\nSupported controllers: ");
+	std::string s = _("Only SDL3 compatible controllers are supported!\nSupported controllers: ");
 	for (size_t i = 0 ; i<GetSupportedControllerNames().size(); ++i ) {
 		if (i != 0) {
 			s+= ", ";
@@ -70,7 +70,7 @@ void HelpGamepadState::ProcessInput(const SDL_Event& event, bool& processed) {
 static void RenderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2) {
 	globalData.logicalResize.LogicalToPhysical(&x1, &y1);
 	globalData.logicalResize.LogicalToPhysical(&x2, &y2);
-	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+	SDL_RenderLine(renderer, x1, y1, x2, y2);
 }
 
 void HelpGamepadState::Draw(SDL_Renderer* target) {
