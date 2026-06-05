@@ -7,6 +7,46 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -yy build-essential libphysfs-dev libboost-dev libfmt-dev cmake libboost-program-options-dev libutfcpp-dev zip gettext libssl-dev
 # SDL3 is not in Ubuntu 22.04 repos; CMake FetchContent will download and build SDL3 (BLOCKATTACK_DOWNLOAD_SDL3=ON by default)
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    build-essential \
+    cmake \
+    curl \
+    ca-certificates \
+    pkg-config \
+    libphysfs-dev \
+    libboost-dev \
+    libboost-program-options-dev \
+    zlib1g-dev \
+    libfreetype-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libogg-dev \
+    libvorbis-dev \
+    libasound2-dev \
+    libpulse-dev \
+    libx11-dev \
+    libxext-dev \
+    libxrandr-dev \
+    libxi-dev \
+    libxcursor-dev \
+    libxinerama-dev \
+    libxss-dev \
+    libxtst-dev \
+    libwayland-dev \
+    wayland-protocols \
+    libxkbcommon-dev \
+    libdrm-dev \
+    libgbm-dev \
+    libudev-dev \
+    libdbus-1-dev \
+    libibus-1.0-dev \
+    libsamplerate0-dev \
+    libusb-1.0-0-dev \
+    libdecor-0-dev \
+    libpipewire-0.3-dev \
+    zip \
+    gettext
+
 
 RUN mkdir -p /staging/blockattack-game
 

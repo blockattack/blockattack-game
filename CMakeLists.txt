@@ -52,17 +52,17 @@ if(BLOCKATTACK_DOWNLOAD_SDL3)
 	include(FetchContent)
 	set(FETCHCONTENT_QUIET OFF)
 	FetchContent_Declare(SDL3
-		URL https://github.com/libsdl-org/SDL/releases/download/release-3.4.8/SDL3-3.4.8.tar.gz
-		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+		URL https://github.com/libsdl-org/SDL/releases/download/release-3.4.8/SDL3-3.4.8.tar.gz)
 	FetchContent_Declare(SDL3_image
-		URL https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.4/SDL3_image-3.4.4.tar.gz
-		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+		URL https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.4/SDL3_image-3.4.4.tar.gz)
 	FetchContent_Declare(SDL3_mixer
-		URL https://github.com/libsdl-org/SDL_mixer/releases/download/release-3.2.2/SDL3_mixer-3.2.2.tar.gz
-		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+		URL https://github.com/libsdl-org/SDL_mixer/releases/download/release-3.2.2/SDL3_mixer-3.2.2.tar.gz)
 	FetchContent_Declare(SDL3_ttf
-		URL https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz
-		DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+		URL https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz)
 	FetchContent_MakeAvailable(SDL3 SDL3_image SDL3_mixer SDL3_ttf)
 else()
 	find_package(SDL3 REQUIRED CONFIG)
