@@ -25,13 +25,6 @@ SOFTWARE.
 #include "SagoSprite.hpp"
 #include <iostream>
 
-static inline SDL_FRect toFRect(const SDL_Rect& r) {
-	return {(float)r.x, (float)r.y, (float)r.w, (float)r.h};
-}
-static inline SDL_FPoint toFPoint(const SDL_Point& p) {
-	return {(float)p.x, (float)p.y};
-}
-
 #ifndef M_PI
 // M_PI is a custom extension that most C++ toolchains provide. Out Windows compiler does not provide it.
 # define M_PI 3.14159265358979323846
@@ -55,7 +48,7 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, Sago
 }
 
 void SagoSprite::DrawRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, const double angleRadian, SagoLogicalResize* resize) const {
-	SDL_Point center = {this->origin.x, this->origin.y};
+	SDL_FPoint center = { static_cast<float>(this->origin.x), static_cast<float>(this->origin.y) };
 	DrawScaledAndRotated(target, frameTime, x, y, imgCord.w, imgCord.h, angleRadian, &center, SDL_FLIP_NONE, resize);
 }
 
@@ -63,7 +56,7 @@ void SagoSprite::DrawScaled(SDL_Renderer* target, Sint32 frameTime, int x, int y
 	DrawScaledAndRotated(target, frameTime, x, y, w, h, 0.0, nullptr, SDL_FLIP_NONE, resize);
 }
 
-void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, const double angleRadian, const SDL_Point* center, const SDL_FlipMode flip, SagoLogicalResize* resize) const {
+void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, int x, int y, int w, int h, const double angleRadian, const SDL_FPoint* center, const SDL_FlipMode flip, SagoLogicalResize* resize) const {
 	if (!tex.get()) {
 		std::cerr << "Texture is null!\n";
 	}
@@ -79,27 +72,27 @@ void SagoSprite::DrawScaledAndRotated(SDL_Renderer* target, Sint32 frameTime, in
 		pos.h = h;
 	}
 	double angleDegress = angleRadian/M_PI*180.0;
-	SDL_Point scaledCenter;
-	const SDL_Point* centerToUse = center;
+	SDL_FPoint scaledCenter;
+	const SDL_FPoint* centerToUse = center;
 	if (resize) {
 		SDL_Rect originalPos = pos;
 		resize->LogicalToPhysical(pos);
 		// Scale the center point proportionally if resize is active
 		if (center) {
-			scaledCenter.x = (center->x * pos.w) / originalPos.w;
-			scaledCenter.y = (center->y * pos.h) / originalPos.h;
+			scaledCenter.x = (center->x * static_cast<float>(pos.w)) / static_cast<float>(originalPos.w);
+			scaledCenter.y = (center->y * static_cast<float>(pos.h)) / static_cast<float>(originalPos.h);
 			centerToUse = &scaledCenter;
 		}
 	}
-	SDL_FRect frect = toFRect(rect);
-	SDL_FRect fpos = toFRect(pos);
-	SDL_FPoint fcenter;
-	const SDL_FPoint* fcenterToUse = nullptr;
-	if (centerToUse) {
-		fcenter = toFPoint(*centerToUse);
-		fcenterToUse = &fcenter;
-	}
-	SDL_RenderTextureRotated(target, tex.get(), &frect, &fpos, angleDegress, fcenterToUse, flip);
+	const SDL_FRect srcFRect = {
+		static_cast<float>(rect.x), static_cast<float>(rect.y),
+		static_cast<float>(rect.w), static_cast<float>(rect.h)
+	};
+	const SDL_FRect dstFRect = {
+		static_cast<float>(pos.x), static_cast<float>(pos.y),
+		static_cast<float>(pos.w), static_cast<float>(pos.h)
+	};
+	SDL_RenderTextureRotated(target, tex.get(), &srcFRect, &dstFRect, angleDegress, centerToUse, flip);
 }
 
 void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, const SDL_Rect& part, SagoLogicalResize* resize) const {
@@ -115,9 +108,15 @@ void SagoSprite::Draw(SDL_Renderer* target, Sint32 frameTime, int x, int y, cons
 	if (resize) {
 		resize->LogicalToPhysical(pos);
 	}
-	SDL_FRect frect = toFRect(rect);
-	SDL_FRect fpos = toFRect(pos);
-	SDL_RenderTexture(target, tex.get(), &frect, &fpos);
+	const SDL_FRect srcFRect = {
+		static_cast<float>(rect.x), static_cast<float>(rect.y),
+		static_cast<float>(rect.w), static_cast<float>(rect.h)
+	};
+	const SDL_FRect dstFRect = {
+		static_cast<float>(pos.x), static_cast<float>(pos.y),
+		static_cast<float>(pos.w), static_cast<float>(pos.h)
+	};
+	SDL_RenderTexture(target, tex.get(), &srcFRect, &dstFRect);
 }
 
 void SagoSprite::DrawProgressive(SDL_Renderer* target, float progress, int x, int y, SagoLogicalResize* resize) const {
@@ -172,9 +171,15 @@ void SagoSprite::DrawBounded(SDL_Renderer* target, Sint32 frameTime, int x, int 
 	if (resize) {
 		resize->LogicalToPhysical(pos);
 	}
-	SDL_FRect frect2 = toFRect(rect);
-	SDL_FRect fpos2 = toFRect(pos);
-	SDL_RenderTexture(target, tex.get(), &frect2, &fpos2);
+	const SDL_FRect srcFRect = {
+		static_cast<float>(rect.x), static_cast<float>(rect.y),
+		static_cast<float>(rect.w), static_cast<float>(rect.h)
+	};
+	const SDL_FRect dstFRect = {
+		static_cast<float>(pos.x), static_cast<float>(pos.y),
+		static_cast<float>(pos.w), static_cast<float>(pos.h)
+	};
+	SDL_RenderTexture(target, tex.get(), &srcFRect, &dstFRect);
 }
 
 void SagoSprite::SetOrigin(const SDL_Rect& newOrigin) {

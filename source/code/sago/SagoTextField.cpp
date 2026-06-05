@@ -181,14 +181,23 @@ void SagoTextField::UpdateCache(SDL_Renderer* target) {
 
 void SagoTextField::GetRenderedSize(const char* text, int* w, int* h) {
 	TTF_Font* font = data->tex->getFontPtr(data->fontName, data->fontSize);
-	if (!TTF_GetStringSize(font, text, 0, w, h)) {
+	int out_w = 0;
+	int out_h = 0;
+	if (!TTF_GetStringSize(font, text, 0, &out_w, &out_h)) {
 		if (w) {
 			*w = 0;
 		}
 		if (h) {
 			*h = 0;
 		}
-		std::cerr << "GetRenderedSize failed to find size of " << text << "\n";
+		std::cerr << "GetRenderedSize failed to find size of " << text << ": " << SDL_GetError() << "\n";
+		return;
+	}
+	if (w) {
+		*w = out_w;
+	}
+	if (h) {
+		*h = out_h;
 	}
 }
 
@@ -202,11 +211,8 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment
 	if (!data->texture) {
 		return;
 	}
-	float texWf = 0;
-	float texHf = 0;
-	SDL_GetTextureSize(data->texture, &texWf, &texHf);
-	int texW = (int)texWf;
-	int texH = (int)texHf;
+	int texW = data->texture->w;
+	int texH = data->texture->h;
 	if (alignment == Alignment::center) {
 		x -= texW/2;
 	}
@@ -221,23 +227,26 @@ void SagoTextField::Draw(SDL_Renderer* target, int x, int y, Alignment alignment
 	}
 	SDL_Rect dstrect = { x, y, texW, texH };
 	if (data->outlineTexture) {
-		float outlineTexWf = 0;
-		float outlineTexHf = 0;
-		SDL_GetTextureSize(data->outlineTexture, &outlineTexWf, &outlineTexHf);
-		int outlineTexW = (int)outlineTexWf;
-		int outlineTexH = (int)outlineTexHf;
+		int outlineTexW = data->outlineTexture->w;
+		int outlineTexH = data->outlineTexture->h;
 		SDL_Rect dstrectOutline = { x-(data->outline), y-(data->outline), outlineTexW, outlineTexH };
 		if (resize) {
 			resize->LogicalToPhysical(dstrectOutline);
 		}
-		SDL_FRect fdstrectOutline = {(float)dstrectOutline.x, (float)dstrectOutline.y, (float)dstrectOutline.w, (float)dstrectOutline.h};
-		SDL_RenderTexture(target, data->outlineTexture, NULL, &fdstrectOutline);
+		SDL_FRect dstrectOutlineF = {
+			static_cast<float>(dstrectOutline.x), static_cast<float>(dstrectOutline.y),
+			static_cast<float>(dstrectOutline.w), static_cast<float>(dstrectOutline.h)
+		};
+		SDL_RenderTexture(target, data->outlineTexture, NULL, &dstrectOutlineF);
 	}
 	if (resize) {
 		resize->LogicalToPhysical(dstrect);
 	}
-	SDL_FRect fdstrect = {(float)dstrect.x, (float)dstrect.y, (float)dstrect.w, (float)dstrect.h};
-	SDL_RenderTexture(target, data->texture, NULL, &fdstrect);
+	SDL_FRect dstrectF = {
+		static_cast<float>(dstrect.x), static_cast<float>(dstrect.y),
+		static_cast<float>(dstrect.w), static_cast<float>(dstrect.h)
+	};
+	SDL_RenderTexture(target, data->texture, NULL, &dstrectF);
 }
 
 }  //namespace sago

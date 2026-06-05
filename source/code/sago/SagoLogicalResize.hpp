@@ -24,6 +24,7 @@ SOFTWARE.
 
 #pragma once
 #include <algorithm>
+#include <cmath>
 #include <SDL3/SDL.h>
 
 
@@ -123,10 +124,10 @@ public:
 	 */
 	void LogicalToPhysical(int* x, int* y) const {
 		if (x) {
-			*x = *x * scale_factor_ + left_margin_;
+			*x = std::round(*x * scale_factor_ + left_margin_);
 		}
 		if (y) {
-			*y = *y * scale_factor_ + top_margin_;
+			*y = std::round(*y * scale_factor_ + top_margin_);
 		}
 	}
 
@@ -148,6 +149,22 @@ public:
 		LogicalToPhysical(input.x + input.w + 1, input.y + input.h + 1, inout.w, inout.h);
 		inout.w -= inout.x - 1;
 		inout.h -= inout.y - 1;
+	}
+
+	/**
+	 * @brief Converts an SDL_FRect from logical to physical coordinates.
+	 *
+	 * Equivalent to the SDL_Rect overload, but for SDL3's float rectangles
+	 * (which all the renderer APIs take).
+	 */
+	void LogicalToPhysical(SDL_FRect& inout) const {
+		SDL_Rect tmp{ static_cast<int>(inout.x), static_cast<int>(inout.y),
+		              static_cast<int>(inout.w), static_cast<int>(inout.h) };
+		LogicalToPhysical(tmp);
+		inout.x = static_cast<float>(tmp.x);
+		inout.y = static_cast<float>(tmp.y);
+		inout.w = static_cast<float>(tmp.w);
+		inout.h = static_cast<float>(tmp.h);
 	}
 
 	/**

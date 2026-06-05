@@ -23,8 +23,8 @@ SOFTWARE.
 */
 
 #include <SDL3/SDL.h>
-#include <SDL3_mixer/SDL_mixer.h>      //Used for sound & music
-#include <SDL3_image/SDL_image.h>      //To load PNG images!
+#include <SDL3_mixer/SDL_mixer.h>   //Used for sound & music
+#include <SDL3_image/SDL_image.h>   //To load PNG images!
 #include <SDL3_ttf/SDL_ttf.h>
 #include <physfs.h>         //Abstract file system. To use containers
 #include <string>
@@ -96,8 +96,14 @@ public:
 	MusicHandler getMusicHandler(const std::string& musicName) const;
 	MIX_Audio* getSoundPtr(const std::string& soundName) const;
 	SoundHandler getSoundHandler(const std::string& soundName) const;
-	void setMixer(MIX_Mixer* mixer);
 	void setVerbose(bool value);
+
+	/**
+	 * Set the mixer used to load and play audio. The mixer is not owned by
+	 * the holder; the caller keeps ownership and must keep it alive while
+	 * the holder is in use. If no mixer is set, audio loading is a no-op.
+	 */
+	void setMixer(MIX_Mixer* mixer);
 
 	/**
 	 * Invalidates all pointers returned by any of the get variables
