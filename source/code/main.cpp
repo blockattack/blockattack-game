@@ -777,6 +777,7 @@ static std::deque<BlockGameAction> replayQueue;
 static size_t replayActionIndex = 0;
 static bool isReplayMode = false;
 static unsigned int replayTimeOffset = 0; // Offset between original game time and replay time
+static bool latestReplaySaved = false;
 
 /**
  * startSpeed is a value from 0 to 4
@@ -802,6 +803,7 @@ static void StartSinglePlayerEndless(int startSpeed) {
 static void StartSinglePlayerTimeTrial() {
 	BlockGameStartInfo startInfo;
 	startInfo.ticks = SDL_GetTicks();
+	startInfo.startBlocks = startInfo.ticks;
 	startInfo.timeTrial = true;
 	startInfo.basicBlockVariants = Config::getInstance()->getInt("basic_block_variants", 6);
 	player1->NewGame(startInfo);
@@ -1471,6 +1473,7 @@ int runGame(Gametype gametype, int level) {
 			replayQueue.clear();
 			replayActionIndex = 0;
 			replayTimeOffset = 0;
+			latestReplaySaved = false;
 			switch (gametype) {
 			case Gametype::SinglePlayerTimeTrial:
 				StartSinglePlayerTimeTrial();
@@ -1735,33 +1738,35 @@ int runGame(Gametype gametype, int level) {
 					}
 				}
 
-				if (GameControllerExtIsPlayerUpEvent(1, event)) {
-					a.action = BlockGameAction::Action::MOVE;
-					a.way = 'N';
-					theGame.DoAction(a);
-				}
-				if (GameControllerExtIsPlayerDownEvent(1, event)) {
-					a.action = BlockGameAction::Action::MOVE;
-					a.way = 'S';
-					theGame.DoAction(a);
-				}
-				if (GameControllerExtIsPlayerLeftEvent(1, event)) {
-					a.action = BlockGameAction::Action::MOVE;
-					a.way = 'W';
-					theGame.DoAction(a);
-				}
-				if (GameControllerExtIsPlayerRightEvent (1, event)) {
-					a.action = BlockGameAction::Action::MOVE;
-					a.way = 'E';
-					theGame.DoAction(a);
-				}
-				if (GameControllerExtIsPlayerSwitchEvent(1, event)) {
-					a.action = BlockGameAction::Action::SWITCH;
-					theGame.DoAction(a);
-				}
-				if (GameControllerExtIsPlayerPushEvent(1, event)) {
-					a.action = BlockGameAction::Action::PUSH;
-					theGame.DoAction(a);
+				if (!isReplayMode) {
+					if (GameControllerExtIsPlayerUpEvent(1, event)) {
+						a.action = BlockGameAction::Action::MOVE;
+						a.way = 'N';
+						theGame.DoAction(a);
+					}
+					if (GameControllerExtIsPlayerDownEvent(1, event)) {
+						a.action = BlockGameAction::Action::MOVE;
+						a.way = 'S';
+						theGame.DoAction(a);
+					}
+					if (GameControllerExtIsPlayerLeftEvent(1, event)) {
+						a.action = BlockGameAction::Action::MOVE;
+						a.way = 'W';
+						theGame.DoAction(a);
+					}
+					if (GameControllerExtIsPlayerRightEvent (1, event)) {
+						a.action = BlockGameAction::Action::MOVE;
+						a.way = 'E';
+						theGame.DoAction(a);
+					}
+					if (GameControllerExtIsPlayerSwitchEvent(1, event)) {
+						a.action = BlockGameAction::Action::SWITCH;
+						theGame.DoAction(a);
+					}
+					if (GameControllerExtIsPlayerPushEvent(1, event)) {
+						a.action = BlockGameAction::Action::PUSH;
+						theGame.DoAction(a);
+					}
 				}
 				if (GameControllerExtIsPlayerUpEvent(2, event)) {
 					a.action = BlockGameAction::Action::MOVE;
@@ -1800,7 +1805,7 @@ int runGame(Gametype gametype, int level) {
 						int y = 0;
 
 						theGame.GetBrickCoordinateFromMouse(pressed, mousex, mousey, x, y);
-						if (pressed) {
+						if (pressed && !isReplayMode) {
 							a.action = BlockGameAction::Action::MOUSE_DOWN;
 							a.x = x;
 							a.y = y;
@@ -1821,7 +1826,7 @@ int runGame(Gametype gametype, int level) {
 						int x = 0;
 						int y = 0;
 						theGame.GetBrickCoordinateFromMouse(pressed, mousex, mousey, x, y);
-						if (pressed) {
+						if (pressed && !isReplayMode) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame.DoAction(a);
 						}
@@ -1837,9 +1842,11 @@ int runGame(Gametype gametype, int level) {
 						int x = mousex;
 						int y = mousey;
 						a.action = BlockGameAction::Action::MOUSE_UP;
-						theGame.DoAction(a);
+						if (!isReplayMode) {
+							theGame.DoAction(a);
+						}
 						theGame2.DoAction(a);
-						if (theGame.IsInTheBoard(x,y) && theGame.IsUnderTheBoard(mouseDownX, mouseDownY)) {
+						if (!isReplayMode && theGame.IsInTheBoard(x,y) && theGame.IsUnderTheBoard(mouseDownX, mouseDownY)) {
 							a.action = BlockGameAction::Action::PUSH;
 							theGame.DoAction(a);
 						}
@@ -1855,7 +1862,7 @@ int runGame(Gametype gametype, int level) {
 					int x = 0;
 					int y = 0;
 					theGame.GetMouseCursor(pressed, x, y);
-					if (pressed) {
+					if (pressed && !isReplayMode) {
 						int mx = 0;
 						int my = 0;
 						theGame.GetBrickCoordinateFromMouse(pressed, mousex, mousey, mx, my);
@@ -1978,6 +1985,18 @@ int runGame(Gametype gametype, int level) {
 				theGame.DoAction(replayAction);
 				replayActionIndex++;
 			}
+			// Smooth pacing: the pending UPDATE is the compressed form of the
+			// per-frame updates that covered this interval during recording, so
+			// advancing to the wall clock now is state-identical. Never synthesize
+			// when the next action is an input: during recording that input ran
+			// before the simulation advanced past the preceding recorded UPDATE.
+			if (replayActionIndex < replayQueue.size()
+			        && replayQueue[replayActionIndex].action == BlockGameAction::Action::UPDATE) {
+				BlockGameAction u;
+				u.action = BlockGameAction::Action::UPDATE;
+				u.tick = currentTick;
+				theGame.DoAction(u);
+			}
 		}
 		else {
 			//Updates the objects (only when not in replay mode)
@@ -2083,7 +2102,9 @@ int runGame(Gametype gametype, int level) {
 		}
 #endif
 		// Save latest single player replay for replay feature
-		if (theGame.isGameOver() && !twoPlayers && !theGame.GetAIenabled()) {
+		if (theGame.isGameOver() && !twoPlayers && !theGame.GetAIenabled()
+		        && !isReplayMode && !latestReplaySaved) {
+			latestReplaySaved = true;
 			SaveLatestSinglePlayerReplay(theGame.GetBlockGameInfo());
 		}
 

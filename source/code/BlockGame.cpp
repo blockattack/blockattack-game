@@ -374,6 +374,7 @@ void BlockGame::NewGameInternal( unsigned int ticks) {
 	stageButtonStatus = SBdontShow;
 	hangTicks = ticks / FRAMELENGTH;  // Must be relative to ticks for replay determinism
 	bGarbageFallLeft = false;  // Reset for deterministic garbage placement
+	nextRandomNumber = 0;  // Reset for replay determinism; putStartBlocks overrides it in modes with a seed
 	nrFellDown = 0;
 	nrPushedPixel = 0;
 	nrStops = 0;
