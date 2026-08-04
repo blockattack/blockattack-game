@@ -2,11 +2,12 @@
 set -e
 export LC_ALL=C
 export TZ=UTC
-zip -9ojX  Game/blockattack.data source/AUTH
 if [ "$BLOCKATTACK_RESET_PERMISSIONS" = "1" ]; then
 	find Game/data -type f -exec chmod 644 {} +
 	find Game/data -type d -exec chmod 755 {} +
+    chmod 644 source/AUTH
 fi
+zip -9ojX  Game/blockattack.data source/AUTH
 pushd Game/data
 zip -9oX $(find ../blockattack.data ./* | sort) -x \*svn*
 popd
