@@ -2,7 +2,9 @@
 set -e
 export LC_ALL=C
 export TZ=UTC
+BLOCKATTACK_RESET_PERMISSIONS="${BLOCKATTACK_RESET_PERMISSIONS:-1}"
 if [ "$BLOCKATTACK_RESET_PERMISSIONS" = "1" ]; then
+	echo "Resetting permissions of Game/data files and directories"
 	find Game/data -type f -exec chmod 644 {} +
 	find Game/data -type d -exec chmod 755 {} +
     chmod 644 source/AUTH
