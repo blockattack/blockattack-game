@@ -1,8 +1,12 @@
 FROM sago007/docker_blockattack
 
+RUN apt-get update && apt-get install -y wixl wixl-data && rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p /staging/blockattack-game
 
 RUN mkdir -p /staging/package/
+
+RUN mkdir -p /staging/msi/
 
 RUN mkdir -p /output
 
@@ -26,6 +30,15 @@ mkdir -p mods && cp /staging/blockattack-game/Game/mods/1.3.0.bricks.data ./mods
 cp -r /staging/blockattack-game/source/misc/translation/locale ./ && \
 echo "[InternetShortcut]" > "Block Attack - Rise Of the Blocks.url" && \
 echo "URL=https://blockattack.net" >> "Block Attack - Rise Of the Blocks.url" && \
+cd /staging/blockattack-game && \
+find /staging/package/blockattack-${BLOCKATTACK_VERSION}/ -type f | \
+wixl-heat -p /staging/package/blockattack-${BLOCKATTACK_VERSION}/ \
+--component-group CG.blockattack --var var.SourceDir \
+--directory-ref INSTALLDIR > /staging/msi/files.wxs && \
+wixl -D SourceDir=/staging/package/blockattack-${BLOCKATTACK_VERSION} \
+-D Version=${BLOCKATTACK_VERSION%%-*} \
+"windows installer/msi/blockattack.wxs" /staging/msi/files.wxs \
+-o /output/blockattack-${BLOCKATTACK_VERSION}.msi && \
 cd /staging/package/ && \
 zip -r /output/blockattack-${BLOCKATTACK_VERSION}-windows-no-installer.zip "blockattack-${BLOCKATTACK_VERSION}" && \
 mv blockattack-${BLOCKATTACK_VERSION} blockattack-itch && \
