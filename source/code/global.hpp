@@ -124,21 +124,6 @@ struct GlobalData {
 	sago::SoundHandler counterChunk;         //When counting down
 	sago::SoundHandler counterFinalChunk;
 
-	sago::SagoSprite garbageTL;         //the Garbage Blocks
-	sago::SagoSprite garbageT;
-	sago::SagoSprite garbageTR;
-	sago::SagoSprite garbageR;
-	sago::SagoSprite garbageBR;
-	sago::SagoSprite garbageB;
-	sago::SagoSprite garbageBL;
-	sago::SagoSprite garbageL;
-	sago::SagoSprite garbageFill;
-	sago::SagoSprite garbageM;
-	sago::SagoSprite garbageML;
-	sago::SagoSprite garbageMR;
-	sago::SagoSprite garbageGM;
-	sago::SagoSprite garbageGML;
-	sago::SagoSprite garbageGMR;
 	sago::SagoSprite transCover;        //The transperant block, covers the upcomming
 	sago::SagoSprite bSkip;
 	sago::SagoSprite bRetry;

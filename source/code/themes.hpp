@@ -63,18 +63,39 @@ struct DecorationData {
 	std::vector<std::string> decoration_sprites = {"smileys0", "smileys1", "smileys2", "smileys3"};
 };
 
+struct GarbageData {
+	std::string name = "standard";
+	std::string tl = "garbage_tl";
+	std::string t = "garbage_t";
+	std::string tr = "garbage_tr";
+	std::string l = "garbage_l";
+	std::string fill = "garbage_fill";
+	std::string r = "garbage_r";
+	std::string bl = "garbage_bl";
+	std::string b = "garbage_b";
+	std::string br = "garbage_br";
+	std::string ml = "garbage_ml";
+	std::string m = "garbage_m";
+	std::string mr = "garbage_mr";
+	std::string gml = "garbage_gml";
+	std::string gm = "garbage_gm";
+	std::string gmr = "garbage_gmr";
+};
+
 struct Theme {
 	std::string theme_name = "standard";
 	std::string back_board = "back_board";  // Can also be "back_board_sample_snow" or "trans_cover"
 	BackGroundData background;  //Serialized as background.background_name
 	DecorationData decoration;
 	ThemeBorderData border;
+	GarbageData garbage;
 };
 
 struct ThemeFileData {
 	std::vector<BackGroundData> background_data;
 	std::vector<DecorationData> decoration_data;
 	std::vector<ThemeBorderData> border_data;
+	std::vector<GarbageData> garbage_data;
 	std::vector<Theme> themes;
 };
 
@@ -122,6 +143,8 @@ std::string ThemesGetNextBoardBackground(const std::string& current);
 ThemeBorderData ThemesGetBorder(const std::string& name);
 
 ThemeBorderData ThemesGetNextBorder(const std::string& current);
+
+GarbageData ThemesGetNextGarbage(const std::string& current);
 
 void ThemesInitCustomBackgrounds();
 

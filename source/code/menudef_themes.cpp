@@ -96,6 +96,11 @@ static void themesEditSwitchBorder() {
 	globalData.theme = themeToEdit;
 }
 
+static void themesEditSwitchGarbage() {
+	themeToEdit.garbage = ThemesGetNextGarbage(themeToEdit.garbage.name);
+	globalData.theme = themeToEdit;
+}
+
 static void themesEditSlot(int slot) {
 	ThemesMenu tem(globalData.screen, fmt::format(_("Edit custom theme {}"), slot), true);
 	size_t theme_index = ThemesGetNumber(fmt::format("custom_slot_{}", slot));
@@ -115,6 +120,10 @@ static void themesEditSlot(int slot) {
 	bSwitchBorder.setLabel(_("Switch border"));
 	bSwitchBorder.setAction(&themesEditSwitchBorder);
 	tem.addButton(&bSwitchBorder);
+	Button bSwitchGarbage;
+	bSwitchGarbage.setLabel(_("Switch garbage"));
+	bSwitchGarbage.setAction(&themesEditSwitchGarbage);
+	tem.addButton(&bSwitchGarbage);
 	themeBackup = globalData.theme;
 	themeToEdit = ThemesGet(theme_index);
 	globalData.theme = themeToEdit;
