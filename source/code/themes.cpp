@@ -100,7 +100,7 @@ void to_json(json& j, const ThemeBorderData& p) {
 }
 
 void to_json(json& j, const Theme& p) {
-	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background.name}, {"decoration_name", p.decoration.name} };
+	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background.name}, {"decoration_name", p.decoration.name}, {"border_name", p.border.name} };
 }
 
 void to_json(json& j, const DecorationData& p) {
@@ -166,6 +166,9 @@ void from_json(const json& j, Theme& p) {
 	j.at("back_board").get_to(p.back_board);
 	j.at("background_name").get_to(p.background.name);
 	j.at("decoration_name").get_to(p.decoration.name);
+	if (j.contains("border_name")) {
+		j.at("border_name").get_to(p.border.name);
+	}
 }
 
 void from_json(const json& j, DecorationData& p) {
@@ -204,6 +207,16 @@ void ThemesFillMissingFields(Theme& theme) {
 		theme.background.name = "standard";
 	}
 	theme.background = background_data[theme.background.name];
+	if (border_data.find(theme.border.name) == border_data.end()) {
+		//If the theme does not define a border then use the standard.
+		theme.border.name = "standard";
+	}
+	theme.border = border_data[theme.border.name];
+	if (decoration_data.find(theme.decoration.name) == decoration_data.end()) {
+		//If the theme does not define a decoration then use the standard smilies.
+		theme.decoration.name = "smilies";
+	}
+	theme.decoration = decoration_data[theme.decoration.name];
 }
 
 static void ThemesReadDataFromFile(const std::string& filename) {
