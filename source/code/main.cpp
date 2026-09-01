@@ -71,6 +71,7 @@ https://blockattack.net
 #include "editor/SagoTextureSelector.hpp"
 #include "puzzle_editor/PuzzleEditorState.hpp"
 #include "theme_editor/ThemeEditorState.hpp"
+#include "menudef_themes.hpp"
 #include "SagoImGui.hpp"
 
 /*******************************************************************************
@@ -932,6 +933,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("editor", "Start the sprite editor/browser")
 	("puzzle-editor", "Start the build in puzzle editor")
 	("theme-editor", "Start the theme editor")
+	("theme-menu", "Go directly to the theme selection screen")
 	("puzzle-level-file", boost::program_options::value<std::string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 #ifdef REPLAY_IMPLEMENTED
@@ -1035,6 +1037,9 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("theme-editor")) {
 		themeEditor = true;
+	}
+	if (vm.count("theme-menu")) {
+		themeMenu = true;
 	}
 	if (vm.count("puzzle-level-file")) {
 		conf.puzzleName = vm["puzzle-level-file"].as<std::string>();
@@ -1358,6 +1363,9 @@ int main(int argc, char* argv[]) {
 		else {
 			if (!gameShutdownProperly) {
 				SafeModeMenu();
+			}
+			if (themeMenu) {
+				OpenThemesMenu();
 			}
 			//game loop
 			MainMenu();

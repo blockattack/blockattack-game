@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Added
+ - `--theme-menu` starts the game directly on the theme selection screen (Configure -> Themes)
+
 ### Removed
 ### Changed
 

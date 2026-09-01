@@ -93,6 +93,7 @@ static bool singlePuzzle = false;
 static bool editor = false;
 static bool puzzleEditor = false;
 static bool themeEditor = false;
+static bool themeMenu = false;
 static int singlePuzzleNr = 0;
 static std::string singlePuzzleFile;
 
