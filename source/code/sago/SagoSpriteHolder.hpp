@@ -44,6 +44,8 @@ public:
 	 **/
 	void ReadSprites(const std::vector<std::string>& extra_sprites);
 	const sago::SagoSprite& GetSprite(const std::string& spritename) const;
+	bool HasSprite(const std::string& spritename) const;
+	bool HasSprite(const char* spritename) const;
 	const SagoDataHolder& GetDataHolder() const;
 private:
 	SagoSpriteHolder(const SagoSpriteHolder& base) = delete;

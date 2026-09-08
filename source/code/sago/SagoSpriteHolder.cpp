@@ -148,6 +148,18 @@ const sago::SagoSprite& SagoSpriteHolder::GetSprite(const std::string& spritenam
 	}
 }
 
+bool SagoSpriteHolder::HasSprite(const std::string& spritename) const {
+	return HasSprite(spritename.c_str());
+}
+
+bool SagoSpriteHolder::HasSprite(const char* spritename) const {
+	std::unordered_map<std::string,std::shared_ptr<sago::SagoSprite>>::const_iterator got = data->sprites.find (spritename);
+	if ( got == data->sprites.end() ) {
+		return false;
+	}
+	return true;
+}
+
 
 const SagoDataHolder& SagoSpriteHolder::GetDataHolder() const {
 	return *data->tex;
