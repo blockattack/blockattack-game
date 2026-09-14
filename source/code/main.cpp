@@ -30,7 +30,7 @@ https://blockattack.net
 #include "os.hpp"
 
 #include <string.h>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include "version.h"
 

@@ -79,7 +79,7 @@ message("${CMAKE_EXE_LINKER_FLAGS}")
 
 if (BLOCKATTACK_USE_EMBEDDED_FMT)
 	message("Using embedded {fmt}")
-	add_subdirectory("source/misc/embedded_libs/fmt-11.0.2" EXCLUDE_FROM_ALL)
+	add_subdirectory("source/misc/embedded_libs/fmt-12.1.0" EXCLUDE_FROM_ALL)
 	message("Done processing {fmt}")
 endif()
 
@@ -96,7 +96,7 @@ add_executable(blockattack ${GUI_TYPE} ${SOURCES} ${RES_FILES}
     source/code/menudef_themes.hpp)
 
 # Modern target-based compiler settings
-target_compile_features(blockattack PRIVATE cxx_std_17)
+target_compile_features(blockattack PRIVATE cxx_std_20)
 target_compile_options(blockattack PRIVATE
 	$<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra>
 	$<$<CONFIG:Debug>:-g>

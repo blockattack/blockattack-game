@@ -32,7 +32,7 @@ https://www.blockattack.net
 #include <iostream>
 #include "global.hpp"
 #include <boost/algorithm/string/predicate.hpp>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 using json = nlohmann::json;
 

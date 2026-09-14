@@ -24,7 +24,7 @@ http://blockattack.net
 #include "menudef_themes.hpp"
 #include "MenuSystem.h"
 #include "BlockGameSdl.hpp"
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 static void switchTheme() {
 	globalData.theme = ThemesGetNext();
@@ -73,7 +73,7 @@ public:
 	void Draw(SDL_Renderer* target) override {
 		Menu::Draw(target);
 		game->DoPaintJob();
-		themeTitle.SetText(fmt::format(_("Theme: {}"), globalData.theme.theme_name));
+		themeTitle.SetText(fmt::format(fmt::runtime(_("Theme: {}")), globalData.theme.theme_name));
 		themeTitle.Draw(target, 10, globalData.ysize-50,sago::SagoTextField::Alignment::left, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	}
 };
@@ -97,7 +97,7 @@ static void themesEditSwitchBorder() {
 }
 
 static void themesEditSlot(int slot) {
-	ThemesMenu tem(globalData.screen, fmt::format(_("Edit custom theme {}"), slot), true);
+	ThemesMenu tem(globalData.screen, fmt::format(fmt::runtime(_("Edit custom theme {}")), slot), true);
 	size_t theme_index = ThemesGetNumber(fmt::format("custom_slot_{}", slot));
 	if (theme_index == 0) {
 		// Theme not found
@@ -140,11 +140,11 @@ void OpenThemesMenu() {
 	bSwitchTheme.setAction(&switchTheme);
 	tm.addButton(&bSwitchTheme);
 	Button bEditTheme1;
-	bEditTheme1.setLabel(fmt::format(_("Edit custom theme {}"), 1));
+	bEditTheme1.setLabel(fmt::format(fmt::runtime(_("Edit custom theme {}")), 1));
 	bEditTheme1.setAction(&themesEditSlot1);
 	tm.addButton(&bEditTheme1);
 	Button bEditTheme2;
-	bEditTheme2.setLabel(fmt::format(_("Edit custom theme {}"), 2));
+	bEditTheme2.setLabel(fmt::format(fmt::runtime(_("Edit custom theme {}")), 2));
 	bEditTheme2.setAction(&themesEditSlot2);
 	tm.addButton(&bEditTheme2);
 	if (!globalData.NoSound) {

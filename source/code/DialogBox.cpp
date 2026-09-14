@@ -28,7 +28,7 @@ http://www.blockattack.net
 #include "utf8.h"
 #include "MenuSystem.h"
 #include <unordered_map>
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include "sago/SagoLogicalResize.hpp"
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {

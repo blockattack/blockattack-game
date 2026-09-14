@@ -28,7 +28,7 @@ https://blockattack.net
 #include "puzzlehandler.hpp"
 #include "stageclearhandler.hpp"
 #include "MenuSystem.h"
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 
 static bool bMouseUp;              //true if the mouse(1) is unpressed
@@ -200,18 +200,18 @@ int PuzzleLevelSelect(int Type) {
 		}
 
 		if (Type == 1) {
-			std::string scoreString = fmt::format(_("Best score: {}"), GetStageScores(selected)) ;
-			std::string timeString = fmt::format(_("Time used: {}"),"-- : --");
-			std::string parScoreString = fmt::format(_("Par score: {}"), GetStageParScore(selected));
+			std::string scoreString = fmt::format(fmt::runtime(_("Best score: {}")), GetStageScores(selected)) ;
+			std::string timeString = fmt::format(fmt::runtime(_("Time used: {}")),"-- : --");
+			std::string parScoreString = fmt::format(fmt::runtime(_("Par score: {}")), GetStageParScore(selected));
 
 			if (GetStageTime(selected)>0) {
-				timeString = fmt::format(_("Time used: {} : {:02}"), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
+				timeString = fmt::format(fmt::runtime(_("Time used: {} : {:02}")), GetStageTime(selected)/1000/60, (GetStageTime(selected)/1000)%60);
 			}
 
 			Write(globalData.screen, 200,200,scoreString.c_str());
 			Write(globalData.screen,  500, 200, parScoreString.c_str());
 			Write(globalData.screen, 200,250,timeString.c_str());
-			std::string totalString = fmt::format(_("Total score: {} in {}:{:02}"), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
+			std::string totalString = fmt::format(fmt::runtime(_("Total score: {} in {}:{:02}")), totalScore, totalTime/1000/60, ((totalTime/1000)%60) );
 			Write(globalData.screen, 200,600,totalString.c_str());
 		}
 
