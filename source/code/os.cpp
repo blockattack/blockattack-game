@@ -32,7 +32,6 @@ https://blockattack.net
 #include <pwd.h>
 #include <unistd.h>
 #endif
-#include <boost/algorithm/string.hpp>
 #include <dirent.h>
 
 static sago::PlatformFolders pf;
@@ -123,7 +122,7 @@ void OsCreateFolder(const std::string& path) {
 	//Now for Windows Vista+
 	std::vector<std::string> element_vector;
 	std::string new_path = path;
-	boost::replace_all(new_path, "/", "\\");
+	replace_all(new_path, "/", "\\");
 	size_t pos = new_path.find("\\");
 	while ( pos != std::string::npos) {
 		std::string part_of_path = new_path.substr(0, pos);

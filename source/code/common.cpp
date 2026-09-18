@@ -77,6 +77,22 @@ std::vector<std::string> split_string(const std::string& input, const std::strin
 	return out;
 }
 
+void replace_all(std::string& inout, const char* find_text, const char* replacement_text)
+{
+	const std::size_t find_len = std::strlen(find_text);
+	if (find_len == 0)
+	{
+		return; //would loop forever
+	}
+	const std::size_t repl_len = std::strlen(replacement_text);
+
+	std::size_t pos = 0;
+	while ((pos = inout.find(find_text, pos, find_len)) != std::string::npos) {
+		inout.replace(pos, find_len, replacement_text, repl_len);
+		pos += repl_len; // skip past the insert
+	}
+}
+
 /**
  * Takes a number of milliseconds and returns the value in commonTime format.
  */
