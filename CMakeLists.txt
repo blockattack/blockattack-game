@@ -124,7 +124,6 @@ endif()
 
 target_include_directories(blockattack SYSTEM PRIVATE "source/code/Libs/imgui")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
-target_include_directories(blockattack PRIVATE "source/code/Libs/include/cereal/external")  #Contains rapidjson
 if(SDL2_USE_PKGCONFIG)
 	target_include_directories(blockattack PRIVATE ${SDL2_image_INCLUDE_DIRS})
 	target_include_directories(blockattack PRIVATE ${SDL2_mixer_INCLUDE_DIRS})
