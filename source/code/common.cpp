@@ -59,6 +59,24 @@ int str2int(const std::string& str2parse) {
 	}
 }
 
+std::vector<std::string> split_string(const std::string& input, const std::string& sep)
+{
+	std::vector<std::string> out;
+	if (sep.empty())
+	{
+		out.push_back(input);
+		return out;
+	}
+	std::size_t start = 0;
+	std::size_t pos = 0;
+	while ((pos = input.find(sep, start)) != std::string::npos) {
+		out.emplace_back(input, start, pos - start);
+		start = pos + sep.size();
+	}
+	out.emplace_back(input, start);
+	return out;
+}
+
 /**
  * Takes a number of milliseconds and returns the value in commonTime format.
  */

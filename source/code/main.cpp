@@ -61,7 +61,6 @@ https://blockattack.net
 
 #include "common.h"
 #include "gamecontroller.h"
-#include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
 #include <fstream>
 #include "levelselect.hpp"
@@ -1085,10 +1084,6 @@ int main(int argc, char* argv[]) {
 		OsCreateSaveFolder();
 		writeStateFile(argv[0], PHYSFS_getBaseDir());
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
-		/*if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
-		    std::string modString = sago::GetFileContent(MODLIST_TXT);
-		    boost::split(globalData.modList, modString, boost::is_any_of(","));
-		}*/
 		globalData.modinfo.InitModList(globalData.modList);
 		if (sago::FileExists(MODLIST_TXT)) {
 			globalData.modinfo.ParseModFile(sago::GetFileContent(MODLIST_TXT));

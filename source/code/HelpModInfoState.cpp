@@ -27,7 +27,6 @@ https://blockattack.net
 #include "common.h"
 #include "sago/SagoMisc.hpp"
 #include "os.hpp"
-#include <boost/algorithm/string/predicate.hpp>
 #include <sstream>
 
 struct Mod {
@@ -71,7 +70,7 @@ static void initMods(std::vector<Mod>& mod_list) {
 
 static void appendMods(const std::vector<std::string>& mod_files, const std::string& dir, std::vector<Mod>& mods_available) {
 	for (const std::string& mod : mod_files) {
-		if (!boost::ends_with(mod, ".data")) {
+		if (!mod.ends_with(".data")) {
 			continue;
 		}
 		Mod m;

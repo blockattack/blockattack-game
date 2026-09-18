@@ -26,7 +26,7 @@ http://blockattack.net
 #include "rapidjson/document.h"
 #include <iostream>
 #include <sstream>
-#include <boost/algorithm/string.hpp>
+#include "common.h"
 
 void ModInfo::InitModList(const std::vector<std::string>& modlist) {
 	this->mod_list = modlist;
@@ -44,8 +44,7 @@ void ModInfo::InitModList(const std::vector<std::string>& modlist) {
 			const auto& t = document.GetObject().FindMember("sprites");
 			if (t != document.MemberEnd() && t->value.IsString()) {
 				std::string sprites = t->value.GetString();
-				std::vector<std::string> sprites_vector;
-				boost::split(sprites_vector, sprites, boost::is_any_of(","));
+				std::vector<std::string> sprites_vector = split_string(sprites, ",");
 				sprite_filename_list.insert(sprite_filename_list.end(), sprites_vector.begin(), sprites_vector.end());
 			}
 		}
@@ -56,8 +55,7 @@ void ModInfo::ParseModFile(const std::string& content) {
 	std::istringstream ss(content);
 	std::string line;
 	while (std::getline(ss, line)) {
-		std::vector<std::string> line_vector;
-		boost::split(line_vector, line, boost::is_any_of(","));
+		std::vector<std::string> line_vector = split_string(line, ",");
 		if (line_vector.size() < 2) {
 			std::cerr << "skipping " << line << "\n";
 			continue;
