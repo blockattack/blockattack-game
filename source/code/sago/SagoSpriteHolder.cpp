@@ -28,8 +28,7 @@ SOFTWARE.
 #include <unordered_map>
 #include "rapidjson/document.h"
 #include <iostream>
-#include <string.h>
-#include <boost/algorithm/string/predicate.hpp>
+#include <string>
 
 
 namespace sago {
@@ -117,7 +116,7 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 void SagoSpriteHolder::ReadSprites() {
 	std::vector<std::string> spritefiles = GetFileList("sprites");
 	for (std::string& item : spritefiles  ) {
-		if (boost::algorithm::ends_with(item,".sprite")) {
+		if (item.ends_with(".sprite")) {
 			if (data->verbose) {
 				std::cout << "Found " << item << "\n";
 			}
