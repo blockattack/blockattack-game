@@ -23,7 +23,7 @@ http://blockattack.net
 
 #include "ModInfo.hpp"
 #include "sago/SagoMisc.hpp"
-#include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
 #include <iostream>
 #include <sstream>
 #include "common.h"
@@ -35,15 +35,14 @@ void ModInfo::InitModList(const std::vector<std::string>& modlist) {
 		std::string filename_info = std::string("modinfo/") + s + ".json";
 		if (sago::FileExists(filename_info.c_str())) {
 			std::string content = sago::GetFileContent(filename_info.c_str());
-			rapidjson::Document document;
-			document.Parse(content.c_str());
-			if ( !document.IsObject() ) {
+			nlohmann::json document = nlohmann::json::parse(content, nullptr, false);
+			if ( document.is_discarded() || !document.is_object() ) {
 				std::cerr << "Failed to parse: " << filename_info << "\n";
 				continue;
 			}
-			const auto& t = document.GetObject().FindMember("sprites");
-			if (t != document.MemberEnd() && t->value.IsString()) {
-				std::string sprites = t->value.GetString();
+			const auto& t = document.find("sprites");
+			if (t != document.end() && t->is_string()) {
+				std::string sprites = t->get<std::string>();
 				std::vector<std::string> sprites_vector = split_string(sprites, ",");
 				sprite_filename_list.insert(sprite_filename_list.end(), sprites_vector.begin(), sprites_vector.end());
 			}
