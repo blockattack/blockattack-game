@@ -19,6 +19,7 @@ CMake*
 !CMakeLists.txt
 CPack*
 Makefile
+build.ninja
 source/manual/
 -source/manual/block_attack_manual.tex
 man/blockattack.6.gz
@@ -29,3 +30,4 @@ build
 _CPack_Packages
 #Different CPack results..
 blockattack-*
+build-web

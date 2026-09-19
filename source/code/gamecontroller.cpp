@@ -97,11 +97,14 @@ void UnInitGameControllers() {
 }
 
 void InitGameControllers() {
+#ifndef __EMSCRIPTEN__
+	//The browser has no user config folder
 	std::string configFile = sago::getConfigHome()+"/blockattack/gamecontrollerdb.txt";
 	int errorCode = SDL_GameControllerAddMappingsFromFile(configFile.c_str());
 	if (errorCode == -1 && verbose) {
 		std::cerr << "Could not load mapping file: " << configFile << "\n";
 	}
+#endif
 	if (verbose) {
 		std::cout << "Number of Game controllers: " << SDL_NumJoysticks() << "\n";
 	}

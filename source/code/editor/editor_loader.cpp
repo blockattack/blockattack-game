@@ -23,7 +23,6 @@ https://github.com/sago007/saland
 
 #include "editor_loader.hpp"
 #include "../sago/SagoMisc.hpp"
-#include <boost/algorithm/string/predicate.hpp>
 #include <iostream>
 
 
@@ -84,7 +83,7 @@ std::map<std::string, SagoSprite> LoadSprites() {
 	std::map<std::string, SagoSprite> sprites;
 	std::vector<std::string> spritefiles = sago::GetFileList("sprites");
 	for (std::string& item : spritefiles  ) {
-		if (boost::algorithm::ends_with(item,".sprite")) {
+		if (item.ends_with(".sprite")) {
 			std::string filename = "sprites/"+item;
 			std::string content = sago::GetFileContent(filename.c_str());
 			if (content.empty()) {

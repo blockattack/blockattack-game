@@ -45,28 +45,81 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
 
-# Setup SDL2 and extensions
-find_package(SDL2 REQUIRED)
+# Platform dependencies (SDL2 family, PhysFS, gettext, Boost) are carried by
+# this INTERFACE target, however each platform provides them.
+add_library(blockattack_deps INTERFACE)
 
-# Try modern CMake approach first, fallback to pkg-config for cross-compilation (e.g., MXE)
-find_package(SDL2_image QUIET)
-find_package(SDL2_mixer QUIET)
-find_package(SDL2_ttf QUIET)
+if(EMSCRIPTEN)
+	# Data and locale are preloaded at "/" and cwd is "/", so the STANDALONE
+	# layout (SHAREDIR=".", LOCALEDIR="./locale") is exactly right.
+	set(STANDALONE ON)
 
-set(SDL2_USE_PKGCONFIG OFF)
-if(NOT SDL2_image_FOUND OR NOT SDL2_mixer_FOUND OR NOT SDL2_ttf_FOUND)
-	set(SDL2_USE_PKGCONFIG ON)
-	find_package(PkgConfig REQUIRED)
-	# When using pkg-config, always search for all SDL2 extensions
-	pkg_search_module(SDL2_image REQUIRED SDL2_image)
-	pkg_search_module(SDL2_mixer REQUIRED SDL2_mixer)
-	pkg_search_module(SDL2_ttf REQUIRED SDL2_ttf)
+	# SDL2 family from Emscripten ports. Same flags at compile time (headers)
+	# and link time (prebuilt libraries).
+	set(BLOCKATTACK_EM_PORTS -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sSDL2_IMAGE_FORMATS=png,jpg
+	                         -sUSE_SDL_TTF=2 -sUSE_SDL_MIXER=2 -sSDL2_MIXER_FORMATS=ogg)
+	target_compile_options(blockattack_deps INTERFACE ${BLOCKATTACK_EM_PORTS})
+	target_link_options(blockattack_deps INTERFACE ${BLOCKATTACK_EM_PORTS})
+
+	# PhysFS has no port; build it from source (zip archiver only, packdata.sh
+	# produces zips). Offline: -DFETCHCONTENT_SOURCE_DIR_PHYSFS=<physfs release-3.2.0 checkout>
+	include(FetchContent)
+	FetchContent_Declare(physfs
+		GIT_REPOSITORY https://github.com/icculus/physfs.git
+		GIT_TAG release-3.2.0)
+	set(PHYSFS_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+	set(PHYSFS_BUILD_TEST OFF CACHE BOOL "" FORCE)
+	set(PHYSFS_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+	foreach(archiver 7Z GRP WAD HOG MVL QPAK SLB ISO9660 VDF)
+		set(PHYSFS_ARCHIVE_${archiver} OFF CACHE BOOL "" FORCE)
+	endforeach()
+	set(CMAKE_POLICY_VERSION_MINIMUM 3.5) # physfs 3.2.0 still declares CMake 3.0
+	FetchContent_MakeAvailable(physfs)
+	unset(CMAKE_POLICY_VERSION_MINIMUM)
+	target_link_libraries(blockattack_deps INTERFACE PhysFS::PhysFS-static)
+
+	# libintl is part of Emscripten's libc. Boost.program_options is not used
+	# in the browser (see main.cpp). Exceptions are the game's error path and
+	# emcc disables catching them unless asked; Asyncify needs the JS-based flavour.
+	add_compile_options(-fexceptions)
+	add_link_options(-fexceptions)
+else()
+	# Setup SDL2 and extensions
+	find_package(SDL2 REQUIRED)
+
+	# Try modern CMake approach first, fallback to pkg-config for cross-compilation (e.g., MXE)
+	find_package(SDL2_image QUIET)
+	find_package(SDL2_mixer QUIET)
+	find_package(SDL2_ttf QUIET)
+
+	set(SDL2_USE_PKGCONFIG OFF)
+	if(NOT SDL2_image_FOUND OR NOT SDL2_mixer_FOUND OR NOT SDL2_ttf_FOUND)
+		set(SDL2_USE_PKGCONFIG ON)
+		find_package(PkgConfig REQUIRED)
+		# When using pkg-config, always search for all SDL2 extensions
+		pkg_search_module(SDL2_image REQUIRED SDL2_image)
+		pkg_search_module(SDL2_mixer REQUIRED SDL2_mixer)
+		pkg_search_module(SDL2_ttf REQUIRED SDL2_ttf)
+	endif()
+
+	find_package(Intl REQUIRED)
+
+	find_package(Boost COMPONENTS program_options REQUIRED NO_MODULE)
+
+	# Link SDL2 extensions - use imported targets if available, otherwise use pkg-config variables
+	if(SDL2_USE_PKGCONFIG)
+		target_include_directories(blockattack_deps INTERFACE ${SDL2_image_INCLUDE_DIRS} ${SDL2_mixer_INCLUDE_DIRS} ${SDL2_ttf_INCLUDE_DIRS})
+		target_link_directories(blockattack_deps INTERFACE ${SDL2_image_LIBRARY_DIRS} ${SDL2_mixer_LIBRARY_DIRS} ${SDL2_ttf_LIBRARY_DIRS})
+		target_link_libraries(blockattack_deps INTERFACE ${SDL2_image_LINK_LIBRARIES} ${SDL2_mixer_LINK_LIBRARIES} ${SDL2_ttf_LINK_LIBRARIES})
+	else()
+		target_link_libraries(blockattack_deps INTERFACE SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf)
+	endif()
+	target_include_directories(blockattack_deps INTERFACE ${Intl_INCLUDE_DIRS})
+	target_link_libraries(blockattack_deps INTERFACE SDL2::SDL2 physfs ${Boost_LIBRARIES})
+	if (MACOSX)
+		target_link_libraries(blockattack_deps INTERFACE intl)
+	endif()
 endif()
-
-
-find_package(Intl REQUIRED)
-
-find_package(Boost COMPONENTS program_options REQUIRED NO_MODULE)
 
 #Find all sources but one
 file(GLOB SOURCES CONFIGURE_DEPENDS "source/code/*.cpp" "source/code/*.inc" "source/code/*.h*" "source/code/*/*.cpp" "source/code/*/*.h*" "source/code/Libs/*.c" "source/code/Libs/*.h*" "source/code/Libs/*/*.cpp" "source/code/Libs/*/*/*.cpp")
@@ -124,36 +177,47 @@ endif()
 
 target_include_directories(blockattack SYSTEM PRIVATE "source/code/Libs/imgui")
 target_include_directories(blockattack PRIVATE "source/code/Libs/include")
-if(SDL2_USE_PKGCONFIG)
-	target_include_directories(blockattack PRIVATE ${SDL2_image_INCLUDE_DIRS})
-	target_include_directories(blockattack PRIVATE ${SDL2_mixer_INCLUDE_DIRS})
-	target_include_directories(blockattack PRIVATE ${SDL2_ttf_INCLUDE_DIRS})
-	# Add library directories for pkg-config-based libraries
-	target_link_directories(blockattack PRIVATE ${SDL2_image_LIBRARY_DIRS})
-	target_link_directories(blockattack PRIVATE ${SDL2_mixer_LIBRARY_DIRS})
-	target_link_directories(blockattack PRIVATE ${SDL2_ttf_LIBRARY_DIRS})
-endif()
-target_include_directories(blockattack PRIVATE ${Intl_INCLUDE_DIRS})
 
 target_link_libraries(blockattack PRIVATE
-	SDL2::SDL2
+	blockattack_deps
 	fmt
 	platform_folders
-	physfs
-	${Boost_LIBRARIES}
 )
-
-# Link SDL2 extensions - use imported targets if available, otherwise use pkg-config variables
-if(SDL2_USE_PKGCONFIG)
-	target_link_libraries(blockattack PRIVATE ${SDL2_image_LINK_LIBRARIES} ${SDL2_mixer_LINK_LIBRARIES} ${SDL2_ttf_LINK_LIBRARIES})
-else()
-	target_link_libraries(blockattack PRIVATE SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf)
-endif()
-
-if (MACOSX)
-	target_link_libraries(blockattack PRIVATE intl)
-endif()
 set_target_properties(blockattack PROPERTIES RUNTIME_OUTPUT_DIRECTORY Game)
+
+if(EMSCRIPTEN)
+	set(BLOCKATTACK_WEB_SHELL "${blockattack_SOURCE_DIR}/source/misc/web/shell.html")
+	set(BLOCKATTACK_DATA_FILE "${blockattack_SOURCE_DIR}/Game/blockattack.data")
+	set(BLOCKATTACK_MOD_FILE "${blockattack_SOURCE_DIR}/Game/mods/1.3.0.bricks.data")
+	set(BLOCKATTACK_LOCALE_DIR "${blockattack_SOURCE_DIR}/source/misc/translation/locale")
+	foreach(f IN ITEMS "${BLOCKATTACK_DATA_FILE}" "${BLOCKATTACK_MOD_FILE}" "${BLOCKATTACK_LOCALE_DIR}")
+		if(NOT EXISTS "${f}")
+			message(FATAL_ERROR "${f} is missing. Run ./packdata.sh before configuring the web build.")
+		endif()
+	endforeach()
+	# One page: index.html (from the shell, which sizes the canvas to the
+	# browser window) loads index.js, index.wasm and index.data. ASYNCIFY lets
+	# the blocking SDL_Delay game loops yield to the browser each frame instead
+	# of being rewritten around a callback; its stack holds the locals of every
+	# unwound frame, so it is sized well above the default 4 KiB. IDBFS backs
+	# the save folder (see os.cpp).
+	set_target_properties(blockattack PROPERTIES
+		OUTPUT_NAME index
+		SUFFIX ".html"
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/web")
+	target_link_options(blockattack PRIVATE
+		-sASYNCIFY
+		-sASYNCIFY_STACK_SIZE=1048576
+		-sALLOW_MEMORY_GROWTH=1
+		-lidbfs.js
+		$<$<CONFIG:Debug>:-sASSERTIONS=1>
+		"SHELL:--shell-file ${BLOCKATTACK_WEB_SHELL}"
+		"SHELL:--preload-file ${BLOCKATTACK_DATA_FILE}@/blockattack.data"
+		"SHELL:--preload-file ${BLOCKATTACK_MOD_FILE}@/mods/1.3.0.bricks.data"
+		"SHELL:--preload-file ${BLOCKATTACK_LOCALE_DIR}@/locale")
+	set_property(TARGET blockattack APPEND PROPERTY LINK_DEPENDS
+		"${BLOCKATTACK_WEB_SHELL}" "${BLOCKATTACK_DATA_FILE}" "${BLOCKATTACK_MOD_FILE}")
+endif()
 
 #Installing
 include(CPack)

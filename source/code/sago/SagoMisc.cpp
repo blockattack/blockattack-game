@@ -33,6 +33,36 @@ SOFTWARE.
 #define PHYSFS_writeBytes(X,Y,Z) PHYSFS_write(X,Y,1,Z)
 #endif
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+
+// Pushes the IDBFS mount to IndexedDB after a write. Fire-and-forget;
+// overlapping requests are coalesced because Emscripten warns when several
+// syncfs calls run at once.
+EM_JS(void, sago_web_syncfs, (), {
+	const state = (Module.sagoSyncState ||= { inFlight: false, pending: false });
+	function run() {
+		state.inFlight = true;
+		FS.syncfs(false, (err) => {
+			state.inFlight = false;
+			if (err) {
+				console.error('IDBFS sync failed: ' + err);
+			}
+			if (state.pending) {
+				state.pending = false;
+				run();
+			}
+		});
+	}
+	if (state.inFlight) {
+		state.pending = true;
+	}
+	else {
+		run();
+	}
+});
+#endif
+
 namespace sago {
 
 
@@ -109,6 +139,9 @@ void WriteFileContent(const char* filename, const std::string& content) {
 	}
 	PHYSFS_writeBytes(myfile, content.c_str(), sizeof(char)*content.length());
 	PHYSFS_close(myfile);
+#ifdef __EMSCRIPTEN__
+	sago_web_syncfs();
+#endif
 }
 
 long int StrToLong(const char* c_string) {
