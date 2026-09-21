@@ -36,14 +36,7 @@ https://blockattack.net
 #endif
 #include <dirent.h>
 
-#if defined(__EMSCRIPTEN__)
-// Emscripten's getuid() stub reports root, which makes PlatformFolders look up
-// a passwd entry that does not exist. The browser build uses a fixed path that
-// only serves as the IDBFS mount point (see OsMountPersistentStorage).
-static const char* const webSaveFolder = "/home/web_user/.local/share";
-#else
 static sago::PlatformFolders pf;
-#endif
 
 static std::string overrideSavePath = "";
 
@@ -57,11 +50,7 @@ std::string getPathToSaveFiles() {
 	if (overrideSavePath.length() > 0) {
 		return overrideSavePath;
 	}
-#if defined(__EMSCRIPTEN__)
-	return std::string(webSaveFolder)+"/"+GAMENAME;
-#else
 	return pf.getSaveGamesFolder1()+"/"+GAMENAME;
-#endif
 }
 
 std::string getPathToStateFiles() {
