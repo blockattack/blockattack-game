@@ -70,7 +70,6 @@ https://blockattack.net
 
 #include "editor/SagoTextureSelector.hpp"
 #include "puzzle_editor/PuzzleEditorState.hpp"
-#include "theme_editor/ThemeEditorState.hpp"
 #include "menudef_themes.hpp"
 #include "SagoImGui.hpp"
 
@@ -917,7 +916,6 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("always-sixteen-nine", "Use 16:9 format even in Window mode")
 	("editor", "Start the sprite editor/browser")
 	("puzzle-editor", "Start the build in puzzle editor")
-	("theme-editor", "Start the theme editor")
 	("theme-menu", "Go directly to the theme selection screen")
 	("puzzle-level-file", boost::program_options::value<std::string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
@@ -1019,9 +1017,6 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 	if (vm.count("puzzle-editor")) {
 		puzzleEditor = true;
-	}
-	if (vm.count("theme-editor")) {
-		themeEditor = true;
 	}
 	if (vm.count("theme-menu")) {
 		themeMenu = true;
@@ -1326,17 +1321,6 @@ int main(int argc, char* argv[]) {
 			std::string imgui_inifile = getPathToSaveFiles() + "/imgui.ini";
 			ImGui::LoadIniSettingsFromDisk(imgui_inifile.c_str());
 			PuzzleEditorState s;
-			s.Init();
-			RunImGuiGameState(s);
-			ImGui::SaveIniSettingsToDisk(imgui_inifile.c_str());
-		}
-		else if (themeEditor) {
-			InitImGui(sdlWindow, renderer, globalData.xsize, globalData.ysize);
-			ImGuiIO& io = ImGui::GetIO();
-			io.IniFilename = nullptr;
-			std::string imgui_inifile = getPathToSaveFiles() + "/imgui_theme_editor.ini";
-			ImGui::LoadIniSettingsFromDisk(imgui_inifile.c_str());
-			ThemeEditorState s;
 			s.Init();
 			RunImGuiGameState(s);
 			ImGui::SaveIniSettingsToDisk(imgui_inifile.c_str());

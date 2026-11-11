@@ -52,9 +52,6 @@ Start the sprite editor/browser
 \fB\-\-puzzle\-editor\fR
 Start the build in puzzle editor
 .TP
-\fB\-\-theme\-editor\fR
-Start the theme editor
-.TP
 \fB\-\-theme\-menu\fR
 Go directly to the theme selection screen
 .TP

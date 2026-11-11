@@ -24,7 +24,6 @@ https://www.blockattack.net
 
 #include "themes.hpp"
 #include "sago/SagoMisc.hpp"
-#include "os.hpp"
 #include <vector>
 #include <sstream>
 #include <map>
@@ -548,34 +547,6 @@ void ThemesInitCustomBackgrounds() {
 	sago::WriteFileContent("sprites/custom_backgrounds.sprite", sprite_stream.str());
 }
 
-void ThemesSaveBorderData(const std::string& name, const ThemeBorderData& data) {
-	ThemesInit();
-	// Create borders directory if it doesn't exist
-	OsCreateFolder("borders");
-
-	json j = data;
-	std::string s = j.dump(4);
-	std::string filename = fmt::format("borders/{}.json", name);
-	sago::WriteFileContent(filename.c_str(), s);
-
-	// Add to the border_data map
-	border_data[name] = data;
-}
-
-void ThemesSaveBackgroundData(const std::string& name, const BackGroundData& data) {
-	ThemesInit();
-	// Create backgrounds directory if it doesn't exist
-	OsCreateFolder("backgrounds");
-
-	json j = data;
-	std::string s = j.dump(4);
-	std::string filename = fmt::format("backgrounds/{}.json", name);
-	sago::WriteFileContent(filename.c_str(), s);
-
-	// Add to the background_data map
-	background_data[name] = data;
-}
-
 void ThemesLoadCustomBorders() {
 	const std::vector<std::string>& border_files = sago::GetFileList("borders");
 	for (const std::string& filename : border_files) {
@@ -622,51 +593,4 @@ void ThemesLoadCustomBackgrounds() {
 			}
 		}
 	}
-}
-
-bool ThemesValidateSpriteName(const std::string& sprite_name) {
-	ThemesInit();
-	if (sprite_name.empty()) {
-		return false;
-	}
-	// Note: GetSprite returns a default sprite if not found, so we can't easily validate
-	// The sprite will be validated when actually used in the game
-	// For now, just check that it's not empty
-	return true;
-}
-
-std::vector<std::string> ThemesGetBorderNames() {
-	ThemesInit();
-	std::vector<std::string> names;
-	for (const auto& pair : border_data) {
-		names.push_back(pair.first);
-	}
-	return names;
-}
-
-std::vector<std::string> ThemesGetBackgroundNames() {
-	ThemesInit();
-	std::vector<std::string> names;
-	for (const auto& pair : background_data) {
-		names.push_back(pair.first);
-	}
-	return names;
-}
-
-std::vector<std::string> ThemesGetDecorationNames() {
-	ThemesInit();
-	std::vector<std::string> names;
-	for (const auto& pair : decoration_data) {
-		names.push_back(pair.first);
-	}
-	return names;
-}
-
-BackGroundData ThemesGetBackground(const std::string& name) {
-	ThemesInit();
-	auto it = background_data.find(name);
-	if (it == background_data.end()) {
-		return background_data["standard"];
-	}
-	return it->second;
 }

@@ -149,20 +149,6 @@ GarbageData ThemesGetNextGarbage(const std::string& current);
 void ThemesInitCustomBackgrounds();
 
 /**
- * @brief Saves a border to the borders/ directory
- * @param name The name of the border
- * @param data The border data to save
- */
-void ThemesSaveBorderData(const std::string& name, const ThemeBorderData& data);
-
-/**
- * @brief Saves a background to the backgrounds/ directory
- * @param name The name of the background
- * @param data The background data to save
- */
-void ThemesSaveBackgroundData(const std::string& name, const BackGroundData& data);
-
-/**
  * @brief Loads custom borders from the borders/ directory
  */
 void ThemesLoadCustomBorders();
@@ -171,35 +157,3 @@ void ThemesLoadCustomBorders();
  * @brief Loads custom backgrounds from the backgrounds/ directory
  */
 void ThemesLoadCustomBackgrounds();
-
-/**
- * @brief Validates that a sprite name exists in the sprite holder
- * @param sprite_name The sprite name to validate
- * @return true if the sprite exists, false otherwise
- */
-bool ThemesValidateSpriteName(const std::string& sprite_name);
-
-/**
- * @brief Gets all available border names
- * @return Vector of border names
- */
-std::vector<std::string> ThemesGetBorderNames();
-
-/**
- * @brief Gets all available background names
- * @return Vector of background names
- */
-std::vector<std::string> ThemesGetBackgroundNames();
-
-/**
- * @brief Gets all available decoration names
- * @return Vector of decoration names
- */
-std::vector<std::string> ThemesGetDecorationNames();
-
-/**
- * @brief Gets a background by name
- * @param name The background name
- * @return The background data
- */
-BackGroundData ThemesGetBackground(const std::string& name);
