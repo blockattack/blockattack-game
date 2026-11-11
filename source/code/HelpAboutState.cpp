@@ -30,7 +30,7 @@ https://blockattack.net
 #include "sstream"
 #include "version.h"
 #include "sago/SagoMisc.hpp"
-#include "fmt/core.h"
+#include "fmt/format.h"
 
 
 template <class T>

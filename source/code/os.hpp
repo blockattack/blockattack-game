@@ -41,6 +41,13 @@ void setPathToSaveFiles(const std::string& path);
 
 void OsCreateSaveFolder();
 
+/**
+ * In the browser build: mounts persistent (IndexedDB) storage at the save
+ * folder and loads the stored files. Must be called before the save folder
+ * is used. Does nothing on other platforms.
+ */
+void OsMountPersistentStorage();
+
 bool OsPathIsRelative(const std::string& path);
 
 /**

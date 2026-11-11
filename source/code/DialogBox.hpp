@@ -32,9 +32,9 @@ http://www.blockattack.net
 #include "global.hpp"
 
 struct VirtualKeyboard {
-	const std::string leftChar = "‹";
-	const std::string rightChar = "›";
-	const std::string backspace = "«";
+	const std::string leftChar = "\xe2\x80\xb9"; //UTF-8 for left arrow symbol (U+2039)
+	const std::string rightChar = "\xe2\x80\xba"; //UTF-8 for right arrow symbol (U+203A)
+	const std::string backspace = "\xc2\xab"; //UTF-8 for LEFT-POINTING DOUBLE ANGLE QUOTATION MARK (U+00AB)
 	std::string alphabet = std::string(_("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	                                     "abcdefghijklmnopqrstuvwxyz"
 	                                     ".,:!?+_^@#%&=*")) + leftChar + rightChar + backspace;

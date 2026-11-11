@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Id='*'
+           Name='Block Attack - Rise Of the Blocks'
+           UpgradeCode='6566ddf1-1b87-4d6c-8448-3a7dbc6a09f7'
+           Language='1033'
+           Codepage='1252'
+           Version='$(var.Version)'
+           Manufacturer='Poul Sander'>
+
+    <Package Id='*'
+             Keywords='Installer'
+             Description='Block Attack - Rise Of the Blocks Installer'
+             Manufacturer='Poul Sander'
+             InstallerVersion='200'
+             Languages='1033'
+             Compressed='yes'
+             SummaryCodepage='1252'
+             InstallScope='perMachine' />
+
+    <MajorUpgrade DowngradeErrorMessage='A newer version of Block Attack is already installed.' />
+
+    <Media Id='1' Cabinet='blockattack.cab' EmbedCab='yes' />
+
+    <Icon Id='AppIcon.ico' SourceFile='source/misc/icons/blockattack.ico' />
+    <Property Id='ARPPRODUCTICON' Value='AppIcon.ico' />
+    <Property Id='ARPURLINFOABOUT' Value='https://blockattack.net' />
+    <Property Id='ARPNOREPAIR' Value='yes' />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='INSTALLDIR' Name='Block Attack - Rise Of the Blocks' />
+      </Directory>
+      <Directory Id='ProgramMenuFolder' Name='Programs'>
+        <Directory Id='ApplicationProgramsFolder' Name='Block Attack - Rise Of the Blocks' />
+      </Directory>
+      <Directory Id='DesktopFolder' Name='Desktop' />
+    </Directory>
+
+    <DirectoryRef Id='ApplicationProgramsFolder'>
+      <Component Id='StartMenuShortcuts' Guid='645184ce-5f6e-49be-9942-d92bb439e4f1'>
+        <Shortcut Id='StartMenuShortcut'
+                  Name='Block Attack - Rise Of the Blocks'
+                  Target='[INSTALLDIR]blockattack.exe'
+                  WorkingDirectory='INSTALLDIR'
+                  Icon='AppIcon.ico' />
+        <Shortcut Id='StartMenuWebsiteShortcut'
+                  Name='Block Attack Website'
+                  Target='https://blockattack.net' />
+        <RemoveFolder Id='ApplicationProgramsFolder' On='uninstall' />
+        <RegistryValue Root='HKCU'
+                        Key='Software\BlockAttack'
+                        Name='StartMenuShortcuts'
+                        Type='integer'
+                        Value='1'
+                        KeyPath='yes' />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id='DesktopFolder'>
+      <Component Id='DesktopShortcut' Guid='025ccf61-93b2-49c3-b993-bd0eb15fa685'>
+        <Shortcut Id='DesktopShortcut'
+                  Name='Block Attack - Rise Of the Blocks'
+                  Target='[INSTALLDIR]blockattack.exe'
+                  WorkingDirectory='INSTALLDIR'
+                  Icon='AppIcon.ico' />
+        <RegistryValue Root='HKCU'
+                        Key='Software\BlockAttack'
+                        Name='DesktopShortcut'
+                        Type='integer'
+                        Value='1'
+                        KeyPath='yes' />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id='MainFeature' Title='Block Attack - Rise Of the Blocks' Level='1'>
+      <ComponentGroupRef Id='CG.blockattack' />
+      <ComponentRef Id='StartMenuShortcuts' />
+      <ComponentRef Id='DesktopShortcut' />
+    </Feature>
+
+  </Product>
+</Wix>

@@ -30,7 +30,7 @@ https://blockattack.net
 #include "os.hpp"
 
 #include <string.h>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include "version.h"
 
@@ -61,8 +61,11 @@ https://blockattack.net
 
 #include "common.h"
 #include "gamecontroller.h"
-#include <boost/algorithm/string.hpp>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#else
 #include <boost/program_options.hpp>
+#endif
 #include <fstream>
 #include "levelselect.hpp"
 
@@ -83,9 +86,14 @@ GlobalData globalData;
 static int InitImages(sago::SagoSpriteHolder& holder);
 
 static void FsSearchParthMainAppend(std::vector<std::string>& paths) {
+#ifdef __EMSCRIPTEN__
+	//The browser build preloads the data file here (CMakeLists.txt)
+	paths.push_back("/blockattack.data");
+#else
 	paths.push_back((std::string)SHAREDIR+"/blockattack.data");
 	paths.push_back((std::string)PHYSFS_getBaseDir()+"/blockattack.data");
 	paths.push_back((std::string)PHYSFS_getBaseDir()+"/data");
+#endif
 }
 
 static void FsSearchPathModAppend(std::vector<std::string>& paths, const std::vector<std::string>& modlist) {
@@ -347,6 +355,10 @@ std::string pathToScreenShots() {
 
 //writeScreenShot saves the screen as a bmp file, it uses the time to get a unique filename
 void writeScreenShot() {
+#ifdef __EMSCRIPTEN__
+	//The browser has no pictures folder to save to
+	return;
+#endif
 	if (globalData.verboseLevel) {
 		std::cout << "Saving screenshot" << "\n";
 	}
@@ -890,6 +902,11 @@ struct globalConfig {
 	bool softwareRenderer = false;
 };
 
+#ifdef __EMSCRIPTEN__
+//The browser build has no command line
+static void ParseArguments(int, char*[], globalConfig&) {
+}
+#else
 static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	int consoleWidth = boost::program_options::options_description::m_default_line_length;
 	const char* columnsEnv = getenv("COLUMNS"); // Allows using "COLUMNS=300 help2man" for generating the man page without bad line breaks.
@@ -1032,6 +1049,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	}
 
 }
+#endif
 
 //Physfs 2.0.z does not have PHYSFS_unmount
 #if (PHYSFS_VER_MAJOR <= 2) && (PHYSFS_VER_MINOR < 1)
@@ -1067,13 +1085,10 @@ int main(int argc, char* argv[]) {
 		bind_textdomain_codeset(PACKAGE, "utf-8");
 		textdomain (PACKAGE);
 		ParseArguments(argc, argv, config);
+		OsMountPersistentStorage();
 		OsCreateSaveFolder();
 		writeStateFile(argv[0], PHYSFS_getBaseDir());
 		PhysFsSetSearchPath(config.search_paths, config.savepath);
-		/*if (globalData.modList.empty() && sago::FileExists(MODLIST_TXT))  {
-		    std::string modString = sago::GetFileContent(MODLIST_TXT);
-		    boost::split(globalData.modList, modString, boost::is_any_of(","));
-		}*/
 		globalData.modinfo.InitModList(globalData.modList);
 		if (sago::FileExists(MODLIST_TXT)) {
 			globalData.modinfo.ParseModFile(sago::GetFileContent(MODLIST_TXT));
@@ -1092,10 +1107,13 @@ int main(int argc, char* argv[]) {
 		//Os create folders must be after the parameters because they can change the home folder
 		PhysFsCreateFolders();
 		bool gameShutdownProperly = true;
+#ifndef __EMSCRIPTEN__
+		//A closed browser tab never runs the shutdown code, so the crash detection is skipped there
 		if (sago::FileExists("gameRunning")) {
 			gameShutdownProperly = false;
 		}
 		sago::WriteFileContent("gameRunning", "Started");
+#endif
 		globalData.SoundEnabled = true;
 		globalData.MusicEnabled = true;
 		twoPlayers = false; //true if two players splitscreen
@@ -1400,9 +1418,19 @@ int main(int argc, char* argv[]) {
 	catch (std::exception& e) {
 		sago::SagoFatalError(e.what());
 	}
+#ifndef __EMSCRIPTEN__
 	PHYSFS_delete("gameRunning");
+#endif
 	//Close file system Apstraction layer!
 	PHYSFS_deinit();
+#ifdef __EMSCRIPTEN__
+	//The page stays open with the last frame on the canvas, so tell the player what happened
+	EM_ASM({
+		if (Module.setStatus) {
+			Module.setStatus('The game has been closed. Reload the page to play again.');
+		}
+	});
+#endif
 	return 0;
 }
 

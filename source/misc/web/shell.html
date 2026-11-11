@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Block Attack - Rise of the Blocks</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: #ddd;
+      font-family: sans-serif;
+    }
+    /* The canvas fills the viewport. SDL's Emscripten backend adopts an
+       externally sized canvas as the window size and reports every browser
+       resize as a window resize, which the game letterboxes itself. */
+    #canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      outline: none;
+    }
+    #status {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 45%;
+      text-align: center;
+      font-size: 1.5em;
+      pointer-events: none;
+    }
+    #progress {
+      display: block;
+      margin: 0.5em auto 0;
+      width: 40%;
+    }
+    #hint {
+      font-size: 0.6em;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Loading...<progress id="progress" value="0" max="100" hidden></progress><div id="hint">Sound starts after the first click on the game.</div></div>
+  <canvas id="canvas" tabindex="-1" oncontextmenu="event.preventDefault()"></canvas>
+  <script>
+    var statusElement = document.getElementById('status');
+    var progressElement = document.getElementById('progress');
+    var Module = {
+      canvas: document.getElementById('canvas'),
+      print: function(text) { console.log(text); },
+      printErr: function(text) { console.error(text); },
+      setStatus: function(text) {
+        // Emscripten reports downloads as "Downloading data... (loaded/total)".
+        var match = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+        if (match) {
+          progressElement.value = parseInt(match[2]) * 100 / parseInt(match[4]);
+          progressElement.hidden = false;
+          statusElement.firstChild.textContent = match[1].trim();
+        } else {
+          statusElement.firstChild.textContent = text;
+          progressElement.hidden = true;
+        }
+        statusElement.hidden = text.length == 0;
+      },
+      onRuntimeInitialized: function() { statusElement.hidden = true; }
+    };
+    Module.canvas.addEventListener('webglcontextlost', function(event) {
+      alert('WebGL context lost. Reload the page.');
+      event.preventDefault();
+    }, false);
+    window.onerror = function(message) {
+      Module.setStatus('Error: ' + message);
+    };
+  </script>
+  {{{ SCRIPT }}}
+</body>
+</html>

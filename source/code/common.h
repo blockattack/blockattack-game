@@ -33,6 +33,7 @@ https://blockattack.net
 #include <string>
 #include <iostream>
 #include <map>
+#include <vector>
 #include <stdlib.h>
 #include <libintl.h>
 #include <ctime>
@@ -65,6 +66,22 @@ void dieOnNullptr(bool, const char* msg);
  * in that way this function will always return a usable value.
  */
 double str2double(const std::string &str2parse) __attribute__((const));
+
+/**
+ * Split a string into multiple strings using the given separator
+ * @param input The string to split
+ * @param sep  The separator
+ * @return A vector of strings
+ */
+std::vector<std::string> split_string(const std::string& input, const std::string& sep);
+
+/**
+ * Does search and replace in a string.
+ * @param inout the string to modify
+ * @param find_text the text to find
+ * @param replacement_text the text to replace with
+ */
+void replace_all(std::string& inout, const char* find_text, const char* replacement_text);
 
 class TimeHandler
 {

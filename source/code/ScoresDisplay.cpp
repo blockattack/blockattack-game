@@ -26,7 +26,7 @@ http://www.blockattack.net
 #include "common.h"
 #include "stats.h"
 #include "MenuSystem.h"
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 
 static void setButtonFont(const sago::SagoDataHolder* holder, sago::SagoTextField& field, const char* text) {
@@ -191,26 +191,26 @@ void ScoresDisplay::DrawStats() {
 	Write(globalData.screen, 10,y, _("Run time: ") );
 	commonTime ct = TimeHandler::peekTime("totalTime",TimeHandler::ms2ct(SDL_GetTicks()));
 	y+=y_spacing;
-	Write(globalData.screen, 10, y, fmt::format( _("Days: {}"), ct.days) );
+	Write(globalData.screen, 10, y, fmt::format( fmt::runtime(_("Days: {}")), ct.days) );
 	y+=y_spacing;
-	Write(globalData.screen, 10, y, fmt::format( _("Hours: {:02}"), ct.hours) );
+	Write(globalData.screen, 10, y, fmt::format( fmt::runtime(_("Hours: {:02}")), ct.hours) );
 	y+=y_spacing;
-	Write(globalData.screen, 10, y, fmt::format( _("Minutes: {:02}"), ct.minutes) );
+	Write(globalData.screen, 10, y, fmt::format( fmt::runtime(_("Minutes: {:02}")), ct.minutes) );
 	y+=y_spacing;
-	Write(globalData.screen, 10, y, fmt::format( _("Seconds: {:02}"), ct.seconds) );
+	Write(globalData.screen, 10, y, fmt::format( fmt::runtime(_("Seconds: {:02}")), ct.seconds) );
 
 	y-=y_spacing*4; //Four rows back
 	const int x_offset3 = globalData.xsize/3+10; //Ofset for three rows
 	Write(globalData.screen, x_offset3,y, _("Play time: ") );
 	ct = TimeHandler::getTime("playTime");
 	y+=y_spacing;
-	Write(globalData.screen, x_offset3, y, fmt::format( _("Days: {}"), ct.days) );
+	Write(globalData.screen, x_offset3, y, fmt::format( fmt::runtime(_("Days: {}")), ct.days) );
 	y+=y_spacing;
-	Write(globalData.screen, x_offset3, y, fmt::format( _("Hours: {:02}"), ct.hours) );
+	Write(globalData.screen, x_offset3, y, fmt::format( fmt::runtime(_("Hours: {:02}")), ct.hours) );
 	y+=y_spacing;
-	Write(globalData.screen, x_offset3, y, fmt::format( _("Minutes: {:02}"), ct.minutes) );
+	Write(globalData.screen, x_offset3, y, fmt::format( fmt::runtime(_("Minutes: {:02}")), ct.minutes) );
 	y+=y_spacing;
-	Write(globalData.screen, x_offset3, y, fmt::format( _("Seconds: {:02}"), ct.seconds) );
+	Write(globalData.screen, x_offset3, y, fmt::format( fmt::runtime(_("Seconds: {:02}")), ct.seconds) );
 
 	const int x_offset = globalData.xsize/2+10;
 	y = 5+y_spacing*2;
@@ -274,7 +274,7 @@ void ScoresDisplay::Draw(SDL_Renderer* target) {
 	nextLabel.Draw(globalData.screen, nextX+60, nextY+10, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 
 	//Draw page number
-	std::string pageXofY = fmt::format(_("Page {} of {}"), page+1, numberOfPages);
+	std::string pageXofY = fmt::format(fmt::runtime(_("Page {} of {}")), page+1, numberOfPages);
 	getCachedText(pageXofY)->Draw(globalData.screen,  globalData.xsize/2, globalData.ysize-60, sago::SagoTextField::Alignment::center, sago::SagoTextField::VerticalAlignment::top, &globalData.logicalResize);
 	HelpCommonState::Draw(target);
 }

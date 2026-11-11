@@ -23,6 +23,8 @@ https://blockattack.net
 
 #include "os.hpp"
 #include <iostream>
+#include <filesystem>
+#include <system_error>
 #include <physfs.h>
 #include "platform_folders.h"
 #include "version.h"
@@ -32,7 +34,6 @@ https://blockattack.net
 #include <pwd.h>
 #include <unistd.h>
 #endif
-#include <boost/algorithm/string.hpp>
 #include <dirent.h>
 
 static sago::PlatformFolders pf;
@@ -92,7 +93,7 @@ std::string defaultPlayerName() {
 		ret = sago::internal::win32_utf16_to_utf8(win_buffer);
 	}
 #endif
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__EMSCRIPTEN__)
 	int uid = getuid();
 	struct passwd* pw = getpwuid(uid);
 	if (pw && pw->pw_gecos) {
@@ -118,12 +119,11 @@ bool OsPathIsRelative(const std::string& path) {
 }
 
 void OsCreateFolder(const std::string& path) {
-	//Once all supported systems works with C++17 then we can use "std::filesystem::create_directories" instead
 #if defined(_WIN32)
 	//Now for Windows Vista+
 	std::vector<std::string> element_vector;
 	std::string new_path = path;
-	boost::replace_all(new_path, "/", "\\");
+	replace_all(new_path, "/", "\\");
 	size_t pos = new_path.find("\\");
 	while ( pos != std::string::npos) {
 		std::string part_of_path = new_path.substr(0, pos);
@@ -132,11 +132,40 @@ void OsCreateFolder(const std::string& path) {
 	}
 	CreateDirectoryW(win32_utf8_to_utf16(path.c_str()).c_str(), NULL);
 #else
-	std::string cmd = "mkdir -p '"+path+"/'";
-	int retcode = system(cmd.c_str());
-	if (retcode != 0) {
-		std::cerr << "Failed to create: " << path+"/" << "\n";
+	std::error_code ec;
+	std::filesystem::create_directories(path, ec);
+	if (ec) {
+		std::cerr << "Failed to create: " << path+"/" << " (" << ec.message() << ")\n";
 	}
+#endif
+}
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+
+// Mounts IndexedDB-backed storage at the save folder and pulls the stored
+// files in. Must run before PhysFS gets its write dir so every existing
+// write path (PhysFS and std::ofstream) lands in persistent storage.
+// A failed mount is only logged: the folder still exists in the in-memory
+// file system, so the game runs but nothing survives a reload.
+EM_ASYNC_JS(int, os_web_mount_idbfs, (const char* cpath), {
+	const path = UTF8ToString(cpath);
+	try {
+		FS.mkdirTree(path);
+		FS.mount(FS.filesystems.IDBFS, {}, path);
+		await new Promise((resolve, reject) => FS.syncfs(true, (err) => err ? reject(err) : resolve()));
+		return 0;
+	}
+	catch (e) {
+		console.error('Persistent storage unavailable, saves will not survive a reload: ' + e);
+		return -1;
+	}
+});
+#endif
+
+void OsMountPersistentStorage() {
+#if defined(__EMSCRIPTEN__)
+	os_web_mount_idbfs(getPathToSaveFiles().c_str());
 #endif
 }
 

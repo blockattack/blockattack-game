@@ -24,8 +24,24 @@ SOFTWARE.
 
 #include "SagoMiscSdl2.hpp"
 #include "SDL.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 void sago::SagoFatalError(const char* errorMsg) {
+#ifdef __EMSCRIPTEN__
+	//SDL_ShowMessageBox is not implemented in the Emscripten video driver and
+	//alert() would block the page, so the message goes to the console and to
+	//the status overlay of the shell page
+	EM_ASM({
+		var message = 'Fatal error: ' + UTF8ToString($0);
+		console.error(message);
+		if (Module.setStatus) {
+			Module.setStatus(message);
+		}
+	}, errorMsg);
+	abort();
+#else
 	const SDL_MessageBoxButtonData buttons[] = {
 		{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "Ok" },
 	};
@@ -41,6 +57,7 @@ void sago::SagoFatalError(const char* errorMsg) {
 	int buttonid;
 	SDL_ShowMessageBox(&messageboxdata, &buttonid);
 	abort();
+#endif
 }
 
 void sago::SagoFatalErrorF(const char* fmt, ...) {

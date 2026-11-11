@@ -28,7 +28,7 @@ https://blockattack.net
 #include "sago/SagoMisc.hpp"
 #include <algorithm>
 #include "common.h"
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 using json = nlohmann::json;
 

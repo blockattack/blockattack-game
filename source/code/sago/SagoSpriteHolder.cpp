@@ -26,10 +26,9 @@ SOFTWARE.
 #include "SagoMisc.hpp"
 #include <memory>
 #include <unordered_map>
-#include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
 #include <iostream>
-#include <string.h>
-#include <boost/algorithm/string/predicate.hpp>
+#include <string>
 
 
 namespace sago {
@@ -57,20 +56,20 @@ SagoSpriteHolder::~SagoSpriteHolder() {
 	delete data;
 }
 
-static int getDefaultValue(const rapidjson::Value& value, const char* name, int defaultValue) {
-	assert(value.IsObject());
-	const auto& t = value.GetObject().FindMember(name);
-	if (t != value.MemberEnd() && t->value.IsInt()) {
-		return t->value.GetInt();
+static int getDefaultValue(const nlohmann::json& value, const char* name, int defaultValue) {
+	assert(value.is_object());
+	const auto& t = value.find(name);
+	if (t != value.end() && t->is_number_integer()) {
+		return t->get<int>();
 	}
 	return defaultValue;
 }
 
-static std::string getDefaultValue(const rapidjson::Value& value, const char* name, std::string defaultValue) {
-	assert(value.IsObject());
-	const auto& t = value.GetObject().FindMember(name);
-	if (t != value.MemberEnd() && t->value.IsString()) {
-		defaultValue = t->value.GetString();
+static std::string getDefaultValue(const nlohmann::json& value, const char* name, std::string defaultValue) {
+	assert(value.is_object());
+	const auto& t = value.find(name);
+	if (t != value.end() && t->is_string()) {
+		defaultValue = t->get<std::string>();
 	}
 	return defaultValue;
 }
@@ -78,30 +77,28 @@ static std::string getDefaultValue(const rapidjson::Value& value, const char* na
 void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 	std::string fullfile = "sprites/"+filename;
 	std::string content = sago::GetFileContent(fullfile.c_str());
-	rapidjson::Document document;
-	document.Parse(content.c_str());
-	if ( !document.IsObject() ) {
+	nlohmann::json document = nlohmann::json::parse(content, nullptr, false);
+	if ( document.is_discarded() || !document.is_object() ) {
 		std::cerr << "Failed to parse: " << fullfile << "\n";
 		return;
 	}
-	for (auto& m : document.GetObject()) {
-		const std::string& spriteName = m.name.GetString();
-		if (!m.value.IsObject()) {
+	for (auto& [spriteName, value] : document.items()) {
+		if (!value.is_object()) {
 			if (spriteName[0] != '_') {
 				std::cerr << "Invalid sprite: " << spriteName << "\n";
 			}
 			continue;
 		}
-		std::string textureName = getDefaultValue(m.value, "texture", "fallback");
-		int topx = getDefaultValue(m.value, "topx", 0);
-		int topy = getDefaultValue(m.value, "topy",0);
-		int height = getDefaultValue(m.value, "height",0);
-		int width = getDefaultValue(m.value, "width",0);
-		int number_of_frames = getDefaultValue(m.value, "number_of_frames",1);
-		int frame_time = getDefaultValue(m.value, "frame_time",1);
+		std::string textureName = getDefaultValue(value, "texture", "fallback");
+		int topx = getDefaultValue(value, "topx", 0);
+		int topy = getDefaultValue(value, "topy",0);
+		int height = getDefaultValue(value, "height",0);
+		int width = getDefaultValue(value, "width",0);
+		int number_of_frames = getDefaultValue(value, "number_of_frames",1);
+		int frame_time = getDefaultValue(value, "frame_time",1);
 		SDL_Rect origin = {};
-		origin.x = getDefaultValue(m.value, "originx",0);
-		origin.y = getDefaultValue(m.value, "originy",0);
+		origin.x = getDefaultValue(value, "originx",0);
+		origin.y = getDefaultValue(value, "originy",0);
 		if (number_of_frames < 1) {
 			number_of_frames = 1;
 		}
@@ -110,14 +107,14 @@ void SagoSpriteHolder::ReadSpriteFile(const std::string& filename) {
 		}
 		std::shared_ptr<sago::SagoSprite> ptr(new SagoSprite(*(data->tex),textureName, {topx,topy,width,height},number_of_frames,frame_time));
 		ptr->SetOrigin(origin);
-		this->data->sprites[std::string(spriteName)] = ptr;
+		this->data->sprites[spriteName] = ptr;
 	}
 }
 
 void SagoSpriteHolder::ReadSprites() {
 	std::vector<std::string> spritefiles = GetFileList("sprites");
 	for (std::string& item : spritefiles  ) {
-		if (boost::algorithm::ends_with(item,".sprite")) {
+		if (item.ends_with(".sprite")) {
 			if (data->verbose) {
 				std::cout << "Found " << item << "\n";
 			}
@@ -146,6 +143,18 @@ const sago::SagoSprite& SagoSpriteHolder::GetSprite(const std::string& spritenam
 	else {
 		return *(got->second);
 	}
+}
+
+bool SagoSpriteHolder::HasSprite(const std::string& spritename) const {
+	return HasSprite(spritename.c_str());
+}
+
+bool SagoSpriteHolder::HasSprite(const char* spritename) const {
+	std::unordered_map<std::string,std::shared_ptr<sago::SagoSprite>>::const_iterator got = data->sprites.find (spritename);
+	if ( got == data->sprites.end() ) {
+		return false;
+	}
+	return true;
 }
 
 

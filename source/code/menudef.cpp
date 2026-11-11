@@ -30,7 +30,7 @@ http://blockattack.net
 #include "HelpGamepadState.hpp"
 #include "HelpAboutState.hpp"
 #include "ShowFileState.hpp"
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include "menudef_themes.hpp"
 
 
@@ -148,7 +148,7 @@ Button_confirmVolume::Button_confirmVolume(const char* cvar) : cvar{cvar} {
 
 const std::string& Button_confirmVolume::getLabel() const {
 	int volumePct = Config::getInstance()->getInt(cvar)*100.0/MIX_MAX_VOLUME;
-	this->volumeLabel = fmt::format(_("Volume: {}%"), volumePct); //  std::string(_("Volume: "))+ std::to_string(volumePct)+"%" ;
+	this->volumeLabel = fmt::format(fmt::runtime(_("Volume: {}%")), volumePct); //  std::string(_("Volume: "))+ std::to_string(volumePct)+"%" ;
 	return volumeLabel;
 }
 
@@ -264,7 +264,7 @@ void Button_soundVolume::doRight() {
 
 const std::string& Button_soundVolume::getLabel() const {
 	int volumePct = Config::getInstance()->getInt("volume_sound")*100.0/MIX_MAX_VOLUME;
-	volumeLabel = fmt::format(_("Sound: {}"), volumePct)+"%";
+	volumeLabel = fmt::format(fmt::runtime(_("Sound: {}")), volumePct)+"%";
 	return volumeLabel;
 }
 
@@ -314,7 +314,7 @@ void Button_musicVolume::doRight() {
 
 const std::string& Button_musicVolume::getLabel() const {
 	int volumePct = Config::getInstance()->getInt("volume_music")*100.0/MIX_MAX_VOLUME;
-	volumeLabel = fmt::format(_("Music: {}"), volumePct)+"%";
+	volumeLabel = fmt::format(fmt::runtime(_("Music: {}")), volumePct)+"%";
 	return volumeLabel;
 }
 

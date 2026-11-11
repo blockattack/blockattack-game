@@ -22,7 +22,7 @@ https://blockattack.net
 #include "global.hpp"
 #include "common.h"
 #include "MenuSystem.h"
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 ShowFileState::ShowFileState() {
 	setHelp30FontThinOutline(&globalData.spriteHolder->GetDataHolder(), titleField, "");
@@ -36,5 +36,5 @@ ShowFileState::~ShowFileState() {
 void ShowFileState::SetData(const std::string& filename, const std::string& header) {
 	titleField.SetText(header);
 	infoBox.SetText(sago::GetFileContent(filename));
-	filenameField.SetText(fmt::format(_("Showing content of: {}"), filename));
+	filenameField.SetText(fmt::format(fmt::runtime(_("Showing content of: {}")), filename));
 }

@@ -30,8 +30,7 @@ https://www.blockattack.net
 #include "nlohmann/json.hpp"
 #include <iostream>
 #include "global.hpp"
-#include <boost/algorithm/string/predicate.hpp>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 using json = nlohmann::json;
 
@@ -392,7 +391,7 @@ void ThemesInit() {
 	ThemesFillMissingFields(themes[0]);
 	const std::vector<std::string>& theme_files = sago::GetFileList("themes");
 	for (const std::string& filename : theme_files) {
-		if (boost::algorithm::ends_with(filename,".json")) {
+		if (filename.ends_with(".json")) {
 			ThemesReadDataFromFile("themes/"+filename);
 		}
 	}
@@ -519,7 +518,7 @@ void ThemesInitCustomBackgrounds() {
 	bool first = true;
 	for (const std::string& filename : custom_backgrounds) {
 		std::cout << "Found custom background " << filename << "\n";
-		if (boost::algorithm::ends_with(filename, ".png") || boost::algorithm::ends_with(filename, ".jpg")) {
+		if (filename.ends_with(".png") || filename.ends_with(".jpg")) {
 			BackGroundData bg;
 			bg.name = filename;
 			std::string texture_name = fmt::format("custom_background_{}",filename);;
@@ -550,7 +549,7 @@ void ThemesInitCustomBackgrounds() {
 void ThemesLoadCustomBorders() {
 	const std::vector<std::string>& border_files = sago::GetFileList("borders");
 	for (const std::string& filename : border_files) {
-		if (boost::algorithm::ends_with(filename, ".json")) {
+		if (filename.ends_with(".json")) {
 			std::string filepath = fmt::format("borders/{}", filename);
 			std::string s = sago::GetFileContent(filepath);
 			if (s.empty()) {
@@ -574,7 +573,7 @@ void ThemesLoadCustomBorders() {
 void ThemesLoadCustomBackgrounds() {
 	const std::vector<std::string>& background_files = sago::GetFileList("backgrounds");
 	for (const std::string& filename : background_files) {
-		if (boost::algorithm::ends_with(filename, ".json")) {
+		if (filename.ends_with(".json")) {
 			std::string filepath = fmt::format("backgrounds/{}", filename);
 			std::string s = sago::GetFileContent(filepath);
 			if (s.empty()) {

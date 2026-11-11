@@ -28,7 +28,7 @@ http://blockattack.net
 #include <sstream>
 #include "stats.h"
 #include <physfs.h>         //Abstract file system. To use containers
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include "sago/SagoMisc.hpp"
 
 using json = nlohmann::json;

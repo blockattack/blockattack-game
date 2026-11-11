@@ -24,7 +24,7 @@ https://blockattack.net
 #include "PuzzleEditorState.hpp"
 
 #include <unistd.h>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include "imgui.h"
 #include "imgui_internal.h"

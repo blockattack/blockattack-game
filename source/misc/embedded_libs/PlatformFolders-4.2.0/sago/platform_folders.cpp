@@ -52,6 +52,15 @@ static std::string getHome() {
 		res = homeEnv;
 		return res;
 	}
+#if defined(__EMSCRIPTEN__)
+	if ( homeEnv) {
+		//With Emscripten we always acknowledge home
+		res = homeEnv;
+		return res;
+	}
+	res = "/home/web_user";
+	return res; //Always use a fixed folder for Emscripten
+#endif
 	struct passwd* pw = nullptr;
 	struct passwd pwd;
 	long bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
