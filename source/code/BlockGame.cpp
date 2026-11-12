@@ -519,9 +519,10 @@ void BlockGame::putSampleBlocks() {
 		for (size_t j = 6; j < 9; j++) {
 			board[i][j] = GARBAGE+1;
 		}
-		for (size_t j = 9; j < 12; j++) {
+		for (size_t j = 9; j < 11; j++) {
 			board[i][j] = GARBAGE+2;
 		}
+		board[i][11] = GARBAGE_GRAY*GARBAGE;
 	}
 }
 

@@ -238,6 +238,8 @@ private:
 
 	//Draws all the bricks to the board (including garbage)
 	void PaintBricks() const {
+		const GarbageData& garbageSet = globalData.theme.garbage;
+		const sago::SagoSpriteHolder& sprites = *globalData.spriteHolder;
 		for (int i=0; i<13; ++i) {
 			for (int j=0; j<6; ++j) {
 				int basicBrick = board[j][i]%10; //The basic brick, stored on the least significant digit
@@ -279,51 +281,51 @@ private:
 						under = board[j][i-1];
 					}
 					if ((left == number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(globalData.garbageFill,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.fill),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(globalData.garbageL,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.l),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over == number)&&(under == number)) {
-						DrawImgBoardBounded(globalData.garbageR,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.r),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(globalData.garbageT,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.t),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(globalData.garbageB,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.b),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(globalData.garbageTL,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.tl),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(globalData.garbageBL,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.bl),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over != number)&&(under == number)) {
-						DrawImgBoardBounded(globalData.garbageTR,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.tr),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over == number)&&(under != number)) {
-						DrawImgBoardBounded(globalData.garbageBR,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.br),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right != number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(globalData.garbageMR,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.mr),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left == number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(globalData.garbageM,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.m),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					if ((left != number)&&(right == number)&&(over != number)&&(under != number)) {
-						DrawImgBoardBounded(globalData.garbageML,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.ml),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
 				if ((board[j][i]/1000000)%10==2) {
 					if (j==0) {
-						DrawImgBoardBounded(globalData.garbageGML,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.gml),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					else if (j==5) {
-						DrawImgBoardBounded(globalData.garbageGMR,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.gmr),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 					else {
-						DrawImgBoardBounded(globalData.garbageGM,  j*bsize, bsize*12-i*bsize-pixels);
+						DrawImgBoardBounded(sprites.GetSprite(garbageSet.gm),  j*bsize, bsize*12-i*bsize-pixels);
 					}
 				}
 			}

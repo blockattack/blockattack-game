@@ -73,7 +73,7 @@ https://blockattack.net
 
 #include "editor/SagoTextureSelector.hpp"
 #include "puzzle_editor/PuzzleEditorState.hpp"
-#include "theme_editor/ThemeEditorState.hpp"
+#include "menudef_themes.hpp"
 #include "SagoImGui.hpp"
 
 /*******************************************************************************
@@ -172,21 +172,6 @@ static int InitImages(sago::SagoSpriteHolder& holder) {
 	globalData.iLevelCheckBoxMarked = holder.GetSprite("i_level_check_box_marked");
 	globalData.iCheckBoxArea = holder.GetSprite("i_check_box_area");
 	globalData.boardBackBack = holder.GetSprite("board_back_back");
-	globalData.garbageTL = holder.GetSprite("garbage_tl");
-	globalData.garbageT = holder.GetSprite("garbage_t");
-	globalData.garbageTR = holder.GetSprite("garbage_tr");
-	globalData.garbageR = holder.GetSprite("garbage_r");
-	globalData.garbageBR = holder.GetSprite("garbage_br");
-	globalData.garbageB = holder.GetSprite("garbage_b");
-	globalData.garbageBL = holder.GetSprite("garbage_bl");
-	globalData.garbageL = holder.GetSprite("garbage_l");
-	globalData.garbageFill = holder.GetSprite("garbage_fill");
-	globalData.garbageML = holder.GetSprite("garbage_ml");
-	globalData.garbageM = holder.GetSprite("garbage_m");
-	globalData.garbageMR = holder.GetSprite("garbage_mr");
-	globalData.garbageGM = holder.GetSprite("garbage_gm");
-	globalData.garbageGML = holder.GetSprite("garbage_gml");
-	globalData.garbageGMR = holder.GetSprite("garbage_gmr");
 	globalData.transCover = holder.GetSprite("trans_cover");
 	bExit = holder.GetSprite("b_exit");
 	globalData.bSkip = holder.GetSprite("b_blank");
@@ -948,7 +933,7 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	("always-sixteen-nine", "Use 16:9 format even in Window mode")
 	("editor", "Start the sprite editor/browser")
 	("puzzle-editor", "Start the build in puzzle editor")
-	("theme-editor", "Start the theme editor")
+	("theme-menu", "Go directly to the theme selection screen")
 	("puzzle-level-file", boost::program_options::value<std::string>(), "Sets the default puzzle file to load")
 	("puzzle-single-level", boost::program_options::value<int>(), "Start the specific puzzle level directly")
 #ifdef REPLAY_IMPLEMENTED
@@ -1050,8 +1035,8 @@ static void ParseArguments(int argc, char* argv[], globalConfig& conf) {
 	if (vm.count("puzzle-editor")) {
 		puzzleEditor = true;
 	}
-	if (vm.count("theme-editor")) {
-		themeEditor = true;
+	if (vm.count("theme-menu")) {
+		themeMenu = true;
 	}
 	if (vm.count("puzzle-level-file")) {
 		conf.puzzleName = vm["puzzle-level-file"].as<std::string>();
@@ -1358,17 +1343,6 @@ int main(int argc, char* argv[]) {
 			RunImGuiGameState(s);
 			ImGui::SaveIniSettingsToDisk(imgui_inifile.c_str());
 		}
-		else if (themeEditor) {
-			InitImGui(sdlWindow, renderer, globalData.xsize, globalData.ysize);
-			ImGuiIO& io = ImGui::GetIO();
-			io.IniFilename = nullptr;
-			std::string imgui_inifile = getPathToSaveFiles() + "/imgui_theme_editor.ini";
-			ImGui::LoadIniSettingsFromDisk(imgui_inifile.c_str());
-			ThemeEditorState s;
-			s.Init();
-			RunImGuiGameState(s);
-			ImGui::SaveIniSettingsToDisk(imgui_inifile.c_str());
-		}
 		else if (globalData.replayArgument.length()) {
 			ReplayPlayer rp;
 			RunGameState(rp);
@@ -1376,6 +1350,9 @@ int main(int argc, char* argv[]) {
 		else {
 			if (!gameShutdownProperly) {
 				SafeModeMenu();
+			}
+			if (themeMenu) {
+				OpenThemesMenu();
 			}
 			//game loop
 			MainMenu();

@@ -24,7 +24,6 @@ https://www.blockattack.net
 
 #include "themes.hpp"
 #include "sago/SagoMisc.hpp"
-#include "os.hpp"
 #include <vector>
 #include <sstream>
 #include <map>
@@ -99,15 +98,26 @@ void to_json(json& j, const ThemeBorderData& p) {
 }
 
 void to_json(json& j, const Theme& p) {
-	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background.name}, {"decoration_name", p.decoration.name} };
+	j = json{ {"theme_name", p.theme_name}, {"back_board", p.back_board}, {"background_name", p.background.name}, {"decoration_name", p.decoration.name}, {"border_name", p.border.name}, {"garbage_name", p.garbage.name} };
 }
 
 void to_json(json& j, const DecorationData& p) {
 	j = json{ {"name", p.name}, {"decoration_sprites", p.decoration_sprites} };
 }
 
+void to_json(json& j, const GarbageData& p) {
+	j = json{
+		{"garbage_name", p.name},
+		{"tl", p.tl}, {"t", p.t}, {"tr", p.tr},
+		{"l", p.l}, {"fill", p.fill}, {"r", p.r},
+		{"bl", p.bl}, {"b", p.b}, {"br", p.br},
+		{"ml", p.ml}, {"m", p.m}, {"mr", p.mr},
+		{"gml", p.gml}, {"gm", p.gm}, {"gmr", p.gmr}
+	};
+}
+
 void to_json(json& j, const ThemeFileData& p) {
-	j = json{ {"background_data", p.background_data}, {"decoration_data", p.decoration_data}, {"border_data", p.border_data}, {"themes", p.themes} };
+	j = json{ {"background_data", p.background_data}, {"decoration_data", p.decoration_data}, {"border_data", p.border_data}, {"garbage_data", p.garbage_data}, {"themes", p.themes} };
 }
 
 void from_json(const json& j, BackGroundData& p) {
@@ -165,11 +175,33 @@ void from_json(const json& j, Theme& p) {
 	j.at("back_board").get_to(p.back_board);
 	j.at("background_name").get_to(p.background.name);
 	j.at("decoration_name").get_to(p.decoration.name);
+	if (j.contains("border_name")) {
+		j.at("border_name").get_to(p.border.name);
+	}
+	if (j.contains("garbage_name")) {
+		j.at("garbage_name").get_to(p.garbage.name);
+	}
 }
 
 void from_json(const json& j, DecorationData& p) {
 	j.at("name").get_to(p.name);
 	j.at("decoration_sprites").get_to(p.decoration_sprites);
+}
+
+void from_json(const json& j, GarbageData& p) {
+	j.at("garbage_name").get_to(p.name);
+	const std::pair<const char*, std::string*> sprites[] = {
+		{"tl", &p.tl}, {"t", &p.t}, {"tr", &p.tr},
+		{"l", &p.l}, {"fill", &p.fill}, {"r", &p.r},
+		{"bl", &p.bl}, {"b", &p.b}, {"br", &p.br},
+		{"ml", &p.ml}, {"m", &p.m}, {"mr", &p.mr},
+		{"gml", &p.gml}, {"gm", &p.gm}, {"gmr", &p.gmr}
+	};
+	for (const auto& sprite : sprites) {
+		if (j.contains(sprite.first)) {
+			j.at(sprite.first).get_to(*sprite.second);
+		}
+	}
 }
 
 void from_json(const json& j, ThemeFileData& p) {
@@ -182,6 +214,9 @@ void from_json(const json& j, ThemeFileData& p) {
 	if (j.contains("border_data")) {
 		j.at("border_data").get_to(p.border_data);
 	}
+	if (j.contains("garbage_data")) {
+		j.at("garbage_data").get_to(p.garbage_data);
+	}
 	if (j.contains("themes")) {
 		j.at("themes").get_to(p.themes);
 	}
@@ -193,6 +228,7 @@ static std::vector<Theme> themes(1);
 static std::map<std::string, BackGroundData> background_data;
 static std::map<std::string, DecorationData> decoration_data;
 static std::map<std::string, ThemeBorderData> border_data;
+static std::map<std::string, GarbageData> garbage_data;
 static bool initialized = false;
 static size_t current_theme = 0;
 
@@ -203,6 +239,21 @@ void ThemesFillMissingFields(Theme& theme) {
 		theme.background.name = "standard";
 	}
 	theme.background = background_data[theme.background.name];
+	if (border_data.find(theme.border.name) == border_data.end()) {
+		//If the theme does not define a border then use the standard.
+		theme.border.name = "standard";
+	}
+	theme.border = border_data[theme.border.name];
+	if (decoration_data.find(theme.decoration.name) == decoration_data.end()) {
+		//If the theme does not define a decoration then use the standard smilies.
+		theme.decoration.name = "smilies";
+	}
+	theme.decoration = decoration_data[theme.decoration.name];
+	if (garbage_data.find(theme.garbage.name) == garbage_data.end()) {
+		//If the theme does not define a garbage set then use the standard.
+		theme.garbage.name = "standard";
+	}
+	theme.garbage = garbage_data[theme.garbage.name];
 }
 
 static void ThemesReadDataFromFile(const std::string& filename) {
@@ -224,6 +275,9 @@ static void ThemesReadDataFromFile(const std::string& filename) {
 	}
 	for (const auto& border : tfd.border_data) {
 		border_data[border.name] = border;
+	}
+	for (const auto& garbage : tfd.garbage_data) {
+		garbage_data[garbage.name] = garbage;
 	}
 	for (const Theme& theme : tfd.themes) {
 		if (globalData.verboseLevel) {
@@ -267,6 +321,11 @@ static void ThemesInitBorderData() {
 	border_data[mirror.name] = mirror;
 }
 
+static void ThemesInitGarbageData() {
+	GarbageData standard;
+	garbage_data[standard.name] = standard;
+}
+
 static bool str_startswith(const std::string& s, const char* prefix) {
 	return (s.rfind(prefix, 0) == 0);
 }
@@ -282,6 +341,9 @@ static void ThemesDumpData() {
 	}
 	for (auto& pair : border_data) {
 		tfd.border_data.push_back(pair.second);
+	}
+	for (auto& pair : garbage_data) {
+		tfd.garbage_data.push_back(pair.second);
 	}
 	json j = tfd;
 	std::string s = j.dump(4);
@@ -322,6 +384,7 @@ void ThemesInit() {
 	ThemesInitBackGroundData();
 	ThemesInitCustomBackgrounds();
 	ThemesInitBorderData();
+	ThemesInitGarbageData();
 	ThemesLoadCustomBorders();
 	ThemesLoadCustomBackgrounds();
 	themes.resize(1);  //Add the default theme
@@ -434,6 +497,20 @@ ThemeBorderData ThemesGetNextBorder(const std::string& current) {
 	return ret;
 }
 
+GarbageData ThemesGetNextGarbage(const std::string& current) {
+	ThemesInit();
+	GarbageData ret = garbage_data["standard"];
+	auto it = garbage_data.find(current);
+	if (it != garbage_data.end()) {
+		++it;
+		if (it == garbage_data.end()) {
+			it = garbage_data.begin();
+		}
+		ret = it->second;
+	}
+	return ret;
+}
+
 void ThemesInitCustomBackgrounds() {
 	std::vector<std::string> custom_backgrounds = sago::GetFileList("textures/backgrounds");
 	std::stringstream sprite_stream;
@@ -467,34 +544,6 @@ void ThemesInitCustomBackgrounds() {
 	}
 	sprite_stream << "}\n";
 	sago::WriteFileContent("sprites/custom_backgrounds.sprite", sprite_stream.str());
-}
-
-void ThemesSaveBorderData(const std::string& name, const ThemeBorderData& data) {
-	ThemesInit();
-	// Create borders directory if it doesn't exist
-	OsCreateFolder("borders");
-
-	json j = data;
-	std::string s = j.dump(4);
-	std::string filename = fmt::format("borders/{}.json", name);
-	sago::WriteFileContent(filename.c_str(), s);
-
-	// Add to the border_data map
-	border_data[name] = data;
-}
-
-void ThemesSaveBackgroundData(const std::string& name, const BackGroundData& data) {
-	ThemesInit();
-	// Create backgrounds directory if it doesn't exist
-	OsCreateFolder("backgrounds");
-
-	json j = data;
-	std::string s = j.dump(4);
-	std::string filename = fmt::format("backgrounds/{}.json", name);
-	sago::WriteFileContent(filename.c_str(), s);
-
-	// Add to the background_data map
-	background_data[name] = data;
 }
 
 void ThemesLoadCustomBorders() {
@@ -543,51 +592,4 @@ void ThemesLoadCustomBackgrounds() {
 			}
 		}
 	}
-}
-
-bool ThemesValidateSpriteName(const std::string& sprite_name) {
-	ThemesInit();
-	if (sprite_name.empty()) {
-		return false;
-	}
-	// Note: GetSprite returns a default sprite if not found, so we can't easily validate
-	// The sprite will be validated when actually used in the game
-	// For now, just check that it's not empty
-	return true;
-}
-
-std::vector<std::string> ThemesGetBorderNames() {
-	ThemesInit();
-	std::vector<std::string> names;
-	for (const auto& pair : border_data) {
-		names.push_back(pair.first);
-	}
-	return names;
-}
-
-std::vector<std::string> ThemesGetBackgroundNames() {
-	ThemesInit();
-	std::vector<std::string> names;
-	for (const auto& pair : background_data) {
-		names.push_back(pair.first);
-	}
-	return names;
-}
-
-std::vector<std::string> ThemesGetDecorationNames() {
-	ThemesInit();
-	std::vector<std::string> names;
-	for (const auto& pair : decoration_data) {
-		names.push_back(pair.first);
-	}
-	return names;
-}
-
-BackGroundData ThemesGetBackground(const std::string& name) {
-	ThemesInit();
-	auto it = background_data.find(name);
-	if (it == background_data.end()) {
-		return background_data["standard"];
-	}
-	return it->second;
 }
